@@ -53,8 +53,7 @@ Table studio_members {
 Table event_definitions {
   id uuid [pk, default: `gen_random_uuid()`]
   game_id uuid [not null, ref: > games.id]
-  name varchar [not null] // e.g., 'level_up', 'item_purchased'
-  schema jsonb // Optional: A JSON schema to validate event properties
+  name varchar [not null] // e.g., 'level_up', 'item_purchased
   created_at timestamptz [default: `now()`]
 
   indexes {
@@ -72,10 +71,10 @@ Table event_definitions {
 //// ===================================================================================
 
 //// --- Measurement: game_events ---
-//// Tracks all discrete player events, both predefined (e.g., 'session_start') and custom.
+//// Tracks all discrete player events, both predefined and custom. Mimics Sentry's model.
 ////
-//// Tags: [game_id, platform, player_id, event_type]
-//// Fields: [event_data (string_json)] // A JSON string containing all custom event properties
+//// Tags (for filtering): [game_id, platform, player_id, event_type]
+//// Fields (for inspection): [context (string_json)] // A JSON string containing all custom key-value pairs.
 //// Timestamp: Time of the event
 
 //// --- Measurement: session_events ---
@@ -83,13 +82,6 @@ Table event_definitions {
 ////
 //// Tags: [game_id, platform, country, session_id]
 //// Fields: [duration_seconds (integer), event_count (integer)]
-//// Timestamp: Time of the event
-
-//// --- Measurement: use game_events ---
-//// Tracks discrete actions taken by a player.
-////
-//// Tags: [game_id, platform, player_id, event_type, level_id, ab_test_variant]
-//// Fields: [event_value (float), item_id (string), coordinates (string)]
 //// Timestamp: Time of the event
 
 //// --- Measurement: performance_metrics ---
