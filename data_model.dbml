@@ -73,27 +73,27 @@ Table event_definitions {
 //// --- Measurement: game_events ---
 //// Tracks all discrete player events, both predefined and custom. Mimics Sentry's model.
 ////
-//// Tags (for filtering): [game_id, platform, player_id, event_type]
+//// Tags (for filtering): [game_id, platform, event_type, tracker_id]
 //// Fields (for inspection): [context (string_json)] // A JSON string containing all custom key-value pairs.
 //// Timestamp: Time of the event
 
-//// --- Measurement: session_events ---
+//// --- Measurement: sessions ---
 //// Tracks player session start, end, and duration.
 ////
-//// Tags: [game_id, platform, country, session_id]
-//// Fields: [duration_seconds (integer), event_count (integer)]
+//// Tags: [game_id, platform, session_id, tracker_id]
+//// Fields: [duration_seconds (integer)]
 //// Timestamp: Time of the event
 
 //// --- Measurement: performance_metrics ---
 //// Tracks technical performance metrics from clients.
 ////
-//// Tags: [game_id, platform, device_model, os_version]
+//// Tags: [game_id, platform, device, os_version]
 //// Fields: [fps (integer), memory_usage_mb (integer), load_time_ms (integer)]
 //// Timestamp: Time of the metric capture
 
 //// --- Measurement: error_logs ---
 //// Tracks errors and exceptions from the game client.
 ////
-//// Tags: [game_id, platform, player_id, error_type, os_version]
+//// Tags: [game_id, platform, tracker_id, error_type, os_version]
 //// Fields: [error_message (string), stack_trace (string), is_fatal (boolean)]
 //// Timestamp: Time of the error
