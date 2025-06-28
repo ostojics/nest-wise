@@ -1,0 +1,30 @@
+{
+  "name": "@game-stats/web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "build:analyze": "analyze"
+  },
+  "dependencies": {
+    "@game-stats/validation": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@nabla/vite-plugin-eslint": "^2.0.5",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react-swc": "^3.10.0",
+    "eslint": "catalog:",
+    "@game-stats/linting": "workspace:*",
+    "@game-stats/tsconfig": "workspace:*",
+    "typescript": "catalog:",
+    "vite": "^6.3.5",
+    "vite-bundle-analyzer": "^0.22.0"
+  }
+}
