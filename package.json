@@ -9,7 +9,6 @@
     "precommit": "pretty-quick --staged",
     "prepare": "husky",
     "postinstall": "pnpm prepare",
-    "analyze:web": "pnpm --filter \"./packages/**\" build && pnpm --filter=@game-stats/web build:analyze",
     "create:package": "turbo gen init:package"
   },
   "devDependencies": {
