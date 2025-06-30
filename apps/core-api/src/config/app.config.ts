@@ -16,6 +16,6 @@ export function getConfig(): AppConfig {
   };
 }
 
-export default registerAs<AppConfig>(AppConfigName, () => {
+export const appConfig = registerAs<AppConfig>(AppConfigName, () => {
   return getConfig();
 });

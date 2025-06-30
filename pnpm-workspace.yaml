@@ -16,3 +16,4 @@ catalog:
   pino-http: ^10.5.0
   pino-nestjs: ^0.1.3
   '@nestjs/config': ^4.0.2
+  '@nestjs/throttler': ^6.4.0
