@@ -20,11 +20,13 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/common": "^11.0.1",
+    "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "catalog:",
     "@nestjs/throttler": "catalog:",
+    "helmet": "catalog:",
     "pino-http": "catalog:",
     "pino-nestjs": "catalog:",
     "reflect-metadata": "^0.2.2",

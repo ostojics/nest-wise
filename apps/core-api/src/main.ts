@@ -6,6 +6,8 @@ import {NestExpressApplication} from '@nestjs/platform-express';
 import {ConfigService} from '@nestjs/config';
 import {GlobalConfig} from './config/config.type';
 import {AppConfig, AppConfigName} from './config/app.config';
+import helmet from 'helmet';
+import setupSwagger from './tools/swagger/swagger.setup';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {bufferLogs: true});
@@ -17,6 +19,8 @@ async function bootstrap() {
     defaultVersion: VERSION_NEUTRAL,
   });
   app.useBodyParser('json', {limit: '10mb'});
+  app.use(helmet());
+  setupSwagger(app);
 
   const {port} = configService.getOrThrow<AppConfig>(AppConfigName);
   await app.listen(port);
