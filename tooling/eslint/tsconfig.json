@@ -1,5 +1,5 @@
 {
-  "extends": "@game-stats/tsconfig/base.json",
+  "extends": "@maya-vault/tsconfig/base.json",
   "compilerOptions": {
     "module": "nodenext"
   },

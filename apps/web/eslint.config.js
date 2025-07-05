@@ -1,5 +1,5 @@
-import reactConfig from '@game-stats/linting/react';
-import baseConfig from '@game-stats/linting/base';
+import reactConfig from '@maya-vault/linting/react';
+import baseConfig from '@maya-vault/linting/base';
 
 /** @type {import("eslint").Linter.Config} */
 export default [

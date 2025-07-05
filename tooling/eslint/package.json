@@ -1,5 +1,5 @@
 {
-  "name": "@game-stats/linting",
+  "name": "@maya-vault/linting",
   "private": true,
   "version": "0.3.0",
   "type": "module",
@@ -24,7 +24,7 @@
     "typescript-eslint": "^8.33.1"
   },
   "devDependencies": {
-    "@game-stats/tsconfig": "workspace:*",
+    "@maya-vault/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"

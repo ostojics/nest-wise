@@ -2,7 +2,7 @@ import eslint from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import baseConfig from '@game-stats/linting/base';
+import baseConfig from '@maya-vault/linting/base';
 
 const defaultConfig = tseslint.config(
   eslint.configs.recommended,

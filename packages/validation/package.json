@@ -1,5 +1,5 @@
 {
-  "name": "@game-stats/validation",
+  "name": "@maya-vault/validation",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -28,9 +28,9 @@
     "@types/react": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
-    "@game-stats/linting": "workspace:*",
+    "@maya-vault/linting": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "@game-stats/tsconfig": "workspace:*"
+    "@maya-vault/tsconfig": "workspace:*"
   }
 }
