@@ -1,0 +1,16 @@
+{
+  "extends": "@game-stats/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["*"]
+    },
+    "baseUrl": "./src",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom", "dom.iterable"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,4 @@
+{
+  "eslint.workingDirectories": [{"pattern": "apps/*/"}, {"pattern": "packages/*/"}, {"pattern": "tooling/*/"}],
+  "eslint.runtime": "node"
+}
