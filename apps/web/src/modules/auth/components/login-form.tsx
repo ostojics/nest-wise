@@ -1,4 +1,4 @@
-import {useValidateLogin} from '@game-stats/validation';
+import {useValidateLogin} from '@maya-vault/validation';
 
 const LoginPage = () => {
   const {

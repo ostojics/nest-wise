@@ -125,7 +125,7 @@ importers:
       '@eslint/js':
         specifier: 'catalog:'
         version: 9.30.0
-      '@game-stats/linting':
+      '@maya-vault/linting':
         specifier: workspace:*
         version: link:../../tooling/eslint
       '@nestjs/cli':
@@ -198,9 +198,9 @@ importers:
         specifier: ^8.20.0
         version: 8.35.0(eslint@9.30.0)(typescript@5.8.3)
 
-  apps/developer-platform:
+  apps/web:
     dependencies:
-      '@game-stats/validation':
+      '@maya-vault/validation':
         specifier: workspace:*
         version: link:../../packages/validation
       react:
@@ -210,10 +210,10 @@ importers:
         specifier: 'catalog:'
         version: 19.0.0(react@19.0.0)
     devDependencies:
-      '@game-stats/linting':
+      '@maya-vault/linting':
         specifier: workspace:*
         version: link:../../tooling/eslint
-      '@game-stats/tsconfig':
+      '@maya-vault/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/typescript
       '@nabla/vite-plugin-eslint':
@@ -256,10 +256,10 @@ importers:
         specifier: ^1.6.1
         version: 1.6.1
     devDependencies:
-      '@game-stats/linting':
+      '@maya-vault/linting':
         specifier: workspace:*
         version: link:../../tooling/eslint
-      '@game-stats/tsconfig':
+      '@maya-vault/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/typescript
       '@types/react':
@@ -308,7 +308,7 @@ importers:
         specifier: ^8.33.1
         version: 8.35.0(eslint@9.30.0)(typescript@5.8.3)
     devDependencies:
-      '@game-stats/tsconfig':
+      '@maya-vault/tsconfig':
         specifier: workspace:*
         version: link:../typescript
       eslint:

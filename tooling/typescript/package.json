@@ -1,5 +1,5 @@
 {
-  "name": "@game-stats/tsconfig",
+  "name": "@maya-vault/tsconfig",
   "private": true,
   "version": "0.1.0",
   "files": [

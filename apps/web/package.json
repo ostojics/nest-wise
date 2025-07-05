@@ -1,5 +1,5 @@
 {
-  "name": "@game-stats/developer-platform",
+  "name": "@maya-vault/web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +11,7 @@
     "build:analyze": "analyze"
   },
   "dependencies": {
-    "@game-stats/validation": "workspace:*",
+    "@maya-vault/validation": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
@@ -21,8 +21,8 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react-swc": "^3.10.0",
     "eslint": "catalog:",
-    "@game-stats/linting": "workspace:*",
-    "@game-stats/tsconfig": "workspace:*",
+    "@maya-vault/linting": "workspace:*",
+    "@maya-vault/tsconfig": "workspace:*",
     "typescript": "catalog:",
     "vite": "^6.3.5",
     "vite-bundle-analyzer": "^0.22.0"

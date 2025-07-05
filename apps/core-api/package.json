@@ -1,5 +1,5 @@
 {
-  "name": "@game-stats/core-api",
+  "name": "@maya-vault/core-api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -35,7 +35,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "catalog:",
-    "@game-stats/linting": "workspace:*",
+    "@maya-vault/linting": "workspace:*",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
