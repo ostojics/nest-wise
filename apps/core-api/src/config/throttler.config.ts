@@ -1,11 +1,11 @@
 import {ConfigService, registerAs} from '@nestjs/config';
 import {GlobalConfig} from './config.type';
 
-export type ThrottlerConfig = {
+export interface ThrottlerConfig {
   throttlerEnabled: boolean;
   ttl: number;
   limit: number;
-};
+}
 
 export const ThrottlerConfigName = 'throttler';
 
