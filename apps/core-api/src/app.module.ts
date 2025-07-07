@@ -7,7 +7,9 @@ import {ConfigModule, ConfigService} from '@nestjs/config';
 import {ThrottlerModule} from '@nestjs/throttler';
 import {throttlerConfig, throttlerFactory} from './config/throttler.config';
 import {appConfig} from './config/app.config';
-import {databaseConfig} from './config/database.config';
+import {DatabaseConfig, databaseConfig, DatabaseConfigName} from './config/database.config';
+import {TypeOrmModule} from '@nestjs/typeorm';
+import {GlobalConfig} from './config/config.type';
 
 @Module({
   imports: [
@@ -18,6 +20,17 @@ import {databaseConfig} from './config/database.config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: throttlerFactory(),
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<GlobalConfig>) => {
+        const config = configService.getOrThrow<DatabaseConfig>(DatabaseConfigName);
+
+        return {
+          ...config,
+        };
+      },
     }),
   ],
   controllers: [AppController],

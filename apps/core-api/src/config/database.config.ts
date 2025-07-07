@@ -1,30 +1,23 @@
 import {registerAs} from '@nestjs/config';
+import {PostgresConnectionOptions} from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 export const DatabaseConfigName = 'database';
 
-export interface DatabaseConfig {
-  type: string;
-  host: string;
-  port: number;
-  username: string;
-  password?: string;
-  database: string;
-  synchronize: boolean;
-  ssl: boolean | {rejectUnauthorized: boolean};
-}
+export interface DatabaseConfig extends PostgresConnectionOptions {}
 
 export function getConfig(): DatabaseConfig {
   const isDevelopment = process.env.NODE_ENV === 'development';
 
   return {
-    type: process.env.DB_TYPE ?? 'postgres',
+    type: 'postgres',
     host: process.env.DB_HOST ?? 'localhost',
     port: +(process.env.DB_PORT ?? 5432),
-    username: process.env.DB_USERNAME ?? 'user',
+    username: process.env.DB_USERNAME ?? 'root',
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE ?? 'database',
+    database: process.env.DB_DATABASE ?? 'mayavault_dev',
     synchronize: isDevelopment,
-    ssl: !isDevelopment ? {rejectUnauthorized: false} : false,
+    ssl: isDevelopment,
+    entities: [],
   };
 }
 

@@ -26,11 +26,14 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "catalog:",
     "@nestjs/throttler": "catalog:",
+    "@nestjs/typeorm": "^11.0.0",
     "helmet": "catalog:",
+    "pg": "^8.16.3",
     "pino-http": "catalog:",
     "pino-nestjs": "catalog:",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.25"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
