@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import type {INestApplication} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {DocumentBuilder, OpenAPIObject, SwaggerModule} from '@nestjs/swagger';

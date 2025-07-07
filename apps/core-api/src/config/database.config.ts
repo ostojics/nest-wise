@@ -1,5 +1,6 @@
 import {registerAs} from '@nestjs/config';
 import {PostgresConnectionOptions} from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import {User} from '../users/user.entity';
 
 export const DatabaseConfigName = 'database';
 
@@ -16,8 +17,8 @@ export function getConfig(): DatabaseConfig {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE ?? 'mayavault_dev',
     synchronize: isDevelopment,
-    ssl: isDevelopment,
-    entities: [],
+    ssl: !isDevelopment,
+    entities: [User],
   };
 }
 

@@ -10,12 +10,12 @@ import {appConfig} from './config/app.config';
 import {DatabaseConfig, databaseConfig, DatabaseConfigName} from './config/database.config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {GlobalConfig} from './config/config.type';
+import {UsersModule} from './users/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({cache: true, load: [appConfig, throttlerConfig, databaseConfig]}),
     LoggerModule.forRoot(),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -32,6 +32,7 @@ import {GlobalConfig} from './config/config.type';
         };
       },
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
