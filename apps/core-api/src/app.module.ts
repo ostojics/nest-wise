@@ -10,6 +10,7 @@ import {appConfig} from './config/app.config';
 import {DatabaseConfig, databaseConfig, DatabaseConfigName} from './config/database.config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {GlobalConfig} from './config/config.type';
+import {UsersModule} from './users/users.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import {GlobalConfig} from './config/config.type';
         };
       },
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
