@@ -1,9 +1,9 @@
 import {registerAs} from '@nestjs/config';
 
-export type AppConfig = {
+export interface AppConfig {
   url: string;
   port: number;
-};
+}
 
 export const AppConfigName = 'app';
 
