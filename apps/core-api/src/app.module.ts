@@ -16,7 +16,6 @@ import {UsersModule} from './users/users.module';
   imports: [
     ConfigModule.forRoot({cache: true, load: [appConfig, throttlerConfig, databaseConfig]}),
     LoggerModule.forRoot(),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
