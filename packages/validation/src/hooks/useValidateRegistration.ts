@@ -9,7 +9,7 @@ export const useValidateRegistration = () => {
       username: '',
       email: '',
       password: '',
-      confirmPassword: '',
+      confirm_password: '',
     },
   });
 };
