@@ -1,8 +1,8 @@
-import {InferType, object, string} from 'yup';
+import {z} from 'zod';
 
-export const loginSchema = object({
-  username: string().required('Username is required'),
-  password: string().required('Password is required'),
+export const loginSchema = z.object({
+  username: z.string().min(1, 'Username is required'),
+  password: z.string().min(1, 'Password is required'),
 });
 
-export type LoginDTO = InferType<typeof loginSchema>;
+export type LoginDTO = z.infer<typeof loginSchema>;
