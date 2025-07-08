@@ -19,6 +19,7 @@ export function getConfig(): DatabaseConfig {
     synchronize: isDevelopment,
     ssl: !isDevelopment,
     entities: [User],
+    useUTC: true,
   };
 }
 

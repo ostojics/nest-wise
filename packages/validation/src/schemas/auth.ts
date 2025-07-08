@@ -20,11 +20,11 @@ export const userRegistrationSchema = z
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
         'Password must contain at least one lowercase letter, one uppercase letter, and one number',
       ),
-    confirmPassword: z.string().min(1, 'Password confirmation is required'),
+    confirm_password: z.string().min(1, 'Password confirmation is required'),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.confirm_password, {
     message: "Passwords don't match",
-    path: ['confirmPassword'],
+    path: ['confirm_password'],
   });
 
 export const userUpdateSchema = z.object({
@@ -48,11 +48,11 @@ export const passwordChangeSchema = z
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
         'New password must contain at least one lowercase letter, one uppercase letter, and one number',
       ),
-    confirmPassword: z.string().min(1, 'Password confirmation is required'),
+    confirm_password: z.string().min(1, 'Password confirmation is required'),
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
+  .refine((data) => data.newPassword === data.confirm_password, {
     message: "Passwords don't match",
-    path: ['confirmPassword'],
+    path: ['confirm_password'],
   });
 
 export const userResponseSchema = z.object({

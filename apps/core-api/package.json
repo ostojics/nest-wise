@@ -33,7 +33,10 @@
     "pino-nestjs": "catalog:",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.25"
+    "typeorm": "^0.3.25",
+    "zod": "catalog:",
+    "@maya-vault/validation": "workspace:*",
+    "argon2": "^0.43.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
