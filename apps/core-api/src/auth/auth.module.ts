@@ -16,6 +16,7 @@ import {AppConfig, AppConfigName} from 'src/config/app.config';
         return {
           secret: appConfig.jwtSecret,
           signOptions: {expiresIn: '7d'},
+          global: true,
         };
       },
       imports: [ConfigModule],
