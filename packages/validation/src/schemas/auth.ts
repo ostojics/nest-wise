@@ -55,6 +55,11 @@ export const passwordChangeSchema = z
     path: ['confirm_password'],
   });
 
+export const loginSchema = z.object({
+  email: z.string().min(1, 'Username is required'),
+  password: z.string().min(1, 'Password is required'),
+});
+
 export const userResponseSchema = z.object({
   id: z.string().uuid(),
   username: z.string(),
@@ -67,3 +72,4 @@ export type UserRegistrationDTO = z.infer<typeof userRegistrationSchema>;
 export type UserUpdateDTO = z.infer<typeof userUpdateSchema>;
 export type PasswordChangeDTO = z.infer<typeof passwordChangeSchema>;
 export type UserResponseDTO = z.infer<typeof userResponseSchema>;
+export type LoginDTO = z.infer<typeof loginSchema>;
