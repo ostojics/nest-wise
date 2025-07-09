@@ -6,7 +6,7 @@ export const useValidateLogin = () => {
   return useForm<LoginDTO>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: '',
+      email: '',
       password: '',
     },
   });

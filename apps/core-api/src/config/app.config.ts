@@ -3,6 +3,8 @@ import {registerAs} from '@nestjs/config';
 export interface AppConfig {
   url: string;
   port: number;
+  jwtSecret: string;
+  environment: string;
 }
 
 export const AppConfigName = 'app';
@@ -13,6 +15,8 @@ export function getConfig(): AppConfig {
   return {
     url: process.env.APP_URL || `http://localhost:${port}`,
     port,
+    jwtSecret: process.env.JWT_SECRET || 'secret',
+    environment: process.env.NODE_ENV || 'development',
   };
 }
 
