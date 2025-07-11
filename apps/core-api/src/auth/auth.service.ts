@@ -32,6 +32,10 @@ export class AuthService {
     };
   }
 
+  async getUserById(userId: string) {
+    return await this.usersService.findUserById(userId);
+  }
+
   async loginUser(userData: LoginDTO) {
     const user = await this.usersService.findUserByEmail(userData.email);
     if (!user) {

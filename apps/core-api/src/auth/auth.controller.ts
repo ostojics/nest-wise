@@ -1,4 +1,4 @@
-import {Body, Controller, HttpCode, HttpStatus, Post, Res, UsePipes} from '@nestjs/common';
+import {Body, Controller, Get, HttpCode, HttpStatus, Post, Res, UseGuards, UsePipes} from '@nestjs/common';
 import {AuthService} from './auth.service';
 import {LoginDTO, loginSchema, SetupDTO, setupSchema} from '@maya-vault/validation';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
@@ -6,6 +6,8 @@ import {ZodSchema} from 'zod';
 import {Response} from 'express';
 import {ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
+import {AuthGuard, JwtPayload} from 'src/common/guards/auth.guard';
+import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 
 @Controller({
   version: '1',
@@ -52,5 +54,11 @@ export class AuthController {
     return {
       message: 'Logged in successfully',
     };
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard)
+  async me(@CurrentUser() user: JwtPayload) {
+    return await this.authService.getUserById(user.sub);
   }
 }
