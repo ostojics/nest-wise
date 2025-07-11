@@ -1,16 +1,15 @@
 import {Injectable, ConflictException, NotFoundException} from '@nestjs/common';
 import {UsersRepository} from './users.repository';
 import {User} from './user.entity';
-import {UserRegistrationDTO} from '@maya-vault/validation';
+import {CreateUserDTO} from '@maya-vault/validation';
 import {hashPassword} from 'src/lib/hashing/hashing';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async createUser(userData: UserRegistrationDTO): Promise<User> {
+  async createUser(userData: CreateUserDTO): Promise<User> {
     const emailExists = await this.usersRepository.emailExists(userData.email);
-    await hashPassword(userData.password);
     if (emailExists) {
       throw new ConflictException('Cannot create user');
     }
@@ -25,6 +24,7 @@ export class UsersService {
       email: userData.email,
       username: userData.username,
       passwordHash,
+      householdId: userData.householdId,
     });
   }
 

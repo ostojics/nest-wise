@@ -5,10 +5,12 @@ import {UsersModule} from '../users/users.module';
 import {JwtModule} from '@nestjs/jwt';
 import {ConfigModule, ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
+import {HouseholdsModule} from 'src/households/households.module';
 
 @Module({
   imports: [
     UsersModule,
+    HouseholdsModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         const appConfig = configService.getOrThrow<AppConfig>(AppConfigName);

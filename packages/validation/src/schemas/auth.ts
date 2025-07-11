@@ -73,3 +73,6 @@ export type UserUpdateDTO = z.infer<typeof userUpdateSchema>;
 export type PasswordChangeDTO = z.infer<typeof passwordChangeSchema>;
 export type UserResponseDTO = z.infer<typeof userResponseSchema>;
 export type LoginDTO = z.infer<typeof loginSchema>;
+export interface CreateUserDTO extends Omit<UserRegistrationDTO, 'confirm_password'> {
+  householdId: string;
+}
