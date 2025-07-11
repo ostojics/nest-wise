@@ -11,8 +11,8 @@ const LoginPage = () => {
     <section>
       {/* eslint-disable-next-line no-console */}
       <form onSubmit={handleSubmit(() => console.log('submit'))}>
-        <input {...register('username')} />
-        {errors.username && <p>{errors.username.message}</p>}
+        <input {...register('email')} />
+        {errors.email && <p>{errors.email.message}</p>}
         <input {...register('password')} />
         {errors.password && <p>{errors.password.message}</p>}
         <button type="submit">Login</button>

@@ -11,6 +11,7 @@ import {DatabaseConfig, databaseConfig, DatabaseConfigName} from './config/datab
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {GlobalConfig} from './config/config.type';
 import {UsersModule} from './users/users.module';
+import {AuthModule} from './auth/auth.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import {UsersModule} from './users/users.module';
         };
       },
     }),
+    AuthModule,
     UsersModule,
   ],
   controllers: [AppController],

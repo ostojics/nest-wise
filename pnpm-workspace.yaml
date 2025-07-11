@@ -20,3 +20,4 @@ catalog:
   helmet: ^8.1.0
   '@nestjs/common': ^11.1.3
   '@nestjs/swagger': ^11.2.0
+  zod: ^3.25.74

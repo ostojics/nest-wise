@@ -8,6 +8,7 @@ import {GlobalConfig} from './config/config.type';
 import {AppConfig, AppConfigName} from './config/app.config';
 import helmet from 'helmet';
 import setupSwagger from './tools/swagger/swagger.setup';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {bufferLogs: true});
@@ -20,6 +21,7 @@ async function bootstrap() {
   });
   app.useBodyParser('json', {limit: '10mb'});
   app.use(helmet());
+  app.use(cookieParser());
   setupSwagger(app);
 
   const {port} = configService.getOrThrow<AppConfig>(AppConfigName);
