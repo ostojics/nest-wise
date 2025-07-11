@@ -1,7 +1,7 @@
 import {Body, Controller, HttpCode, HttpStatus, Post, Res, UsePipes} from '@nestjs/common';
 import {AuthService} from './auth.service';
-import {LoginDTO, loginSchema, UserRegistrationDTO, userRegistrationSchema} from '@maya-vault/validation';
-import {ZodValidationPipe} from '../lib/pipes/zod.vallidation.pipe';
+import {LoginDTO, loginSchema, SetupDTO, setupSchema} from '@maya-vault/validation';
+import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {ZodSchema} from 'zod';
 import {Response} from 'express';
 import {ConfigService} from '@nestjs/config';
@@ -17,10 +17,22 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
 
-  @Post('register')
-  @UsePipes(new ZodValidationPipe(userRegistrationSchema as ZodSchema))
-  register(@Body() dto: UserRegistrationDTO) {
-    return this.authService.registerUser(dto);
+  @Post('setup')
+  @UsePipes(new ZodValidationPipe(setupSchema as ZodSchema))
+  async setup(@Body() dto: SetupDTO, @Res({passthrough: true}) res: Response) {
+    const result = await this.authService.setup(dto);
+    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
+
+    res.cookie('auth', result.accessToken, {
+      httpOnly: true,
+      secure: appConfig.environment === 'production',
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    });
+
+    return {
+      message: 'Setup completed successfully',
+    };
   }
 
   @Post('login')

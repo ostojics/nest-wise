@@ -12,6 +12,7 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 import {GlobalConfig} from './config/config.type';
 import {UsersModule} from './users/users.module';
 import {AuthModule} from './auth/auth.module';
+import {HouseholdsModule} from './households/households.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import {AuthModule} from './auth/auth.module';
     }),
     AuthModule,
     UsersModule,
+    HouseholdsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
