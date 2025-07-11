@@ -19,60 +19,49 @@ This document describes the relational database schema for the Personal Finance 
 
 ### **3.1. users Table**
 
-- **Purpose:** Stores individual user authentication and profile information. Each user can potentially belong to one or more households. This table uses traditional email and password authentication for simplified self-hosting.
+- **Purpose:** Stores individual user authentication and profile information. Each user must belong to exactly one household. This table uses traditional email and password authentication for simplified self-hosting.
 - **Columns:**
 
-| Column Name   | Data Type                | Constraints                            | Description                                 |
-| :------------ | :----------------------- | :------------------------------------- | :------------------------------------------ |
-| id            | UUID                     | PRIMARY KEY, DEFAULT gen_random_uuid() | Unique identifier for the user.             |
-| username      | VARCHAR(50)              | UNIQUE, NOT NULL                       | Unique username for login.                  |
-| email         | VARCHAR(255)             | UNIQUE, NOT NULL                       | User's email address.                       |
-| password_hash | VARCHAR(255)             | NOT NULL                               | Hashed password for secure authentication.  |
-| created_at    | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                          | Timestamp when the user record was created. |
-| updated_at    | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                          | Timestamp of the last update to the record. |
+| Column Name   | Data Type                | Constraints                                           | Description                                  |
+| :------------ | :----------------------- | :---------------------------------------------------- | :------------------------------------------- |
+| id            | UUID                     | PRIMARY KEY, DEFAULT gen_random_uuid()                | Unique identifier for the user.              |
+| household_id  | UUID                     | NOT NULL, REFERENCES households(id) ON DELETE CASCADE | Foreign key linking to the households table. |
+| username      | VARCHAR(50)              | UNIQUE, NOT NULL                                      | Unique username for login.                   |
+| email         | VARCHAR(255)             | UNIQUE, NOT NULL                                      | User's email address.                        |
+| password_hash | VARCHAR(255)             | NOT NULL                                              | Hashed password for secure authentication.   |
+| created_at    | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp when the user record was created.  |
+| updated_at    | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp of the last update to the record.  |
 
 ### **3.2. households Table**
 
 - **Purpose:** Represents a shared financial entity or group (e.g., a couple, a family, or a single individual's financial unit). All financial data (accounts, transactions, categories, tags) are associated with a specific household.
 - **Columns:**
 
-| Column Name | Data Type                | Constraints                            | Description                                                              |
-| :---------- | :----------------------- | :------------------------------------- | :----------------------------------------------------------------------- |
-| id          | UUID                     | PRIMARY KEY, DEFAULT gen_random_uuid() | Unique identifier for the household.                                     |
-| name        | VARCHAR(255)             | NOT NULL                               | A user-friendly name for the household (e.g., "John & Jane's Finances"). |
-| created_at  | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                          | Timestamp when the household record was created.                         |
-| updated_at  | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                          | Timestamp of the last update to the record.                              |
+| Column Name   | Data Type                | Constraints                            | Description                                                                           |
+| :------------ | :----------------------- | :------------------------------------- | :------------------------------------------------------------------------------------ |
+| id            | UUID                     | PRIMARY KEY, DEFAULT gen_random_uuid() | Unique identifier for the household.                                                  |
+| name          | VARCHAR(255)             | NOT NULL                               | A user-friendly name for the household (e.g., "John & Jane's Finances").              |
+| currency_code | CHAR(3)                  | NOT NULL, DEFAULT 'USD'                | ISO 4217 currency code (e.g., 'USD', 'EUR', 'RSD') for all accounts in the household. |
+| created_at    | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                          | Timestamp when the household record was created.                                      |
+| updated_at    | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                          | Timestamp of the last update to the record.                                           |
 
-### **3.3. user_households Table (Join Table)**
+### **3.3. accounts Table**
 
-- **Purpose:** Establishes the many-to-many relationship between users and households. A user can belong to multiple households, and a household can have multiple users.
+- **Purpose:** Stores information about financial accounts (e.g., checking, savings, credit cards, cash). Each account belongs to a specific user but is visible and usable by all members of the user's household.
 - **Columns:**
 
-| Column Name                         | Data Type   | Constraints                                           | Description                                                                                             |
-| :---------------------------------- | :---------- | :---------------------------------------------------- | :------------------------------------------------------------------------------------------------------ |
-| user_id                             | UUID        | NOT NULL, REFERENCES users(id) ON DELETE CASCADE      | Foreign key linking to the users table.                                                                 |
-| household_id                        | UUID        | NOT NULL, REFERENCES households(id) ON DELETE CASCADE | Foreign key linking to the households table.                                                            |
-| role                                | VARCHAR(50) | NOT NULL, DEFAULT 'member'                            | Defines the user's role within the household (e.g., 'member'). Currently, all members have full access. |
-| PRIMARY KEY (user_id, household_id) |             |                                                       | Composite primary key to ensure unique user-household pairs.                                            |
+| Column Name     | Data Type                | Constraints                                      | Description                                                                         |
+| :-------------- | :----------------------- | :----------------------------------------------- | :---------------------------------------------------------------------------------- |
+| id              | UUID                     | PRIMARY KEY, DEFAULT gen_random_uuid()           | Unique identifier for the account.                                                  |
+| user_id         | UUID                     | NOT NULL, REFERENCES users(id) ON DELETE CASCADE | Foreign key linking to the users table (account owner).                             |
+| name            | VARCHAR(255)             | NOT NULL                                         | Name of the account (e.g., "Main Checking", "Joint Savings").                       |
+| type            | VARCHAR(50)              | NOT NULL                                         | Type of account (e.g., 'checking', 'savings', 'credit_card', 'investment', 'cash'). |
+| initial_balance | DECIMAL(18, 2\)          | NOT NULL, DEFAULT 0.00                           | The starting balance of the account.                                                |
+| current_balance | DECIMAL(18, 2\)          | NOT NULL, DEFAULT 0.00                           | The current balance of the account. This can be updated on transaction entry.       |
+| created_at      | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                    | Timestamp when the account record was created.                                      |
+| updated_at      | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                    | Timestamp of the last update to the record.                                         |
 
-### **3.4. accounts Table**
-
-- **Purpose:** Stores information about financial accounts (e.g., checking, savings, credit cards, cash). Each account belongs to a specific household.
-- **Columns:**
-
-| Column Name     | Data Type                | Constraints                                           | Description                                                                         |
-| :-------------- | :----------------------- | :---------------------------------------------------- | :---------------------------------------------------------------------------------- |
-| id              | UUID                     | PRIMARY KEY, DEFAULT gen_random_uuid()                | Unique identifier for the account.                                                  |
-| household_id    | UUID                     | NOT NULL, REFERENCES households(id) ON DELETE CASCADE | Foreign key linking to the households table.                                        |
-| name            | VARCHAR(255)             | NOT NULL                                              | Name of the account (e.g., "Main Checking", "Joint Savings").                       |
-| type            | VARCHAR(50)              | NOT NULL                                              | Type of account (e.g., 'checking', 'savings', 'credit_card', 'investment', 'cash'). |
-| initial_balance | DECIMAL(18, 2\)          | NOT NULL, DEFAULT 0.00                                | The starting balance of the account.                                                |
-| current_balance | DECIMAL(18, 2\)          | NOT NULL, DEFAULT 0.00                                | The current balance of the account. This can be updated on transaction entry.       |
-| currency_code   | CHAR(3)                  | NOT NULL, DEFAULT 'USD'                               | ISO 4217 currency code (e.g., 'USD', 'EUR', 'RSD').                                 |
-| created_at      | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp when the account record was created.                                      |
-| updated_at      | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp of the last update to the record.                                         |
-
-### **3.5. categories Table**
+### **3.4. categories Table**
 
 - **Purpose:** Defines spending and income categories. Categories are specific to a household, allowing for customized categorization schemes. Supports hierarchical categories.
 - **Columns:**
@@ -88,7 +77,7 @@ This document describes the relational database schema for the Personal Finance 
 | updated_at                  | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp of the last update to the record.                                                                                             |
 | UNIQUE (household_id, name) |                          |                                                       | Ensures category names are unique within a household.                                                                                   |
 
-### **3.6. transactions Table**
+### **3.5. transactions Table**
 
 - **Purpose:** The core ledger, storing individual financial transactions (income, expenses, transfers). Each transaction belongs to a specific household and account.
 - **Columns:**
@@ -108,7 +97,7 @@ This document describes the relational database schema for the Personal Finance 
 | created_at             | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp when the transaction record was created.                               |
 | updated_at             | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp of the last update to the record.                                      |
 
-### **3.7. tags Table (Optional but Recommended)**
+### **3.6. tags Table (Optional but Recommended)**
 
 - **Purpose:** Stores customizable tags for transactions, providing a flexible way to label transactions beyond categories. Tags are specific to a household.
 - **Columns:**
@@ -122,7 +111,7 @@ This document describes the relational database schema for the Personal Finance 
 | updated_at                  | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp of the last update to the record.                 |
 | UNIQUE (household_id, name) |                          |                                                       | Ensures tag names are unique within a household.            |
 
-### **3.8. transaction_tags Table (Join Table)**
+### **3.7. transaction_tags Table (Join Table)**
 
 - **Purpose:** Establishes the many-to-many relationship between transactions and tags, allowing a single transaction to have multiple tags.
 - **Columns:**
@@ -136,9 +125,8 @@ This document describes the relational database schema for the Personal Finance 
 ## **4\. Relationships Overview**
 
 - **One-to-Many:**
-  - users to user_households (one user can be in many household relationships)
-  - households to user_households (one household can have many user relationships)
-  - households to accounts (one household has many accounts)
+  - households to users (one household can have many users)
+  - users to accounts (one user can own many accounts)
   - households to categories (one household has many categories)
   - households to transactions (one household has many transactions)
   - households to tags (one household has many tags)
@@ -146,7 +134,17 @@ This document describes the relational database schema for the Personal Finance 
   - categories to transactions (one category has many transactions)
   - categories to categories (self-referencing for parent/child categories)
 - **Many-to-Many:**
-  - users and households (via user_households join table)
   - transactions and tags (via transaction_tags join table)
 
 This data model provides a solid, extensible foundation for your personal finance application, supporting both individual and shared financial management needs, with a clear path for email and password authentication.
+
+## **5\. Access Control and Permissions**
+
+The permission model is intentionally simple: all users within a household have full read/write access to all household data. This includes:
+
+- **Full Access:** Users can view, create, edit, and delete all transactions, accounts, categories, and tags within their household
+- **Account Visibility:** While accounts are owned by specific users, all household members can view and use any account for transactions
+- **No Role-Based Permissions:** There are no admin/member distinctions - all household members have equal access
+- **Household Isolation:** Users can only access data from their own household
+
+This design prioritizes simplicity and trust within household relationships over complex permission systems.
