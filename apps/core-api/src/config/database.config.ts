@@ -2,6 +2,7 @@ import {registerAs} from '@nestjs/config';
 import {PostgresConnectionOptions} from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import {User} from '../users/user.entity';
 import {Household} from 'src/households/household.entity';
+import {Account} from 'src/accounts/account.entity';
 
 export const DatabaseConfigName = 'database';
 
@@ -19,7 +20,7 @@ export function getConfig(): DatabaseConfig {
     database: process.env.DB_DATABASE ?? 'mayavault_dev',
     synchronize: isDevelopment,
     ssl: !isDevelopment,
-    entities: [User, Household],
+    entities: [User, Household, Account],
     useUTC: true,
   };
 }

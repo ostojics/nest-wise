@@ -7,15 +7,22 @@ import {
   Index,
   ManyToOne,
   JoinColumn,
-  OneToMany,
 } from 'typeorm';
 import {Household} from 'src/households/household.entity';
-import {Account} from 'src/accounts/account.entity';
+import {User} from 'src/users/user.entity';
 
-@Entity('users')
-export class User {
+@Entity('accounts')
+export class Account {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({
+    type: 'uuid',
+    nullable: false,
+    name: 'owner_id',
+  })
+  @Index()
+  ownerId: string;
 
   @Column({
     type: 'uuid',
@@ -27,29 +34,37 @@ export class User {
 
   @Column({
     type: 'varchar',
+    length: 255,
+    nullable: false,
+  })
+  name: string;
+
+  @Column({
+    type: 'varchar',
     length: 50,
-    unique: true,
     nullable: false,
   })
-  @Index()
-  username: string;
+  type: string;
 
   @Column({
-    type: 'varchar',
-    length: 255,
-    unique: true,
+    type: 'decimal',
+    precision: 18,
+    scale: 2,
     nullable: false,
+    default: 0.0,
+    name: 'initial_balance',
   })
-  @Index()
-  email: string;
+  initialBalance: number;
 
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'decimal',
+    precision: 18,
+    scale: 2,
     nullable: false,
-    name: 'password_hash',
+    default: 0.0,
+    name: 'current_balance',
   })
-  passwordHash: string;
+  currentBalance: number;
 
   @CreateDateColumn({
     type: 'timestamp with time zone',
@@ -63,12 +78,15 @@ export class User {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => Household, (household) => household.users, {
+  @ManyToOne(() => User, (user) => user.accounts, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({name: 'owner_id'})
+  owner: User;
+
+  @ManyToOne(() => Household, (household) => household.accounts, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({name: 'household_id'})
   household: Household;
-
-  @OneToMany(() => Account, (account) => account.owner)
-  accounts: Account[];
 }

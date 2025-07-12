@@ -13,6 +13,7 @@ import {GlobalConfig} from './config/config.type';
 import {UsersModule} from './users/users.module';
 import {AuthModule} from './auth/auth.module';
 import {HouseholdsModule} from './households/households.module';
+import {AccountsModule} from './accounts/accounts.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import {HouseholdsModule} from './households/households.module';
     AuthModule,
     UsersModule,
     HouseholdsModule,
+    AccountsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
