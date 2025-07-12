@@ -18,9 +18,9 @@ import {HouseholdsModule} from 'src/households/households.module';
         return {
           secret: appConfig.jwtSecret,
           signOptions: {expiresIn: '7d'},
-          global: true,
         };
       },
+      global: true,
       imports: [ConfigModule],
       inject: [ConfigService],
     }),
@@ -28,5 +28,6 @@ import {HouseholdsModule} from 'src/households/households.module';
   ],
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}
