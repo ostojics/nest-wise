@@ -1,11 +1,16 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {HouseholdsRepository} from './households.repository';
 import {Household} from './household.entity';
+import {AccountsService} from 'src/accounts/accounts.service';
+import {Account} from 'src/accounts/account.entity';
 import type {CreateHouseholdDTO, UpdateHouseholdDTO} from '@maya-vault/validation';
 
 @Injectable()
 export class HouseholdsService {
-  constructor(private readonly householdsRepository: HouseholdsRepository) {}
+  constructor(
+    private readonly householdsRepository: HouseholdsRepository,
+    private readonly accountsService: AccountsService,
+  ) {}
 
   async createHousehold(householdData: CreateHouseholdDTO): Promise<Household> {
     return await this.householdsRepository.create({
@@ -61,5 +66,14 @@ export class HouseholdsService {
     if (!deleted) {
       throw new NotFoundException('Household not found');
     }
+  }
+
+  async findAccountsByHouseholdId(householdId: string): Promise<Account[]> {
+    const household = await this.householdsRepository.findById(householdId);
+    if (!household) {
+      throw new NotFoundException('Household not found');
+    }
+
+    return await this.accountsService.findAccountsByHouseholdId(householdId);
   }
 }

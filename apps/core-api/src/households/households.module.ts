@@ -4,9 +4,10 @@ import {HouseholdsService} from './households.service';
 import {HouseholdsController} from './households.controller';
 import {HouseholdsRepository} from './households.repository';
 import {Household} from './household.entity';
+import {AccountsModule} from 'src/accounts/accounts.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Household])],
+  imports: [TypeOrmModule.forFeature([Household]), AccountsModule],
   controllers: [HouseholdsController],
   providers: [HouseholdsService, HouseholdsRepository],
   exports: [HouseholdsService, HouseholdsRepository],

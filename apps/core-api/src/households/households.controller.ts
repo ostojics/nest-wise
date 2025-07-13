@@ -1,7 +1,50 @@
-import {Controller} from '@nestjs/common';
+import {Controller, Get, Param, UseGuards} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiParam,
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiNotFoundResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import {HouseholdsService} from './households.service';
+import {AuthGuard} from 'src/common/guards/auth.guard';
+import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
 
-@Controller('households')
+@ApiTags('Households')
+@Controller({
+  version: '1',
+  path: 'households',
+})
 export class HouseholdsController {
   constructor(private readonly householdsService: HouseholdsService) {}
+
+  @ApiOperation({
+    summary: 'Get accounts by household ID',
+    description: 'Retrieves all accounts belonging to a specific household',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+  })
+  @ApiOkResponse({
+    type: [AccountResponseSwaggerDTO],
+    description: 'Accounts found successfully',
+  })
+  @ApiNotFoundResponse({
+    description: 'Household not found',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get(':id/accounts')
+  async getAccountsByHouseholdId(@Param('id') id: string) {
+    return await this.householdsService.findAccountsByHouseholdId(id);
+  }
 }
