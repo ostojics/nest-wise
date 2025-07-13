@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react-swc';
 import eslintPlugin from '@nabla/vite-plugin-eslint';
 import {analyzer} from 'vite-bundle-analyzer';
 import {tanstackRouter} from '@tanstack/router-plugin/vite';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://vite.dev/config/
 export default defineConfig((env) => ({
@@ -15,6 +16,7 @@ export default defineConfig((env) => ({
     react(),
     env.mode !== 'test' && eslintPlugin(),
     analyzer(),
+    tailwindcss(),
   ],
   resolve: {
     alias: {
