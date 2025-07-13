@@ -1,4 +1,14 @@
 import {Body, Controller, Get, HttpCode, HttpStatus, Post, Res, UseGuards, UsePipes} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBody,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiUnauthorizedResponse,
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import {AuthService} from './auth.service';
 import {LoginDTO, loginSchema, SetupDTO, setupSchema} from '@maya-vault/validation';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
@@ -8,7 +18,14 @@ import {ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {AuthGuard, JwtPayload} from 'src/common/guards/auth.guard';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
+import {
+  AuthSuccessResponseSwaggerDTO,
+  LoginSwaggerDTO,
+  SetupSwaggerDTO,
+  UserResponseSwaggerDTO,
+} from 'src/tools/swagger/auth.swagger.dto';
 
+@ApiTags('Authentication')
 @Controller({
   version: '1',
   path: 'auth',
@@ -19,6 +36,39 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
 
+  @ApiOperation({
+    summary: 'Initial system setup',
+    description:
+      'Creates the first user and household for the system. This endpoint should only be called once during initial setup.',
+  })
+  @ApiBody({
+    type: SetupSwaggerDTO,
+    description: 'Setup data including user and household information',
+    examples: {
+      setup: {
+        summary: 'Initial Setup',
+        value: {
+          user: {
+            username: 'admin',
+            email: 'admin@example.com',
+            password: 'SecurePassword123',
+            confirm_password: 'SecurePassword123',
+          },
+          household: {
+            name: 'Admin Household',
+            currencyCode: 'USD',
+          },
+        },
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    type: AuthSuccessResponseSwaggerDTO,
+    description: 'Setup completed successfully. Authentication cookie is set.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data or setup already completed',
+  })
   @Post('setup')
   @UsePipes(new ZodValidationPipe(setupSchema as ZodSchema))
   async setup(@Body() dto: SetupDTO, @Res({passthrough: true}) res: Response) {
@@ -37,6 +87,33 @@ export class AuthController {
     };
   }
 
+  @ApiOperation({
+    summary: 'User login',
+    description: 'Authenticates a user and returns an access token via HTTP-only cookie',
+  })
+  @ApiBody({
+    type: LoginSwaggerDTO,
+    description: 'Login credentials',
+    examples: {
+      login: {
+        summary: 'User Login',
+        value: {
+          email: 'john@example.com',
+          password: 'MySecurePassword123',
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    type: AuthSuccessResponseSwaggerDTO,
+    description: 'Login successful. Authentication cookie is set.',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Invalid credentials',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data',
+  })
   @Post('login')
   @UsePipes(new ZodValidationPipe(loginSchema as ZodSchema))
   @HttpCode(HttpStatus.OK)
@@ -56,6 +133,18 @@ export class AuthController {
     };
   }
 
+  @ApiOperation({
+    summary: 'Get current user',
+    description: 'Returns the current authenticated user information',
+  })
+  @ApiOkResponse({
+    type: UserResponseSwaggerDTO,
+    description: 'User information retrieved successfully',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
   @Get('me')
   @UseGuards(AuthGuard)
   async me(@CurrentUser() user: JwtPayload) {

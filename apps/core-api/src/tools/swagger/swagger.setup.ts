@@ -5,9 +5,9 @@ import {AppConfigName} from 'src/config/app.config';
 import {GlobalConfig} from '../../config/config.type';
 
 const SWAGGER_PATH = 'swagger';
-const APP_NAME = 'Game Stats Core API';
+const APP_NAME = 'Maya Vault Core API';
 const APP_VERSION = '1.0.0';
-const APP_DESCRIPTION = 'Game Stats Core API description';
+const APP_DESCRIPTION = 'Maya Vault Core API description';
 
 function setupSwagger(app: INestApplication): OpenAPIObject {
   const configService = app.get(ConfigService<GlobalConfig>);
