@@ -1,1 +1,2 @@
 turbo/generators/templates/**
+apps/web/src/routeTree.gen.ts
