@@ -3,8 +3,10 @@ import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {useValidateLogin} from '@maya-vault/validation';
+import {LoginDTO, useValidateLogin} from '@maya-vault/validation';
 import FormError from '@/components/form-error';
+import {useLoginMutation} from '../hooks/useLoginMutation';
+import {Loader2} from 'lucide-react';
 
 const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
   const {
@@ -12,6 +14,11 @@ const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
     handleSubmit,
     formState: {errors},
   } = useValidateLogin();
+  const {mutate, isPending} = useLoginMutation();
+
+  const handleLogin = (data: LoginDTO) => {
+    mutate(data);
+  };
 
   return (
     <div className={cn('flex flex-col w-md p-4', className)} {...props}>
@@ -21,15 +28,11 @@ const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
           <CardDescription>Enter your email and password below to login to your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form
-            onSubmit={handleSubmit((data) => {
-              return data;
-            })}
-          >
+          <form onSubmit={handleSubmit(handleLogin)}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
-                <Input {...register('email')} id="email" type="email" placeholder="m@example.com" required />
+                <Input {...register('email', {required: true})} placeholder="m@example.com" />
                 {errors.email && <FormError error={errors.email.message ?? ''} />}
               </div>
               <div className="grid gap-3">
@@ -39,12 +42,12 @@ const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
                     Forgot your password?
                   </a>
                 </div>
-                <Input {...register('password')} id="password" type="password" required />
+                <Input {...register('password', {required: true})} type="password" />
                 {errors.password && <FormError error={errors.password.message ?? ''} />}
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Login
+                <Button type="submit" className="w-full" disabled={isPending}>
+                  {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Login'}
                 </Button>
               </div>
             </div>
