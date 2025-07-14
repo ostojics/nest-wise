@@ -263,6 +263,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      ky:
+        specifier: ^1.8.1
+        version: 1.8.1
       lucide-react:
         specifier: ^0.525.0
         version: 0.525.0(react@19.0.0)
@@ -4924,6 +4927,11 @@ packages:
     resolution:
       {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
+
+  ky@1.8.1:
+    resolution:
+      {integrity: sha512-7Bp3TpsE+L+TARSnnDpk3xg8Idi8RwSLdj6CMbNWoOARIrGrbuLGusV0dYwbZOm4bB3jHNxSw8Wk/ByDqJEnDw==}
+    engines: {node: '>=18'}
 
   language-subtag-registry@0.3.23:
     resolution:
@@ -11572,6 +11580,8 @@ snapshots:
   kind-of@6.0.3: {}
 
   kleur@3.0.3: {}
+
+  ky@1.8.1: {}
 
   language-subtag-registry@0.3.23: {}
 
