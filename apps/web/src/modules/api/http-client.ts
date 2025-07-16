@@ -2,9 +2,10 @@ import ky from 'ky';
 
 const httpClient = ky.create({
   prefixUrl: import.meta.env.VITE_API_URL as string,
+  credentials: 'include',
 });
 
-httpClient.extend({
+const extended = httpClient.extend({
   hooks: {
     afterResponse: [
       (_request, _options, response) => {
@@ -22,4 +23,4 @@ httpClient.extend({
   },
 });
 
-export default httpClient;
+export default extended;

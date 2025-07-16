@@ -14,10 +14,10 @@ const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
     handleSubmit,
     formState: {errors},
   } = useValidateLogin();
-  const {mutate, isPending} = useLoginMutation();
+  const mutation = useLoginMutation();
 
   const handleLogin = (data: LoginDTO) => {
-    mutate(data);
+    mutation.mutate(data);
   };
 
   return (
@@ -28,7 +28,7 @@ const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
           <CardDescription>Enter your email and password below to login to your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(handleLogin)}>
+          <form onSubmit={handleSubmit((data) => handleLogin(data))}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -46,8 +46,8 @@ const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
                 {errors.password && <FormError error={errors.password.message ?? ''} />}
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full" disabled={isPending}>
-                  {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Login'}
+                <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                  {mutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Login'}
                 </Button>
               </div>
             </div>

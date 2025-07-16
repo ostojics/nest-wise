@@ -23,6 +23,10 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
   setupSwagger(app);
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  });
 
   const {port} = configService.getOrThrow<AppConfig>(AppConfigName);
   await app.listen(port);
