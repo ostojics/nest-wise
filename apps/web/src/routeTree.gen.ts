@@ -8,104 +8,137 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import {Route as rootRouteImport} from './routes/__root';
-import {Route as SetupRouteImport} from './routes/setup';
-import {Route as LoginRouteImport} from './routes/login';
-import {Route as AboutRouteImport} from './routes/about';
-import {Route as IndexRouteImport} from './routes/index';
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as SetupRouteImport } from './routes/setup'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as _pathlessLayoutRouteRouteImport } from './routes/__pathlessLayout/route'
+import { Route as _pathlessLayoutDashboardRouteImport } from './routes/__pathlessLayout/dashboard'
+import { Route as _pathlessLayoutAboutRouteImport } from './routes/__pathlessLayout/about'
 
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
-} as any);
-const AboutRoute = AboutRouteImport.update({
+} as any)
+const _pathlessLayoutRouteRoute = _pathlessLayoutRouteRouteImport.update({
+  id: '/__pathlessLayout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const _pathlessLayoutDashboardRoute =
+  _pathlessLayoutDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => _pathlessLayoutRouteRoute,
+  } as any)
+const _pathlessLayoutAboutRoute = _pathlessLayoutAboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any);
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any);
+  getParentRoute: () => _pathlessLayoutRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
-  '/login': typeof LoginRoute;
-  '/setup': typeof SetupRoute;
+  '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
+  '/about': typeof _pathlessLayoutAboutRoute
+  '/dashboard': typeof _pathlessLayoutDashboardRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
-  '/login': typeof LoginRoute;
-  '/setup': typeof SetupRoute;
+  '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
+  '/about': typeof _pathlessLayoutAboutRoute
+  '/dashboard': typeof _pathlessLayoutDashboardRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
-  '/login': typeof LoginRoute;
-  '/setup': typeof SetupRoute;
+  __root__: typeof rootRouteImport
+  '/__pathlessLayout': typeof _pathlessLayoutRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/setup': typeof SetupRoute
+  '/__pathlessLayout/about': typeof _pathlessLayoutAboutRoute
+  '/__pathlessLayout/dashboard': typeof _pathlessLayoutDashboardRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/about' | '/login' | '/setup';
-  fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/about' | '/login' | '/setup';
-  id: '__root__' | '/' | '/about' | '/login' | '/setup';
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/login' | '/setup' | '/about' | '/dashboard'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/login' | '/setup' | '/about' | '/dashboard'
+  id:
+    | '__root__'
+    | '/__pathlessLayout'
+    | '/login'
+    | '/setup'
+    | '/__pathlessLayout/about'
+    | '/__pathlessLayout/dashboard'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  AboutRoute: typeof AboutRoute;
-  LoginRoute: typeof LoginRoute;
-  SetupRoute: typeof SetupRoute;
+  _pathlessLayoutRouteRoute: typeof _pathlessLayoutRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  SetupRoute: typeof SetupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/setup': {
-      id: '/setup';
-      path: '/setup';
-      fullPath: '/setup';
-      preLoaderRoute: typeof SetupRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
-      id: '/login';
-      path: '/login';
-      fullPath: '/login';
-      preLoaderRoute: typeof LoginRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    '/about': {
-      id: '/about';
-      path: '/about';
-      fullPath: '/about';
-      preLoaderRoute: typeof AboutRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    '/': {
-      id: '/';
-      path: '/';
-      fullPath: '/';
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/__pathlessLayout': {
+      id: '/__pathlessLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof _pathlessLayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/__pathlessLayout/dashboard': {
+      id: '/__pathlessLayout/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof _pathlessLayoutDashboardRouteImport
+      parentRoute: typeof _pathlessLayoutRouteRoute
+    }
+    '/__pathlessLayout/about': {
+      id: '/__pathlessLayout/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof _pathlessLayoutAboutRouteImport
+      parentRoute: typeof _pathlessLayoutRouteRoute
+    }
   }
 }
 
+interface _pathlessLayoutRouteRouteChildren {
+  _pathlessLayoutAboutRoute: typeof _pathlessLayoutAboutRoute
+  _pathlessLayoutDashboardRoute: typeof _pathlessLayoutDashboardRoute
+}
+
+const _pathlessLayoutRouteRouteChildren: _pathlessLayoutRouteRouteChildren = {
+  _pathlessLayoutAboutRoute: _pathlessLayoutAboutRoute,
+  _pathlessLayoutDashboardRoute: _pathlessLayoutDashboardRoute,
+}
+
+const _pathlessLayoutRouteRouteWithChildren =
+  _pathlessLayoutRouteRoute._addFileChildren(_pathlessLayoutRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  _pathlessLayoutRouteRoute: _pathlessLayoutRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   SetupRoute: SetupRoute,
-};
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
+}
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
