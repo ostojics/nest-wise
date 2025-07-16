@@ -56,7 +56,7 @@ export const passwordChangeSchema = z
   });
 
 export const loginSchema = z.object({
-  email: z.string().min(1, 'Username is required'),
+  email: z.string().min(1, 'Email is required').email('Invalid email format'),
   password: z.string().min(1, 'Password is required'),
 });
 

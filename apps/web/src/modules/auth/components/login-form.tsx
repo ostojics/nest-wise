@@ -1,24 +1,67 @@
-import {useValidateLogin} from '@maya-vault/validation';
+import {cn} from '@/lib/utils';
+import {Button} from '@/components/ui/button';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {LoginDTO, useValidateLogin} from '@maya-vault/validation';
+import FormError from '@/components/form-error';
+import {useLoginMutation} from '../hooks/useLoginMutation';
+import {Loader2} from 'lucide-react';
 
-const LoginPage = () => {
+const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
   const {
     register,
     handleSubmit,
     formState: {errors},
   } = useValidateLogin();
+  const mutation = useLoginMutation();
+
+  const handleLogin = (data: LoginDTO) => {
+    mutation.mutate(data);
+  };
 
   return (
-    <section>
-      {/* eslint-disable-next-line no-console */}
-      <form onSubmit={handleSubmit(() => console.log('submit'))}>
-        <input {...register('email')} />
-        {errors.email && <p>{errors.email.message}</p>}
-        <input {...register('password')} />
-        {errors.password && <p>{errors.password.message}</p>}
-        <button type="submit">Login</button>
-      </form>
-    </section>
+    <div className={cn('flex flex-col w-md p-4', className)} {...props}>
+      <Card>
+        <CardHeader>
+          <CardTitle>Login to your account</CardTitle>
+          <CardDescription>Enter your email and password below to login to your account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit((data) => handleLogin(data))}>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-3">
+                <Label htmlFor="email">Email</Label>
+                <Input {...register('email', {required: true})} placeholder="m@example.com" />
+                {errors.email && <FormError error={errors.email.message ?? ''} />}
+              </div>
+              <div className="grid gap-3">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Password</Label>
+                  <a href="#" className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
+                    Forgot your password?
+                  </a>
+                </div>
+                <Input {...register('password', {required: true})} type="password" />
+                {errors.password && <FormError error={errors.password.message ?? ''} />}
+              </div>
+              <div className="flex flex-col gap-3">
+                <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                  {mutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Login'}
+                </Button>
+              </div>
+            </div>
+            <div className="mt-4 text-center text-sm">
+              Don&apos;t have an account?{' '}
+              <a href="#" className="underline underline-offset-4">
+                Sign up
+              </a>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
-export default LoginPage;
+export default LoginForm;
