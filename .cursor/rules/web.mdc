@@ -1,0 +1,93 @@
+---
+alwaysApply: true
+---
+
+---
+
+description:
+globs:
+alwaysApply: true
+
+---
+
+---
+
+description: General guidelines on building web products and how to generate code
+globs:
+alwaysApply: true
+
+---
+
+# Expert Guidelines for TypeScript, React, React Native, Expo, and Modern UI Frameworks
+
+## Code Style and Structure
+
+- Write concise, readable, type-safe TypeScript code across all projects.
+- Use functional components and hooks over class components.
+- Ensure components are modular, reusable, and maintainable.
+- Organize files by feature, grouping related components, hooks, styles, and utilities.
+- For web projects, leverage Next.js file-based routing and React Router v7 for client-side routing.
+- Avoid using barrel imports - don't create index.ts file to export all components or functions.
+- You NEVER write comments in the code unless explicitly asked.
+
+## Naming Conventions
+
+- Use camelCase for variable and function names (e.g., `isFetchingData`, `handleUserInput`).
+- Use PascalCase for component names (e.g., `UserProfile`, `ChatScreen`).
+- Directory names should be lowercase and hyphenated (e.g., `user-profile`, `chat-screen`).
+- For Tailwind and Shadcn/ui, follow their respective naming conventions for class names and component props.
+
+## TypeScript Usage
+
+- Use TypeScript for all components, favoring interfaces or types for props and state.
+- Enable strict typing in `tsconfig.json`.
+- Avoid using `any`; strive for precise types.
+- Utilize `React.FC` for defining functional components with props in React and React Native.
+- For Next.js, use TypeScript for API routes, `getStaticProps`, `getServerSideProps`, and dynamic routing.
+
+## Performance Optimization
+
+- Minimize `useEffect`, `useState`, and heavy computations inside render methods.
+- Use `React.memo()` for components with static props to prevent unnecessary re-renders.
+- For React Native, optimize `FlatLists` with props like `removeClippedSubviews`, `maxToRenderPerBatch`, and `windowSize`.
+- Use `getItemLayout` for `FlatLists` when items have a consistent size to improve performance.
+- Avoid anonymous functions in `renderItem` or event handlers to prevent re-renders.
+- For web projects, optimize performance with Next.js features like `next/image`, `next/link`, and dynamic imports.
+- Use Tailwind’s utility-first approach to minimize CSS overhead and improve rendering performance.
+
+## UI and Styling
+
+- Use consistent styling across platforms:
+  - For React Native, use `StyleSheet.create()` or Styled Components.
+  - For web, use Tailwind CSS or Shadcn/ui for reusable, customizable components.
+- Ensure responsive design by considering different screen sizes, orientations, and device types.
+- Optimize image handling:
+  - For React Native, use libraries like `react-native-fast-image`.
+  - For web, use Next.js’s built-in `next/image` component.
+- Leverage Shadcn/ui’s pre-built components for consistent and accessible UIs.
+
+## Best Practices
+
+- Follow React’s threading model to ensure smooth UI performance in React Native.
+- Utilize Expo’s EAS Build and Updates for continuous deployment and Over-The-Air (OTA) updates in mobile apps.
+- Use React Navigation for handling navigation and deep linking in React Native.
+- For web projects, use React Router v7 or Next.js routing for seamless navigation and dynamic routing.
+- Follow accessibility (a11y) best practices for both mobile and web applications.
+- Use environment variables for sensitive data and configuration across all platforms.
+
+## Framework-Specific Guidelines
+
+### React Native & Expo
+
+- Use Expo’s managed workflow for faster development and deployment.
+- Leverage Expo SDK for native features like camera, notifications, and maps.
+
+### Next.js
+
+- Use file-based routing and API routes for server-side functionality.
+- Implement ISR (Incremental Static Regeneration) or SSG (Static Site Generation) for performance optimization.
+
+### Tailwind & Shadcn/ui
+
+- Use Tailwind’s utility classes for rapid UI development.
+- Customize Shadcn/ui components to match your design system while maintaining accessibility and consistency.

@@ -22,11 +22,13 @@ const Step1 = () => {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-md mx-auto p-4">
+    <div className="flex flex-col w-full max-w-lg mx-auto p-4">
       <Card>
         <CardHeader>
-          <CardTitle>Let's get you set up!</CardTitle>
-          <CardDescription>Fill in the details to create your profile</CardDescription>
+          <CardTitle className="text-md">Your Journey to Financial Clarity Starts Here</CardTitle>
+          <CardDescription>
+            Set up your secure access to Maya Finance and unlock intelligent money management
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(handleUserSetup)}>

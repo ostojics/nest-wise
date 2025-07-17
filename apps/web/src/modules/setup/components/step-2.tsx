@@ -4,7 +4,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {Loader2} from 'lucide-react';
+import {Brain, Loader2} from 'lucide-react';
 import {useValidateStep2} from '../hooks/useValidateStep2';
 
 const CURRENCIES = [
@@ -49,11 +49,11 @@ const Step2 = () => {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-md mx-auto p-4">
+    <div className="flex flex-col w-full max-w-lg mx-auto p-4">
       <Card>
         <CardHeader>
-          <CardTitle>Now, let's create your household</CardTitle>
-          <CardDescription>Set up your household details and choose your primary currency</CardDescription>
+          <CardTitle className="text-md">Tailor Maya Finance to Your Life (and Loved Ones!)</CardTitle>
+          <CardDescription>Define your financial home for smart, shared insights powered by AI</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(handleHouseholdSetup)}>
@@ -72,7 +72,7 @@ const Step2 = () => {
               <div className="grid gap-3">
                 <Label htmlFor="currency">Primary Currency</Label>
                 <Select onValueChange={handleCurrencyChange}>
-                  <SelectTrigger id="currency">
+                  <SelectTrigger id="currency" className="w-full">
                     <SelectValue placeholder="Select a currency" />
                   </SelectTrigger>
                   <SelectContent>
@@ -85,7 +85,23 @@ const Step2 = () => {
                 </Select>
                 {errors.currencyCode && <FormError error={errors.currencyCode.message ?? ''} />}
               </div>
-
+              <div className="mt-6 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-full hidden sm:flex items-center justify-center">
+                    <Brain className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold text-white-900 mb-1 flex items-center gap-2">
+                      Intelligent Finance Management
+                    </h4>
+                    <p className="text-xs text-gray-400">
+                      Once set up, our AI assistant will help you effortlessly categorize expenses and provide
+                      personalized insights. Get ready for smarter spending and saving, tailored to your unique
+                      financial flow.
+                    </p>
+                  </div>
+                </div>
+              </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Household'}
