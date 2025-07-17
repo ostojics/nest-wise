@@ -1,4 +1,3 @@
-import React from 'react';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
@@ -27,7 +26,7 @@ const Step1 = () => {
       <Card>
         <CardHeader>
           <CardTitle>Let's get you set up!</CardTitle>
-          <CardDescription>Tell us about yourself to create your profile</CardDescription>
+          <CardDescription>Fill in the details to create your profile</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(handleUserSetup)}>
