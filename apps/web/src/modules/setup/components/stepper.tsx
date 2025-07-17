@@ -18,7 +18,8 @@ const steps = [
 ];
 
 const Stepper = () => {
-  const {currentStep, setCurrentStep} = useSetupContext();
+  const {currentStep, setCurrentStep, userData} = useSetupContext();
+  const hasCompletedStep1 = Boolean(userData);
 
   const handleStepClick = (stepId: number) => {
     setCurrentStep(stepId);
@@ -39,6 +40,7 @@ const Stepper = () => {
                   currentStep > step.id && 'bg-primary text-primary-foreground',
                   currentStep < step.id && 'bg-muted text-muted-foreground hover:bg-muted/80',
                 )}
+                disabled={!hasCompletedStep1 && step.id === 2}
               >
                 {currentStep > step.id ? <CheckIcon className="w-5 h-5" /> : <span>{step.id}</span>}
               </Button>

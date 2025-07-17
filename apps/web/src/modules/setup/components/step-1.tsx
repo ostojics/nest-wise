@@ -9,12 +9,15 @@ import {useSetupContext} from '../hooks/useSetup';
 import {Loader2} from 'lucide-react';
 
 const Step1 = () => {
+  const {setUserData, nextStep, userData} = useSetupContext();
   const {
     register,
     handleSubmit,
     formState: {errors, isSubmitting},
-  } = useValidateStep1();
-  const {setUserData, nextStep} = useSetupContext();
+  } = useValidateStep1({
+    initialUsername: userData?.username,
+    initialEmail: userData?.email,
+  });
 
   const handleUserSetup = (data: UserRegistrationDTO) => {
     setUserData(data);
@@ -27,7 +30,7 @@ const Step1 = () => {
         <CardHeader>
           <CardTitle className="text-md">Your Journey to Financial Clarity Starts Here</CardTitle>
           <CardDescription>
-            Set up your secure access to Maya Finance and unlock intelligent money management
+            Set up your secure access to Maya Vault and unlock intelligent money management
           </CardDescription>
         </CardHeader>
         <CardContent>

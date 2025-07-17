@@ -52,7 +52,7 @@ const Step2 = () => {
     <div className="flex flex-col w-full max-w-lg mx-auto p-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-md">Tailor Maya Finance to Your Life (and Loved Ones!)</CardTitle>
+          <CardTitle className="text-md">Tailor Maya Vault to Your Life (and Loved Ones!)</CardTitle>
           <CardDescription>Define your financial home for smart, shared insights powered by AI</CardDescription>
         </CardHeader>
         <CardContent>

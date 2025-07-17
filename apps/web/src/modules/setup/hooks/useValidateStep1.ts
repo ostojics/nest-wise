@@ -2,12 +2,19 @@ import {UserRegistrationDTO, userRegistrationSchema} from '@maya-vault/validatio
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 
-export const useValidateStep1 = () => {
+interface UseValidateStep1Props {
+  initialUsername?: string;
+  initialEmail?: string;
+}
+
+export const useValidateStep1 = (
+  {initialUsername, initialEmail}: UseValidateStep1Props = {initialUsername: '', initialEmail: ''},
+) => {
   return useForm<UserRegistrationDTO>({
     resolver: zodResolver(userRegistrationSchema),
     defaultValues: {
-      username: '',
-      email: '',
+      username: initialUsername ?? '',
+      email: initialEmail ?? '',
       password: '',
       confirm_password: '',
     },
