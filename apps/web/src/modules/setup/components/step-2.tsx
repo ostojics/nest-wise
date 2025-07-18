@@ -6,30 +6,10 @@ import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {Brain, Loader2} from 'lucide-react';
 import {useValidateStep2} from '../hooks/useValidateStep2';
-
-const CURRENCIES = [
-  {code: 'RSD', name: 'Serbian Dinar (RSD)'},
-  {code: 'USD', name: 'US Dollar ($)'},
-  {code: 'EUR', name: 'Euro (€)'},
-  {code: 'GBP', name: 'British Pound (£)'},
-  {code: 'JPY', name: 'Japanese Yen (¥)'},
-  {code: 'CAD', name: 'Canadian Dollar (C$)'},
-  {code: 'AUD', name: 'Australian Dollar (A$)'},
-  {code: 'CHF', name: 'Swiss Franc (CHF)'},
-  {code: 'CNY', name: 'Chinese Yuan (¥)'},
-  {code: 'INR', name: 'Indian Rupee (₹)'},
-  {code: 'BRL', name: 'Brazilian Real (R$)'},
-  {code: 'RUB', name: 'Russian Ruble (₽)'},
-  {code: 'KRW', name: 'South Korean Won (₩)'},
-  {code: 'MXN', name: 'Mexican Peso (MX$)'},
-  {code: 'SEK', name: 'Swedish Krona (kr)'},
-  {code: 'NOK', name: 'Norwegian Krone (kr)'},
-  {code: 'DKK', name: 'Danish Krone (kr)'},
-  {code: 'NZD', name: 'New Zealand Dollar (NZ$)'},
-  {code: 'SGD', name: 'Singapore Dollar (S$)'},
-  {code: 'HKD', name: 'Hong Kong Dollar (HK$)'},
-  {code: 'ZAR', name: 'South African Rand (R)'},
-];
+import {useSetupContext} from '../hooks/useSetup';
+import {useSetupMutation} from '../hooks/useSetupMutation';
+import {CreateHouseholdDTO, SetupDTO} from '@maya-vault/validation';
+import {CURRENCIES} from '../currencies';
 
 const Step2 = () => {
   const {
@@ -38,10 +18,18 @@ const Step2 = () => {
     setValue,
     formState: {errors, isSubmitting},
   } = useValidateStep2();
-  // const {userData} = useSetupContext();
+  const {userData} = useSetupContext();
+  const mutation = useSetupMutation();
 
-  const handleHouseholdSetup = () => {
-    alert('Form submitted successfully! (No action taken - placeholder functionality)');
+  const handleHouseholdSetup = (data: CreateHouseholdDTO) => {
+    if (!userData) return;
+
+    const dto: SetupDTO = {
+      user: userData,
+      household: data,
+    };
+
+    mutation.mutate(dto);
   };
 
   const handleCurrencyChange = (value: string) => {
@@ -68,7 +56,6 @@ const Step2 = () => {
                 />
                 {errors.name && <FormError error={errors.name.message ?? ''} />}
               </div>
-
               <div className="grid gap-3">
                 <Label htmlFor="currency">Primary Currency</Label>
                 <Select onValueChange={handleCurrencyChange}>
