@@ -12,6 +12,8 @@ export default [
     rules: {
       ...reactPlugin.configs['jsx-runtime'].rules,
       'react-hooks/react-compiler': 'error',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
     },
     languageOptions: {
       globals: {

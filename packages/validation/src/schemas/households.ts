@@ -4,7 +4,7 @@ export const createHouseholdSchema = z.object({
   name: z.string().min(1, 'Household name is required').max(255, 'Household name must be 255 characters or less'),
   currencyCode: z
     .string()
-    .length(3, 'Currency code must be exactly 3 characters')
+    .length(3, 'Valid currency code must be selected')
     .regex(/^[A-Z]{3}$/, 'Currency code must be 3 uppercase letters (e.g., USD, EUR, GBP)'),
 });
 

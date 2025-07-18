@@ -17,7 +17,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.0.1",
+    "@hookform/resolvers": "catalog:",
     "react-hook-form": "catalog:",
     "zod": "catalog:"
   },
