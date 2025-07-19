@@ -2,8 +2,8 @@ import {z} from 'zod';
 
 export const createAccountSchema = z.object({
   name: z.string().min(1, 'Account name is required').max(255, 'Account name must be 255 characters or less'),
-  type: z.enum(['checking', 'savings', 'credit_card', 'investment', 'cash'], {
-    errorMap: () => ({message: 'Account type must be one of: checking, savings, credit_card, investment, cash'}),
+  type: z.enum(['checking', 'savings', 'credit_card', 'investment', 'cash', 'other'], {
+    errorMap: () => ({message: 'Account type must be one of: checking, savings, credit_card, investment, cash, other'}),
   }),
   initialBalance: z.number().min(0, 'Initial balance must be 0 or greater'),
   ownerId: z.string().uuid('Owner ID must be a valid UUID'),

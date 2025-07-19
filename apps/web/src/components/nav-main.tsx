@@ -6,10 +6,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import {useLocation} from '@tanstack/react-router';
+import {useLocation, useNavigate} from '@tanstack/react-router';
 
 export function NavMain() {
   const {pathname} = useLocation();
+  const navigate = useNavigate();
 
   return (
     <SidebarGroup>
@@ -28,7 +29,11 @@ export function NavMain() {
         <SidebarMenu>
           {mainLinks.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} isActive={pathname === `${item.url}/`}>
+              <SidebarMenuButton
+                tooltip={item.title}
+                isActive={pathname === `${item.url}/`}
+                onClick={() => navigate({to: item.url})}
+              >
                 {item.icon}
                 <span>{item.title}</span>
               </SidebarMenuButton>
