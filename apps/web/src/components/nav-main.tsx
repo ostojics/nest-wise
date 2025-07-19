@@ -6,8 +6,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import {useLocation} from '@tanstack/react-router';
 
 export function NavMain() {
+  const {pathname} = useLocation();
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -25,7 +28,7 @@ export function NavMain() {
         <SidebarMenu>
           {mainLinks.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
+              <SidebarMenuButton tooltip={item.title} isActive={pathname === `${item.url}/`}>
                 {item.icon}
                 <span>{item.title}</span>
               </SidebarMenuButton>
