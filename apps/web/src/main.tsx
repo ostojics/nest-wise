@@ -7,7 +7,13 @@ import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 import './index.css';
 import {Toaster} from './components/ui/sonner';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 2, // 2 minutes
+    },
+  },
+});
 
 declare module '@tanstack/react-router' {
   interface Register {

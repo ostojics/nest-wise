@@ -1,1 +1,3 @@
-export const queryKeys = {};
+export const queryKeys = {
+  me: () => ['me'],
+} as const;
