@@ -1,14 +1,10 @@
-import {Button} from '@/components/ui/button';
-import {IconPlus} from '@tabler/icons-react';
+import CreateAccount from './create-account';
 
 const AccountsPage = () => {
   return (
     <section className="p-4">
       <div className="flex items-center justify-between">
-        <Button>
-          <IconPlus />
-          Add Account
-        </Button>
+        <CreateAccount />
       </div>
     </section>
   );
