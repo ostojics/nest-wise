@@ -4,7 +4,7 @@ import {useQuery} from '@tanstack/react-query';
 
 export const useGetHouseholdById = (id: string) => {
   return useQuery({
-    queryKey: queryKeys.household(id),
+    queryKey: queryKeys.households.single(id),
     queryFn: () => getHouseholdById(id),
     enabled: !!id,
   });

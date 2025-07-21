@@ -17,12 +17,16 @@ import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {CreateAccountDTO, useValidateCreateAccount} from '@maya-vault/validation';
 import {Loader2, PlusIcon, Wallet} from 'lucide-react';
+import {useCreateAccountMutation} from '../hooks/useCreateAccountMutation';
 import {useState} from 'react';
 
 const CreateAccount = () => {
   const {data} = useGetMe();
   const {data: household} = useGetHouseholdById(data?.householdId ?? '');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const mutation = useCreateAccountMutation({
+    closeDialog: () => setIsOpen(false),
+  });
 
   const {
     register,
@@ -33,14 +37,8 @@ const CreateAccount = () => {
     formState: {errors},
   } = useValidateCreateAccount({householdId: household?.id ?? '', ownerId: data?.id ?? ''});
 
-  const onSubmit = async (_data: CreateAccountDTO) => {
-    setIsSubmitting(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-    } finally {
-      setIsSubmitting(false);
-    }
+  const onSubmit = (data: CreateAccountDTO) => {
+    mutation.mutate(data);
   };
 
   const handleTypeChange = (value: string) => {
@@ -51,7 +49,7 @@ const CreateAccount = () => {
   const selectedAccountType = accountTypes.find((type) => type.value === selectedType);
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>
           <PlusIcon className="w-4 h-4" />
@@ -140,12 +138,12 @@ const CreateAccount = () => {
 
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
             <DialogClose asChild>
-              <Button type="button" variant="outline" onClick={() => reset()} disabled={isSubmitting}>
+              <Button type="button" variant="outline" onClick={() => reset()} disabled={mutation.isPending}>
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={isSubmitting || !selectedType}>
-              {isSubmitting ? (
+            <Button type="submit" disabled={mutation.isPending || !selectedType}>
+              {mutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Creating Account...
