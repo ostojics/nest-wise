@@ -3,6 +3,6 @@ export interface UserContract {
   username: string;
   email: string;
   householdId: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

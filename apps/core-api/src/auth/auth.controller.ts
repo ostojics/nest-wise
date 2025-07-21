@@ -24,6 +24,7 @@ import {
   SetupSwaggerDTO,
   UserResponseSwaggerDTO,
 } from 'src/tools/swagger/auth.swagger.dto';
+import {UserContract} from '@maya-vault/contracts';
 
 @ApiTags('Authentication')
 @Controller({
@@ -147,7 +148,7 @@ export class AuthController {
   @ApiBearerAuth()
   @Get('me')
   @UseGuards(AuthGuard)
-  async me(@CurrentUser() user: JwtPayload) {
-    return await this.authService.getUserById(user.sub);
+  async me(@CurrentUser() user: JwtPayload): Promise<UserContract> {
+    return (await this.authService.getUserById(user.sub)) as UserContract;
   }
 }
