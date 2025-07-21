@@ -12,7 +12,7 @@ import {HouseholdsService} from './households.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
 import {HouseholdResponseSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
-import {HouseholdContract} from '@maya-vault/contracts';
+import {AccountContract, HouseholdContract} from '@maya-vault/contracts';
 
 @ApiTags('Households')
 @Controller({
@@ -74,7 +74,7 @@ export class HouseholdsController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Get(':id/accounts')
-  async getAccountsByHouseholdId(@Param('id') id: string) {
-    return await this.householdsService.findAccountsByHouseholdId(id);
+  async getAccountsByHouseholdId(@Param('id') id: string): Promise<AccountContract[]> {
+    return (await this.householdsService.findAccountsByHouseholdId(id)) as AccountContract[];
   }
 }
