@@ -1,6 +1,6 @@
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
-import {useValidateCreateAccount, CreateAccountDTO} from '@maya-vault/validation';
+import {accountTypes} from '@/common/constants/account-types';
+import FormError from '@/components/form-error';
+import {Button} from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,27 +9,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import FormError from '@/components/form-error';
-import {Loader2, PlusIcon, Wallet, CreditCard, PiggyBank, TrendingUp, Banknote, Package} from 'lucide-react';
+import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
+import {CreateAccountDTO, useValidateCreateAccount} from '@maya-vault/validation';
+import {Loader2, PlusIcon, Wallet} from 'lucide-react';
 import {useState} from 'react';
 
 interface CreateAccountProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
-
-const accountTypes = [
-  {value: 'checking', label: 'Checking Account', icon: Wallet, description: 'Daily transactions and expenses'},
-  {value: 'savings', label: 'Savings Account', icon: PiggyBank, description: 'Long-term savings and goals'},
-  {value: 'credit_card', label: 'Credit Card', icon: CreditCard, description: 'Credit purchases and balances'},
-  {value: 'investment', label: 'Investment Account', icon: TrendingUp, description: 'Stocks, bonds, and investments'},
-  {value: 'cash', label: 'Cash', icon: Banknote, description: 'Physical cash and petty cash'},
-  {value: 'other', label: 'Other', icon: Package, description: 'Custom account type'},
-];
 
 const CreateAccount = ({open, onOpenChange}: CreateAccountProps) => {
   const {data} = useGetMe();
