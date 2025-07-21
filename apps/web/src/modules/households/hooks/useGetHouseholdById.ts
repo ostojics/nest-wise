@@ -1,0 +1,11 @@
+import {getHouseholdById} from '@/modules/api/households-api';
+import {queryKeys} from '@/modules/api/query-keys';
+import {useQuery} from '@tanstack/react-query';
+
+export const useGetHouseholdById = (id: string) => {
+  return useQuery({
+    queryKey: queryKeys.household(id),
+    queryFn: () => getHouseholdById(id),
+    enabled: !!id,
+  });
+};

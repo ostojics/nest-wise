@@ -1,4 +1,4 @@
-import {IconHelp, IconInnerShadowTop, IconSettings} from '@tabler/icons-react';
+import {IconHelp, IconSettings} from '@tabler/icons-react';
 import * as React from 'react';
 
 import {NavMain} from '@/components/nav-main';
@@ -13,6 +13,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import {HouseIcon} from 'lucide-react';
+import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 
 const data = {
   user: {
@@ -35,6 +38,9 @@ const data = {
 };
 
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
+  const {data: user} = useGetMe();
+  const {data: household} = useGetHouseholdById(user?.householdId ?? '');
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -42,8 +48,8 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
               <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <HouseIcon className="!size-5" />
+                <span className="text-base font-semibold">{household?.name}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -54,7 +60,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );

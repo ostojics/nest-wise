@@ -4,11 +4,16 @@ import {Separator} from '@/components/ui/separator';
 import {SidebarTrigger} from '@/components/ui/sidebar';
 import {IconInvoice} from '@tabler/icons-react';
 import {useLocation} from '@tanstack/react-router';
+import {useMemo} from 'react';
 
 export function SiteHeader() {
   const {pathname} = useLocation();
 
-  const title = mainLinks.find((link) => `${link.url}/` === pathname)?.title;
+  const title = useMemo(() => {
+    return mainLinks.find((link) => {
+      return link.url === pathname;
+    })?.title;
+  }, [pathname]);
 
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">

@@ -11,6 +11,8 @@ import {
 import {HouseholdsService} from './households.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
+import {HouseholdResponseSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
+import {AccountContract, HouseholdContract} from '@maya-vault/contracts';
 
 @ApiTags('Households')
 @Controller({
@@ -19,6 +21,34 @@ import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto'
 })
 export class HouseholdsController {
   constructor(private readonly householdsService: HouseholdsService) {}
+
+  @ApiOperation({
+    summary: 'Get household by ID',
+    description: 'Retrieves a household by its unique identifier',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+  })
+  @ApiOkResponse({
+    type: HouseholdResponseSwaggerDTO,
+    description: 'Household found successfully',
+  })
+  @ApiNotFoundResponse({
+    description: 'Household not found',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get(':id')
+  async getHouseholdById(@Param('id') id: string): Promise<HouseholdContract> {
+    return (await this.householdsService.findHouseholdById(id)) as HouseholdContract;
+  }
 
   @ApiOperation({
     summary: 'Get accounts by household ID',
@@ -44,7 +74,7 @@ export class HouseholdsController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Get(':id/accounts')
-  async getAccountsByHouseholdId(@Param('id') id: string) {
-    return await this.householdsService.findAccountsByHouseholdId(id);
+  async getAccountsByHouseholdId(@Param('id') id: string): Promise<AccountContract[]> {
+    return (await this.householdsService.findAccountsByHouseholdId(id)) as AccountContract[];
   }
 }

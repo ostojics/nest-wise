@@ -14,12 +14,12 @@ export const mainLinks = [
   },
   {
     title: 'Analytics',
-    url: '#',
+    url: '/analytics',
     icon: <IconChartBar />,
   },
   {
     title: 'Members',
-    url: '#',
+    url: '/members',
     icon: <IconUsers />,
   },
 ] as const;
