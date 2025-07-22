@@ -5,22 +5,16 @@ import {Badge} from '@/components/ui/badge';
 import {accountTypes} from '@/common/constants/account-types';
 import {format} from 'date-fns';
 import {cn} from '@/lib/utils';
+import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 
 interface AccountProps {
   account: AccountContract;
 }
 
 const Account: React.FC<AccountProps> = ({account}) => {
+  const {formatBalance} = useFormatBalance();
   const accountType = accountTypes.find((type) => type.value === account.type);
   const IconComponent = accountType?.icon;
-
-  const formatBalance = (balance: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-    }).format(balance);
-  };
 
   const formatDate = (date: Date) => {
     return format(new Date(date), 'MMM dd, yyyy');
