@@ -63,19 +63,17 @@ This document describes the relational database schema for the Personal Finance 
 
 ### **3.4. categories Table**
 
-- **Purpose:** Defines spending and income categories. Categories are specific to a household, allowing for customized categorization schemes. Supports hierarchical categories.
+- **Purpose:** Defines transaction categories. Categories are specific to a household, allowing for customized categorization schemes.
 - **Columns:**
 
-| Column Name                 | Data Type                | Constraints                                           | Description                                                                                                                             |
-| :-------------------------- | :----------------------- | :---------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
-| id                          | UUID                     | PRIMARY KEY, DEFAULT gen_random_uuid()                | Unique identifier for the category.                                                                                                     |
-| household_id                | UUID                     | NOT NULL, REFERENCES households(id) ON DELETE CASCADE | Foreign key linking to the households table.                                                                                            |
-| name                        | VARCHAR(100)             | NOT NULL                                              | Name of the category (e.g., 'Groceries', 'Salary').                                                                                     |
-| type                        | VARCHAR(20)              | NOT NULL                                              | Type of category ('income' or 'expense').                                                                                               |
-| parent_id                   | UUID                     | REFERENCES categories(id)                             | Self-referencing foreign key for hierarchical categories (e.g., 'Food' is parent of 'Groceries'). Can be NULL for top-level categories. |
-| created_at                  | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp when the category record was created.                                                                                         |
-| updated_at                  | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp of the last update to the record.                                                                                             |
-| UNIQUE (household_id, name) |                          |                                                       | Ensures category names are unique within a household.                                                                                   |
+| Column Name                 | Data Type                | Constraints                                           | Description                                            |
+| :-------------------------- | :----------------------- | :---------------------------------------------------- | :----------------------------------------------------- |
+| id                          | UUID                     | PRIMARY KEY, DEFAULT gen_random_uuid()                | Unique identifier for the category.                    |
+| household_id                | UUID                     | NOT NULL, REFERENCES households(id) ON DELETE CASCADE | Foreign key linking to the households table.           |
+| name                        | VARCHAR(100)             | NOT NULL                                              | Name of the category (e.g., 'Groceries', 'Utilities'). |
+| created_at                  | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp when the category record was created.        |
+| updated_at                  | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp of the last update to the record.            |
+| UNIQUE (household_id, name) |                          |                                                       | Ensures category names are unique within a household.  |
 
 ### **3.5. transactions Table**
 
@@ -132,7 +130,6 @@ This document describes the relational database schema for the Personal Finance 
   - households to tags (one household has many tags)
   - accounts to transactions (one account has many transactions)
   - categories to transactions (one category has many transactions)
-  - categories to categories (self-referencing for parent/child categories)
 - **Many-to-Many:**
   - transactions and tags (via transaction_tags join table)
 
