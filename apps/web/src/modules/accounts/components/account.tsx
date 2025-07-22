@@ -29,7 +29,7 @@ const Account: React.FC<AccountProps> = ({account}) => {
   return (
     <Card className="@container/card hover:shadow-md transition-shadow duration-200">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-start gap-3 md:gap-0 md:flex-row md:items-center justify-between">
           <div className="flex items-center gap-3">
             {IconComponent && (
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/50">
@@ -37,7 +37,7 @@ const Account: React.FC<AccountProps> = ({account}) => {
               </div>
             )}
             <div>
-              <CardTitle className="text-lg font-semibold">{account.name}</CardTitle>
+              <CardTitle className="text-md font-semibold">{account.name}</CardTitle>
               <CardDescription className="text-sm text-muted-foreground">
                 {accountType?.label ?? account.type}
               </CardDescription>

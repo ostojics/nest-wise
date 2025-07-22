@@ -7,7 +7,9 @@ const AccountsPage = () => {
       <div className="flex items-center justify-between">
         <CreateAccount />
       </div>
-      <AccountsList />
+      <div className="@container/list">
+        <AccountsList />
+      </div>
     </section>
   );
 };

@@ -48,7 +48,7 @@ const AccountsList = () => {
   }
 
   return (
-    <div className="mt-6 grid grid-cols-2 gap-4 @5xl/main:grid-cols-3">
+    <div className="mt-6 grid grid-cols-1 @[871px]/list:grid-cols-2 gap-4">
       {accounts.map((account) => (
         <Account key={account.id} account={account} />
       ))}
