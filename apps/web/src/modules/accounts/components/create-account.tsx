@@ -3,6 +3,7 @@ import FormError from '@/components/form-error';
 import {Button} from '@/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -16,18 +17,16 @@ import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {CreateAccountDTO, useValidateCreateAccount} from '@maya-vault/validation';
 import {Loader2, PlusIcon, Wallet} from 'lucide-react';
+import {useCreateAccountMutation} from '../hooks/useCreateAccountMutation';
 import {useState} from 'react';
 
-interface CreateAccountProps {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-}
-
-const CreateAccount = ({open, onOpenChange}: CreateAccountProps) => {
+const CreateAccount = () => {
   const {data} = useGetMe();
   const {data: household} = useGetHouseholdById(data?.householdId ?? '');
   const [isOpen, setIsOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const mutation = useCreateAccountMutation({
+    closeDialog: () => setIsOpen(false),
+  });
 
   const {
     register,
@@ -38,42 +37,19 @@ const CreateAccount = ({open, onOpenChange}: CreateAccountProps) => {
     formState: {errors},
   } = useValidateCreateAccount({householdId: household?.id ?? '', ownerId: data?.id ?? ''});
 
-  const selectedType = watch('type');
-
-  const handleOpenChange = (newOpen: boolean) => {
-    if (onOpenChange) {
-      onOpenChange(newOpen);
-    } else {
-      setIsOpen(newOpen);
-    }
-
-    if (!newOpen) {
-      reset();
-      setIsSubmitting(false);
-    }
-  };
-
-  const onSubmit = async (_data: CreateAccountDTO) => {
-    setIsSubmitting(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      handleOpenChange(false);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const onSubmit = (data: CreateAccountDTO) => {
+    mutation.mutate(data);
   };
 
   const handleTypeChange = (value: string) => {
     setValue('type', value as CreateAccountDTO['type']);
   };
 
+  const selectedType = watch('type');
   const selectedAccountType = accountTypes.find((type) => type.value === selectedType);
-  const isDialogOpen = open ?? isOpen;
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>
           <PlusIcon className="w-4 h-4" />
@@ -161,11 +137,13 @@ const CreateAccount = ({open, onOpenChange}: CreateAccountProps) => {
           </div>
 
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={() => handleOpenChange(false)} disabled={isSubmitting}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting || !selectedType}>
-              {isSubmitting ? (
+            <DialogClose asChild>
+              <Button type="button" variant="outline" onClick={() => reset()} disabled={mutation.isPending}>
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit" disabled={mutation.isPending || !selectedType}>
+              {mutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Creating Account...

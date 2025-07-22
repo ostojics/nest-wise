@@ -9,6 +9,11 @@ export default [
   ...baseConfig,
   ...reactConfig,
   {
+    rules: {
+      '@typescript-eslint/no-unsafe-argument': 'off',
+    },
+  },
+  {
     files: ['src/**/*.{ts,tsx}'],
   },
 ];

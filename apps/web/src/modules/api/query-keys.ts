@@ -1,4 +1,9 @@
 export const queryKeys = {
   me: () => ['me'],
-  household: (id: string) => ['household', id],
+  households: {
+    single: (id: string) => ['households', id],
+  },
+  accounts: {
+    all: () => ['accounts'],
+  },
 } as const;
