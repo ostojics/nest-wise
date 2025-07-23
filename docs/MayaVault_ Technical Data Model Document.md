@@ -136,7 +136,7 @@ This document describes the relational database schema for the Personal Finance 
 
 | amount | DECIMAL(18, 2\) | NOT NULL | The monetary amount of the transaction, input by the user |
 
-| type | VARCHAR(20) | NOT NULL | Type of transaction ('income', 'expense', 'transfer').
+| type | VARCHAR(20) | NOT NULL | Type of transaction ('income', 'expense').
 
 | description | TEXT | | Raw, user-inputted description (e.g., "Coffee from Starbucks"). |
 
