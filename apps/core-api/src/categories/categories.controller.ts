@@ -1,27 +1,27 @@
-import {Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
+import {CreateCategoryDTO, UpdateCategoryDTO, createCategorySchema, updateCategorySchema} from '@maya-vault/validation';
+import {Body, Controller, Delete, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
 import {
-  ApiTags,
-  ApiOperation,
-  ApiBody,
-  ApiParam,
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiNotFoundResponse,
-  ApiUnauthorizedResponse,
   ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
   ApiConflictResponse,
+  ApiCreatedResponse,
   ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import {CategoriesService} from './categories.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
-import {CreateCategoryDTO, UpdateCategoryDTO, createCategorySchema, updateCategorySchema} from '@maya-vault/validation';
 import {
+  CategoryResponseSwaggerDTO,
   CreateCategorySwaggerDTO,
   UpdateCategorySwaggerDTO,
-  CategoryResponseSwaggerDTO,
 } from 'src/tools/swagger/categories.swagger.dto';
+import {CategoriesService} from './categories.service';
 
 @ApiTags('Categories')
 @Controller({
@@ -74,31 +74,6 @@ export class CategoriesController {
   @Post('')
   async createCategory(@Body() dto: CreateCategoryDTO) {
     return await this.categoriesService.createCategory(dto);
-  }
-
-  @ApiOperation({
-    summary: 'Get categories by household ID',
-    description: 'Retrieves all categories for a specific household',
-  })
-  @ApiParam({
-    name: 'householdId',
-    type: 'string',
-    format: 'uuid',
-    description: 'The unique identifier of the household',
-    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  })
-  @ApiOkResponse({
-    type: [CategoryResponseSwaggerDTO],
-    description: 'Categories retrieved successfully',
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Authentication required',
-  })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @Get('household/:householdId')
-  async getCategoriesByHouseholdId(@Param('householdId') householdId: string) {
-    return await this.categoriesService.findCategoriesByHouseholdId(householdId);
   }
 
   @ApiOperation({

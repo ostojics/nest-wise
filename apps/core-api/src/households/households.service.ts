@@ -4,12 +4,15 @@ import {Household} from './household.entity';
 import {AccountsService} from 'src/accounts/accounts.service';
 import {Account} from 'src/accounts/account.entity';
 import type {CreateHouseholdDTO, UpdateHouseholdDTO} from '@maya-vault/validation';
+import {CategoriesService} from 'src/categories/categories.service';
+import {Category} from 'src/categories/categories.entity';
 
 @Injectable()
 export class HouseholdsService {
   constructor(
     private readonly householdsRepository: HouseholdsRepository,
     private readonly accountsService: AccountsService,
+    private readonly categoriesService: CategoriesService,
   ) {}
 
   async createHousehold(householdData: CreateHouseholdDTO): Promise<Household> {
@@ -75,5 +78,14 @@ export class HouseholdsService {
     }
 
     return await this.accountsService.findAccountsByHouseholdId(householdId);
+  }
+
+  async findCategoriesByHouseholdId(householdId: string): Promise<Category[]> {
+    const household = await this.householdsRepository.findById(householdId);
+    if (!household) {
+      throw new NotFoundException('Household not found');
+    }
+
+    return await this.categoriesService.findCategoriesByHouseholdId(householdId);
   }
 }
