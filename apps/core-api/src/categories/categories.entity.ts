@@ -7,8 +7,10 @@ import {
   Index,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import {Household} from 'src/households/household.entity';
+import {Transaction} from 'src/transactions/transaction.entity';
 
 @Entity('categories')
 @Index(['householdId', 'name'], {unique: true})
@@ -48,4 +50,7 @@ export class Category {
   })
   @JoinColumn({name: 'household_id'})
   household: Household;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.category)
+  transactions: Transaction[];
 }

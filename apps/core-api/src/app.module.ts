@@ -15,6 +15,7 @@ import {AuthModule} from './auth/auth.module';
 import {HouseholdsModule} from './households/households.module';
 import {AccountsModule} from './accounts/accounts.module';
 import {CategoriesModule} from './categories/categories.module';
+import {TransactionsModule} from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import {CategoriesModule} from './categories/categories.module';
     HouseholdsModule,
     AccountsModule,
     CategoriesModule,
+    TransactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
