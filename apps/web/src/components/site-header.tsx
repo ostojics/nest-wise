@@ -2,12 +2,14 @@ import {mainLinks} from '@/common/constants/main-links';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
 import {SidebarTrigger} from '@/components/ui/sidebar';
+import {CreateTransactionDialog} from '@/modules/transactions/components/create-transaction-dialog';
 import {IconInvoice} from '@tabler/icons-react';
 import {useLocation} from '@tanstack/react-router';
-import {useMemo} from 'react';
+import {useMemo, useState} from 'react';
 
 export function SiteHeader() {
   const {pathname} = useLocation();
+  const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
 
   const title = useMemo(() => {
     return mainLinks.find((link) => {
@@ -25,12 +27,15 @@ export function SiteHeader() {
           <Button
             size="sm"
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg border-0 font-medium px-4 py-2"
+            onClick={() => setIsTransactionDialogOpen(true)}
           >
             <IconInvoice className="w-4 h-4" />
             <span>Log transaction</span>
           </Button>
         </div>
       </div>
+
+      <CreateTransactionDialog open={isTransactionDialogOpen} onOpenChange={setIsTransactionDialogOpen} />
     </header>
   );
 }

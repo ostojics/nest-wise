@@ -22,6 +22,7 @@ import {
   UpdateCategorySwaggerDTO,
 } from 'src/tools/swagger/categories.swagger.dto';
 import {CategoriesService} from './categories.service';
+import {CategoryContract} from '@maya-vault/contracts';
 
 @ApiTags('Categories')
 @Controller({
@@ -73,7 +74,7 @@ export class CategoriesController {
   @UsePipes(new ZodValidationPipe(createCategorySchema))
   @Post('')
   async createCategory(@Body() dto: CreateCategoryDTO) {
-    return await this.categoriesService.createCategory(dto);
+    return (await this.categoriesService.createCategory(dto)) as CategoryContract;
   }
 
   @ApiOperation({

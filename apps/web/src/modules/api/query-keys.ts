@@ -6,4 +6,7 @@ export const queryKeys = {
   accounts: {
     all: () => ['accounts'],
   },
-} as const;
+  categories: {
+    all: () => ['categories'],
+  },
+};
