@@ -8,7 +8,7 @@ export const createTransactionSchema = z.object({
   categoryId: z.string().uuid('Category ID must be a valid UUID'),
   amount: z.coerce.number().min(0.01, 'Amount must be greater than 0'),
   type: TransactionTypeEnum,
-  description: z.string().max(1000, 'Description must be 1000 characters or less'),
+  description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
   isReconciled: z.boolean().default(true),
 });
 
