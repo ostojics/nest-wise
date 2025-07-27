@@ -30,7 +30,7 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
           <DialogTitle>Log Transaction</DialogTitle>
           {!isManualMode && (
             <p className="text-sm text-muted-foreground">
-              Just describe what you spent money on and the amount - AI will handle the rest! ✨
+              Just describe what you spent money on - AI will handle the rest!
             </p>
           )}
         </DialogHeader>
@@ -42,7 +42,7 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
             onCheckedChange={(checked) => setIsManualMode(checked === true)}
           />
           <Label htmlFor="manual-mode" className="text-sm text-muted-foreground">
-            Manual input (advanced)
+            Manual input
           </Label>
         </div>
 
