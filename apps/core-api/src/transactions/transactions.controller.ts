@@ -18,6 +18,7 @@ import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {
   CreateTransactionDTO,
   UpdateTransactionDTO,
+  createTransactionAiSchema,
   createTransactionSchema,
   updateTransactionSchema,
 } from '@maya-vault/validation';
@@ -89,6 +90,11 @@ export class TransactionsController {
   async createTransaction(@Body() dto: CreateTransactionDTO) {
     return await this.transactionsService.createTransaction(dto);
   }
+
+  @UseGuards(AuthGuard)
+  @UsePipes(new ZodValidationPipe(createTransactionAiSchema))
+  @Post('/ai')
+  async createTransactionAi(@Body() dto: CreateTransactionAiDTO) {}
 
   @ApiOperation({
     summary: 'Get transactions by account ID',

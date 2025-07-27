@@ -1,4 +1,4 @@
-import {CreateTransactionDTO, CreateAiTransactionDTO} from '@maya-vault/validation';
+import {CreateTransactionDTO, CreateTransactionAiDTO} from '@maya-vault/validation';
 import httpClient from './http-client';
 
 export const createTransaction = async (transaction: CreateTransactionDTO) => {
@@ -9,7 +9,7 @@ export const createTransaction = async (transaction: CreateTransactionDTO) => {
     .json();
 };
 
-export const createAiTransaction = async (transaction: CreateAiTransactionDTO) => {
+export const createAiTransaction = async (transaction: CreateTransactionAiDTO) => {
   return await httpClient
     .post('v1/transactions/ai', {
       json: transaction,

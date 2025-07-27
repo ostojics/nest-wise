@@ -12,7 +12,7 @@ export const createTransactionSchema = z.object({
   isReconciled: z.boolean().default(true),
 });
 
-export const createAiTransactionSchema = z.object({
+export const createTransactionAiSchema = z.object({
   householdId: z.string().uuid('Household ID must be valid'),
   accountId: z.string().uuid('Account ID must be valid'),
   description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
@@ -40,6 +40,6 @@ export const transactionResponseSchema = z.object({
 });
 
 export type CreateTransactionDTO = z.infer<typeof createTransactionSchema>;
-export type CreateAiTransactionDTO = z.infer<typeof createAiTransactionSchema>;
+export type CreateTransactionAiDTO = z.infer<typeof createTransactionAiSchema>;
 export type UpdateTransactionDTO = z.infer<typeof updateTransactionSchema>;
 export type TransactionResponseDTO = z.infer<typeof transactionResponseSchema>;

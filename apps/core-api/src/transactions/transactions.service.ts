@@ -2,15 +2,21 @@ import {Injectable, NotFoundException, BadRequestException} from '@nestjs/common
 import {TransactionsRepository} from './transactions.repository';
 import {AccountsService} from '../accounts/accounts.service';
 import {Transaction} from './transaction.entity';
-import {CreateTransactionDTO, UpdateTransactionDTO} from '@maya-vault/validation';
+import {CreateTransactionAiDTO, CreateTransactionDTO, UpdateTransactionDTO} from '@maya-vault/validation';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 import {DataSource} from 'typeorm';
+import {HouseholdsService} from 'src/households/households.service';
+import {generateText} from 'ai';
+import {openai} from '@ai-sdk/openai';
+import {CategoriesService} from 'src/categories/categories.service';
 
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly transactionsRepository: TransactionsRepository,
     private readonly accountsService: AccountsService,
+    private readonly householdsService: HouseholdsService,
+    private readonly categoriesService: CategoriesService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -22,6 +28,35 @@ export class TransactionsService {
         throw new BadRequestException('Insufficient funds for this expense');
       }
 
+      const transaction = await this.transactionsRepository.create(transactionData);
+
+      await this.updateBalance(
+        transactionData.accountId,
+        transactionData.amount,
+        transactionData.type as TransactionType,
+      );
+
+      return transaction;
+    });
+  }
+
+  async createTransactionAi(transactionData: CreateTransactionAiDTO): Promise<Transaction> {
+    const account = await this.accountsService.findAccountById(transactionData.accountId);
+    const household = await this.householdsService.findHouseholdById(account.householdId);
+
+    const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
+
+    const {data} = await generateText({
+      model: openai('gpt-4.1-nano-2025-04-14'),
+      prompt: 'text',
+      temperature: 0.1,
+    });
+
+    if (account.currentBalance < transactionData.amount) {
+      throw new BadRequestException('Insufficient funds for this expense');
+    }
+
+    return await this.dataSource.transaction(async () => {
       const transaction = await this.transactionsRepository.create(transactionData);
 
       await this.updateBalance(
