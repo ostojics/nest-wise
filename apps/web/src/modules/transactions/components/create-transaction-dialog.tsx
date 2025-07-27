@@ -29,9 +29,7 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
         <DialogHeader>
           <DialogTitle>Log Transaction</DialogTitle>
           {!isManualMode && (
-            <p className="text-sm text-muted-foreground">
-              Just describe what you spent money on - AI will handle the rest!
-            </p>
+            <p className="text-sm text-muted-foreground">Just describe the transaction - AI will handle the rest!</p>
           )}
         </DialogHeader>
 

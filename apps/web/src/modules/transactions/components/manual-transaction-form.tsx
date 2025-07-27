@@ -214,7 +214,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
           disabled={isSubmitting || createTransactionMutation.isPending}
           className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
         >
-          {isSubmitting || createTransactionMutation.isPending ? 'Creating...' : 'Create Transaction'}
+          {isSubmitting || createTransactionMutation.isPending ? 'Creating...' : 'Log Transaction'}
         </Button>
       </div>
     </form>

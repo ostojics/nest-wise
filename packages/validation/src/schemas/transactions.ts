@@ -3,17 +3,23 @@ import {z} from 'zod';
 export const TransactionTypeEnum = z.enum(['income', 'expense']);
 
 export const createTransactionSchema = z.object({
-  householdId: z.string().uuid('Household ID must be a valid UUID'),
-  accountId: z.string().uuid('Account ID must be a valid UUID'),
-  categoryId: z.string().uuid('Category ID must be a valid UUID'),
+  householdId: z.string().uuid('Household ID must be valid'),
+  accountId: z.string().uuid('Account ID must be valid'),
+  categoryId: z.string().uuid('Category ID must be valid'),
   amount: z.coerce.number().min(0.01, 'Amount must be greater than 0'),
   type: TransactionTypeEnum,
   description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
   isReconciled: z.boolean().default(true),
 });
 
+export const createAiTransactionSchema = z.object({
+  householdId: z.string().uuid('Household ID must be valid'),
+  accountId: z.string().uuid('Account ID must be valid'),
+  description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
+});
+
 export const updateTransactionSchema = z.object({
-  categoryId: z.string().uuid('Category ID must be a valid UUID').nullable().optional(),
+  categoryId: z.string().uuid('Category ID must be valid').nullable().optional(),
   amount: z.coerce.number().min(0.01, 'Amount must be greater than 0').optional(),
   type: TransactionTypeEnum.optional(),
   description: z.string().max(1000, 'Description must be 1000 characters or less').nullable().optional(),
@@ -34,5 +40,6 @@ export const transactionResponseSchema = z.object({
 });
 
 export type CreateTransactionDTO = z.infer<typeof createTransactionSchema>;
+export type CreateAiTransactionDTO = z.infer<typeof createAiTransactionSchema>;
 export type UpdateTransactionDTO = z.infer<typeof updateTransactionSchema>;
 export type TransactionResponseDTO = z.infer<typeof transactionResponseSchema>;

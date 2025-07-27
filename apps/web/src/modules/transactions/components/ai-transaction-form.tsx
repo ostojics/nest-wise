@@ -6,8 +6,8 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/c
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
-import {useCreateTransaction} from '@/modules/transactions/hooks/useCreateTransaction';
-import {useValidateCreateTransaction} from '@maya-vault/validation';
+import {useCreateTransactionAI} from '@/modules/transactions/hooks/useCreateTransactionAI';
+import {useValidateCreateAiTransaction, CreateAiTransactionDTO} from '@maya-vault/validation';
 import AiBanner from './ai-banner';
 
 interface AiTransactionFormProps {
@@ -20,7 +20,7 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
   const {data: household} = useGetHouseholdById(me?.householdId ?? '');
   const {data: accounts} = useGetHouseholdAccounts(household?.id ?? '');
 
-  const createTransactionMutation = useCreateTransaction();
+  const createAiTransactionMutation = useCreateTransactionAI();
 
   const {
     register,
@@ -29,12 +29,12 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
     watch,
     reset,
     formState: {errors, isSubmitting},
-  } = useValidateCreateTransaction({
+  } = useValidateCreateAiTransaction({
     householdId: household?.id ?? '',
   });
 
-  const onSubmit = async (data: Parameters<typeof createTransactionMutation.mutateAsync>[0]) => {
-    await createTransactionMutation.mutateAsync(data);
+  const onSubmit = async (data: CreateAiTransactionDTO) => {
+    await createAiTransactionMutation.mutateAsync(data);
     reset();
     onSuccess();
   };
@@ -72,21 +72,10 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
 
         <div className="space-y-2">
           <Label htmlFor="description">
-            What did you spend on? <span className="text-red-500">*</span>
+            Description <span className="text-red-500">*</span>
           </Label>
-          <Input
-            placeholder="e.g., Coffee at Starbucks, Grocery shopping, Gas for car..."
-            {...register('description')}
-          />
+          <Input placeholder="e.g. Grocery shopping - 100, Salary - 2000..." {...register('description')} />
           {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="amount">
-            Amount <span className="text-red-500">*</span>
-          </Label>
-          <Input type="number" step="0.01" min="0.01" placeholder="0.00" {...register('amount')} />
-          {errors.amount && <p className="text-sm text-red-500">{errors.amount.message}</p>}
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
@@ -95,10 +84,10 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
           </Button>
           <Button
             type="submit"
-            disabled={isSubmitting || createTransactionMutation.isPending}
+            disabled={isSubmitting || createAiTransactionMutation.isPending}
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
           >
-            {isSubmitting || createTransactionMutation.isPending ? 'Processing...' : 'Log Transaction'}
+            {isSubmitting || createAiTransactionMutation.isPending ? 'Processing...' : 'Log Transaction'}
           </Button>
         </div>
       </form>
