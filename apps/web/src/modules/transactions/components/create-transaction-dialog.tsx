@@ -1,5 +1,5 @@
 import {Checkbox} from '@/components/ui/checkbox';
-import {Dialog, DialogContent, DialogHeader, DialogTitle} from '@/components/ui/dialog';
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from '@/components/ui/dialog';
 import {Label} from '@/components/ui/label';
 import {AiTransactionForm} from './ai-transaction-form';
 import {ManualTransactionForm} from './manual-transaction-form';
@@ -32,7 +32,7 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
             <p className="text-sm text-muted-foreground">Just describe the transaction - AI will handle the rest!</p>
           )}
         </DialogHeader>
-
+        <DialogDescription className="hidden">Create transaction</DialogDescription>
         <div className="flex items-center space-x-2 pb-4">
           <Checkbox
             id="manual-mode"
@@ -43,7 +43,6 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
             Manual input
           </Label>
         </div>
-
         {isManualMode ? (
           <ManualTransactionForm onSuccess={handleSuccess} onCancel={handleCancel} />
         ) : (

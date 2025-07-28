@@ -7,7 +7,7 @@ import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdA
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useCreateTransactionAI} from '@/modules/transactions/hooks/useCreateTransactionAI';
-import {useValidateCreateAiTransaction, CreateAiTransactionDTO} from '@maya-vault/validation';
+import {useValidateCreateAiTransaction, CreateTransactionAiDTO} from '@maya-vault/validation';
 import AiBanner from './ai-banner';
 
 interface AiTransactionFormProps {
@@ -28,15 +28,15 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
     setValue,
     watch,
     reset,
-    formState: {errors, isSubmitting},
+    formState: {errors},
   } = useValidateCreateAiTransaction({
     householdId: household?.id ?? '',
   });
 
-  const onSubmit = async (data: CreateAiTransactionDTO) => {
+  const onSubmit = async (data: CreateTransactionAiDTO) => {
     await createAiTransactionMutation.mutateAsync(data);
-    reset();
     onSuccess();
+    reset();
   };
 
   const getAccountDisplayName = (accountId: string) => {
@@ -84,10 +84,10 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
           </Button>
           <Button
             type="submit"
-            disabled={isSubmitting || createAiTransactionMutation.isPending}
+            disabled={createAiTransactionMutation.isPending}
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
           >
-            {isSubmitting || createAiTransactionMutation.isPending ? 'Processing...' : 'Log Transaction'}
+            {createAiTransactionMutation.isPending ? 'Processing...' : 'Log Transaction'}
           </Button>
         </div>
       </form>

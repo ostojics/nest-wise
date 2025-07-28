@@ -64,8 +64,12 @@ Respond with a **valid JSON object** matching this structure:
 | "Paid $50 at Walmart" | expense | 50 | Use existing grocery category or suggest "Groceries" |
 | "Salary deposit $3000" | income | 3000 | Use existing salary category or suggest "Salary" |
 | "Coffee at Starbucks $5.50" | expense | 5.5 | Use existing food category or suggest "Coffee & Beverages" |
-
+| "Shopping - 4000" | expense | 4000 | Use existing shopping category or suggest "Shopping" |
+| "Salary - 20000" | income | 20000 | Use existing salary category or suggest "Salary" |
 ---
 
-**Analyze the transaction description and provide the JSON response:**`;
+**Analyze the transaction description and provide the JSON response:**
+
+If there are no existing categories present, suggest a new one.
+`;
 };
