@@ -1,14 +1,16 @@
-import {Injectable, NotFoundException, BadRequestException} from '@nestjs/common';
-import {TransactionsRepository} from './transactions.repository';
-import {AccountsService} from '../accounts/accounts.service';
-import {Transaction} from './transaction.entity';
-import {CreateTransactionAiDTO, CreateTransactionDTO, UpdateTransactionDTO} from '@maya-vault/validation';
-import {TransactionType} from '../common/enums/transaction.type.enum';
-import {DataSource} from 'typeorm';
-import {HouseholdsService} from 'src/households/households.service';
-import {generateText} from 'ai';
 import {openai} from '@ai-sdk/openai';
+import {CreateTransactionAiDTO, CreateTransactionDTO, UpdateTransactionDTO} from '@maya-vault/validation';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {generateObject} from 'ai';
 import {CategoriesService} from 'src/categories/categories.service';
+import {HouseholdsService} from 'src/households/households.service';
+import {categoryPromptFactory} from 'src/tools/ai/prompts/category.prompt';
+import {transactionCategoryOutputSchema} from 'src/tools/ai/schemas';
+import {DataSource} from 'typeorm';
+import {AccountsService} from '../accounts/accounts.service';
+import {TransactionType} from '../common/enums/transaction.type.enum';
+import {Transaction} from './transaction.entity';
+import {TransactionsRepository} from './transactions.repository';
 
 @Injectable()
 export class TransactionsService {
@@ -43,27 +45,48 @@ export class TransactionsService {
   async createTransactionAi(transactionData: CreateTransactionAiDTO): Promise<Transaction> {
     const account = await this.accountsService.findAccountById(transactionData.accountId);
     const household = await this.householdsService.findHouseholdById(account.householdId);
-
     const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
 
-    const {data} = await generateText({
+    const {object} = await generateObject({
       model: openai('gpt-4.1-nano-2025-04-14'),
-      prompt: 'text',
+      prompt: categoryPromptFactory({
+        categories,
+        transactionDescription: transactionData.description,
+      }),
       temperature: 0.1,
+      schema: transactionCategoryOutputSchema,
     });
 
-    if (account.currentBalance < transactionData.amount) {
+    if (account.currentBalance < object.transactionAmount) {
       throw new BadRequestException('Insufficient funds for this expense');
     }
 
     return await this.dataSource.transaction(async () => {
-      const transaction = await this.transactionsRepository.create(transactionData);
+      const isNewCategorySuggested = object.newCategorySuggested;
+      let categoryId: string | null = null;
 
-      await this.updateBalance(
-        transactionData.accountId,
-        transactionData.amount,
-        transactionData.type as TransactionType,
-      );
+      if (isNewCategorySuggested) {
+        const newCategory = await this.categoriesService.createCategory({
+          name: object.suggestedCategory.newCategoryName,
+          householdId: household.id,
+        });
+
+        categoryId = newCategory.id;
+      } else {
+        categoryId = object.suggestedCategory.existingCategoryId;
+      }
+
+      const transaction = await this.transactionsRepository.create({
+        description: transactionData.description,
+        amount: object.transactionAmount,
+        type: object.transactionType as TransactionType,
+        categoryId,
+        householdId: account.householdId,
+        accountId: account.id,
+        isReconciled: true,
+      });
+
+      await this.updateBalance(transaction.accountId, transaction.amount, transaction.type);
 
       return transaction;
     });

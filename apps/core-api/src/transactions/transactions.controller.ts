@@ -16,6 +16,7 @@ import {TransactionsService} from './transactions.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {
+  CreateTransactionAiDTO,
   CreateTransactionDTO,
   UpdateTransactionDTO,
   createTransactionAiSchema,
