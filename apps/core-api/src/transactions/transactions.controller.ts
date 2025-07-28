@@ -25,6 +25,7 @@ import {
 } from '@maya-vault/validation';
 import {
   CreateTransactionSwaggerDTO,
+  CreateTransactionAiSwaggerDTO,
   UpdateTransactionSwaggerDTO,
   TransactionResponseSwaggerDTO,
 } from 'src/tools/swagger/transactions.swagger.dto';
@@ -92,10 +93,61 @@ export class TransactionsController {
     return await this.transactionsService.createTransaction(dto);
   }
 
+  @ApiOperation({
+    summary: 'Create a transaction using AI analysis',
+    description:
+      'Creates a transaction by analyzing a natural language description using AI to extract amount, type, and category',
+  })
+  @ApiBody({
+    type: CreateTransactionAiSwaggerDTO,
+    description: 'Transaction creation data with natural language description for AI analysis',
+    examples: {
+      expense: {
+        summary: 'Expense Transaction',
+        value: {
+          householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+          accountId: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+          description: 'Paid $50 for groceries at Walmart',
+        },
+      },
+      income: {
+        summary: 'Income Transaction',
+        value: {
+          householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+          accountId: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+          description: 'Received $2500 salary deposit from company',
+        },
+      },
+      restaurant: {
+        summary: 'Restaurant Expense',
+        value: {
+          householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+          accountId: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+          description: 'Coffee and pastry at Starbucks for $12.50',
+        },
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    type: TransactionResponseSwaggerDTO,
+    description: 'Transaction created successfully using AI analysis',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data or AI failed to parse transaction description',
+  })
+  @ApiNotFoundResponse({
+    description: 'Account not found',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @UsePipes(new ZodValidationPipe(createTransactionAiSchema))
   @Post('/ai')
-  async createTransactionAi(@Body() dto: CreateTransactionAiDTO) {}
+  async createTransactionAi(@Body() dto: CreateTransactionAiDTO) {
+    return await this.transactionsService.createTransactionAi(dto);
+  }
 
   @ApiOperation({
     summary: 'Get transactions by account ID',

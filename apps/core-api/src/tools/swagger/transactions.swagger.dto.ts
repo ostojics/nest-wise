@@ -56,6 +56,31 @@ export class CreateTransactionSwaggerDTO {
   isReconciled?: boolean;
 }
 
+export class CreateTransactionAiSwaggerDTO {
+  @ApiProperty({
+    description: 'UUID of the household this transaction belongs to',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    format: 'uuid',
+  })
+  householdId: string;
+
+  @ApiProperty({
+    description: 'UUID of the account this transaction belongs to',
+    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+    format: 'uuid',
+  })
+  accountId: string;
+
+  @ApiProperty({
+    description:
+      'Natural language description of the transaction that AI will analyze to extract amount, type, and category',
+    example: 'Paid $50 for groceries at Walmart',
+    minLength: 1,
+    maxLength: 1000,
+  })
+  description: string;
+}
+
 export class UpdateTransactionSwaggerDTO {
   @ApiProperty({
     description: 'UUID of the category for this transaction (optional)',
