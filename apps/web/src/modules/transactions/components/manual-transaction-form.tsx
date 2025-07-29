@@ -12,6 +12,7 @@ import {accountTypes} from '@/common/constants/account-types';
 import {useValidateCreateTransaction} from '@maya-vault/validation';
 import {Plus} from 'lucide-react';
 import {useState} from 'react';
+import {toast} from 'sonner';
 
 interface ManualTransactionFormProps {
   onSuccess: () => void;
@@ -36,7 +37,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
     setValue,
     watch,
     reset,
-    formState: {errors, isSubmitting},
+    formState: {errors},
   } = useValidateCreateTransaction({
     householdId: household?.id ?? '',
   });
@@ -55,7 +56,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
       setNewCategoryName('');
       setShowCreateCategory(false);
     } catch {
-      // Error is handled by the mutation
+      toast.error('Failed to create category');
     }
   };
 
@@ -67,7 +68,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
       setNewCategoryName('');
       onSuccess();
     } catch {
-      // Error is handled by the mutation
+      toast.error('Failed to create transaction');
     }
   };
 
@@ -81,7 +82,6 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* Account Selection */}
       <div className="space-y-2">
         <Label htmlFor="accountId">
           Account <span className="text-red-500">*</span>
@@ -101,7 +101,6 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
         {errors.accountId && <p className="text-sm text-red-500">{errors.accountId.message}</p>}
       </div>
 
-      {/* Category Selection */}
       <div className="space-y-2">
         <Label htmlFor="categoryId">
           Category <span className="text-red-500">*</span>
@@ -169,7 +168,6 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
         {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
       </div>
 
-      {/* Transaction Type */}
       <div className="space-y-2">
         <Label htmlFor="type">
           Type <span className="text-red-500">*</span>
@@ -186,7 +184,6 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
         {errors.type && <p className="text-sm text-red-500">{errors.type.message}</p>}
       </div>
 
-      {/* Amount */}
       <div className="space-y-2">
         <Label htmlFor="amount">
           Amount <span className="text-red-500">*</span>
@@ -195,7 +192,6 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
         {errors.amount && <p className="text-sm text-red-500">{errors.amount.message}</p>}
       </div>
 
-      {/* Description */}
       <div className="space-y-2">
         <Label htmlFor="description">
           Description <span className="text-red-500">*</span>
@@ -204,17 +200,16 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
         {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
       </div>
 
-      {/* Form Actions */}
       <div className="flex justify-end gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
         <Button
           type="submit"
-          disabled={isSubmitting || createTransactionMutation.isPending}
+          disabled={createTransactionMutation.isPending}
           className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
         >
-          {isSubmitting || createTransactionMutation.isPending ? 'Creating...' : 'Log Transaction'}
+          {createTransactionMutation.isPending ? 'Creating...' : 'Log Transaction'}
         </Button>
       </div>
     </form>
