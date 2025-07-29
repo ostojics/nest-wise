@@ -9,6 +9,7 @@ import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdByI
 import {useCreateTransactionAI} from '@/modules/transactions/hooks/useCreateTransactionAI';
 import {useValidateCreateAiTransaction, CreateTransactionAiDTO} from '@maya-vault/validation';
 import AiBanner from './ai-banner';
+import {AiDescriptionTooltip} from './ai-description-tooltip';
 
 interface AiTransactionFormProps {
   onSuccess: () => void;
@@ -71,10 +72,13 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="description">
-            Description <span className="text-red-500">*</span>
-          </Label>
-          <Input placeholder="e.g. Grocery shopping - 100, Salary - 2000..." {...register('description')} />
+          <div className="flex items-center justify-between gap-2">
+            <Label htmlFor="description">
+              Description <span className="text-red-500">*</span>
+            </Label>
+            <AiDescriptionTooltip />
+          </div>
+          <Input placeholder="e.g. Bought groceries for 120" {...register('description')} />
           {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
         </div>
 

@@ -2,7 +2,7 @@ import {z} from 'zod';
 
 export const createCategorySchema = z.object({
   name: z.string().min(1, 'Category name is required').max(100, 'Category name must be 100 characters or less'),
-  householdId: z.string().uuid('Household ID must be a valid UUID'),
+  householdId: z.string().uuid('Household must be selected'),
 });
 
 export const updateCategorySchema = z.object({

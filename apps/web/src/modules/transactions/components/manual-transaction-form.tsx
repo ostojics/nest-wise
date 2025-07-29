@@ -188,7 +188,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
         <Label htmlFor="amount">
           Amount <span className="text-red-500">*</span>
         </Label>
-        <Input type="number" step="0.01" min="0.01" placeholder="0.00" {...register('amount')} />
+        <Input type="number" step="0.01" min="1" placeholder="0.00" {...register('amount')} />
         {errors.amount && <p className="text-sm text-red-500">{errors.amount.message}</p>}
       </div>
 
