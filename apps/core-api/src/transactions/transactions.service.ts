@@ -26,7 +26,7 @@ export class TransactionsService {
     return await this.dataSource.transaction(async () => {
       const account = await this.accountsService.findAccountById(transactionData.accountId);
 
-      if (transactionData.type === 'expense' && account.currentBalance < transactionData.amount) {
+      if (transactionData.type === 'expense' && Number(account.currentBalance) < transactionData.amount) {
         throw new BadRequestException('Insufficient funds for this expense');
       }
 
@@ -57,7 +57,7 @@ export class TransactionsService {
       schema: transactionCategoryOutputSchema,
     });
 
-    if (account.currentBalance < object.transactionAmount) {
+    if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
       throw new BadRequestException('Insufficient funds for this expense');
     }
 
@@ -120,12 +120,12 @@ export class TransactionsService {
       if (transactionData.amount !== undefined || transactionData.type !== undefined) {
         const account = await this.accountsService.findAccountById(existingTransaction.accountId);
 
-        const oldAmount = existingTransaction.amount;
+        const oldAmount = Number(existingTransaction.amount);
         const oldType = existingTransaction.type;
-        const newAmount = transactionData.amount ?? oldAmount;
+        const newAmount = transactionData.amount ? Number(transactionData.amount) : oldAmount;
         const newType = transactionData.type ? (transactionData.type as TransactionType) : oldType;
 
-        let balanceAfterOldRemoval = account.currentBalance;
+        let balanceAfterOldRemoval = Number(account.currentBalance);
         if (oldType === TransactionType.INCOME) {
           balanceAfterOldRemoval -= oldAmount;
         } else {
@@ -138,7 +138,7 @@ export class TransactionsService {
 
         const netChange = this.calculateNetBalanceChange(oldAmount, oldType, newAmount, newType);
         if (netChange !== 0) {
-          const newBalance = account.currentBalance + netChange;
+          const newBalance = Number(account.currentBalance) + netChange;
           await this.accountsService.updateAccount(existingTransaction.accountId, {
             currentBalance: newBalance,
           });
@@ -162,12 +162,13 @@ export class TransactionsService {
       }
 
       const account = await this.accountsService.findAccountById(existingTransaction.accountId);
-      let newBalance = account.currentBalance;
+      let newBalance = Number(account.currentBalance);
+      const transactionAmount = Number(existingTransaction.amount);
 
       if (existingTransaction.type === TransactionType.INCOME) {
-        newBalance -= existingTransaction.amount;
+        newBalance -= transactionAmount;
       } else {
-        newBalance += existingTransaction.amount;
+        newBalance += transactionAmount;
       }
 
       await this.accountsService.updateAccount(existingTransaction.accountId, {
@@ -184,7 +185,9 @@ export class TransactionsService {
   private async updateBalance(accountId: string, amount: number, type: TransactionType): Promise<void> {
     const account = await this.accountsService.findAccountById(accountId);
 
-    let newBalance = account.currentBalance;
+    const currentBalance = Number(account.currentBalance);
+    let newBalance = currentBalance;
+
     if (type === TransactionType.INCOME) {
       newBalance += amount;
     } else {
