@@ -1,4 +1,5 @@
 import {Button} from '@/components/ui/button';
+import {DatePicker} from '@/components/date-picker';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
@@ -198,6 +199,18 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
         </Label>
         <Input placeholder="Transaction description" {...register('description')} />
         {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="transactionDate">
+          Transaction Date <span className="text-red-500">*</span>
+        </Label>
+        <DatePicker
+          value={watch('transactionDate')}
+          onChange={(date) => setValue('transactionDate', date ?? new Date())}
+          placeholder="Select transaction date"
+        />
+        {errors.transactionDate && <p className="text-sm text-red-500">{errors.transactionDate.message}</p>}
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
