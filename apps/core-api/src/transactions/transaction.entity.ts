@@ -64,6 +64,13 @@ export class Transaction {
   description: string | null;
 
   @Column({
+    type: 'date',
+    nullable: false,
+    name: 'transaction_date',
+  })
+  transactionDate: Date;
+
+  @Column({
     type: 'boolean',
     nullable: false,
     default: false,

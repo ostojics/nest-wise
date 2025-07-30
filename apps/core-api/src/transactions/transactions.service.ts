@@ -83,6 +83,7 @@ export class TransactionsService {
         categoryId,
         householdId: account.householdId,
         accountId: account.id,
+        transactionDate: transactionData.transactionDate,
         isReconciled: true,
       });
 

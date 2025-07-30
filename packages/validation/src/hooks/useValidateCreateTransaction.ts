@@ -16,6 +16,7 @@ export const useValidateCreateTransaction = ({householdId}: UseValidateCreateTra
       amount: 0,
       type: 'expense',
       description: '',
+      transactionDate: new Date(),
       isReconciled: true,
     },
   });
