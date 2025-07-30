@@ -5,6 +5,7 @@ export interface AppConfig {
   port: number;
   jwtSecret: string;
   environment: string;
+  openaiApiKey: string;
 }
 
 export const AppConfigName = 'app';
@@ -17,6 +18,7 @@ export function getConfig(): AppConfig {
     port,
     jwtSecret: process.env.JWT_SECRET || 'secret',
     environment: process.env.NODE_ENV || 'development',
+    openaiApiKey: process.env.OPENAI_API_KEY || '',
   };
 }
 

@@ -1,4 +1,4 @@
-import {AccountContract, HouseholdContract} from '@maya-vault/contracts';
+import {AccountContract, CategoryContract, HouseholdContract} from '@maya-vault/contracts';
 import httpClient from './http-client';
 
 export const getHouseholdById = (id: string) => {
@@ -7,4 +7,8 @@ export const getHouseholdById = (id: string) => {
 
 export const getHouseholdAccounts = (householdId: string) => {
   return httpClient.get(`v1/households/${householdId}/accounts`).json<AccountContract[]>();
+};
+
+export const getHouseholdCategories = (householdId: string) => {
+  return httpClient.get(`v1/households/${householdId}/categories`).json<CategoryContract[]>();
 };

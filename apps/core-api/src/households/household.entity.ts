@@ -1,6 +1,8 @@
 import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany} from 'typeorm';
 import {User} from 'src/users/user.entity';
 import {Account} from 'src/accounts/account.entity';
+import {Category} from 'src/categories/categories.entity';
+import {Transaction} from 'src/transactions/transaction.entity';
 
 @Entity('households')
 export class Household {
@@ -40,4 +42,10 @@ export class Household {
 
   @OneToMany(() => Account, (account) => account.household)
   accounts: Account[];
+
+  @OneToMany(() => Category, (category) => category.household)
+  categories: Category[];
+
+  @OneToMany(() => Transaction, (transaction) => transaction.household)
+  transactions: Transaction[];
 }

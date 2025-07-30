@@ -13,6 +13,8 @@ import {AuthGuard} from 'src/common/guards/auth.guard';
 import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
 import {HouseholdResponseSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
 import {AccountContract, HouseholdContract} from '@maya-vault/contracts';
+import {Category} from 'src/categories/categories.entity';
+import {CategoryResponseSwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
 
 @ApiTags('Households')
 @Controller({
@@ -76,5 +78,30 @@ export class HouseholdsController {
   @Get(':id/accounts')
   async getAccountsByHouseholdId(@Param('id') id: string): Promise<AccountContract[]> {
     return (await this.householdsService.findAccountsByHouseholdId(id)) as AccountContract[];
+  }
+
+  @ApiOperation({
+    summary: 'Get categories by household ID',
+    description: 'Retrieves all categories for a specific household',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiOkResponse({
+    type: [CategoryResponseSwaggerDTO],
+    description: 'Categories retrieved successfully',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get(':id/categories')
+  async getCategoriesByHouseholdId(@Param('id') id: string): Promise<Category[]> {
+    return await this.householdsService.findCategoriesByHouseholdId(id);
   }
 }

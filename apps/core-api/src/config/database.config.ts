@@ -3,6 +3,8 @@ import {PostgresConnectionOptions} from 'typeorm/driver/postgres/PostgresConnect
 import {User} from '../users/user.entity';
 import {Household} from 'src/households/household.entity';
 import {Account} from 'src/accounts/account.entity';
+import {Category} from 'src/categories/categories.entity';
+import {Transaction} from 'src/transactions/transaction.entity';
 
 export const DatabaseConfigName = 'database';
 
@@ -20,7 +22,7 @@ export function getConfig(): DatabaseConfig {
     database: process.env.DB_DATABASE ?? 'mayavault_dev',
     synchronize: isDevelopment,
     ssl: !isDevelopment,
-    entities: [User, Household, Account],
+    entities: [User, Household, Account, Category, Transaction],
     useUTC: true,
   };
 }

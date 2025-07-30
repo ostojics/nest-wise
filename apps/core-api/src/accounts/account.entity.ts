@@ -7,9 +7,11 @@ import {
   Index,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import {Household} from 'src/households/household.entity';
 import {User} from 'src/users/user.entity';
+import {Transaction} from 'src/transactions/transaction.entity';
 
 @Entity('accounts')
 export class Account {
@@ -89,4 +91,7 @@ export class Account {
   })
   @JoinColumn({name: 'household_id'})
   household: Household;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.account)
+  transactions: Transaction[];
 }
