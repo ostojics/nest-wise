@@ -3,6 +3,11 @@ import z from 'zod';
 export const transactionCategoryOutputSchema = z.object({
   transactionType: z.enum(['expense', 'income']).describe('Whether this is an expense or income transaction'),
   transactionAmount: z.number().positive().describe('The monetary amount extracted from the transaction description'),
+  transactionDate: z
+    .string()
+    .describe(
+      'The date of the transaction, it should be in the format YYYY-MM-DD. If you cannot infer the date from the user input use the current date',
+    ),
   suggestedCategory: z.object({
     existingCategoryId: z
       .string()

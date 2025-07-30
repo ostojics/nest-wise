@@ -17,7 +17,6 @@ export const createTransactionAiSchema = z.object({
   householdId: z.string().uuid('Household ID must be valid'),
   accountId: z.string().uuid('Account must be selected'),
   description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
-  transactionDate: z.coerce.date(),
 });
 
 export const updateTransactionSchema = z.object({
