@@ -48,6 +48,13 @@ export class CreateTransactionSwaggerDTO {
   description?: string | null;
 
   @ApiProperty({
+    description: 'Date when the transaction occurred',
+    example: '2024-01-15',
+    format: 'date',
+  })
+  transactionDate: Date;
+
+  @ApiProperty({
     description: 'Whether the transaction has been reconciled with bank statement',
     example: false,
     default: false,
@@ -79,6 +86,13 @@ export class CreateTransactionAiSwaggerDTO {
     maxLength: 1000,
   })
   description: string;
+
+  @ApiProperty({
+    description: 'Date when the transaction occurred',
+    example: '2024-01-15',
+    format: 'date',
+  })
+  transactionDate: Date;
 }
 
 export class UpdateTransactionSwaggerDTO {
@@ -115,6 +129,14 @@ export class UpdateTransactionSwaggerDTO {
     nullable: true,
   })
   description?: string | null;
+
+  @ApiProperty({
+    description: 'Date when the transaction occurred',
+    example: '2024-01-15',
+    format: 'date',
+    required: false,
+  })
+  transactionDate?: Date;
 
   @ApiProperty({
     description: 'Whether the transaction has been reconciled with bank statement',
@@ -173,6 +195,13 @@ export class TransactionResponseSwaggerDTO {
     nullable: true,
   })
   description: string | null;
+
+  @ApiProperty({
+    description: 'Date when the transaction occurred',
+    example: '2024-01-15',
+    format: 'date',
+  })
+  transactionDate: Date;
 
   @ApiProperty({
     description: 'Whether the transaction has been reconciled with bank statement',
