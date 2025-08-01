@@ -1,4 +1,5 @@
 import NetWorthCard from './net-worth-card';
+import NetWorthTrendCard from './net-worth-trend-card';
 import SpendingByCategoryCard from './spending-by-category-card';
 
 const DashboardPage = () => {
@@ -7,6 +8,9 @@ const DashboardPage = () => {
       <div className="grid grid-cols-1 gap-4 lg:gap-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
         <NetWorthCard />
         <SpendingByCategoryCard />
+      </div>
+      <div className="grid grid-cols-1 gap-4 lg:gap-6">
+        <NetWorthTrendCard />
       </div>
     </section>
   );

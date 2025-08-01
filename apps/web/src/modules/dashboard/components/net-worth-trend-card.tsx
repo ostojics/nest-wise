@@ -1,0 +1,169 @@
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
+import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {IconTrendingUp} from '@tabler/icons-react';
+import React, {useMemo} from 'react';
+import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell} from 'recharts';
+import {NetWorthDataPoint} from '../interfaces/net-worth-data-point';
+
+const mockNetWorthData: NetWorthDataPoint[] = [
+  {month: 'January', monthShort: 'Jan', amount: 8450.75, hasData: true},
+  {month: 'February', monthShort: 'Feb', amount: 8920.3, hasData: true},
+  {month: 'March', monthShort: 'Mar', amount: 9180.5, hasData: true},
+  {month: 'April', monthShort: 'Apr', amount: null, hasData: false},
+  {month: 'May', monthShort: 'May', amount: 9650.25, hasData: true},
+  {month: 'June', monthShort: 'Jun', amount: 10120.8, hasData: true},
+  {month: 'July', monthShort: 'Jul', amount: 10890.4, hasData: true},
+  {month: 'August', monthShort: 'Aug', amount: 11250.15, hasData: true},
+  {month: 'September', monthShort: 'Sep', amount: null, hasData: false},
+  {month: 'October', monthShort: 'Oct', amount: 12180.9, hasData: true},
+  {month: 'November', monthShort: 'Nov', amount: 12750.6, hasData: true},
+  {month: 'December', monthShort: 'Dec', amount: 13420.85, hasData: true},
+];
+
+const chartConfig = {
+  amount: {
+    label: 'Net Worth',
+    color: 'hsl(142, 76%, 36%)',
+  },
+} satisfies ChartConfig;
+
+const NetWorthTrendCard: React.FC = () => {
+  const {formatBalance} = useFormatBalance();
+
+  const chartData = useMemo(() => {
+    return mockNetWorthData.map((dataPoint) => ({
+      ...dataPoint,
+      displayAmount: dataPoint.hasData ? dataPoint.amount : 0, // Use 0 for chart rendering
+      fill: dataPoint.hasData ? 'var(--color-amount)' : 'var(--color-no-data)',
+    }));
+  }, []);
+
+  const growth = useMemo(() => {
+    const dataWithValues = mockNetWorthData.filter((point) => point.hasData && point.amount !== null);
+    if (dataWithValues.length < 2) return null;
+
+    const latest = dataWithValues[dataWithValues.length - 1];
+    const previous = dataWithValues[dataWithValues.length - 2];
+
+    if (!latest || !previous || !latest.amount || !previous.amount) return null;
+
+    const change = latest.amount - previous.amount;
+    const percentage = (change / previous.amount) * 100;
+
+    return {
+      amount: change,
+      percentage: percentage,
+      isPositive: change >= 0,
+    };
+  }, []);
+
+  const customLabelFormatter = (value: number, _name?: string) => {
+    if (value === 0) {
+      return 'No Data';
+    }
+
+    return value;
+  };
+
+  return (
+    <Card className="@container/card group hover:shadow-md transition-all duration-200 flex flex-col @xl/main:col-span-2">
+      <CardHeader className="items-center pb-0">
+        <CardDescription className="flex items-center gap-2">
+          <IconTrendingUp className="h-4 w-4" />
+          Net Worth Trend
+        </CardDescription>
+        <CardTitle className="text-lg font-semibold">Last 12 Months</CardTitle>
+      </CardHeader>
+      <CardContent className="flex-1 pb-0">
+        <ChartContainer
+          config={{
+            ...chartConfig,
+            'no-data': {
+              label: 'No Data',
+              color: 'hsl(var(--muted))',
+            },
+          }}
+          className="mx-auto aspect-[2/1] max-h-[300px] w-full"
+        >
+          <BarChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              top: 40,
+              right: 20,
+              left: 20,
+              bottom: 20,
+            }}
+          >
+            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+            <XAxis
+              dataKey="monthShort"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              className="text-muted-foreground"
+            />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent
+                  hideLabel
+                  formatter={(value, name, props) => {
+                    const payload = props.payload as NetWorthDataPoint & {displayAmount: number};
+                    if (!payload.hasData) {
+                      return (
+                        <div className="flex w-full justify-between items-center gap-4">
+                          <span>Net Worth</span>
+                          <div className="text-right">
+                            <div className="text-muted-foreground">No data available</div>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div className="flex w-full justify-between items-center gap-4">
+                        <span>Net Worth</span>
+                        <div className="text-right">
+                          <div className="font-mono font-medium tabular-nums">{formatBalance(payload.amount ?? 0)}</div>
+                          <div className="text-sm text-muted-foreground">{payload.month}</div>
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+              }
+            />
+            <Bar dataKey="displayAmount" radius={[4, 4, 0, 0]} className="outline-hidden">
+              <LabelList
+                position="top"
+                offset={8}
+                className="fill-foreground text-xs"
+                fontSize={10}
+                formatter={customLabelFormatter}
+              />
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.hasData ? 'var(--color-amount)' : 'hsl(var(--muted))'} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+      <CardFooter className="flex-col gap-2 text-sm pt-4">
+        {growth && (
+          <div
+            className={`flex gap-2 leading-none font-medium items-center ${
+              growth.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+            }`}
+          >
+            {growth.isPositive ? 'Up' : 'Down'} by {formatBalance(Math.abs(growth.amount))} (
+            {Math.abs(growth.percentage).toFixed(1)}%) from last data point
+            <IconTrendingUp className={`h-4 w-4 ${growth.isPositive ? 'rotate-0' : 'rotate-180'}`} />
+          </div>
+        )}
+      </CardFooter>
+    </Card>
+  );
+};
+
+export default NetWorthTrendCard;
