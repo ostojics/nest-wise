@@ -55,6 +55,9 @@ export class HouseholdsService {
     if (householdData.currencyCode !== undefined) {
       updateData.currencyCode = householdData.currencyCode;
     }
+    if (householdData.monthlyBudget !== undefined) {
+      updateData.monthlyBudget = householdData.monthlyBudget;
+    }
 
     const updatedHousehold = await this.householdsRepository.update(id, updateData);
     if (!updatedHousehold) {

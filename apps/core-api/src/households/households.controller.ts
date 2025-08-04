@@ -1,4 +1,4 @@
-import {Controller, Get, Param, UseGuards} from '@nestjs/common';
+import {Controller, Get, Param, UseGuards, Put, Body} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -7,14 +7,19 @@ import {
   ApiOkResponse,
   ApiNotFoundResponse,
   ApiUnauthorizedResponse,
+  ApiBody,
+  ApiBadRequestResponse,
 } from '@nestjs/swagger';
 import {HouseholdsService} from './households.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
-import {HouseholdResponseSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
+import {HouseholdResponseSwaggerDTO, UpdateHouseholdSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
 import {AccountContract, HouseholdContract} from '@maya-vault/contracts';
 import {Category} from 'src/categories/categories.entity';
 import {CategoryResponseSwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
+import {UpdateHouseholdDTO} from '@maya-vault/validation';
+import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
+import {updateHouseholdSchema} from '@maya-vault/validation';
 
 @ApiTags('Households')
 @Controller({
@@ -103,5 +108,43 @@ export class HouseholdsController {
   @Get(':id/categories')
   async getCategoriesByHouseholdId(@Param('id') id: string): Promise<Category[]> {
     return await this.householdsService.findCategoriesByHouseholdId(id);
+  }
+
+  @ApiOperation({
+    summary: 'Update household',
+    description: 'Updates an existing household with new information',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+  })
+  @ApiBody({
+    type: UpdateHouseholdSwaggerDTO,
+    description: 'Household update data',
+  })
+  @ApiOkResponse({
+    type: HouseholdResponseSwaggerDTO,
+    description: 'Household updated successfully',
+  })
+  @ApiNotFoundResponse({
+    description: 'Household not found',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Put(':id')
+  async updateHousehold(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(updateHouseholdSchema)) updateData: UpdateHouseholdDTO,
+  ): Promise<HouseholdContract> {
+    return (await this.householdsService.updateHousehold(id, updateData)) as HouseholdContract;
   }
 }

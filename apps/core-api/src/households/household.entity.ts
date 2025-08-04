@@ -25,6 +25,16 @@ export class Household {
   })
   currencyCode: string;
 
+  @Column({
+    type: 'decimal',
+    precision: 18,
+    scale: 2,
+    nullable: false,
+    default: 5000,
+    name: 'monthly_budget',
+  })
+  monthlyBudget: number;
+
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at',
