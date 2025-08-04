@@ -1,9 +1,11 @@
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Progress} from '@/components/ui/progress';
+import {Button} from '@/components/ui/button';
 import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
-import {IconTarget} from '@tabler/icons-react';
-import React, {useMemo} from 'react';
+import {IconTarget, IconEdit} from '@tabler/icons-react';
+import React, {useMemo, useState} from 'react';
+import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
 
 const mockSpendingData = {
   currentSpending: 2847.3,
@@ -13,6 +15,7 @@ const mockSpendingData = {
 
 const SpendingVsTargetCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const spendingPercentage = useMemo(() => {
     return Math.min((mockSpendingData.currentSpending / mockSpendingData.targetBudget) * 100, 100);
@@ -31,9 +34,20 @@ const SpendingVsTargetCard: React.FC = () => {
   return (
     <Card className="group flex-1 hover:shadow-md transition-all duration-200">
       <CardHeader>
-        <CardDescription className="flex items-center gap-2">
-          <IconTarget className="h-4 w-4" />
-          Monthly Budget
+        <CardDescription className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <IconTarget className="h-4 w-4" />
+            Monthly Budget
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsEditModalOpen(true)}
+            className="h-8 w-8 p-0 hover:bg-muted/50 transition-colors"
+            title="Edit monthly budget"
+          >
+            <IconEdit className="h-4 w-4" />
+          </Button>
         </CardDescription>
         <CardTitle
           className={cn(
@@ -79,6 +93,13 @@ const SpendingVsTargetCard: React.FC = () => {
           </div>
         </div>
       </CardFooter>
+
+      <EditMonthlyBudgetModal
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        householdId="mock-household-id"
+        currentBudget={mockSpendingData.targetBudget}
+      />
     </Card>
   );
 };
