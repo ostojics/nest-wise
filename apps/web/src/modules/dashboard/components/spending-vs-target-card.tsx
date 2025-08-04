@@ -29,7 +29,7 @@ const SpendingVsTargetCard: React.FC = () => {
   };
 
   return (
-    <Card className="@container/card group hover:shadow-md transition-all duration-200">
+    <Card className="group flex-1 hover:shadow-md transition-all duration-200">
       <CardHeader>
         <CardDescription className="flex items-center gap-2">
           <IconTarget className="h-4 w-4" />

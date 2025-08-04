@@ -22,7 +22,7 @@ const NetWorthCard: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Card className="@container/card">
+      <Card className="flex-1">
         <CardHeader>
           <CardDescription>Net Worth</CardDescription>
           <Skeleton className="h-8 w-48" />
@@ -39,7 +39,7 @@ const NetWorthCard: React.FC = () => {
   }
 
   return (
-    <Card className="@container/card group hover:shadow-md transition-all duration-200">
+    <Card className="flex-1 hover:shadow-md transition-all duration-200">
       <CardHeader>
         <CardDescription className="flex items-center gap-2">
           <IconWallet className="h-4 w-4" />
