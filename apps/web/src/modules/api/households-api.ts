@@ -15,5 +15,5 @@ export const getHouseholdCategories = (householdId: string) => {
 };
 
 export const updateHousehold = (id: string, data: UpdateHouseholdDTO) => {
-  return httpClient.patch(`v1/households/${id}`, {json: data}).json<HouseholdContract>();
+  return httpClient.put(`v1/households/${id}`, {json: data}).json<HouseholdContract>();
 };

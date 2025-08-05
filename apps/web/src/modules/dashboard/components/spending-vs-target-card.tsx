@@ -6,29 +6,46 @@ import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {IconTarget, IconEdit} from '@tabler/icons-react';
 import React, {useMemo, useState} from 'react';
 import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
+import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 
 const mockSpendingData = {
   currentSpending: 2847.3,
-  targetBudget: 3200.0,
-  lastMonthSpending: 3125.45,
 };
 
 const SpendingVsTargetCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const {data} = useGetMe();
+  const {data: household} = useGetHouseholdById(data?.householdId ?? '');
+  const budget = household?.monthlyBudget ?? 0;
 
   const spendingPercentage = useMemo(() => {
-    return Math.min((mockSpendingData.currentSpending / mockSpendingData.targetBudget) * 100, 100);
-  }, []);
+    return Math.min((mockSpendingData.currentSpending / budget) * 100, 100);
+  }, [budget]);
 
   const remainingBudget = useMemo(() => {
-    return mockSpendingData.targetBudget - mockSpendingData.currentSpending;
-  }, []);
+    return budget - mockSpendingData.currentSpending;
+  }, [budget]);
 
   const getStatusColor = () => {
     if (spendingPercentage >= 100) return 'text-red-600 dark:text-red-400';
     if (spendingPercentage >= 80) return 'text-yellow-600 dark:text-yellow-400';
     return 'text-green-600 dark:text-green-400';
+  };
+
+  const getProgressBarClassName = (percentage: number) => {
+    let colorClass: string;
+
+    if (percentage >= 100) {
+      colorClass = '[&>[data-slot="progress-indicator"]]:bg-red-500';
+    } else if (percentage >= 80) {
+      colorClass = '[&>[data-slot="progress-indicator"]]:bg-yellow-500';
+    } else {
+      colorClass = '[&>[data-slot="progress-indicator"]]:bg-green-500';
+    }
+
+    return cn('h-2.5', colorClass);
   };
 
   return (
@@ -57,7 +74,7 @@ const SpendingVsTargetCard: React.FC = () => {
         >
           {formatBalance(mockSpendingData.currentSpending)}
         </CardTitle>
-        <div className="text-sm text-muted-foreground">of {formatBalance(mockSpendingData.targetBudget)} target</div>
+        <div className="text-sm text-muted-foreground">of {formatBalance(budget)} target</div>
       </CardHeader>
 
       <CardFooter className="flex-col items-start gap-4 text-sm">
@@ -66,17 +83,7 @@ const SpendingVsTargetCard: React.FC = () => {
             <span className="text-muted-foreground">Progress</span>
             <span className={cn('font-medium', getStatusColor())}>{spendingPercentage.toFixed(1)}%</span>
           </div>
-          <Progress
-            value={spendingPercentage}
-            className={cn(
-              'h-2.5',
-              spendingPercentage >= 100
-                ? '[&>[data-slot="progress-indicator"]]:bg-red-500'
-                : spendingPercentage >= 80
-                  ? '[&>[data-slot="progress-indicator"]]:bg-yellow-500'
-                  : '[&>[data-slot="progress-indicator"]]:bg-green-500',
-            )}
-          />
+          <Progress value={spendingPercentage} className={getProgressBarClassName(spendingPercentage)} />
         </div>
 
         <div className="flex justify-between items-center w-full">
@@ -94,12 +101,7 @@ const SpendingVsTargetCard: React.FC = () => {
         </div>
       </CardFooter>
 
-      <EditMonthlyBudgetModal
-        open={isEditModalOpen}
-        onOpenChange={setIsEditModalOpen}
-        householdId="mock-household-id"
-        currentBudget={mockSpendingData.targetBudget}
-      />
+      <EditMonthlyBudgetModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} />
     </Card>
   );
 };
