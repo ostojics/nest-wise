@@ -92,14 +92,7 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, on
               disabled={updateHouseholdMutation.isPending}
               className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
             >
-              {updateHouseholdMutation.isPending ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  Updating...
-                </>
-              ) : (
-                'Update Budget'
-              )}
+              {updateHouseholdMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : 'Update Budget'}
             </Button>
           </div>
         </form>
