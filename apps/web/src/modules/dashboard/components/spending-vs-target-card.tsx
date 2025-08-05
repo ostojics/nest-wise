@@ -94,12 +94,7 @@ const SpendingVsTargetCard: React.FC = () => {
         </div>
       </CardFooter>
 
-      <EditMonthlyBudgetModal
-        open={isEditModalOpen}
-        onOpenChange={setIsEditModalOpen}
-        householdId="mock-household-id"
-        currentBudget={mockSpendingData.targetBudget}
-      />
+      <EditMonthlyBudgetModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} />
     </Card>
   );
 };

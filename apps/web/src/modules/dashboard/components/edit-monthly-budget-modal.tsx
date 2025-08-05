@@ -3,7 +3,9 @@ import {Button} from '@/components/ui/button';
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
+import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useUpdateHousehold} from '@/modules/households/hooks/useUpdateHousehold';
 import {useValidateEditHousehold} from '@maya-vault/validation';
 import {Loader2} from 'lucide-react';
@@ -12,16 +14,9 @@ import React, {useEffect} from 'react';
 interface EditMonthlyBudgetModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  householdId: string;
-  currentBudget: number;
 }
 
-const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({
-  open,
-  onOpenChange,
-  householdId,
-  currentBudget,
-}) => {
+const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, onOpenChange}) => {
   const {formatBalance} = useFormatBalance();
   const {
     register,
@@ -29,21 +24,23 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({
     reset,
     formState: {errors},
   } = useValidateEditHousehold();
+  const {data} = useGetMe();
+  const {data: household} = useGetHouseholdById(data?.householdId ?? '');
 
   const updateHouseholdMutation = useUpdateHousehold();
 
   useEffect(() => {
     if (open) {
-      reset({monthlyBudget: currentBudget});
+      reset({monthlyBudget: household?.monthlyBudget});
     }
-  }, [open, currentBudget, reset]);
+  }, [open, reset, household?.monthlyBudget]);
 
   const onSubmit = (data: {monthlyBudget?: number}) => {
-    if (!data.monthlyBudget) return;
+    if (!data.monthlyBudget || !household?.id) return;
 
     updateHouseholdMutation.mutate(
       {
-        id: householdId,
+        id: household.id,
         data: {monthlyBudget: data.monthlyBudget},
       },
       {
@@ -66,7 +63,7 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({
         <DialogHeader>
           <DialogTitle>Edit Monthly Budget</DialogTitle>
           <DialogDescription>
-            Update your monthly budget target. <br /> Current: {formatBalance(currentBudget)}
+            Update your monthly budget target. <br /> Current: {formatBalance(household?.monthlyBudget ?? 0)}
           </DialogDescription>
         </DialogHeader>
 
