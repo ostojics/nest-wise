@@ -6,24 +6,27 @@ import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {IconTarget, IconEdit} from '@tabler/icons-react';
 import React, {useMemo, useState} from 'react';
 import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
+import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 
 const mockSpendingData = {
   currentSpending: 2847.3,
-  targetBudget: 3200.0,
-  lastMonthSpending: 3125.45,
 };
 
 const SpendingVsTargetCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const {data} = useGetMe();
+  const {data: household} = useGetHouseholdById(data?.householdId ?? '');
+  const budget = household?.monthlyBudget ?? 0;
 
   const spendingPercentage = useMemo(() => {
-    return Math.min((mockSpendingData.currentSpending / mockSpendingData.targetBudget) * 100, 100);
-  }, []);
+    return Math.min((mockSpendingData.currentSpending / budget) * 100, 100);
+  }, [budget]);
 
   const remainingBudget = useMemo(() => {
-    return mockSpendingData.targetBudget - mockSpendingData.currentSpending;
-  }, []);
+    return budget - mockSpendingData.currentSpending;
+  }, [budget]);
 
   const getStatusColor = () => {
     if (spendingPercentage >= 100) return 'text-red-600 dark:text-red-400';
@@ -57,7 +60,7 @@ const SpendingVsTargetCard: React.FC = () => {
         >
           {formatBalance(mockSpendingData.currentSpending)}
         </CardTitle>
-        <div className="text-sm text-muted-foreground">of {formatBalance(mockSpendingData.targetBudget)} target</div>
+        <div className="text-sm text-muted-foreground">of {formatBalance(budget)} target</div>
       </CardHeader>
 
       <CardFooter className="flex-col items-start gap-4 text-sm">
