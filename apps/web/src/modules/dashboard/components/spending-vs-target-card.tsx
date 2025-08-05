@@ -34,6 +34,20 @@ const SpendingVsTargetCard: React.FC = () => {
     return 'text-green-600 dark:text-green-400';
   };
 
+  const getProgressBarClassName = (percentage: number) => {
+    let colorClass: string;
+
+    if (percentage >= 100) {
+      colorClass = '[&>[data-slot="progress-indicator"]]:bg-red-500';
+    } else if (percentage >= 80) {
+      colorClass = '[&>[data-slot="progress-indicator"]]:bg-yellow-500';
+    } else {
+      colorClass = '[&>[data-slot="progress-indicator"]]:bg-green-500';
+    }
+
+    return cn('h-2.5', colorClass);
+  };
+
   return (
     <Card className="group flex-1 hover:shadow-md transition-all duration-200">
       <CardHeader>
@@ -69,17 +83,7 @@ const SpendingVsTargetCard: React.FC = () => {
             <span className="text-muted-foreground">Progress</span>
             <span className={cn('font-medium', getStatusColor())}>{spendingPercentage.toFixed(1)}%</span>
           </div>
-          <Progress
-            value={spendingPercentage}
-            className={cn(
-              'h-2.5',
-              spendingPercentage >= 100
-                ? '[&>[data-slot="progress-indicator"]]:bg-red-500'
-                : spendingPercentage >= 80
-                  ? '[&>[data-slot="progress-indicator"]]:bg-yellow-500'
-                  : '[&>[data-slot="progress-indicator"]]:bg-green-500',
-            )}
-          />
+          <Progress value={spendingPercentage} className={getProgressBarClassName(spendingPercentage)} />
         </div>
 
         <div className="flex justify-between items-center w-full">
