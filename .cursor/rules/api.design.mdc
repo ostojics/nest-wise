@@ -1,0 +1,163 @@
+---
+description: API design rules
+globs:
+alwaysApply: true
+---
+
+# API Design Guide: Sorting, Filtering, and Searching
+
+This document outlines best practices and standard conventions for implementing sorting, filtering, and searching capabilities in RESTful APIs, with a focus on alignment with the JSON:API specification where applicable. Adhering to these guidelines ensures a consistent, predictable, and efficient API experience for consumers.
+
+## 1. Base URL and Content Type
+
+All API requests should be made to a clearly defined base URL (e.g., `https://api.example.com/v1`).
+Responses and requests should primarily use `application/json` or `application/vnd.api+json` for JSON:API compliant responses.
+
+## 2. Filtering
+
+Filtering allows clients to retrieve a subset of resources that match specific criteria. Query parameters are the standard mechanism for this.
+
+### 2.1. Basic Filtering (Equality)
+
+For simple equality checks, use a `filter` query parameter with nested keys representing the field name. This aligns well with JSON:API conventions.
+
+**Convention:** `GET /resources?filter[field_name]=value`
+
+**Examples:**
+
+- Retrieve products in the 'electronics' category:
+  `GET /products?filter[category]=electronics`
+
+- Retrieve users with an 'active' status:
+  `GET /users?filter[status]=active`
+
+### 2.2. Multiple Filters (Logical AND)
+
+Multiple filter parameters are implicitly combined with a logical `AND`.
+
+**Convention:** `GET /resources?filter[field1]=value1&filter[field2]=value2`
+
+**Example:**
+
+- Retrieve products that are 'available' and in the 'books' category:
+  `GET /products?filter[status]=available&filter[category]=books`
+
+### 2.3. Operators for Advanced Filtering
+
+For non-equality comparisons (e.g., greater than, less than), operators can be specified within the `filter` parameter.
+
+**Common Operators:**
+
+- `eq`: Equal to (default if no operator specified)
+
+- `ne`: Not equal to
+
+- `gt`: Greater than
+
+- `gte`: Greater than or equal to
+
+- `lt`: Less than
+
+- `lte`: Less than or equal to
+
+- `in`: Value is in a comma-separated list
+
+- `nin`: Value is not in a comma-separated list
+
+- `like`: Partial string match (often with wildcards like `%` or `*`)
+
+- `nlike`: Not a partial string match
+
+- `null`: Field is null
+
+- `nnull`: Field is not null
+
+**Convention:** `GET /resources?filter[field_name][operator]=value`
+
+**Examples:**
+
+- Retrieve products with a price greater than 50:
+  `GET /products?filter[price][gt]=50`
+
+- Retrieve orders placed between two dates:
+  `GET /orders?filter[createdAt][gte]=2023-01-01T00:00:00Z&filter[createdAt][lte]=2023-12-31T23:59:59Z`
+
+- Retrieve users whose role is 'admin' or 'editor':
+  `GET /users?filter[role][in]=admin,editor`
+
+### 2.4. Full-Text Search
+
+For general full-text search across multiple fields (e.g., name, description), use a dedicated `q` (query) parameter. The API implementation will determine which fields are searched.
+
+**Convention:** `GET /resources?q=search_term`
+
+**Example:**
+
+- Search for products containing "red chair":
+  `GET /products?q=red chair`
+
+## 3. Sorting
+
+Sorting allows clients to specify the order in which a collection of resources should be returned.
+
+**Convention:** `GET /resources?sort=field1,-field2`
+
+- Use the `sort` query parameter.
+
+- Specify one or more field names, separated by commas.
+
+- Prefix a field name with a hyphen (`-`) for descending order. Ascending order is the default if no prefix is used.
+
+**Examples:**
+
+- Sort products by name in ascending order:
+  `GET /products?sort=name`
+
+- Sort products by price in descending order, then by name in ascending order:
+  `GET /products?sort=-price,name`
+
+- Sort articles by creation date (newest first):
+  `GET /articles?sort=-createdAt`
+
+**Default Sorting:** The API should define a default sort order if the `sort` parameter is not provided by the client. This ensures consistent results.
+
+## 4. Pagination
+
+Pagination is essential for handling large collections of resources efficiently, preventing overwhelming responses, and improving performance. JSON:API recommends a `page` object with `number` and `size` (or `limit`).
+
+**Convention:** `GET /resources?page[number]=page_number&page[size]=items_per_page`
+
+**Examples:**
+
+- Retrieve the first page of 10 products:
+  `GET /products?page[number]=1&page[size]=10`
+
+- Retrieve the third page of 20 users:
+  `GET /users?page[number]=3&page[size]=20`
+
+### 4.1. Pagination Metadata and Links
+
+When a response is paginated, the API should include pagination metadata and links in the response body, following JSON:API's `links` and `meta` objects.
+
+**Example JSON:API Response Structure (simplified):**
+
+```json
+{
+  "data": [
+    // Array of resource objects
+  ],
+  "links": {
+    "self": "[https://api.example.com/v1/products?page](https://api.example.com/v1/products?page)[number]=1&page[size]=10",
+    "first": "[https://api.example.com/v1/products?page](https://api.example.com/v1/products?page)[number]=1&page[size]=10",
+    "prev": null,
+    "next": "[https://api.example.com/v1/products?page](https://api.example.com/v1/products?page)[number]=2&page[size]=10",
+    "last": "[https://api.example.com/v1/products?page](https://api.example.com/v1/products?page)[number]=5&page[size]=10"
+  },
+  "meta": {
+    "total_pages": 5,
+    "total_count": 50,
+    "current_page": 1,
+    "page_size": 10
+  }
+}
+```
