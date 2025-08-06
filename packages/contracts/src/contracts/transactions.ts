@@ -1,3 +1,7 @@
+import {AccountContract} from './accounts';
+import {CategoryContract} from './categories';
+import {PaginationMetaContract} from './interfaces/paginated-response';
+
 export enum TransactionType {
   INCOME = 'income',
   EXPENSE = 'expense',
@@ -15,4 +19,11 @@ export interface TransactionContract {
   isReconciled: boolean;
   createdAt: Date;
   updatedAt: Date;
+  account?: AccountContract;
+  category?: CategoryContract;
+}
+
+export interface GetTransactionsResponseContract {
+  data: TransactionContract[];
+  meta: PaginationMetaContract;
 }

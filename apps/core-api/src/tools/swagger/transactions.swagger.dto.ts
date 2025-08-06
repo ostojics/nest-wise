@@ -223,3 +223,43 @@ export class TransactionResponseSwaggerDTO {
   })
   updatedAt: Date;
 }
+
+export class PaginationMetaSwaggerDTO {
+  @ApiProperty({
+    description: 'Total number of items matching the query',
+    example: 150,
+  })
+  totalCount: number;
+
+  @ApiProperty({
+    description: 'Number of items per page',
+    example: 20,
+  })
+  pageSize: number;
+
+  @ApiProperty({
+    description: 'Current page number',
+    example: 1,
+  })
+  currentPage: number;
+
+  @ApiProperty({
+    description: 'Total number of pages',
+    example: 8,
+  })
+  totalPages: number;
+}
+
+export class GetTransactionsResponseSwaggerDTO {
+  @ApiProperty({
+    description: 'Array of transactions',
+    type: [TransactionResponseSwaggerDTO],
+  })
+  data: TransactionResponseSwaggerDTO[];
+
+  @ApiProperty({
+    description: 'Pagination metadata',
+    type: PaginationMetaSwaggerDTO,
+  })
+  meta: PaginationMetaSwaggerDTO;
+}
