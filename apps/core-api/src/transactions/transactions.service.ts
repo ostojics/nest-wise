@@ -1,5 +1,11 @@
 import {openai} from '@ai-sdk/openai';
-import {CreateTransactionAiDTO, CreateTransactionDTO, UpdateTransactionDTO} from '@maya-vault/validation';
+import {
+  CreateTransactionAiDTO,
+  CreateTransactionDTO,
+  GetTransactionsQueryDTO,
+  UpdateTransactionDTO,
+} from '@maya-vault/validation';
+import {GetTransactionsResponseContract} from '@maya-vault/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {generateObject} from 'ai';
 import {CategoriesService} from 'src/categories/categories.service';
@@ -110,6 +116,10 @@ export class TransactionsService {
 
   async findTransactionsByHouseholdId(householdId: string): Promise<Transaction[]> {
     return await this.transactionsRepository.findByHouseholdId(householdId);
+  }
+
+  async findTransactions(query: GetTransactionsQueryDTO): Promise<GetTransactionsResponseContract> {
+    return await this.transactionsRepository.findTransactionsWithFilters(query);
   }
 
   async updateTransaction(id: string, transactionData: UpdateTransactionDTO): Promise<Transaction> {
