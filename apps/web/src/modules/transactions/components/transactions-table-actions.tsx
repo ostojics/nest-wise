@@ -15,8 +15,8 @@ const TransactionsTableActions = () => {
       <div className="flex items-center justify-between gap-3">
         <Input className="max-w-sm" placeholder="Search transactions" />
         <div className="flex items-center gap-2">
-          <AccountCombobox accounts={accounts ?? []} placeholder="Select account" />
-          <CategoryCombobox categories={categories ?? []} placeholder="Select category" />
+          <AccountCombobox accounts={accounts ?? []} />
+          <CategoryCombobox categories={categories ?? []} />
         </div>
       </div>
     </section>

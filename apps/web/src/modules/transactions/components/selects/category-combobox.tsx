@@ -9,20 +9,16 @@ import {cn} from '@/lib/utils';
 
 interface CategoryComboboxProps {
   categories: CategoryContract[];
-  placeholder?: string;
   className?: string;
 }
 
-const CategoryCombobox: React.FC<CategoryComboboxProps> = ({
-  categories,
-  placeholder = 'Select category',
-  className,
-}) => {
+const CategoryCombobox: React.FC<CategoryComboboxProps> = ({categories, className}) => {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const selectedLabel = useMemo(() => {
     if (!selectedId) return undefined;
+
     const selected = categories?.find((c) => c.id === selectedId);
     return selected ? selected.name : undefined;
   }, [categories, selectedId]);
@@ -39,18 +35,18 @@ const CategoryCombobox: React.FC<CategoryComboboxProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn('h-9 w-44 justify-between', className)}
+          className={cn('h-9 min-w-50 justify-between', className)}
         >
-          {selectedLabel ?? placeholder}
+          {selectedLabel ?? 'Select category'}
           <ChevronsUpDown className="ml-2 size-4 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-72 p-0">
+      <PopoverContent className="w-72 p-0" align="end" sideOffset={10}>
         <Command>
           <CommandInput placeholder="Search categories" />
           <CommandList>
             <CommandEmpty>No categories found.</CommandEmpty>
-            <CommandGroup heading="Categories">
+            <CommandGroup>
               {categories?.map((category) => (
                 <CommandItem key={category.id} value={category.id} keywords={[category.name]} onSelect={handleSelect}>
                   <span className="truncate">{category.name}</span>
