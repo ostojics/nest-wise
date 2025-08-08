@@ -23,7 +23,7 @@ export function TransactionsTable({data}: TransactionsTableProps) {
                 const sorted = header.column.getIsSorted();
 
                 return (
-                  <TableHead key={header.id} className="text-xs uppercase tracking-wide text-muted-foreground">
+                  <TableHead key={header.id} className={cn('text-xs text-muted-foreground')}>
                     {header.isPlaceholder ? null : canSort ? (
                       <button
                         className={cn(
