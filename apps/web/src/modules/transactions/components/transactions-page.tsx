@@ -1,5 +1,6 @@
 import {TransactionsTable} from './transactions-table';
 import {TransactionContract, TransactionType} from '@maya-vault/contracts';
+import TransactionsTableActions from './transactions-table-actions';
 
 const mockData: TransactionContract[] = [
   {
@@ -69,6 +70,7 @@ const mockData: TransactionContract[] = [
 const TransactionsPage = () => {
   return (
     <section className="p-4">
+      <TransactionsTableActions />
       <TransactionsTable data={mockData} />
     </section>
   );

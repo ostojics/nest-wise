@@ -6,6 +6,6 @@ export const useGetHouseholdAccounts = (householdId: string) => {
   return useQuery({
     queryKey: queryKeys.accounts.all(),
     queryFn: () => getHouseholdAccounts(householdId),
-    enabled: !!householdId,
+    enabled: Boolean(householdId),
   });
 };
