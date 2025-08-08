@@ -19,7 +19,7 @@ const CategoryCombobox: React.FC<CategoryComboboxProps> = ({categories, classNam
   const selectedLabel = useMemo(() => {
     if (!selectedId) return undefined;
 
-    const selected = categories?.find((c) => c.id === selectedId);
+    const selected = categories.find((c) => c.id === selectedId);
     return selected ? selected.name : undefined;
   }, [categories, selectedId]);
 
@@ -47,7 +47,7 @@ const CategoryCombobox: React.FC<CategoryComboboxProps> = ({categories, classNam
           <CommandList>
             <CommandEmpty>No categories found.</CommandEmpty>
             <CommandGroup>
-              {categories?.map((category) => (
+              {categories.map((category) => (
                 <CommandItem key={category.id} value={category.id} keywords={[category.name]} onSelect={handleSelect}>
                   <span className="truncate">{category.name}</span>
                 </CommandItem>
