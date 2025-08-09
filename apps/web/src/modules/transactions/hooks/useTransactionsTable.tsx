@@ -4,7 +4,7 @@ import {TransactionContract, TransactionType} from '@maya-vault/contracts';
 import {ColumnDef, SortingState, getCoreRowModel, useReactTable} from '@tanstack/react-table';
 import {format} from 'date-fns';
 import {useMemo, useState} from 'react';
-import {cn} from '@/lib/utils';
+import {cn, serializeSortOption} from '@/lib/utils';
 
 export const useTransactionsTable = (data: TransactionContract[]) => {
   const {formatBalance} = useFormatBalance();
@@ -75,7 +75,9 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
       if (typeof newSorting === 'function') {
         const sorted = newSorting(sorting);
 
-        console.log('newSorting', sorted[0]);
+        if (sorted[0]) {
+          console.log(serializeSortOption(sorted[0]));
+        }
       }
 
       setSorting(newSorting);
