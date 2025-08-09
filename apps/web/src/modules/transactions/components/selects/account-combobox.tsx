@@ -6,6 +6,7 @@ import {Button} from '@/components/ui/button';
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from '@/components/ui/command';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {cn} from '@/lib/utils';
+import {useNavigate, useSearch} from '@tanstack/react-router';
 
 interface AccountComboboxProps {
   accounts: AccountContract[];
@@ -13,17 +14,20 @@ interface AccountComboboxProps {
 }
 
 const AccountCombobox: React.FC<AccountComboboxProps> = ({accounts, className}) => {
+  const search = useSearch({from: '/__pathlessLayout/transactions'});
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const selectedLabel = useMemo(() => {
-    if (!selectedId) return undefined;
+    const selectedId = search.accountId;
+    if (!selectedId) return null;
+
     const selected = accounts.find((a) => a.id === selectedId);
-    return selected ? selected.name : undefined;
-  }, [accounts, selectedId]);
+    return selected ? selected.name : null;
+  }, [accounts, search.accountId]);
 
   const handleSelect = (id: string) => {
-    setSelectedId(id);
+    void navigate({search: (prev) => ({...prev, accountId: id}), to: '/transactions'});
     setOpen(false);
   };
 

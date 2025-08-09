@@ -6,6 +6,7 @@ import {Button} from '@/components/ui/button';
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from '@/components/ui/command';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {cn} from '@/lib/utils';
+import {useNavigate, useSearch} from '@tanstack/react-router';
 
 interface CategoryComboboxProps {
   categories: CategoryContract[];
@@ -14,17 +15,19 @@ interface CategoryComboboxProps {
 
 const CategoryCombobox: React.FC<CategoryComboboxProps> = ({categories, className}) => {
   const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const search = useSearch({from: '/__pathlessLayout/transactions'});
+  const navigate = useNavigate();
 
   const selectedLabel = useMemo(() => {
-    if (!selectedId) return undefined;
+    const selectedId = search.categoryId;
+    if (!selectedId) return null;
 
     const selected = categories.find((c) => c.id === selectedId);
-    return selected ? selected.name : undefined;
-  }, [categories, selectedId]);
+    return selected ? selected.name : null;
+  }, [categories, search.categoryId]);
 
   const handleSelect = (id: string) => {
-    setSelectedId(id);
+    void navigate({search: (prev) => ({...prev, categoryId: id}), to: '/transactions'});
     setOpen(false);
   };
 
