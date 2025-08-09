@@ -12,7 +12,6 @@ export default defineConfig((env) => ({
       target: 'react',
       autoCodeSplitting: true,
     }),
-    ,
     react(),
     env.mode !== 'test' && eslintPlugin(),
     analyzer(),
