@@ -7,6 +7,8 @@ import {Calendar} from '@/components/ui/calendar';
 import {Label} from '@/components/ui/label';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {cn} from '@/lib/utils';
+import {useNavigate, useSearch} from '@tanstack/react-router';
+import {formatSelectedDate} from '../../utils';
 
 interface TransactionDateToPickerProps {
   className?: string;
@@ -14,7 +16,17 @@ interface TransactionDateToPickerProps {
 
 const TransactionDateToPicker: React.FC<TransactionDateToPickerProps> = ({className}) => {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const search = useSearch({from: '/__pathlessLayout/transactions'});
+  const navigate = useNavigate();
+
+  const selectedDate = search.transactionDate_to ? new Date(search.transactionDate_to) : undefined;
+
+  const handleSelectDate = (value: Date | undefined) => {
+    if (!value) return;
+
+    void navigate({search: (prev) => ({...prev, transactionDate_to: formatSelectedDate(value)}), to: '/transactions'});
+    setOpen(false);
+  };
 
   return (
     <div className={cn('flex flex-col gap-2', className)}>
@@ -24,20 +36,12 @@ const TransactionDateToPicker: React.FC<TransactionDateToPickerProps> = ({classN
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" id="transaction-date-to" className="h-9 min-w-50 justify-between font-normal">
-            {date ? format(date, 'PPP') : 'Select date to'}
+            {selectedDate ? format(selectedDate, 'PPP') : 'Select date to'}
             <ChevronsUpDown className="ml-2 size-4 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto overflow-hidden p-0" align="end" sideOffset={10}>
-          <Calendar
-            mode="single"
-            selected={date}
-            captionLayout="dropdown"
-            onSelect={(d) => {
-              setDate(d);
-              setOpen(false);
-            }}
-          />
+          <Calendar mode="single" selected={selectedDate} captionLayout="dropdown" onSelect={handleSelectDate} />
         </PopoverContent>
       </Popover>
     </div>
