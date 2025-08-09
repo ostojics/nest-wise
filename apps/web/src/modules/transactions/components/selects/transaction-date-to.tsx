@@ -1,6 +1,6 @@
-import {format} from 'date-fns';
+import {add, format} from 'date-fns';
 import {ChevronsUpDown} from 'lucide-react';
-import {useState} from 'react';
+import {useMemo, useState} from 'react';
 
 import {Button} from '@/components/ui/button';
 import {Calendar} from '@/components/ui/calendar';
@@ -20,6 +20,12 @@ const TransactionDateToPicker: React.FC<TransactionDateToPickerProps> = ({classN
   const navigate = useNavigate();
 
   const selectedDate = search.transactionDate_to ? new Date(search.transactionDate_to) : undefined;
+
+  const dateDisableReference = useMemo(() => {
+    if (!search.transactionDate_from) return;
+
+    return add(new Date(search.transactionDate_from), {days: 1});
+  }, [search.transactionDate_from]);
 
   const handleSelectDate = (value: Date | undefined) => {
     if (!value) return;
@@ -41,7 +47,14 @@ const TransactionDateToPicker: React.FC<TransactionDateToPickerProps> = ({classN
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto overflow-hidden p-0" align="end" sideOffset={10}>
-          <Calendar mode="single" selected={selectedDate} captionLayout="dropdown" onSelect={handleSelectDate} />
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            // @ts-expect-error Unexpected type errors based on the docs
+            disabled={{before: dateDisableReference}}
+            captionLayout="dropdown"
+            onSelect={handleSelectDate}
+          />
         </PopoverContent>
       </Popover>
     </div>
