@@ -1,4 +1,4 @@
-import {Input} from '@/components/ui/input';
+import {Button} from '@/components/ui/button';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/useGetHouseholdCategories';
@@ -6,7 +6,7 @@ import AccountCombobox from './selects/account-combobox';
 import CategoryCombobox from './selects/category-combobox';
 import TransactionDateFromPicker from './selects/transaction-date-from';
 import TransactionDateToPicker from './selects/transaction-date-to';
-import {Button} from '@/components/ui/button';
+import TransactionsTableSearch from './transactions-table-search';
 
 const TransactionsTableActions = () => {
   const {data: me} = useGetMe();
@@ -16,7 +16,7 @@ const TransactionsTableActions = () => {
   return (
     <section className="mb-5">
       <div className="flex flex-col justify-between gap-3">
-        <Input className="max-w-sm" placeholder="Search transactions" />
+        <TransactionsTableSearch />
         <div className="flex items-center gap-2">
           <AccountCombobox accounts={accounts ?? []} />
           <CategoryCombobox categories={categories ?? []} />
