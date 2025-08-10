@@ -11,3 +11,11 @@ export const serializeSortOption = (value: ColumnSort) => {
 
   return `${prefix}${value.id}`;
 };
+
+export const deserializeSortOption = (value: string): ColumnSort => {
+  const desc = value.startsWith('-');
+  const id = desc ? value.slice(1) : value;
+  const direction = desc ? 'desc' : 'asc';
+
+  return {id, desc: direction === 'desc'};
+};

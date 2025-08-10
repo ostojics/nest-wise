@@ -1,14 +1,25 @@
 import {Badge} from '@/components/ui/badge';
+import {cn, deserializeSortOption, serializeSortOption} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {TransactionContract, TransactionType} from '@maya-vault/contracts';
-import {ColumnDef, SortingState, getCoreRowModel, useReactTable} from '@tanstack/react-table';
+import {TransactionSortField} from '@maya-vault/validation';
+import {useNavigate, useSearch} from '@tanstack/react-router';
+import {ColumnDef, getCoreRowModel, SortingState, useReactTable} from '@tanstack/react-table';
 import {format} from 'date-fns';
-import {useMemo, useState} from 'react';
-import {cn, serializeSortOption} from '@/lib/utils';
+import {useMemo} from 'react';
 
 export const useTransactionsTable = (data: TransactionContract[]) => {
   const {formatBalance} = useFormatBalance();
-  const [sorting, setSorting] = useState<SortingState>([{id: 'transactionDate', desc: true}]);
+  const search = useSearch({from: '/__pathlessLayout/transactions'});
+  const navigate = useNavigate();
+
+  const sortValue: SortingState = useMemo(() => {
+    if (!search.sort) {
+      return [{id: 'transactionDate', desc: true}];
+    }
+
+    return [deserializeSortOption(search.sort)];
+  }, [search.sort]);
 
   const columns = useMemo<ColumnDef<TransactionContract>[]>(
     () => [
@@ -70,17 +81,22 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
   const table = useReactTable({
     data,
     columns,
-    state: {sorting},
+    state: {sorting: sortValue},
     onSortingChange: (newSorting) => {
       if (typeof newSorting === 'function') {
-        const sorted = newSorting(sorting);
+        const sorted = newSorting(sortValue);
+        const sort = sorted[0];
 
-        if (sorted[0]) {
-          console.log(serializeSortOption(sorted[0]));
+        if (sort) {
+          void navigate({
+            search: (prev) => ({
+              ...prev,
+              sort: serializeSortOption(sort) as TransactionSortField,
+            }),
+            to: '/transactions',
+          });
         }
       }
-
-      setSorting(newSorting);
     },
     getCoreRowModel: getCoreRowModel(),
     manualSorting: true,
