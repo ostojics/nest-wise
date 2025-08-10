@@ -11,6 +11,7 @@ const TransactionsTableSearch = () => {
 
   return (
     <Input
+      key={search.q ?? 'no-value'}
       className="max-w-sm"
       defaultValue={search.q ?? ''}
       onChange={(e) => debounced(e.target.value)}

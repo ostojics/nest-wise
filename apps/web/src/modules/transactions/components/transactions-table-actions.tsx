@@ -7,9 +7,11 @@ import CategoryCombobox from './selects/category-combobox';
 import TransactionDateFromPicker from './selects/transaction-date-from';
 import TransactionDateToPicker from './selects/transaction-date-to';
 import TransactionsTableSearch from './transactions-table-search';
+import {useNavigate} from '@tanstack/react-router';
 
 const TransactionsTableActions = () => {
   const {data: me} = useGetMe();
+  const navigate = useNavigate();
   const {data: accounts} = useGetHouseholdAccounts(me?.householdId ?? '');
   const {data: categories} = useGetHouseholdCategories(me?.householdId ?? '');
 
@@ -22,7 +24,9 @@ const TransactionsTableActions = () => {
           <CategoryCombobox categories={categories ?? []} />
           <TransactionDateFromPicker />
           <TransactionDateToPicker />
-          <Button>Reset filters</Button>
+          <Button onClick={() => navigate({search: {page: 1, pageSize: 15}, to: '/transactions'})}>
+            Reset filters
+          </Button>
         </div>
       </div>
     </section>
