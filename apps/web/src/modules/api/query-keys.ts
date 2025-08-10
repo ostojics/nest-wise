@@ -9,4 +9,7 @@ export const queryKeys = {
   categories: {
     all: () => ['categories'],
   },
+  transactions: {
+    all: () => ['transactions'],
+  },
 };
