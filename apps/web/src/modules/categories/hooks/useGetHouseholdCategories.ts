@@ -6,6 +6,6 @@ export const useGetHouseholdCategories = (householdId: string) => {
   return useQuery({
     queryKey: queryKeys.categories.all(),
     queryFn: () => getHouseholdCategories(householdId),
-    enabled: !!householdId,
+    enabled: Boolean(householdId),
   });
 };

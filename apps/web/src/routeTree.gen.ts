@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as _pathlessLayoutRouteRouteImport } from './routes/__pathlessLayout/route'
+import { Route as _pathlessLayoutTransactionsRouteImport } from './routes/__pathlessLayout/transactions'
 import { Route as _pathlessLayoutMembersRouteImport } from './routes/__pathlessLayout/members'
 import { Route as _pathlessLayoutDashboardRouteImport } from './routes/__pathlessLayout/dashboard'
 import { Route as _pathlessLayoutAnalyticsRouteImport } from './routes/__pathlessLayout/analytics'
@@ -31,6 +32,12 @@ const _pathlessLayoutRouteRoute = _pathlessLayoutRouteRouteImport.update({
   id: '/__pathlessLayout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const _pathlessLayoutTransactionsRoute =
+  _pathlessLayoutTransactionsRouteImport.update({
+    id: '/transactions',
+    path: '/transactions',
+    getParentRoute: () => _pathlessLayoutRouteRoute,
+  } as any)
 const _pathlessLayoutMembersRoute = _pathlessLayoutMembersRouteImport.update({
   id: '/members',
   path: '/members',
@@ -61,6 +68,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/dashboard': typeof _pathlessLayoutDashboardRoute
   '/members': typeof _pathlessLayoutMembersRoute
+  '/transactions': typeof _pathlessLayoutTransactionsRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -69,6 +77,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/dashboard': typeof _pathlessLayoutDashboardRoute
   '/members': typeof _pathlessLayoutMembersRoute
+  '/transactions': typeof _pathlessLayoutTransactionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,6 +88,7 @@ export interface FileRoutesById {
   '/__pathlessLayout/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/__pathlessLayout/dashboard': typeof _pathlessLayoutDashboardRoute
   '/__pathlessLayout/members': typeof _pathlessLayoutMembersRoute
+  '/__pathlessLayout/transactions': typeof _pathlessLayoutTransactionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/dashboard'
     | '/members'
+    | '/transactions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/dashboard'
     | '/members'
+    | '/transactions'
   id:
     | '__root__'
     | '/__pathlessLayout'
@@ -106,6 +118,7 @@ export interface FileRouteTypes {
     | '/__pathlessLayout/analytics'
     | '/__pathlessLayout/dashboard'
     | '/__pathlessLayout/members'
+    | '/__pathlessLayout/transactions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -136,6 +149,13 @@ declare module '@tanstack/react-router' {
       fullPath: ''
       preLoaderRoute: typeof _pathlessLayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/__pathlessLayout/transactions': {
+      id: '/__pathlessLayout/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof _pathlessLayoutTransactionsRouteImport
+      parentRoute: typeof _pathlessLayoutRouteRoute
     }
     '/__pathlessLayout/members': {
       id: '/__pathlessLayout/members'
@@ -173,6 +193,7 @@ interface _pathlessLayoutRouteRouteChildren {
   _pathlessLayoutAnalyticsRoute: typeof _pathlessLayoutAnalyticsRoute
   _pathlessLayoutDashboardRoute: typeof _pathlessLayoutDashboardRoute
   _pathlessLayoutMembersRoute: typeof _pathlessLayoutMembersRoute
+  _pathlessLayoutTransactionsRoute: typeof _pathlessLayoutTransactionsRoute
 }
 
 const _pathlessLayoutRouteRouteChildren: _pathlessLayoutRouteRouteChildren = {
@@ -180,6 +201,7 @@ const _pathlessLayoutRouteRouteChildren: _pathlessLayoutRouteRouteChildren = {
   _pathlessLayoutAnalyticsRoute: _pathlessLayoutAnalyticsRoute,
   _pathlessLayoutDashboardRoute: _pathlessLayoutDashboardRoute,
   _pathlessLayoutMembersRoute: _pathlessLayoutMembersRoute,
+  _pathlessLayoutTransactionsRoute: _pathlessLayoutTransactionsRoute,
 }
 
 const _pathlessLayoutRouteRouteWithChildren =
