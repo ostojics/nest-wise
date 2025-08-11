@@ -12,7 +12,7 @@ const TransactionsTableSearch = () => {
   return (
     <Input
       key={search.q ?? 'no-value'}
-      className="max-w-sm"
+      className="w-full @xl/transactions-table-actions:max-w-sm"
       defaultValue={search.q ?? ''}
       onChange={(e) => debounced(e.target.value)}
       placeholder="Search transactions"

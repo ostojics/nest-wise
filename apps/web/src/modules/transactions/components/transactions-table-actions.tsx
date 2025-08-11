@@ -16,10 +16,10 @@ const TransactionsTableActions = () => {
   const {data: categories} = useGetHouseholdCategories(me?.householdId ?? '');
 
   return (
-    <section className="mb-5">
+    <section className="mb-5 @container/transactions-table-actions">
       <div className="flex flex-col justify-between gap-3">
         <TransactionsTableSearch />
-        <div className="flex items-center gap-2">
+        <div className="grid grid-cols-1 gap-2 @lg/transactions-table-actions:grid-cols-2 @4xl/transactions-table-actions:grid-cols-4 @7xl/transactions-table-actions:flex @7xl/transactions-table-actions:flex-row @7xl/transactions-table-actions:items-center">
           <AccountCombobox accounts={accounts ?? []} />
           <CategoryCombobox categories={categories ?? []} />
           <TransactionDateFromPicker />
