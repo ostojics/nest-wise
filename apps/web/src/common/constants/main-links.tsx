@@ -1,4 +1,4 @@
-import {IconChartBar, IconDashboard, IconUsers} from '@tabler/icons-react';
+import {IconDashboard, IconReceipt, IconUsers} from '@tabler/icons-react';
 import {Landmark} from 'lucide-react';
 
 export const mainLinks = [
@@ -13,9 +13,9 @@ export const mainLinks = [
     icon: <Landmark />,
   },
   {
-    title: 'Analytics',
-    url: '/analytics',
-    icon: <IconChartBar />,
+    title: 'Transactions',
+    url: '/transactions',
+    icon: <IconReceipt />,
   },
   {
     title: 'Members',

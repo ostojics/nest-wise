@@ -22,20 +22,23 @@ export const userRegistrationSchema = z
       ),
     confirm_password: z.string().min(1, 'Password confirmation is required'),
   })
+  .strict()
   .refine((data) => data.password === data.confirm_password, {
     message: "Passwords don't match",
     path: ['confirm_password'],
   });
 
-export const userUpdateSchema = z.object({
-  username: z
-    .string()
-    .min(1, 'Username is required')
-    .max(50, 'Username must be 50 characters or less')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens')
-    .optional(),
-  email: z.string().email('Invalid email format').max(255, 'Email must be 255 characters or less').optional(),
-});
+export const userUpdateSchema = z
+  .object({
+    username: z
+      .string()
+      .min(1, 'Username is required')
+      .max(50, 'Username must be 50 characters or less')
+      .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens')
+      .optional(),
+    email: z.string().email('Invalid email format').max(255, 'Email must be 255 characters or less').optional(),
+  })
+  .strict();
 
 export const passwordChangeSchema = z
   .object({
@@ -50,23 +53,28 @@ export const passwordChangeSchema = z
       ),
     confirm_password: z.string().min(1, 'Password confirmation is required'),
   })
+  .strict()
   .refine((data) => data.newPassword === data.confirm_password, {
     message: "Passwords don't match",
     path: ['confirm_password'],
   });
 
-export const loginSchema = z.object({
-  email: z.string().min(1, 'Email is required').email('Invalid email format'),
-  password: z.string().min(1, 'Password is required'),
-});
+export const loginSchema = z
+  .object({
+    email: z.string().min(1, 'Email is required').email('Invalid email format'),
+    password: z.string().min(1, 'Password is required'),
+  })
+  .strict();
 
-export const userResponseSchema = z.object({
-  id: z.string().uuid(),
-  username: z.string(),
-  email: z.string().email(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
+export const userResponseSchema = z
+  .object({
+    id: z.string().uuid(),
+    username: z.string(),
+    email: z.string().email(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+  })
+  .strict();
 
 export type UserRegistrationDTO = z.infer<typeof userRegistrationSchema>;
 export type UserUpdateDTO = z.infer<typeof userUpdateSchema>;

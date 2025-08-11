@@ -1,34 +1,38 @@
-import {Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBody,
-  ApiParam,
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiNotFoundResponse,
-  ApiUnauthorizedResponse,
-  ApiBadRequestResponse,
-  ApiNoContentResponse,
-} from '@nestjs/swagger';
-import {TransactionsService} from './transactions.service';
-import {AuthGuard} from 'src/common/guards/auth.guard';
-import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {
   CreateTransactionAiDTO,
   CreateTransactionDTO,
+  GetTransactionsQueryDTO,
   UpdateTransactionDTO,
   createTransactionAiSchema,
   createTransactionSchema,
+  getTransactionsQuerySchema,
   updateTransactionSchema,
 } from '@maya-vault/validation';
+import {Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UsePipes} from '@nestjs/common';
 import {
-  CreateTransactionSwaggerDTO,
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import {AuthGuard} from 'src/common/guards/auth.guard';
+import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
+import {
   CreateTransactionAiSwaggerDTO,
-  UpdateTransactionSwaggerDTO,
+  CreateTransactionSwaggerDTO,
+  GetTransactionsResponseSwaggerDTO,
   TransactionResponseSwaggerDTO,
+  UpdateTransactionSwaggerDTO,
 } from 'src/tools/swagger/transactions.swagger.dto';
+import {TransactionsService} from './transactions.service';
 
 @ApiTags('Transactions')
 @Controller({
@@ -37,6 +41,96 @@ import {
 })
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
+
+  @ApiOperation({
+    summary: 'Get transactions with filtering, sorting, and pagination',
+    description: 'Retrieves transactions with comprehensive filtering, sorting, and pagination options',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number (1-based)',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    required: false,
+    type: Number,
+    description: 'Number of items per page (max 100)',
+    example: 20,
+  })
+  @ApiQuery({
+    name: 'sort',
+    required: false,
+    type: String,
+    description:
+      'Sort field. Allowed: amount, -amount, type, -type, transactionDate, -transactionDate, createdAt, -createdAt',
+    example: '-transactionDate',
+  })
+  @ApiQuery({
+    name: 'householdId',
+    required: false,
+    type: String,
+    format: 'uuid',
+    description: 'Filter by household ID',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiQuery({
+    name: 'accountId',
+    required: false,
+    type: String,
+    format: 'uuid',
+    description: 'Filter by account ID',
+    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+  })
+  @ApiQuery({
+    name: 'categoryId',
+    required: false,
+    type: String,
+    format: 'uuid',
+    description: 'Filter by category ID',
+    example: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
+  })
+  @ApiQuery({
+    name: 'transactionDate_from',
+    required: false,
+    type: String,
+    format: 'date',
+    description: 'Filter transactions from this date onwards (YYYY-MM-DD format)',
+    example: '2024-01-01',
+  })
+  @ApiQuery({
+    name: 'transactionDate_to',
+    required: false,
+    type: String,
+    format: 'date',
+    description: 'Filter transactions up to this date (YYYY-MM-DD format)',
+    example: '2024-12-31',
+  })
+  @ApiQuery({
+    name: 'q',
+    required: false,
+    type: String,
+    description: 'Search transactions by description (case-insensitive partial match)',
+    example: 'groceries',
+  })
+  @ApiOkResponse({
+    type: GetTransactionsResponseSwaggerDTO,
+    description: 'Transactions retrieved successfully',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid query parameters',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get('')
+  async getTransactions(@Query(new ZodValidationPipe(getTransactionsQuerySchema)) query: GetTransactionsQueryDTO) {
+    return await this.transactionsService.findTransactions(query);
+  }
 
   @ApiOperation({
     summary: 'Create a new transaction',
@@ -152,34 +246,6 @@ export class TransactionsController {
   @Post('/ai')
   async createTransactionAi(@Body() dto: CreateTransactionAiDTO) {
     return await this.transactionsService.createTransactionAi(dto);
-  }
-
-  @ApiOperation({
-    summary: 'Get transactions by account ID',
-    description: 'Retrieves all transactions for a specific account, ordered by creation date (newest first)',
-  })
-  @ApiParam({
-    name: 'accountId',
-    type: 'string',
-    format: 'uuid',
-    description: 'The unique identifier of the account',
-    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
-  })
-  @ApiOkResponse({
-    type: [TransactionResponseSwaggerDTO],
-    description: 'Transactions retrieved successfully',
-  })
-  @ApiNotFoundResponse({
-    description: 'Account not found',
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Authentication required',
-  })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @Get('account/:accountId')
-  async getTransactionsByAccountId(@Param('accountId') accountId: string) {
-    return await this.transactionsService.findTransactionsByAccountId(accountId);
   }
 
   @ApiOperation({
