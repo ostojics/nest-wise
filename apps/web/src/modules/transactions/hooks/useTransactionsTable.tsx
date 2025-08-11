@@ -1,4 +1,5 @@
 import {Badge} from '@/components/ui/badge';
+import {Skeleton} from '@/components/ui/skeleton';
 import {cn, deserializeSortOption, serializeSortOption} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {TransactionContract, TransactionType} from '@maya-vault/contracts';
@@ -8,10 +9,19 @@ import {ColumnDef, getCoreRowModel, SortingState, useReactTable} from '@tanstack
 import {format} from 'date-fns';
 import {useMemo} from 'react';
 
-export const useTransactionsTable = (data: TransactionContract[]) => {
+interface UseTransactionsTableOptions {
+  isLoading?: boolean;
+  skeletonCount?: number;
+}
+
+export const useTransactionsTable = (
+  data: TransactionContract[],
+  options: UseTransactionsTableOptions = {isLoading: false, skeletonCount: 10},
+) => {
   const {formatBalance} = useFormatBalance();
   const search = useSearch({from: '/__pathlessLayout/transactions'});
   const navigate = useNavigate();
+  const {isLoading, skeletonCount} = options;
 
   const sortValue: SortingState = useMemo(() => {
     if (!search.sort) {
@@ -21,7 +31,7 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
     return [deserializeSortOption(search.sort)];
   }, [search.sort]);
 
-  const columns = useMemo<ColumnDef<TransactionContract>[]>(
+  const baseColumns = useMemo<ColumnDef<TransactionContract>[]>(
     () => [
       {
         accessorKey: 'description',
@@ -78,9 +88,24 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
     [formatBalance],
   );
 
+  const loadingColumns = useMemo<ColumnDef<TransactionContract>[]>(() => {
+    if (!isLoading) return baseColumns;
+
+    return baseColumns.map((col, idx) => ({
+      ...col,
+      cell: () => <Skeleton className={cn('h-4', idx === 0 ? 'w-[80%]' : 'w-[40%]')} />,
+      enableSorting: col.enableSorting ?? true,
+    }));
+  }, [baseColumns, isLoading]);
+
+  const tableData = useMemo<TransactionContract[]>(() => {
+    if (!isLoading) return data;
+    return Array.from({length: skeletonCount ?? 10}, () => ({}) as TransactionContract);
+  }, [data, isLoading, skeletonCount]);
+
   const table = useReactTable({
-    data,
-    columns,
+    data: tableData,
+    columns: loadingColumns,
     state: {sorting: sortValue},
     onSortingChange: (newSorting) => {
       if (typeof newSorting === 'function') {
