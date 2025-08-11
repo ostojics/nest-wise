@@ -102,6 +102,7 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
     manualSorting: true,
     manualFiltering: true,
     manualPagination: true,
+    enableSortingRemoval: false,
     debugAll: true,
   });
 

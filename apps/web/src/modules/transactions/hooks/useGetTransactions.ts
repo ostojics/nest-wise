@@ -12,7 +12,7 @@ export const useGetTransactions = ({search}: UseGetTransactionsArgs) => {
   const {data: me} = useGetMe();
 
   return useQuery({
-    queryKey: queryKeys.transactions.all(),
+    queryKey: queryKeys.transactions.all(search),
     queryFn: () => getTransactions({...search, householdId: me?.householdId}),
     enabled: Boolean(me?.householdId),
   });

@@ -1,3 +1,5 @@
+import {GetTransactionsQueryDTO} from '@maya-vault/validation';
+
 export const queryKeys = {
   me: () => ['me'],
   households: {
@@ -10,6 +12,6 @@ export const queryKeys = {
     all: () => ['categories'],
   },
   transactions: {
-    all: () => ['transactions'],
+    all: (search: GetTransactionsQueryDTO) => ['transactions', search],
   },
 };
