@@ -128,7 +128,8 @@ export const useTransactionsTable = (
     manualFiltering: true,
     manualPagination: true,
     enableSortingRemoval: false,
-    debugAll: true,
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
+    debugAll: import.meta.env.DEV,
   });
 
   return table;
