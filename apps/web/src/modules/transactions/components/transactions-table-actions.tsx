@@ -16,7 +16,7 @@ const TransactionsTableActions = () => {
   const {data: categories} = useGetHouseholdCategories(me?.householdId ?? '');
 
   return (
-    <section className="mb-5">
+    <section className="mb-5 @container/transactions-table-actions">
       <div className="flex flex-col justify-between gap-3">
         <TransactionsTableSearch />
         <div className="flex items-center gap-2">

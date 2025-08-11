@@ -7,12 +7,10 @@ import {cn} from '@/lib/utils';
 
 interface TransactionsTableProps {
   data: TransactionContract[];
-  isLoading?: boolean;
-  skeletonCount?: number;
 }
 
-export function TransactionsTable({data, isLoading = false, skeletonCount = 10}: TransactionsTableProps) {
-  const table = useTransactionsTable(data, {isLoading, skeletonCount});
+export function TransactionsTable({data}: TransactionsTableProps) {
+  const table = useTransactionsTable(data);
 
   return (
     <div className="rounded-md border bg-card">

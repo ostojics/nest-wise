@@ -9,20 +9,13 @@ const fallbackTransactions: TransactionContract[] = [];
 
 const TransactionsPage = () => {
   const search = useSearch({from: '/__pathlessLayout/transactions'});
-  const {data, isLoading} = useGetTransactions({search});
-
-  const isInitialLoading = isLoading && !data;
-  const skeletonCount = search.pageSize;
+  const {data} = useGetTransactions({search});
 
   return (
     <section className="p-4 flex flex-col h-full">
       <div className="flex-1">
         <TransactionsTableActions />
-        <TransactionsTable
-          data={data?.data ?? fallbackTransactions}
-          isLoading={isInitialLoading}
-          skeletonCount={skeletonCount}
-        />
+        <TransactionsTable data={data?.data ?? fallbackTransactions} />
       </div>
       <TransactionsPagination />
     </section>
