@@ -9,6 +9,8 @@ import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransaction
 import {IconEdit, IconTarget} from '@tabler/icons-react';
 import {useMemo, useState} from 'react';
 import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
+import SpendingVsTargetCardSkeleton from './spending-vs-target-card.skeleton';
+import SpendingVsTargetCardError from './spending-vs-target-card.error';
 
 const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -16,7 +18,12 @@ const SpendingVsTargetCard = () => {
   const {data} = useGetMe();
   const {data: household} = useGetHouseholdById(data?.householdId ?? '');
   const {start, end} = getStartAndEndOfMonth();
-  const {data: transactions} = useGetTransactions({
+  const {
+    data: transactions,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetTransactions({
     search: {
       page: 1,
       pageSize: 15,
@@ -60,6 +67,14 @@ const SpendingVsTargetCard = () => {
 
     return cn('h-2.5', colorClass);
   };
+
+  if (isLoading) {
+    return <SpendingVsTargetCardSkeleton />;
+  }
+
+  if (isError) {
+    return <SpendingVsTargetCardError onRetry={refetch} />;
+  }
 
   return (
     <Card className="group flex-1 hover:shadow-md transition-all duration-200">
