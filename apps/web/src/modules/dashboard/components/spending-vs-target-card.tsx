@@ -1,32 +1,45 @@
+import {Button} from '@/components/ui/button';
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Progress} from '@/components/ui/progress';
-import {Button} from '@/components/ui/button';
-import {cn} from '@/lib/utils';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
-import {IconTarget, IconEdit} from '@tabler/icons-react';
-import React, {useMemo, useState} from 'react';
-import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
+import {cn, getStartAndEndOfMonth} from '@/lib/utils';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
+import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransactions';
+import {IconEdit, IconTarget} from '@tabler/icons-react';
+import {useMemo, useState} from 'react';
+import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
 
-const mockSpendingData = {
-  currentSpending: 2847.3,
-};
-
-const SpendingVsTargetCard: React.FC = () => {
-  const {formatBalance} = useFormatBalance();
+const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const {formatBalance} = useFormatBalance();
   const {data} = useGetMe();
   const {data: household} = useGetHouseholdById(data?.householdId ?? '');
+  const {start, end} = getStartAndEndOfMonth();
+  const {data: transactions} = useGetTransactions({
+    search: {
+      page: 1,
+      pageSize: 15,
+      type: 'expense',
+      householdId: data?.householdId,
+      transactionDate_from: start,
+      transactionDate_to: end,
+    },
+  });
+
+  const currentSpending = useMemo(() => {
+    return transactions?.data.reduce((acc, transaction) => acc + transaction.amount, 0) ?? 0;
+  }, [transactions]);
+
   const budget = household?.monthlyBudget ?? 0;
 
   const spendingPercentage = useMemo(() => {
-    return Math.min((mockSpendingData.currentSpending / budget) * 100, 100);
-  }, [budget]);
+    return Math.min((currentSpending / budget) * 100, 100);
+  }, [budget, currentSpending]);
 
   const remainingBudget = useMemo(() => {
-    return budget - mockSpendingData.currentSpending;
-  }, [budget]);
+    return budget - currentSpending;
+  }, [budget, currentSpending]);
 
   const getStatusColor = () => {
     if (spendingPercentage >= 100) return 'text-red-600 dark:text-red-400';
@@ -72,7 +85,7 @@ const SpendingVsTargetCard: React.FC = () => {
             getStatusColor(),
           )}
         >
-          {formatBalance(mockSpendingData.currentSpending)}
+          {formatBalance(currentSpending)}
         </CardTitle>
         <div className="text-sm text-muted-foreground">of {formatBalance(budget)} target</div>
       </CardHeader>
