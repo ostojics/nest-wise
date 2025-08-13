@@ -1,4 +1,4 @@
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
@@ -9,9 +9,11 @@ import {
 } from '@/components/ui/chart';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {IconChartPie} from '@tabler/icons-react';
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {Cell, Pie, PieChart} from 'recharts';
 import {ChartDataEntry} from '../interfaces/chart-data-entry';
+import DateFromPicker from './selects/date-from';
+import DateToPicker from './selects/date-to';
 
 const mockSpendingData = [
   {category: 'Groceries', amount: 1250.75, fill: 'var(--color-Groceries)'},
@@ -69,6 +71,8 @@ const renderCustomizedLabel = (entry: ChartDataEntry) => {
 
 const SpendingByCategoryCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
+  const [dateFrom, setDateFrom] = useState<Date | undefined>();
+  const [dateTo, setDateTo] = useState<Date | undefined>();
 
   const totalSpending = useMemo(() => {
     return mockSpendingData.reduce((total, item) => total + item.amount, 0);
@@ -85,12 +89,15 @@ const SpendingByCategoryCard: React.FC = () => {
 
   return (
     <Card className="@container/card group hover:shadow-md transition-all duration-200 flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardDescription className="flex items-center gap-2">
+      <CardHeader className="flex justify-between items-center">
+        <CardDescription className="flex items-center gap-2 flex-2">
           <IconChartPie className="h-4 w-4" />
-          Spending by Category
+          Spending by category
         </CardDescription>
-        <CardTitle className="text-lg font-semibold">This Month</CardTitle>
+        <div className="flex items-center gap-2 w-full justify-end flex-1">
+          <DateFromPicker value={dateFrom} onChange={setDateFrom} disabledAfter={dateTo} />
+          <DateToPicker value={dateTo} onChange={setDateTo} disabledBefore={dateFrom} />
+        </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
