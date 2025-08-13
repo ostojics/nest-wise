@@ -1,14 +1,15 @@
-import {Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import {Skeleton} from '@/components/ui/skeleton';
+import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {IconWallet} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
+import NetWorthCardSkeleton from './net-worth-card.skeleton';
+import NetWorthCardError from './net-worth-card.error';
 
 const NetWorthCard: React.FC = () => {
   const {data: me} = useGetMe();
-  const {data: accounts, isLoading} = useGetHouseholdAccounts(me?.householdId ?? '');
+  const {data: accounts, isLoading, isError, refetch} = useGetHouseholdAccounts(me?.householdId ?? '');
   const {formatBalance} = useFormatBalance();
   const accountCount = accounts?.length ?? 0;
 
@@ -21,21 +22,11 @@ const NetWorthCard: React.FC = () => {
   }, [accounts]);
 
   if (isLoading) {
-    return (
-      <Card className="flex-1">
-        <CardHeader>
-          <CardDescription>Net Worth</CardDescription>
-          <Skeleton className="h-8 w-48" />
-          <CardAction>
-            <Skeleton className="h-6 w-20" />
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-4 w-40" />
-        </CardFooter>
-      </Card>
-    );
+    return <NetWorthCardSkeleton />;
+  }
+
+  if (isError) {
+    return <NetWorthCardError onRetry={refetch} />;
   }
 
   return (
