@@ -9,16 +9,10 @@ import CategoryAmountLegend from './category-amount-legend';
 import DateFromPicker from './selects/date-from';
 import DateToPicker from './selects/date-to';
 import {generateRandomHsl} from '@/lib/utils';
-
-const mockSpendingData = [
-  {category: 'Groceries', amount: 1250.75, fill: generateRandomHsl()},
-  {category: 'Transportation', amount: 850.3, fill: generateRandomHsl()},
-  {category: 'Utilities', amount: 650.0, fill: generateRandomHsl()},
-  {category: 'Entertainment', amount: 420.5, fill: generateRandomHsl()},
-  {category: 'Dining Out', amount: 380.25, fill: generateRandomHsl()},
-  {category: 'Healthcare', amount: 320.0, fill: generateRandomHsl()},
-  {category: 'Shopping', amount: 275.8, fill: generateRandomHsl()},
-];
+import {SpendingCategoryData} from '../interfaces/spending-category-data';
+import {useSearch} from '@tanstack/react-router';
+import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransactions';
 
 const renderCustomizedLabel = (entry: ChartDataEntry) => {
   const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);
@@ -27,19 +21,45 @@ const renderCustomizedLabel = (entry: ChartDataEntry) => {
 
 const SpendingByCategoryCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
+  const search = useSearch({from: '/__pathlessLayout/dashboard'});
+  const {data: me} = useGetMe();
+  const {data} = useGetTransactions({
+    search: {
+      transactionDate_from: search.transactionDate_from,
+      transactionDate_to: search.transactionDate_to,
+      householdId: me?.householdId,
+      page: 1,
+      pageSize: 2000,
+      type: 'expense',
+    },
+  });
+
+  const spendingData = useMemo(() => {
+    if (!data) return [];
+
+    return data.data.map(({category, amount}) => {
+      const dataPoint: SpendingCategoryData = {
+        category: category?.name ?? 'Other',
+        amount: Number(amount),
+        fill: generateRandomHsl(),
+      };
+
+      return dataPoint;
+    });
+  }, [data]);
 
   const totalSpending = useMemo(() => {
-    return mockSpendingData.reduce((total, item) => total + item.amount, 0);
-  }, []);
+    return spendingData.reduce((total, item) => total + item.amount, 0);
+  }, [spendingData]);
 
   const dataWithPercentages = useMemo(() => {
-    return mockSpendingData.map((item) => ({
+    return spendingData.map((item) => ({
       ...item,
       percentage: ((item.amount / totalSpending) * 100).toFixed(1),
       totalValue: totalSpending,
       value: item.amount,
     }));
-  }, [totalSpending]);
+  }, [spendingData, totalSpending]);
 
   return (
     <Card className="@container/card group hover:shadow-md transition-all duration-200 flex flex-col">
