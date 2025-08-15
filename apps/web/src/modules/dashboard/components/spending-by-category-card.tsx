@@ -8,15 +8,16 @@ import {ChartDataEntry} from '../interfaces/chart-data-entry';
 import CategoryAmountLegend from './category-amount-legend';
 import DateFromPicker from './selects/date-from';
 import DateToPicker from './selects/date-to';
+import {generateRandomHsl} from '@/lib/utils';
 
 const mockSpendingData = [
-  {category: 'Groceries', amount: 1250.75, fill: 'hsl(142, 76%, 36%)'},
-  {category: 'Transportation', amount: 850.3, fill: 'hsl(221, 83%, 53%)'},
-  {category: 'Utilities', amount: 650.0, fill: 'hsl(48, 96%, 53%)'},
-  {category: 'Entertainment', amount: 420.5, fill: 'hsl(280, 87%, 65%)'},
-  {category: 'Dining Out', amount: 380.25, fill: 'hsl(25, 95%, 53%)'},
-  {category: 'Healthcare', amount: 320.0, fill: 'hsl(0, 84%, 60%)'},
-  {category: 'Shopping', amount: 275.8, fill: 'hsl(197, 100%, 48%)'},
+  {category: 'Groceries', amount: 1250.75, fill: generateRandomHsl()},
+  {category: 'Transportation', amount: 850.3, fill: generateRandomHsl()},
+  {category: 'Utilities', amount: 650.0, fill: generateRandomHsl()},
+  {category: 'Entertainment', amount: 420.5, fill: generateRandomHsl()},
+  {category: 'Dining Out', amount: 380.25, fill: generateRandomHsl()},
+  {category: 'Healthcare', amount: 320.0, fill: generateRandomHsl()},
+  {category: 'Shopping', amount: 275.8, fill: generateRandomHsl()},
 ];
 
 const renderCustomizedLabel = (entry: ChartDataEntry) => {

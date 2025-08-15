@@ -53,3 +53,10 @@ export const getDateDisableReference = (date: Date, disableBefore: boolean) => {
 
   return undefined;
 };
+
+export const generateRandomHsl = (): string => {
+  const hue = Math.floor(Math.random() * 360);
+  const saturation = Math.floor(60 + Math.random() * 41);
+  const lightness = Math.floor(35 + Math.random() * 31);
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};
