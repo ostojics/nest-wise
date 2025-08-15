@@ -11,8 +11,8 @@ const dashboardQuerySchema = getTransactionsQuerySchema
     transactionDate_to: true,
   })
   .extend({
-    transactionDate_from: z.string().date().default(start),
-    transactionDate_to: z.string().date().default(end),
+    transactionDate_from: z.string().date().default(start).catch(start),
+    transactionDate_to: z.string().date().default(end).catch(end),
   });
 
 export const Route = createFileRoute('/__pathlessLayout/dashboard')({
