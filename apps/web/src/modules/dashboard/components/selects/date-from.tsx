@@ -1,35 +1,36 @@
-import {format} from 'date-fns';
+import {format, sub} from 'date-fns';
 import {ChevronsUpDown} from 'lucide-react';
-import React, {useEffect, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 
 import {Button} from '@/components/ui/button';
 import {Calendar} from '@/components/ui/calendar';
 import {Label} from '@/components/ui/label';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {cn} from '@/lib/utils';
+import {useNavigate, useSearch} from '@tanstack/react-router';
+import {formatSelectedDate} from '@/modules/transactions/utils';
 
 interface DateFromPickerProps {
   className?: string;
-  value?: Date;
-  onChange?: (date: Date | undefined) => void;
-  disabledAfter?: Date;
 }
 
-const DateFromPicker: React.FC<DateFromPickerProps> = ({className, value, onChange, disabledAfter}) => {
+const DateFromPicker: React.FC<DateFromPickerProps> = ({className}) => {
   const [open, setOpen] = useState(false);
-  const [internalValue, setInternalValue] = useState<Date | undefined>(value);
+  const search = useSearch({from: '/__pathlessLayout/dashboard'});
+  const navigate = useNavigate();
+  const selectedDate = search.transactionDate_from ? new Date(search.transactionDate_from) : undefined;
 
-  useEffect(() => {
-    setInternalValue(value);
-  }, [value]);
+  const dateDisableReference = useMemo(() => {
+    return sub(new Date(search.transactionDate_to), {days: 1});
+  }, [search.transactionDate_to]);
 
-  const selectedDate = value ?? internalValue;
+  const handleSelectDate = (value: Date | undefined) => {
+    if (!value) return;
 
-  const handleSelectDate = (date: Date | undefined) => {
-    if (!date) return;
-
-    onChange?.(date);
-    if (value === undefined) setInternalValue(date);
+    void navigate({
+      search: (prev) => ({...prev, transactionDate_from: formatSelectedDate(value)}),
+      to: '/dashboard',
+    });
     setOpen(false);
   };
 
@@ -48,8 +49,8 @@ const DateFromPicker: React.FC<DateFromPickerProps> = ({className, value, onChan
         <PopoverContent className="w-auto overflow-hidden p-0" align="end" sideOffset={10}>
           <Calendar
             mode="single"
+            disabled={{after: dateDisableReference}}
             selected={selectedDate}
-            disabled={disabledAfter ? {after: disabledAfter} : undefined}
             captionLayout="dropdown"
             onSelect={handleSelectDate}
           />

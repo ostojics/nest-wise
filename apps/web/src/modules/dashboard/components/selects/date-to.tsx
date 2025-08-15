@@ -1,35 +1,34 @@
-import {format} from 'date-fns';
+import {add, format} from 'date-fns';
 import {ChevronsUpDown} from 'lucide-react';
-import React, {useEffect, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 
 import {Button} from '@/components/ui/button';
 import {Calendar} from '@/components/ui/calendar';
 import {Label} from '@/components/ui/label';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {cn} from '@/lib/utils';
+import {formatSelectedDate} from '@/modules/transactions/utils';
+import {useNavigate, useSearch} from '@tanstack/react-router';
 
 interface DateToPickerProps {
   className?: string;
-  value?: Date;
-  onChange?: (date: Date | undefined) => void;
-  disabledBefore?: Date;
 }
 
-const DateToPicker: React.FC<DateToPickerProps> = ({className, value, onChange, disabledBefore}) => {
+const DateToPicker: React.FC<DateToPickerProps> = ({className}) => {
   const [open, setOpen] = useState(false);
-  const [internalValue, setInternalValue] = useState<Date | undefined>(value);
+  const search = useSearch({from: '/__pathlessLayout/dashboard'});
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    setInternalValue(value);
-  }, [value]);
+  const selectedDate = search.transactionDate_to ? new Date(search.transactionDate_to) : undefined;
 
-  const selectedDate = value ?? internalValue;
+  const dateDisableReference = useMemo(() => {
+    return add(new Date(search.transactionDate_from), {days: 1});
+  }, [search.transactionDate_from]);
 
-  const handleSelectDate = (date: Date | undefined) => {
-    if (!date) return;
+  const handleSelectDate = (value: Date | undefined) => {
+    if (!value) return;
 
-    onChange?.(date);
-    if (value === undefined) setInternalValue(date);
+    void navigate({search: (prev) => ({...prev, transactionDate_to: formatSelectedDate(value)}), to: '/dashboard'});
     setOpen(false);
   };
 
@@ -49,7 +48,7 @@ const DateToPicker: React.FC<DateToPickerProps> = ({className, value, onChange, 
           <Calendar
             mode="single"
             selected={selectedDate}
-            disabled={disabledBefore ? {before: disabledBefore} : undefined}
+            disabled={{before: dateDisableReference}}
             captionLayout="dropdown"
             onSelect={handleSelectDate}
           />

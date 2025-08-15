@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/chart';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {IconChartPie} from '@tabler/icons-react';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {Cell, Pie, PieChart} from 'recharts';
 import {ChartDataEntry} from '../interfaces/chart-data-entry';
 import DateFromPicker from './selects/date-from';
@@ -71,8 +71,6 @@ const renderCustomizedLabel = (entry: ChartDataEntry) => {
 
 const SpendingByCategoryCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
-  const [dateFrom, setDateFrom] = useState<Date | undefined>();
-  const [dateTo, setDateTo] = useState<Date | undefined>();
 
   const totalSpending = useMemo(() => {
     return mockSpendingData.reduce((total, item) => total + item.amount, 0);
@@ -95,8 +93,8 @@ const SpendingByCategoryCard: React.FC = () => {
           Spending by category
         </CardDescription>
         <div className="flex items-center gap-2 w-full justify-end flex-1">
-          <DateFromPicker value={dateFrom} onChange={setDateFrom} disabledAfter={dateTo} />
-          <DateToPicker value={dateTo} onChange={setDateTo} disabledBefore={dateFrom} />
+          <DateFromPicker />
+          <DateToPicker />
         </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
