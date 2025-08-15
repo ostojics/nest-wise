@@ -1,12 +1,5 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader} from '@/components/ui/card';
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
+import {ChartConfig, ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {IconChartPie} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
@@ -14,6 +7,7 @@ import {Cell, Pie, PieChart} from 'recharts';
 import {ChartDataEntry} from '../interfaces/chart-data-entry';
 import DateFromPicker from './selects/date-from';
 import DateToPicker from './selects/date-to';
+import CategoryAmountLegend from './category-amount-legend';
 
 const mockSpendingData = [
   {category: 'Groceries', amount: 1250.75, fill: 'var(--color-Groceries)'},
@@ -23,7 +17,6 @@ const mockSpendingData = [
   {category: 'Dining Out', amount: 380.25, fill: 'var(--color-Dining-Out)'},
   {category: 'Healthcare', amount: 320.0, fill: 'var(--color-Healthcare)'},
   {category: 'Shopping', amount: 275.8, fill: 'var(--color-Shopping)'},
-  {category: 'Other', amount: 185.4, fill: 'var(--color-Other)'},
 ];
 
 const chartConfig = {
@@ -57,10 +50,6 @@ const chartConfig = {
   Shopping: {
     label: 'Shopping',
     color: 'hsl(197, 100%, 48%)',
-  },
-  Other: {
-    label: 'Other',
-    color: 'hsl(330, 81%, 60%)',
   },
 } satisfies ChartConfig;
 
@@ -100,7 +89,7 @@ const SpendingByCategoryCard: React.FC = () => {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[280px] @[300px]/card:max-h-[320px]"
+          className="mx-auto aspect-square max-h-[23.75rem] @[300px]/card:max-h-[34.375rem]"
         >
           <PieChart>
             <ChartTooltip
@@ -137,7 +126,7 @@ const SpendingByCategoryCard: React.FC = () => {
                 <Cell key={`cell-${index}`} fill={entry.fill} />
               ))}
             </Pie>
-            <ChartLegend content={<ChartLegendContent />} className="flex-wrap justify-center gap-x-4 gap-y-2" />
+            <ChartLegend content={<CategoryAmountLegend />} />
           </PieChart>
         </ChartContainer>
       </CardContent>
