@@ -1,57 +1,23 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader} from '@/components/ui/card';
-import {ChartConfig, ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
+import {ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {IconChartPie} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
 import {Cell, Pie, PieChart} from 'recharts';
 import {ChartDataEntry} from '../interfaces/chart-data-entry';
+import CategoryAmountLegend from './category-amount-legend';
 import DateFromPicker from './selects/date-from';
 import DateToPicker from './selects/date-to';
-import CategoryAmountLegend from './category-amount-legend';
 
 const mockSpendingData = [
-  {category: 'Groceries', amount: 1250.75, fill: 'var(--color-Groceries)'},
-  {category: 'Transportation', amount: 850.3, fill: 'var(--color-Transportation)'},
-  {category: 'Utilities', amount: 650.0, fill: 'var(--color-Utilities)'},
-  {category: 'Entertainment', amount: 420.5, fill: 'var(--color-Entertainment)'},
-  {category: 'Dining Out', amount: 380.25, fill: 'var(--color-Dining-Out)'},
-  {category: 'Healthcare', amount: 320.0, fill: 'var(--color-Healthcare)'},
-  {category: 'Shopping', amount: 275.8, fill: 'var(--color-Shopping)'},
+  {category: 'Groceries', amount: 1250.75, fill: 'hsl(142, 76%, 36%)'},
+  {category: 'Transportation', amount: 850.3, fill: 'hsl(221, 83%, 53%)'},
+  {category: 'Utilities', amount: 650.0, fill: 'hsl(48, 96%, 53%)'},
+  {category: 'Entertainment', amount: 420.5, fill: 'hsl(280, 87%, 65%)'},
+  {category: 'Dining Out', amount: 380.25, fill: 'hsl(25, 95%, 53%)'},
+  {category: 'Healthcare', amount: 320.0, fill: 'hsl(0, 84%, 60%)'},
+  {category: 'Shopping', amount: 275.8, fill: 'hsl(197, 100%, 48%)'},
 ];
-
-const chartConfig = {
-  amount: {
-    label: 'Amount',
-  },
-  Groceries: {
-    label: 'Groceries',
-    color: 'hsl(142, 76%, 36%)',
-  },
-  Transportation: {
-    label: 'Transportation',
-    color: 'hsl(221, 83%, 53%)',
-  },
-  Utilities: {
-    label: 'Utilities',
-    color: 'hsl(48, 96%, 53%)',
-  },
-  Entertainment: {
-    label: 'Entertainment',
-    color: 'hsl(280, 87%, 65%)',
-  },
-  'Dining Out': {
-    label: 'Dining Out',
-    color: 'hsl(25, 95%, 53%)',
-  },
-  Healthcare: {
-    label: 'Healthcare',
-    color: 'hsl(0, 84%, 60%)',
-  },
-  Shopping: {
-    label: 'Shopping',
-    color: 'hsl(197, 100%, 48%)',
-  },
-} satisfies ChartConfig;
 
 const renderCustomizedLabel = (entry: ChartDataEntry) => {
   const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);
@@ -87,10 +53,7 @@ const SpendingByCategoryCard: React.FC = () => {
         </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[23.75rem] @[300px]/card:max-h-[34.375rem]"
-        >
+        <ChartContainer config={{}} className="mx-auto aspect-square max-h-[23.75rem] @[300px]/card:max-h-[34.375rem]">
           <PieChart>
             <ChartTooltip
               cursor={false}
