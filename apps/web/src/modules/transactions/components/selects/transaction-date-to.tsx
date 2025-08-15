@@ -1,4 +1,4 @@
-import {add, format} from 'date-fns';
+import {format} from 'date-fns';
 import {ChevronsUpDown} from 'lucide-react';
 import {useMemo, useState} from 'react';
 
@@ -6,7 +6,7 @@ import {Button} from '@/components/ui/button';
 import {Calendar} from '@/components/ui/calendar';
 import {Label} from '@/components/ui/label';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
-import {cn} from '@/lib/utils';
+import {cn, getDateDisableReference} from '@/lib/utils';
 import {useNavigate, useSearch} from '@tanstack/react-router';
 import {formatSelectedDate} from '../../utils';
 
@@ -24,7 +24,7 @@ const TransactionDateToPicker: React.FC<TransactionDateToPickerProps> = ({classN
   const dateDisableReference = useMemo(() => {
     if (!search.transactionDate_from) return;
 
-    return add(new Date(search.transactionDate_from), {days: 1});
+    return getDateDisableReference(new Date(search.transactionDate_from), false);
   }, [search.transactionDate_from]);
 
   const handleSelectDate = (value: Date | undefined) => {

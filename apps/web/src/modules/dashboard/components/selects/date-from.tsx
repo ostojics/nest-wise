@@ -1,4 +1,4 @@
-import {format, sub} from 'date-fns';
+import {format} from 'date-fns';
 import {ChevronsUpDown} from 'lucide-react';
 import React, {useMemo, useState} from 'react';
 
@@ -6,9 +6,9 @@ import {Button} from '@/components/ui/button';
 import {Calendar} from '@/components/ui/calendar';
 import {Label} from '@/components/ui/label';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
-import {cn} from '@/lib/utils';
-import {useNavigate, useSearch} from '@tanstack/react-router';
+import {cn, getDateDisableReference} from '@/lib/utils';
 import {formatSelectedDate} from '@/modules/transactions/utils';
+import {useNavigate, useSearch} from '@tanstack/react-router';
 
 interface DateFromPickerProps {
   className?: string;
@@ -21,7 +21,7 @@ const DateFromPicker: React.FC<DateFromPickerProps> = ({className}) => {
   const selectedDate = search.transactionDate_from ? new Date(search.transactionDate_from) : undefined;
 
   const dateDisableReference = useMemo(() => {
-    return sub(new Date(search.transactionDate_to), {days: 1});
+    return getDateDisableReference(new Date(search.transactionDate_to), true);
   }, [search.transactionDate_to]);
 
   const handleSelectDate = (value: Date | undefined) => {
@@ -49,6 +49,7 @@ const DateFromPicker: React.FC<DateFromPickerProps> = ({className}) => {
         <PopoverContent className="w-auto overflow-hidden p-0" align="end" sideOffset={10}>
           <Calendar
             mode="single"
+            // @ts-expect-error Unexpected type errors based on the docs
             disabled={{after: dateDisableReference}}
             selected={selectedDate}
             captionLayout="dropdown"
