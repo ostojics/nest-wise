@@ -83,16 +83,15 @@ export class TransactionsRepository {
         SELECT
           s.month_start,
           s.tx_count,
-          SUM(s.net_change) OVER (ORDER BY s.month_start ROWS UNBOUNDED PRECEDING)::numeric AS cum_net_change
+          SUM(s.net_change) OVER (ORDER BY s.month_start ROWS UNBOUNDED PRECEDING)::numeric AS cum_net_change,
+          b.baseline
         FROM series s
+        CROSS JOIN baseline b
       )
       SELECT
         to_char(a.month_start, 'FMMonth') AS month,
         to_char(a.month_start, 'Mon') AS month_short,
-        CASE WHEN a.tx_count > 0
-             THEN (SELECT baseline FROM baseline) + a.cum_net_change
-             ELSE NULL
-        END AS amount,
+        (a.baseline + a.cum_net_change) AS amount,
         (a.tx_count > 0) AS has_data
       FROM accum a
       ORDER BY a.month_start ASC;

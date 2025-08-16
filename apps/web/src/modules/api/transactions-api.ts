@@ -1,6 +1,6 @@
 import {CreateTransactionDTO, CreateTransactionAiDTO, GetTransactionsQueryDTO} from '@maya-vault/validation';
 import httpClient from './http-client';
-import {GetTransactionsResponseContract} from '@maya-vault/contracts';
+import {GetTransactionsResponseContract, NetWorthTrendPointContract} from '@maya-vault/contracts';
 
 export const getTransactions = async (query: GetTransactionsQueryDTO) => {
   return httpClient
@@ -24,4 +24,8 @@ export const createAiTransaction = async (transaction: CreateTransactionAiDTO) =
       json: transaction,
     })
     .json();
+};
+
+export const getNetWorthTrend = async () => {
+  return await httpClient.get('v1/transactions/net-worth-trend').json<NetWorthTrendPointContract[]>();
 };
