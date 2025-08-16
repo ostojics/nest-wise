@@ -1,26 +1,12 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
+import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {NetWorthTrendPointContract} from '@maya-vault/contracts';
 import {IconTrendingUp} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
 import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell} from 'recharts';
 import {useGetNetWorthTrendData} from '../hooks/useGetNetWorthTrendData';
-
-// const mockNetWorthData: NetWorthTrendPointContract[] = [
-//   {month: 'January', monthShort: 'Jan', amount: 8450.75, hasData: true},
-//   {month: 'February', monthShort: 'Feb', amount: 8920.3, hasData: true},
-//   {month: 'March', monthShort: 'Mar', amount: 9180.5, hasData: true},
-//   {month: 'April', monthShort: 'Apr', amount: null, hasData: false},
-//   {month: 'May', monthShort: 'May', amount: 9650.25, hasData: true},
-//   {month: 'June', monthShort: 'Jun', amount: 10120.8, hasData: true},
-//   {month: 'July', monthShort: 'Jul', amount: 10890.4, hasData: true},
-//   {month: 'August', monthShort: 'Aug', amount: 11250.15, hasData: true},
-//   {month: 'September', monthShort: 'Sep', amount: null, hasData: false},
-//   {month: 'October', monthShort: 'Oct', amount: 12180.9, hasData: true},
-//   {month: 'November', monthShort: 'Nov', amount: 12750.6, hasData: true},
-//   {month: 'December', monthShort: 'Dec', amount: 13420.85, hasData: true},
-// ];
 
 const chartConfig = {
   amount: {
@@ -156,13 +142,14 @@ const NetWorthTrendCard: React.FC = () => {
       <CardFooter className="flex-col gap-2 text-sm pt-4">
         {growth && (
           <div
-            className={`flex gap-2 leading-none font-medium items-center ${
-              growth.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-            }`}
+            className={cn(
+              'flex gap-2 leading-none font-medium items-center',
+              growth.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
+            )}
           >
             {growth.isPositive ? 'Up' : 'Down'} by {formatBalance(Math.abs(growth.amount))} (
             {Math.abs(growth.percentage).toFixed(1)}%) from last data point
-            <IconTrendingUp className={`h-4 w-4 ${growth.isPositive ? 'rotate-0' : 'rotate-180'}`} />
+            <IconTrendingUp className={cn('h-4 w-4', growth.isPositive ? 'rotate-0' : 'rotate-180')} />
           </div>
         )}
       </CardFooter>
