@@ -13,6 +13,8 @@ import {SpendingCategoryData} from '../interfaces/spending-category-data';
 import {useSearch} from '@tanstack/react-router';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransactions';
+import SpendingByCategoryCardSkeleton from './spending-by-category-card.skeleton';
+import SpendingByCategoryCardError from './spending-by-category-card.error';
 
 const renderCustomizedLabel = (entry: ChartDataEntry) => {
   const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);
@@ -23,7 +25,7 @@ const SpendingByCategoryCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
   const search = useSearch({from: '/__pathlessLayout/dashboard'});
   const {data: me} = useGetMe();
-  const {data} = useGetTransactions({
+  const {data, isLoading, isError, refetch} = useGetTransactions({
     search: {
       transactionDate_from: search.transactionDate_from,
       transactionDate_to: search.transactionDate_to,
@@ -65,6 +67,14 @@ const SpendingByCategoryCard: React.FC = () => {
       value: item.amount,
     }));
   }, [spendingData, totalSpending]);
+
+  if (isLoading) {
+    return <SpendingByCategoryCardSkeleton />;
+  }
+
+  if (isError) {
+    return <SpendingByCategoryCardError onRetry={refetch} />;
+  }
 
   return (
     <Card className="@container/card group hover:shadow-md transition-all duration-200 flex flex-col">
