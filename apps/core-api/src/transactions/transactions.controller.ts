@@ -23,7 +23,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import {AuthGuard} from 'src/common/guards/auth.guard';
+import {AuthGuard, JwtPayload} from 'src/common/guards/auth.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {
   CreateTransactionAiSwaggerDTO,
@@ -33,6 +33,10 @@ import {
   UpdateTransactionSwaggerDTO,
 } from 'src/tools/swagger/transactions.swagger.dto';
 import {TransactionsService} from './transactions.service';
+import {CurrentUser} from 'src/common/decorators/current-user.decorator';
+import {UsersService} from 'src/users/users.service';
+import {NetWorthTrendPointContract} from '@maya-vault/contracts';
+import {NetWorthTrendPointSwaggerDTO} from 'src/tools/swagger/transactions.swagger.dto';
 
 @ApiTags('Transactions')
 @Controller({
@@ -40,7 +44,10 @@ import {TransactionsService} from './transactions.service';
   path: 'transactions',
 })
 export class TransactionsController {
-  constructor(private readonly transactionsService: TransactionsService) {}
+  constructor(
+    private readonly transactionsService: TransactionsService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @ApiOperation({
     summary: 'Get transactions with filtering, sorting, and pagination',
@@ -130,6 +137,24 @@ export class TransactionsController {
   @Get('')
   async getTransactions(@Query(new ZodValidationPipe(getTransactionsQuerySchema)) query: GetTransactionsQueryDTO) {
     return await this.transactionsService.findTransactions(query);
+  }
+
+  @ApiOperation({
+    summary: 'Get net worth trend (last 12 months)',
+    description:
+      'Returns month-by-month household net worth for the last 12 months. Household inferred from current user.',
+  })
+  @ApiOkResponse({
+    description: 'Net worth trend computed successfully',
+    type: [NetWorthTrendPointSwaggerDTO],
+  })
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get('net-worth-trend')
+  async getNetWorthTrend(@CurrentUser() user: JwtPayload): Promise<NetWorthTrendPointContract[]> {
+    const me = await this.usersService.findUserById(user.sub);
+    return await this.transactionsService.getNetWorthTrend(me.householdId);
   }
 
   @ApiOperation({

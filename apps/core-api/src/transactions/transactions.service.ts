@@ -17,6 +17,7 @@ import {AccountsService} from '../accounts/accounts.service';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 import {Transaction} from './transaction.entity';
 import {TransactionsRepository} from './transactions.repository';
+import {NetWorthTrendPointContract} from '@maya-vault/contracts';
 
 @Injectable()
 export class TransactionsService {
@@ -46,6 +47,10 @@ export class TransactionsService {
 
       return transaction;
     });
+  }
+
+  async getNetWorthTrend(householdId: string): Promise<NetWorthTrendPointContract[]> {
+    return await this.transactionsRepository.getNetWorthTrendForHousehold(householdId);
   }
 
   async createTransactionAi(transactionData: CreateTransactionAiDTO): Promise<Transaction> {

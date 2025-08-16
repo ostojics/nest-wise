@@ -27,3 +27,10 @@ export interface GetTransactionsResponseContract {
   data: TransactionContract[];
   meta: PaginationMetaContract;
 }
+
+export interface NetWorthTrendPointContract {
+  month: string;
+  monthShort: string;
+  amount: number | null;
+  hasData: boolean;
+}
