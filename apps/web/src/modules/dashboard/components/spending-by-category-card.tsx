@@ -37,15 +37,20 @@ const SpendingByCategoryCard: React.FC = () => {
   const spendingData = useMemo(() => {
     if (!data) return [];
 
-    return data.data.map(({category, amount}) => {
-      const dataPoint: SpendingCategoryData = {
-        category: category?.name ?? 'Other',
-        amount: Number(amount),
-        fill: generateRandomHsl(),
-      };
+    const totalsByCategory = data.data.reduce<Record<string, number>>((acc, {category, amount}) => {
+      const key = category?.name ?? 'Other';
+      acc[key] = (acc[key] ?? 0) + Number(amount);
+      return acc;
+    }, {});
 
-      return dataPoint;
-    });
+    return Object.entries(totalsByCategory).map(
+      ([category, amount]) =>
+        ({
+          category,
+          amount,
+          fill: generateRandomHsl(),
+        }) satisfies SpendingCategoryData,
+    );
   }, [data]);
 
   const totalSpending = useMemo(() => {
