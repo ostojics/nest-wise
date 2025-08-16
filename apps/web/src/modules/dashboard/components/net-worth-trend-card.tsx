@@ -7,6 +7,8 @@ import {IconTrendingUp} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
 import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell} from 'recharts';
 import {useGetNetWorthTrendData} from '../hooks/useGetNetWorthTrendData';
+import NetWorthTrendCardSkeleton from './net-worth-trend-card.skeleton';
+import NetWorthTrendCardError from './net-worth-trend-card.error';
 
 const chartConfig = {
   amount: {
@@ -17,7 +19,7 @@ const chartConfig = {
 
 const NetWorthTrendCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
-  const {data} = useGetNetWorthTrendData();
+  const {data, isLoading, isError, refetch} = useGetNetWorthTrendData();
 
   const chartData = useMemo(() => {
     return (
@@ -55,6 +57,14 @@ const NetWorthTrendCard: React.FC = () => {
 
     return value;
   };
+
+  if (isLoading) {
+    return <NetWorthTrendCardSkeleton />;
+  }
+
+  if (isError) {
+    return <NetWorthTrendCardError onRetry={refetch} />;
+  }
 
   return (
     <Card className="@container/card group hover:shadow-md transition-all duration-200 flex flex-col @xl/main:col-span-2">
