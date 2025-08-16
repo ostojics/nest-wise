@@ -78,18 +78,18 @@ const SpendingByCategoryCard: React.FC = () => {
 
   return (
     <Card className="@container/card group hover:shadow-md transition-all duration-200 flex flex-col">
-      <CardHeader className="flex justify-between items-center">
+      <CardHeader className="flex flex-col gap-4 justify-start @2xl/card:flex-row @2xl/card:items-center">
         <CardDescription className="flex items-center gap-2 flex-2">
           <IconChartPie className="h-4 w-4" />
           Spending by category
         </CardDescription>
-        <div className="flex items-center gap-2 w-full justify-end flex-1">
+        <div className="flex flex-col gap-2 w-full flex-1 @2xl/card:flex-row">
           <DateFromPicker />
           <DateToPicker />
         </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer config={{}} className="mx-auto aspect-square max-h-[23.75rem] @[300px]/card:max-h-[34.375rem]">
+        <ChartContainer config={{}} className="mx-auto aspect-square max-h-[23.75rem] @2xs/card:max-h-[34.375rem]">
           <PieChart>
             <ChartTooltip
               cursor={false}
