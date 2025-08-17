@@ -45,8 +45,10 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, on
       },
       {
         onSuccess: () => {
-          onOpenChange(false);
           reset();
+        },
+        onSettled: () => {
+          onOpenChange(false);
         },
       },
     );

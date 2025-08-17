@@ -1,66 +1,20 @@
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader} from '@/components/ui/card';
+import {ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {IconChartPie} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
 import {Cell, Pie, PieChart} from 'recharts';
 import {ChartDataEntry} from '../interfaces/chart-data-entry';
-
-const mockSpendingData = [
-  {category: 'Groceries', amount: 1250.75, fill: 'var(--color-Groceries)'},
-  {category: 'Transportation', amount: 850.3, fill: 'var(--color-Transportation)'},
-  {category: 'Utilities', amount: 650.0, fill: 'var(--color-Utilities)'},
-  {category: 'Entertainment', amount: 420.5, fill: 'var(--color-Entertainment)'},
-  {category: 'Dining Out', amount: 380.25, fill: 'var(--color-Dining-Out)'},
-  {category: 'Healthcare', amount: 320.0, fill: 'var(--color-Healthcare)'},
-  {category: 'Shopping', amount: 275.8, fill: 'var(--color-Shopping)'},
-  {category: 'Other', amount: 185.4, fill: 'var(--color-Other)'},
-];
-
-const chartConfig = {
-  amount: {
-    label: 'Amount',
-  },
-  Groceries: {
-    label: 'Groceries',
-    color: 'hsl(142, 76%, 36%)',
-  },
-  Transportation: {
-    label: 'Transportation',
-    color: 'hsl(221, 83%, 53%)',
-  },
-  Utilities: {
-    label: 'Utilities',
-    color: 'hsl(48, 96%, 53%)',
-  },
-  Entertainment: {
-    label: 'Entertainment',
-    color: 'hsl(280, 87%, 65%)',
-  },
-  'Dining Out': {
-    label: 'Dining Out',
-    color: 'hsl(25, 95%, 53%)',
-  },
-  Healthcare: {
-    label: 'Healthcare',
-    color: 'hsl(0, 84%, 60%)',
-  },
-  Shopping: {
-    label: 'Shopping',
-    color: 'hsl(197, 100%, 48%)',
-  },
-  Other: {
-    label: 'Other',
-    color: 'hsl(330, 81%, 60%)',
-  },
-} satisfies ChartConfig;
+import CategoryAmountLegend from './category-amount-legend';
+import DateFromPicker from './selects/date-from';
+import DateToPicker from './selects/date-to';
+import {generateRandomHsl} from '@/lib/utils';
+import {SpendingCategoryData} from '../interfaces/spending-category-data';
+import {useSearch} from '@tanstack/react-router';
+import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransactions';
+import SpendingByCategoryCardSkeleton from './spending-by-category-card.skeleton';
+import SpendingByCategoryCardError from './spending-by-category-card.error';
 
 const renderCustomizedLabel = (entry: ChartDataEntry) => {
   const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);
@@ -69,34 +23,73 @@ const renderCustomizedLabel = (entry: ChartDataEntry) => {
 
 const SpendingByCategoryCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
+  const search = useSearch({from: '/__pathlessLayout/dashboard'});
+  const {data: me} = useGetMe();
+  const {data, isLoading, isError, refetch} = useGetTransactions({
+    search: {
+      transactionDate_from: search.transactionDate_from,
+      transactionDate_to: search.transactionDate_to,
+      householdId: me?.householdId,
+      page: 1,
+      pageSize: 2000,
+      type: 'expense',
+    },
+  });
+
+  const spendingData = useMemo(() => {
+    if (!data) return [];
+
+    const totalsByCategory = data.data.reduce<Record<string, number>>((acc, {category, amount}) => {
+      const key = category?.name ?? 'Other';
+      acc[key] = (acc[key] ?? 0) + Number(amount);
+      return acc;
+    }, {});
+
+    return Object.entries(totalsByCategory).map(
+      ([category, amount]) =>
+        ({
+          category,
+          amount,
+          fill: generateRandomHsl(),
+        }) satisfies SpendingCategoryData,
+    );
+  }, [data]);
 
   const totalSpending = useMemo(() => {
-    return mockSpendingData.reduce((total, item) => total + item.amount, 0);
-  }, []);
+    return spendingData.reduce((total, item) => total + item.amount, 0);
+  }, [spendingData]);
 
   const dataWithPercentages = useMemo(() => {
-    return mockSpendingData.map((item) => ({
+    return spendingData.map((item) => ({
       ...item,
       percentage: ((item.amount / totalSpending) * 100).toFixed(1),
       totalValue: totalSpending,
       value: item.amount,
     }));
-  }, [totalSpending]);
+  }, [spendingData, totalSpending]);
+
+  if (isLoading) {
+    return <SpendingByCategoryCardSkeleton />;
+  }
+
+  if (isError) {
+    return <SpendingByCategoryCardError onRetry={refetch} />;
+  }
 
   return (
     <Card className="@container/card group hover:shadow-md transition-all duration-200 flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardDescription className="flex items-center gap-2">
+      <CardHeader className="flex flex-col gap-4 justify-start @2xl/card:flex-row @2xl/card:items-center">
+        <CardDescription className="flex items-center gap-2 flex-2">
           <IconChartPie className="h-4 w-4" />
-          Spending by Category
+          Spending by category
         </CardDescription>
-        <CardTitle className="text-lg font-semibold">This Month</CardTitle>
+        <div className="flex flex-col gap-2 w-full flex-1 @2xl/card:flex-row">
+          <DateFromPicker />
+          <DateToPicker />
+        </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[280px] @[300px]/card:max-h-[320px]"
-        >
+        <ChartContainer config={{}} className="mx-auto aspect-square max-h-[23.75rem] @2xs/card:max-h-[34.375rem]">
           <PieChart>
             <ChartTooltip
               cursor={false}
@@ -132,7 +125,7 @@ const SpendingByCategoryCard: React.FC = () => {
                 <Cell key={`cell-${index}`} fill={entry.fill} />
               ))}
             </Pie>
-            <ChartLegend content={<ChartLegendContent />} className="flex-wrap justify-center gap-x-4 gap-y-2" />
+            <ChartLegend content={<CategoryAmountLegend />} />
           </PieChart>
         </ChartContainer>
       </CardContent>

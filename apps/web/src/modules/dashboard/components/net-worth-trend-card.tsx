@@ -1,25 +1,14 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
+import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {NetWorthTrendPointContract} from '@maya-vault/contracts';
 import {IconTrendingUp} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
 import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell} from 'recharts';
-import {NetWorthDataPoint} from '../interfaces/net-worth-data-point';
-
-const mockNetWorthData: NetWorthDataPoint[] = [
-  {month: 'January', monthShort: 'Jan', amount: 8450.75, hasData: true},
-  {month: 'February', monthShort: 'Feb', amount: 8920.3, hasData: true},
-  {month: 'March', monthShort: 'Mar', amount: 9180.5, hasData: true},
-  {month: 'April', monthShort: 'Apr', amount: null, hasData: false},
-  {month: 'May', monthShort: 'May', amount: 9650.25, hasData: true},
-  {month: 'June', monthShort: 'Jun', amount: 10120.8, hasData: true},
-  {month: 'July', monthShort: 'Jul', amount: 10890.4, hasData: true},
-  {month: 'August', monthShort: 'Aug', amount: 11250.15, hasData: true},
-  {month: 'September', monthShort: 'Sep', amount: null, hasData: false},
-  {month: 'October', monthShort: 'Oct', amount: 12180.9, hasData: true},
-  {month: 'November', monthShort: 'Nov', amount: 12750.6, hasData: true},
-  {month: 'December', monthShort: 'Dec', amount: 13420.85, hasData: true},
-];
+import {useGetNetWorthTrendData} from '../hooks/use-get-net-worth-trend-data';
+import NetWorthTrendCardSkeleton from './net-worth-trend-card.skeleton';
+import NetWorthTrendCardError from './net-worth-trend-card.error';
 
 const chartConfig = {
   amount: {
@@ -30,17 +19,20 @@ const chartConfig = {
 
 const NetWorthTrendCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
+  const {data, isLoading, isError, refetch} = useGetNetWorthTrendData();
 
   const chartData = useMemo(() => {
-    return mockNetWorthData.map((dataPoint) => ({
-      ...dataPoint,
-      displayAmount: dataPoint.hasData ? dataPoint.amount : 0, // Use 0 for chart rendering
-      fill: dataPoint.hasData ? 'var(--color-amount)' : 'var(--color-no-data)',
-    }));
-  }, []);
+    return (
+      data?.map((dataPoint) => ({
+        ...dataPoint,
+        displayAmount: dataPoint.hasData ? dataPoint.amount : 0, // Use 0 for chart rendering
+        fill: dataPoint.hasData ? 'var(--color-amount)' : 'var(--color-no-data)',
+      })) ?? []
+    );
+  }, [data]);
 
   const growth = useMemo(() => {
-    const dataWithValues = mockNetWorthData.filter((point) => point.hasData && point.amount !== null);
+    const dataWithValues = data?.filter((point) => point.hasData && point.amount !== null) ?? [];
     if (dataWithValues.length < 2) return null;
 
     const latest = dataWithValues[dataWithValues.length - 1];
@@ -56,7 +48,7 @@ const NetWorthTrendCard: React.FC = () => {
       percentage: percentage,
       isPositive: change >= 0,
     };
-  }, []);
+  }, [data]);
 
   const customLabelFormatter = (value: number, _name?: string) => {
     if (value === 0) {
@@ -65,6 +57,14 @@ const NetWorthTrendCard: React.FC = () => {
 
     return value;
   };
+
+  if (isLoading) {
+    return <NetWorthTrendCardSkeleton />;
+  }
+
+  if (isError) {
+    return <NetWorthTrendCardError onRetry={refetch} />;
+  }
 
   return (
     <Card className="@container/card group hover:shadow-md transition-all duration-200 flex flex-col @xl/main:col-span-2">
@@ -110,7 +110,7 @@ const NetWorthTrendCard: React.FC = () => {
                 <ChartTooltipContent
                   hideLabel
                   formatter={(value, name, props) => {
-                    const payload = props.payload as NetWorthDataPoint & {displayAmount: number};
+                    const payload = props.payload as NetWorthTrendPointContract & {displayAmount: number};
                     if (!payload.hasData) {
                       return (
                         <div className="flex w-full justify-between items-center gap-4">
@@ -152,13 +152,14 @@ const NetWorthTrendCard: React.FC = () => {
       <CardFooter className="flex-col gap-2 text-sm pt-4">
         {growth && (
           <div
-            className={`flex gap-2 leading-none font-medium items-center ${
-              growth.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-            }`}
+            className={cn(
+              'flex gap-2 leading-none font-medium items-center',
+              growth.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
+            )}
           >
             {growth.isPositive ? 'Up' : 'Down'} by {formatBalance(Math.abs(growth.amount))} (
             {Math.abs(growth.percentage).toFixed(1)}%) from last data point
-            <IconTrendingUp className={`h-4 w-4 ${growth.isPositive ? 'rotate-0' : 'rotate-180'}`} />
+            <IconTrendingUp className={cn('h-4 w-4', growth.isPositive ? 'rotate-0' : 'rotate-180')} />
           </div>
         )}
       </CardFooter>

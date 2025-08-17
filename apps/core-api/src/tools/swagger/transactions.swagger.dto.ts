@@ -263,3 +263,32 @@ export class GetTransactionsResponseSwaggerDTO {
   })
   meta: PaginationMetaSwaggerDTO;
 }
+
+export class NetWorthTrendPointSwaggerDTO {
+  @ApiProperty({
+    description: 'Full month name',
+    example: 'January',
+  })
+  month: string;
+
+  @ApiProperty({
+    description: 'Short month name',
+    example: 'Jan',
+  })
+  monthShort: string;
+
+  @ApiProperty({
+    description: 'Net worth amount at month end (null if no transactions in that month)',
+    example: 13420.85,
+    nullable: true,
+  })
+  amount: number | null;
+
+  @ApiProperty({
+    description: 'Indicates whether the month has any transactions',
+    example: true,
+  })
+  hasData: boolean;
+}
+
+export const NetWorthTrendArraySwagger = [NetWorthTrendPointSwaggerDTO];
