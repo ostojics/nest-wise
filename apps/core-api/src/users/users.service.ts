@@ -3,10 +3,14 @@ import {UsersRepository} from './users.repository';
 import {User} from './user.entity';
 import {CreateUserDTO} from '@maya-vault/validation';
 import {hashPassword} from 'src/lib/hashing/hashing';
+import {HouseholdsService} from 'src/households/households.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly householdsService: HouseholdsService,
+  ) {}
 
   async createUser(userData: CreateUserDTO): Promise<User> {
     const emailExists = await this.usersRepository.emailExists(userData.email);
@@ -46,6 +50,11 @@ export class UsersService {
 
   async findAllUsers(): Promise<User[]> {
     return await this.usersRepository.findAll();
+  }
+
+  async findUsersByHouseholdId(householdId: string): Promise<User[]> {
+    await this.householdsService.findHouseholdById(householdId);
+    return await this.usersRepository.findByHouseholdIdWithHousehold(householdId);
   }
 
   async updateUser(id: string, userData: Partial<User>): Promise<User> {

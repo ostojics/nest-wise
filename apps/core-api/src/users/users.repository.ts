@@ -19,6 +19,7 @@ export class UsersRepository {
     return await this.userRepository.findOne({
       where: {id},
       select: ['id', 'email', 'username', 'createdAt', 'updatedAt', 'householdId'],
+      relations: ['household'],
     });
   }
 
@@ -32,6 +33,28 @@ export class UsersRepository {
 
   async findAll(): Promise<User[]> {
     return await this.userRepository.find();
+  }
+
+  async findByHouseholdIdWithHousehold(householdId: string): Promise<User[]> {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.household', 'household')
+      .where('user.householdId = :householdId', {householdId})
+      .select([
+        'user.id',
+        'user.username',
+        'user.email',
+        'user.createdAt',
+        'user.updatedAt',
+        'user.householdId',
+        'household.id',
+        'household.name',
+        'household.currencyCode',
+        'household.monthlyBudget',
+        'household.createdAt',
+        'household.updatedAt',
+      ])
+      .getMany();
   }
 
   async update(id: string, userData: Partial<User>): Promise<User | null> {
