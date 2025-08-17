@@ -450,6 +450,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
+      zod:
+        specifier: 'catalog:'
+        version: 3.25.76
 
   packages/validation:
     dependencies:
