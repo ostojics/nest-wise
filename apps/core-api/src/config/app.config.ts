@@ -6,6 +6,8 @@ export interface AppConfig {
   jwtSecret: string;
   environment: string;
   openaiApiKey: string;
+  resendApiKey: string;
+  webAppUrl: string;
 }
 
 export const AppConfigName = 'app';
@@ -19,6 +21,8 @@ export function getConfig(): AppConfig {
     jwtSecret: process.env.JWT_SECRET || 'secret',
     environment: process.env.NODE_ENV || 'development',
     openaiApiKey: process.env.OPENAI_API_KEY || '',
+    resendApiKey: process.env.RESEND_API_KEY || '',
+    webAppUrl: process.env.WEB_APP_URL || '',
   };
 }
 

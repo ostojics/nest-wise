@@ -16,6 +16,7 @@ import {HouseholdsModule} from './households/households.module';
 import {AccountsModule} from './accounts/accounts.module';
 import {CategoriesModule} from './categories/categories.module';
 import {TransactionsModule} from './transactions/transactions.module';
+import {EmailsModule} from './emails/emails.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import {TransactionsModule} from './transactions/transactions.module';
     AccountsModule,
     CategoriesModule,
     TransactionsModule,
+    EmailsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

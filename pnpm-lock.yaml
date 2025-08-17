@@ -148,6 +148,9 @@ importers:
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
+      resend:
+        specifier: ^6.0.1
+        version: 6.0.1
       rxjs:
         specifier: ^7.8.1
         version: 7.8.2
@@ -520,7 +523,7 @@ importers:
         version: 9.30.0(jiti@2.4.2)
       eslint-plugin-import:
         specifier: ^2.32.0
-        version: 2.32.0(@typescript-eslint/parser@8.35.0(eslint@9.30.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.30.0(jiti@2.4.2))
+        version: 2.32.0(eslint@9.30.0(jiti@2.4.2))
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
@@ -6952,6 +6955,16 @@ packages:
       {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
 
+  resend@6.0.1:
+    resolution:
+      {integrity: sha512-xNZ0gKAOqQcH83lXsqNOwBbpKROnsZpQr9mXRdG6hrHTF9G9Il2pkoTRtq7rJzXMvCZX+I79oahsbSeaYOWRFA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@react-email/render': ^1.1.0
+    peerDependenciesMeta:
+      '@react-email/render':
+        optional: true
+
   resolve-alpn@1.2.1:
     resolution:
       {integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g==}
@@ -11877,17 +11890,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.35.0(eslint@9.30.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint@9.30.0(jiti@2.4.2)):
+  eslint-module-utils@2.12.1(eslint-import-resolver-node@0.3.9)(eslint@9.30.0(jiti@2.4.2)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 8.35.0(eslint@9.30.0(jiti@2.4.2))(typescript@5.8.3)
       eslint: 9.30.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.35.0(eslint@9.30.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.30.0(jiti@2.4.2)):
+  eslint-plugin-import@2.32.0(eslint@9.30.0(jiti@2.4.2)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -11898,7 +11910,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.30.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.35.0(eslint@9.30.0(jiti@2.4.2))(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint@9.30.0(jiti@2.4.2))
+      eslint-module-utils: 2.12.1(eslint-import-resolver-node@0.3.9)(eslint@9.30.0(jiti@2.4.2))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -11909,8 +11921,6 @@ snapshots:
       semver: 6.3.1
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
-    optionalDependencies:
-      '@typescript-eslint/parser': 8.35.0(eslint@9.30.0(jiti@2.4.2))(typescript@5.8.3)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -14157,6 +14167,8 @@ snapshots:
   require-directory@2.1.1: {}
 
   require-from-string@2.0.2: {}
+
+  resend@6.0.1: {}
 
   resolve-alpn@1.2.1: {}
 
