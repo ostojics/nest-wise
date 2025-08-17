@@ -1,9 +1,6 @@
+import UsersPage from '@/modules/users/components/users-page';
 import {createFileRoute} from '@tanstack/react-router';
 
 export const Route = createFileRoute('/__pathlessLayout/members')({
-  component: RouteComponent,
+  component: UsersPage,
 });
-
-function RouteComponent() {
-  return <div>Hello "/__pathlessLayout/members"!</div>;
-}
