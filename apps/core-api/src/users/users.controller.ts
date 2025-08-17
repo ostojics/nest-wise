@@ -1,6 +1,13 @@
 import {InviteUserDTO, inviteUserSchema, UserContract} from '@maya-vault/contracts';
 import {Body, Controller, Get, HttpCode, Post, UseGuards, UsePipes} from '@nestjs/common';
-import {ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse} from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import {Logger} from 'pino-nestjs';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {AuthGuard, JwtPayload} from 'src/common/guards/auth.guard';
@@ -42,7 +49,7 @@ export class UsersController {
     summary: 'Invite a user to my household',
     description: "Invites a user to the authenticated user's household",
   })
-  @ApiOkResponse()
+  @ApiNoContentResponse()
   @ApiUnauthorizedResponse({
     description: 'Authentication required',
   })
