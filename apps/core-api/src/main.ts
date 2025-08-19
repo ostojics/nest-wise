@@ -4,7 +4,7 @@ import {Logger} from 'pino-nestjs';
 import {VERSION_NEUTRAL, VersioningType} from '@nestjs/common';
 import {NestExpressApplication} from '@nestjs/platform-express';
 import {ConfigService} from '@nestjs/config';
-import {GlobalConfig} from './config/config.type';
+import {GlobalConfig} from './config/config.interface';
 import {AppConfig, AppConfigName} from './config/app.config';
 import helmet from 'helmet';
 import setupSwagger from './tools/swagger/swagger.setup';

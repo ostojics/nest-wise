@@ -9,7 +9,7 @@ import {throttlerConfig, throttlerFactory} from './config/throttler.config';
 import {appConfig} from './config/app.config';
 import {DatabaseConfig, databaseConfig, DatabaseConfigName} from './config/database.config';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {GlobalConfig} from './config/config.type';
+import {GlobalConfig} from './config/config.interface';
 import {UsersModule} from './users/users.module';
 import {AuthModule} from './auth/auth.module';
 import {HouseholdsModule} from './households/households.module';
