@@ -1,12 +1,10 @@
-import {Injectable, ConflictException, NotFoundException} from '@nestjs/common';
-import {UsersRepository} from './users.repository';
-import {User} from './user.entity';
 import {CreateUserDTO} from '@maya-vault/validation';
-import {hashPassword} from 'src/lib/hashing/hashing';
-import {HouseholdsService} from 'src/households/households.service';
+import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {EmailsService} from 'src/emails/emails.service';
-import {ConfigService} from '@nestjs/config';
-import {AppConfig, AppConfigName} from 'src/config/app.config';
+import {HouseholdsService} from 'src/households/households.service';
+import {hashPassword} from 'src/lib/hashing/hashing';
+import {User} from './user.entity';
+import {UsersRepository} from './users.repository';
 
 @Injectable()
 export class UsersService {
@@ -14,7 +12,6 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
     private readonly householdsService: HouseholdsService,
     private readonly emailsService: EmailsService,
-    private readonly configService: ConfigService,
   ) {}
 
   async createUser(userData: CreateUserDTO): Promise<User> {
@@ -104,16 +101,10 @@ export class UsersService {
     }
 
     const household = await this.householdsService.findHouseholdById(householdId);
-    const {webAppUrl} = this.configService.getOrThrow<AppConfig>(AppConfigName);
 
-    await this.emailsService.sendEmail({
-      to: email,
-      from: 'no-reply@resend.dev',
-      subject: 'Invitation to join household',
-      html: `
-      <p>You have been invited to join household <b>${household.name}</b> on Maya Vault. Please click the link below to accept the invitation:</p>
-      <a href="${webAppUrl}/invites">Accept Invitation</a>
-      `,
+    await this.emailsService.sendInviteEmail({
+      email,
+      householdName: household.name,
     });
   }
 }
