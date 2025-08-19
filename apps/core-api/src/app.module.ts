@@ -17,10 +17,12 @@ import {AccountsModule} from './accounts/accounts.module';
 import {CategoriesModule} from './categories/categories.module';
 import {TransactionsModule} from './transactions/transactions.module';
 import {EmailsModule} from './emails/emails.module';
+import {BullModule} from '@nestjs/bullmq';
+import {queuesConfig, QueuesConfig, QueuesConfigName} from './config/queues.config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({cache: true, load: [appConfig, throttlerConfig, databaseConfig]}),
+    ConfigModule.forRoot({cache: true, load: [appConfig, throttlerConfig, databaseConfig, queuesConfig]}),
     LoggerModule.forRoot(),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
@@ -35,6 +37,20 @@ import {EmailsModule} from './emails/emails.module';
 
         return {
           ...config,
+        };
+      },
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<GlobalConfig>) => {
+        const config = configService.getOrThrow<QueuesConfig>(QueuesConfigName);
+
+        return {
+          connection: {
+            host: config.redisHost,
+            port: config.redisPort,
+          },
         };
       },
     }),
