@@ -1,6 +1,7 @@
 import {InviteUserDTO, inviteUserSchema, UserContract} from '@maya-vault/contracts';
 import {Body, Controller, Get, HttpCode, Post, UseGuards, UsePipes} from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiNoContentResponse,
   ApiOkResponse,
@@ -52,6 +53,9 @@ export class UsersController {
   @ApiNoContentResponse()
   @ApiUnauthorizedResponse({
     description: 'Authentication required',
+  })
+  @ApiBadRequestResponse({
+    description: 'Validation failed',
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
