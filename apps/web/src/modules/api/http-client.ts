@@ -1,3 +1,4 @@
+import {isPublicRoute} from '@/lib/utils';
 import ky from 'ky';
 
 const httpClient = ky.create({
@@ -9,8 +10,7 @@ const extended = httpClient.extend({
   hooks: {
     afterResponse: [
       (_request, _options, response) => {
-        const isLoginPage = window.location.pathname === '/login';
-        if (isLoginPage) return response;
+        if (isPublicRoute(window.location.pathname)) return response;
 
         const {status} = response;
         if (status === 401 || status === 403) {

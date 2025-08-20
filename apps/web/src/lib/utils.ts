@@ -3,6 +3,7 @@ import {ClassValue, clsx} from 'clsx';
 import {twMerge} from 'tailwind-merge';
 import {STANDARD_DATE_FORMAT} from '@/common/constants/dates';
 import {endOfMonth, format, startOfMonth, add, sub} from 'date-fns';
+import {PUBLIC_PAGES} from '@/common/constants/public-pages';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -59,4 +60,8 @@ export const generateRandomHsl = (): string => {
   const saturation = Math.floor(60 + Math.random() * 41);
   const lightness = Math.floor(35 + Math.random() * 31);
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};
+
+export const isPublicRoute = (path: string) => {
+  return PUBLIC_PAGES.some((page) => path.startsWith(page));
 };

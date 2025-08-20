@@ -47,6 +47,7 @@ const InviteUserDialog = () => {
     });
 
     setIsOpen(false);
+    reset();
   };
 
   return (
