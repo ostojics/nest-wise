@@ -23,7 +23,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import {AuthGuard, JwtPayload} from 'src/common/guards/auth.guard';
+import {AuthGuard} from 'src/common/guards/auth.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {
   CreateTransactionAiSwaggerDTO,
@@ -37,6 +37,7 @@ import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {UsersService} from 'src/users/users.service';
 import {NetWorthTrendPointContract} from '@maya-vault/contracts';
 import {NetWorthTrendPointSwaggerDTO} from 'src/tools/swagger/transactions.swagger.dto';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 
 @ApiTags('Transactions')
 @Controller({

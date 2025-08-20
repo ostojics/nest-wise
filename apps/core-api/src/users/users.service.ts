@@ -5,6 +5,12 @@ import {HouseholdsService} from 'src/households/households.service';
 import {hashPassword} from 'src/lib/hashing/hashing';
 import {User} from './user.entity';
 import {UsersRepository} from './users.repository';
+import {AcceptInviteDTO} from '@maya-vault/contracts';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
+import {JwtService} from '@nestjs/jwt';
+import {Logger} from 'pino-nestjs';
+import {ConfigService} from '@nestjs/config';
+import {AppConfig, AppConfigName} from 'src/config/app.config';
 
 @Injectable()
 export class UsersService {
@@ -12,6 +18,9 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
     private readonly householdsService: HouseholdsService,
     private readonly emailsService: EmailsService,
+    private readonly jwtService: JwtService,
+    private readonly logger: Logger,
+    private readonly configService: ConfigService,
   ) {}
 
   async createUser(userData: CreateUserDTO): Promise<User> {
@@ -105,6 +114,36 @@ export class UsersService {
     await this.emailsService.sendInviteEmail({
       email,
       householdName: household.name,
+      householdId: household.id,
     });
+  }
+
+  async acceptInvite(dto: AcceptInviteDTO) {
+    const payload = await this.jwtService.verifyAsync<JwtPayload>(dto.token);
+    await this.householdsService.findHouseholdById(payload.sub);
+
+    const user = await this.createUser({
+      email: dto.email,
+      username: dto.username,
+      password: dto.password,
+      householdId: payload.sub,
+    });
+
+    const jwt = await this.craftJwt(user.id, user.email);
+    this.logger.log(`User ${dto.email} accepted invite to household ${payload.sub}`);
+
+    return jwt;
+  }
+
+  async craftJwt(userId: string, userEmail: string) {
+    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
+    const payload = {
+      sub: userId,
+      email: userEmail,
+      iss: appConfig.url,
+    };
+
+    const token = await this.jwtService.signAsync(payload);
+    return token;
   }
 }

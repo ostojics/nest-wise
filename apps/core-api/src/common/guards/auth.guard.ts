@@ -1,14 +1,7 @@
 import {Injectable, CanActivate, ExecutionContext, UnauthorizedException} from '@nestjs/common';
 import {JwtService} from '@nestjs/jwt';
 import {Request} from 'express';
-
-export interface JwtPayload {
-  sub: string;
-  email: string;
-  iss: string;
-  iat: number;
-  exp: number;
-}
+import {JwtPayload} from '../interfaces/jwt.payload.interface';
 
 export interface AuthenticatedRequest extends Request {
   user: JwtPayload;
