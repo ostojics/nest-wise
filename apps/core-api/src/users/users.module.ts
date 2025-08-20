@@ -1,12 +1,15 @@
 import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {UsersService} from './users.service';
+import {EmailsModule} from 'src/emails/emails.module';
+import {HouseholdsModule} from 'src/households/households.module';
+import {User} from './user.entity';
 import {UsersController} from './users.controller';
 import {UsersRepository} from './users.repository';
-import {User} from './user.entity';
+import {UsersService} from './users.service';
+import {ConfigModule} from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), HouseholdsModule, EmailsModule, ConfigModule],
   controllers: [UsersController],
   providers: [UsersService, UsersRepository],
   exports: [UsersService],

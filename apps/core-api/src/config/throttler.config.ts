@@ -1,5 +1,5 @@
 import {ConfigService, registerAs} from '@nestjs/config';
-import {GlobalConfig} from './config.type';
+import {GlobalConfig} from './config.interface';
 
 export interface ThrottlerConfig {
   throttlerEnabled: boolean;

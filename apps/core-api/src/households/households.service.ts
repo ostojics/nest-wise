@@ -27,6 +27,7 @@ export class HouseholdsService {
     if (!household) {
       throw new NotFoundException('Household not found');
     }
+
     return household;
   }
 

@@ -1,12 +1,27 @@
-import {Injectable, ConflictException, NotFoundException} from '@nestjs/common';
-import {UsersRepository} from './users.repository';
-import {User} from './user.entity';
 import {CreateUserDTO} from '@maya-vault/validation';
+import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {EmailsService} from 'src/emails/emails.service';
+import {HouseholdsService} from 'src/households/households.service';
 import {hashPassword} from 'src/lib/hashing/hashing';
+import {User} from './user.entity';
+import {UsersRepository} from './users.repository';
+import {AcceptInviteDTO} from '@maya-vault/contracts';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
+import {JwtService} from '@nestjs/jwt';
+import {Logger} from 'pino-nestjs';
+import {ConfigService} from '@nestjs/config';
+import {AppConfig, AppConfigName} from 'src/config/app.config';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly householdsService: HouseholdsService,
+    private readonly emailsService: EmailsService,
+    private readonly jwtService: JwtService,
+    private readonly logger: Logger,
+    private readonly configService: ConfigService,
+  ) {}
 
   async createUser(userData: CreateUserDTO): Promise<User> {
     const emailExists = await this.usersRepository.emailExists(userData.email);
@@ -48,6 +63,11 @@ export class UsersService {
     return await this.usersRepository.findAll();
   }
 
+  async findUsersByHouseholdId(householdId: string): Promise<User[]> {
+    await this.householdsService.findHouseholdById(householdId);
+    return await this.usersRepository.findByHouseholdIdWithHousehold(householdId);
+  }
+
   async updateUser(id: string, userData: Partial<User>): Promise<User> {
     const existingUser = await this.usersRepository.findById(id);
     if (!existingUser) {
@@ -81,5 +101,49 @@ export class UsersService {
     if (!deleted) {
       throw new NotFoundException('User not found');
     }
+  }
+
+  async inviteUser(householdId: string, email: string) {
+    const user = await this.usersRepository.findByEmail(email);
+    if (user) {
+      throw new ConflictException('User already exists');
+    }
+
+    const household = await this.householdsService.findHouseholdById(householdId);
+
+    await this.emailsService.sendInviteEmail({
+      email,
+      householdName: household.name,
+      householdId: household.id,
+    });
+  }
+
+  async acceptInvite(dto: AcceptInviteDTO) {
+    const payload = await this.jwtService.verifyAsync<JwtPayload>(dto.token);
+    await this.householdsService.findHouseholdById(payload.sub);
+
+    const user = await this.createUser({
+      email: dto.email,
+      username: dto.username,
+      password: dto.password,
+      householdId: payload.sub,
+    });
+
+    const jwt = await this.craftJwt(user.id, user.email);
+    this.logger.log(`User ${dto.email} accepted invite to household ${payload.sub}`);
+
+    return jwt;
+  }
+
+  async craftJwt(userId: string, userEmail: string) {
+    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
+    const payload = {
+      sub: userId,
+      email: userEmail,
+      iss: appConfig.url,
+    };
+
+    const token = await this.jwtService.signAsync(payload);
+    return token;
   }
 }

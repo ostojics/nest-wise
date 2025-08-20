@@ -2,7 +2,7 @@ import type {INestApplication} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {DocumentBuilder, OpenAPIObject, SwaggerModule} from '@nestjs/swagger';
 import {AppConfigName} from 'src/config/app.config';
-import {GlobalConfig} from '../../config/config.type';
+import {GlobalConfig} from '../../config/config.interface';
 
 const SWAGGER_PATH = 'swagger';
 const APP_NAME = 'Maya Vault Core API';

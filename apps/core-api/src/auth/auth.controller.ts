@@ -16,7 +16,7 @@ import {ZodSchema} from 'zod';
 import {Response} from 'express';
 import {ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
-import {AuthGuard, JwtPayload} from 'src/common/guards/auth.guard';
+import {AuthGuard} from 'src/common/guards/auth.guard';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {
   AuthSuccessResponseSwaggerDTO,
@@ -25,6 +25,7 @@ import {
   UserResponseSwaggerDTO,
 } from 'src/tools/swagger/auth.swagger.dto';
 import {UserContract} from '@maya-vault/contracts';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 
 @ApiTags('Authentication')
 @Controller({

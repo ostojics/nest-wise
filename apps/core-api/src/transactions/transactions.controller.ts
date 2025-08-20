@@ -23,7 +23,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import {AuthGuard, JwtPayload} from 'src/common/guards/auth.guard';
+import {AuthGuard} from 'src/common/guards/auth.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {
   CreateTransactionAiSwaggerDTO,
@@ -37,6 +37,7 @@ import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {UsersService} from 'src/users/users.service';
 import {NetWorthTrendPointContract} from '@maya-vault/contracts';
 import {NetWorthTrendPointSwaggerDTO} from 'src/tools/swagger/transactions.swagger.dto';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 
 @ApiTags('Transactions')
 @Controller({
@@ -82,6 +83,13 @@ export class TransactionsController {
     format: 'uuid',
     description: 'Filter by household ID',
     example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiQuery({
+    name: 'type',
+    required: false,
+    type: String,
+    description: 'Filter by transaction type (expense or income)',
+    example: 'expense',
   })
   @ApiQuery({
     name: 'accountId',

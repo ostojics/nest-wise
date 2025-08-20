@@ -15,4 +15,7 @@ export const queryKeys = {
     all: (search: GetTransactionsQueryDTO) => ['transactions', search],
     netWorthTrend: () => ['net-worth-trend'],
   },
+  users: {
+    all: () => ['users'],
+  },
 };
