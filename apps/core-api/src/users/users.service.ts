@@ -106,7 +106,7 @@ export class UsersService {
   async inviteUser(householdId: string, email: string) {
     const user = await this.usersRepository.findByEmail(email);
     if (user) {
-      throw new ConflictException('User already exists');
+      throw new ConflictException('User with this email already exists');
     }
 
     const household = await this.householdsService.findHouseholdById(householdId);

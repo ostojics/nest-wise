@@ -12,7 +12,7 @@ export interface UserContract {
 }
 
 export const inviteUserSchema = z.object({
-  email: z.string().email(),
+  email: z.string({message: 'Email is required'}).email({message: 'Email must be valid'}),
 });
 
 export const acceptInviteSchema = z
