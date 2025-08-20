@@ -85,6 +85,13 @@ export class TransactionsController {
     example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   })
   @ApiQuery({
+    name: 'type',
+    required: false,
+    type: String,
+    description: 'Filter by transaction type (expense or income)',
+    example: 'expense',
+  })
+  @ApiQuery({
     name: 'accountId',
     required: false,
     type: String,

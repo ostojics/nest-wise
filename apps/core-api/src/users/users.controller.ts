@@ -9,6 +9,7 @@ import {Body, Controller, Get, HttpCode, Post, Res, UseGuards, UsePipes} from '@
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
@@ -20,12 +21,17 @@ import {Logger} from 'pino-nestjs';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
-import {UserResponseSwaggerDTO} from 'src/tools/swagger/users.swagger.dto';
+import {
+  AcceptInviteSwaggerDTO,
+  InviteUserSwaggerDTO,
+  UserResponseSwaggerDTO,
+} from 'src/tools/swagger/users.swagger.dto';
 import {UsersService} from './users.service';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {Response} from 'express';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {ConfigService} from '@nestjs/config';
+import {AuthSuccessResponseSwaggerDTO} from 'src/tools/swagger/auth.swagger.dto';
 
 @ApiTags('Users')
 @Controller({
@@ -69,6 +75,10 @@ export class UsersController {
   @ApiBadRequestResponse({
     description: 'Validation failed',
   })
+  @ApiBody({
+    type: InviteUserSwaggerDTO,
+    description: 'Email address of the user to invite',
+  })
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @UsePipes(new ZodValidationPipe(inviteUserSchema))
@@ -80,7 +90,7 @@ export class UsersController {
       await this.usersService.inviteUser(me.householdId, body.email);
       this.logger.log(`User invitation sent to ${body.email} by ${me.email}`);
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error('Failed to invite user', error);
       throw error;
     }
   }
@@ -93,7 +103,12 @@ export class UsersController {
     description: 'Validation failed',
   })
   @ApiCreatedResponse({
+    type: AuthSuccessResponseSwaggerDTO,
     description: 'Invite accepted successfully',
+  })
+  @ApiBody({
+    type: AcceptInviteSwaggerDTO,
+    description: 'Details required to accept an invitation',
   })
   @Post('invites/accept')
   @HttpCode(201)
