@@ -1,21 +1,29 @@
-import {Body, Controller, Get, Param, Post, UseGuards, UsePipes} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBody,
-  ApiParam,
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiNotFoundResponse,
-  ApiUnauthorizedResponse,
-  ApiBadRequestResponse,
-} from '@nestjs/swagger';
-import {AccountsService} from './accounts.service';
-import {AuthGuard} from 'src/common/guards/auth.guard';
-import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
+import {EditAccountDTO, editAccountSchema} from '@maya-vault/contracts';
 import {CreateAccountDTO, createAccountSchema} from '@maya-vault/validation';
-import {AccountResponseSwaggerDTO, CreateAccountSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
+import {Body, Controller, ForbiddenException, Get, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import {CurrentUser} from 'src/common/decorators/current-user.decorator';
+import {AuthGuard} from 'src/common/guards/auth.guard';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
+import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
+import {PoliciesService} from 'src/policies/policies.service';
+import {
+  AccountResponseSwaggerDTO,
+  CreateAccountSwaggerDTO,
+  UpdateAccountSwaggerDTO,
+} from 'src/tools/swagger/accounts.swagger.dto';
+import {AccountsService} from './accounts.service';
 
 @ApiTags('Accounts')
 @Controller({
@@ -23,7 +31,10 @@ import {AccountResponseSwaggerDTO, CreateAccountSwaggerDTO} from 'src/tools/swag
   path: 'accounts',
 })
 export class AccountsController {
-  constructor(private readonly accountsService: AccountsService) {}
+  constructor(
+    private readonly accountsService: AccountsService,
+    private readonly policiesService: PoliciesService,
+  ) {}
 
   @ApiOperation({
     summary: 'Create a new account',
@@ -99,5 +110,39 @@ export class AccountsController {
   @Get(':id')
   async getAccountById(@Param('id') id: string) {
     return await this.accountsService.findAccountById(id);
+  }
+
+  @ApiOperation({
+    summary: 'Update an account',
+    description: 'Updates account name, type, or current balance. User must belong to the account household.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the account',
+  })
+  @ApiBody({
+    type: UpdateAccountSwaggerDTO,
+    description: 'Account update data',
+  })
+  @ApiOkResponse({
+    type: AccountResponseSwaggerDTO,
+    description: 'Account updated successfully',
+  })
+  @ApiBadRequestResponse({description: 'Invalid input data'})
+  @ApiNotFoundResponse({description: 'Account not found'})
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @UsePipes(new ZodValidationPipe(editAccountSchema))
+  @Put(':id')
+  async updateAccount(@Param('id') id: string, @Body() dto: EditAccountDTO, @CurrentUser() user: JwtPayload) {
+    const canUpdate = await this.policiesService.canUserUpdateAccount(user.sub, id);
+    if (!canUpdate) {
+      throw new ForbiddenException('You cannot update this account');
+    }
+
+    return await this.accountsService.updateAccount(id, dto);
   }
 }

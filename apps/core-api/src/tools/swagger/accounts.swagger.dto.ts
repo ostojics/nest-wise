@@ -95,3 +95,28 @@ export class CreateAccountSwaggerDTO {
   })
   householdId: string;
 }
+
+export class UpdateAccountSwaggerDTO {
+  @ApiProperty({
+    description: 'Account name',
+    example: 'Updated Checking',
+    maxLength: 255,
+    required: false,
+  })
+  name?: string;
+
+  @ApiProperty({
+    description: 'Account type',
+    enum: ['checking', 'savings', 'credit_card', 'investment', 'cash'],
+    example: 'savings',
+    required: false,
+  })
+  type?: string;
+
+  @ApiProperty({
+    description: 'New current balance',
+    example: 1200.5,
+    required: false,
+  })
+  currentBalance?: number;
+}

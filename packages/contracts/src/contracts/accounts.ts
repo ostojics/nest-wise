@@ -1,3 +1,11 @@
+import {z} from 'zod';
+
+export const accountTypeEnum = z.enum(['checking', 'savings', 'credit_card', 'investment', 'cash', 'other'], {
+  errorMap: () => ({
+    message: 'Account type must be one of: checking, savings, credit_card, investment, cash, other',
+  }),
+});
+
 export interface AccountContract {
   id: string;
   name: string;
@@ -9,3 +17,17 @@ export interface AccountContract {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export const editAccountSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, 'Account name is required')
+      .max(255, 'Account name must be 255 characters or less')
+      .optional(),
+    type: accountTypeEnum.optional(),
+    currentBalance: z.number().positive('Balance must be positive').optional(),
+  })
+  .strict();
+
+export type EditAccountDTO = z.infer<typeof editAccountSchema>;
