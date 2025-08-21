@@ -37,7 +37,7 @@ const InviteUserDialog = () => {
         const typedError = error as HTTPError<ErrorResponse>;
         const err = await typedError.response.json();
 
-        if (error.message) {
+        if (err.message) {
           setError('email', {message: err.message});
           return;
         }

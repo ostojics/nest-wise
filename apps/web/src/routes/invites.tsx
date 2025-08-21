@@ -7,10 +7,12 @@ const pageParamsSchema = acceptInviteQueryParamsSchema
   .pick({
     token: true,
     householdName: true,
+    email: true,
   })
   .extend({
     token: z.string().catch(''),
     householdName: z.string().catch(''),
+    email: z.string().email().catch(''),
   });
 
 export const Route = createFileRoute('/invites')({

@@ -1,4 +1,4 @@
-import {InviteUserDTO, UserContract} from '@maya-vault/contracts';
+import {AcceptInviteDTO, InviteUserDTO, UserContract} from '@maya-vault/contracts';
 import httpClient from './http-client';
 
 export const getUsers = () => {
@@ -7,4 +7,8 @@ export const getUsers = () => {
 
 export const inviteUser = (dto: InviteUserDTO) => {
   return httpClient.post('v1/users/invites', {json: dto}).json();
+};
+
+export const acceptInvite = (dto: AcceptInviteDTO) => {
+  return httpClient.post('v1/users/invites/accept', {json: dto}).json();
 };

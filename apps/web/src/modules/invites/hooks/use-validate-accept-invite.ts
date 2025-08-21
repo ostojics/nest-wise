@@ -4,13 +4,14 @@ import {useForm} from 'react-hook-form';
 
 interface UseValidateAcceptInviteFormArgs {
   token: string;
+  email: string;
 }
 
-export const useValidateAcceptInvite = ({token}: UseValidateAcceptInviteFormArgs) => {
+export const useValidateAcceptInvite = ({token, email}: UseValidateAcceptInviteFormArgs) => {
   return useForm({
     resolver: zodResolver(acceptInviteSchema),
     defaultValues: {
-      email: '',
+      email,
       username: '',
       password: '',
       confirm_password: '',

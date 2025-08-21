@@ -46,6 +46,7 @@ export class EmailsService {
     const params: AcceptInviteQueryParams = {
       token,
       householdName: payload.householdName,
+      email: payload.email,
     };
     const queryParams = new URLSearchParams(params).toString();
 

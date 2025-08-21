@@ -47,6 +47,7 @@ export const acceptInviteSchema = z
 export const acceptInviteQueryParamsSchema = z.object({
   householdName: z.string(),
   token: z.string(),
+  email: z.string().email(),
 });
 
 export type InviteUserDTO = z.infer<typeof inviteUserSchema>;

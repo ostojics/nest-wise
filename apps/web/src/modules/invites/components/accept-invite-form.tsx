@@ -1,12 +1,14 @@
-import {cn} from '@/lib/utils';
+import FormError from '@/components/form-error';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import FormError from '@/components/form-error';
+import {cn} from '@/lib/utils';
+import {AcceptInviteDTO} from '@maya-vault/contracts';
 import {useSearch} from '@tanstack/react-router';
-import {useValidateAcceptInvite} from '../hooks/use-validate-accept-invite';
 import {Loader2} from 'lucide-react';
+import {useAcceptInvite} from '../hooks/use-accept-invite';
+import {useValidateAcceptInvite} from '../hooks/use-validate-accept-invite';
 
 const AcceptInviteForm = ({className, ...props}: React.ComponentProps<'div'>) => {
   const search = useSearch({from: '/invites'});
@@ -14,16 +16,17 @@ const AcceptInviteForm = ({className, ...props}: React.ComponentProps<'div'>) =>
     register,
     handleSubmit,
     formState: {errors, isSubmitting},
-  } = useValidateAcceptInvite({token: search.token});
+  } = useValidateAcceptInvite({token: search.token, email: search.email});
+  const mutation = useAcceptInvite();
 
-  const onSubmit = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  const onSubmit = async (data: AcceptInviteDTO) => {
+    await mutation.mutateAsync(data);
   };
 
   return (
     <div className={cn('flex flex-col max-w-md w-full p-4', className)} {...props}>
       <Card>
-        <CardHeader className="mb-4">
+        <CardHeader className="mb-2">
           <CardTitle>Join {search.householdName || 'the household'}</CardTitle>
           <CardDescription className="text-balance">Complete your account details to accept the invite</CardDescription>
         </CardHeader>
@@ -36,7 +39,6 @@ const AcceptInviteForm = ({className, ...props}: React.ComponentProps<'div'>) =>
               <Input {...register('username', {required: true})} placeholder="e.g. john_smith" />
               <FormError error={errors.username?.message ?? ''} />
             </div>
-
             <div className="flex flex-col gap-3 text-left">
               <Label htmlFor="email">
                 Email <span className="text-red-500">*</span>
