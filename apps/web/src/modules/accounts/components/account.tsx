@@ -6,6 +6,7 @@ import {accountTypes} from '@/common/constants/account-types';
 import {format} from 'date-fns';
 import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import EditAccountDialog from './edit-account-dialog';
 
 interface AccountProps {
   account: AccountContract;
@@ -37,9 +38,12 @@ const Account: React.FC<AccountProps> = ({account}) => {
               </CardDescription>
             </div>
           </div>
-          <Badge variant="outline" className="text-xs">
-            {formatDate(account.createdAt)}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              {formatDate(account.createdAt)}
+            </Badge>
+            <EditAccountDialog account={account} />
+          </div>
         </div>
       </CardHeader>
       <CardContent>
