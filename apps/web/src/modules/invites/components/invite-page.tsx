@@ -1,8 +1,18 @@
 import {useSearch} from '@tanstack/react-router';
 import AcceptInviteForm from './accept-invite-form';
+import InvalidInvite from './invalid-invite';
 
 const InvitesPage = () => {
   const search = useSearch({from: '/invites'});
+  const isTokenPresent = Boolean(search.token);
+
+  if (!isTokenPresent) {
+    return (
+      <section className="flex justify-center items-center mt-[9rem]">
+        <InvalidInvite />
+      </section>
+    );
+  }
 
   return (
     <section className="mx-auto mt-[6rem] flex w-full max-w-6xl flex-col items-center justify-center gap-10 p-0 md:p-6 text-center">
