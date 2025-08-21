@@ -5,8 +5,15 @@ interface FormErrorProps extends React.ComponentProps<'p'> {
 }
 
 const FormError = ({error, ...props}: FormErrorProps) => {
+  const hasError = Boolean(error);
+
   return (
-    <p {...props} className={cn('text-red-500 text-xs min-h-4', props.className)}>
+    <p
+      {...props}
+      aria-live={hasError ? 'polite' : 'off'}
+      aria-disabled={!hasError}
+      className={cn('text-red-500 text-xs min-h-4', props.className)}
+    >
       {error}
     </p>
   );
