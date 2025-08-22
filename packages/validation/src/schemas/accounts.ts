@@ -8,7 +8,7 @@ export const createAccountSchema = z
         message: 'Account type must be one of: checking, savings, credit_card, investment, cash, other',
       }),
     }),
-    initialBalance: z.coerce.number().positive().min(10, 'Initial balance must be 10 or greater'),
+    initialBalance: z.coerce.number().min(0, 'Balance must be 0 or greater'),
     ownerId: z.string().uuid('Owner ID must be a valid UUID'),
     householdId: z.string().uuid('Household ID must be a valid UUID'),
   })
@@ -26,8 +26,7 @@ export const updateAccountSchema = z
         errorMap: () => ({message: 'Account type must be one of: checking, savings, credit_card, investment, cash'}),
       })
       .optional(),
-    initialBalance: z.number().min(0, 'Initial balance must be 0 or greater').optional(),
-    currentBalance: z.number().optional(),
+    currentBalance: z.coerce.number().min(0, 'Balance must be 0 or greater').optional(),
   })
   .strict();
 
