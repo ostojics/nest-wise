@@ -8,7 +8,7 @@ export const createAccountSchema = z
         message: 'Account type must be one of: checking, savings, credit_card, investment, cash, other',
       }),
     }),
-    initialBalance: z.coerce.number().min(10, 'Initial balance must be 10 or greater'),
+    initialBalance: z.coerce.number().positive().min(10, 'Initial balance must be 10 or greater'),
     ownerId: z.string().uuid('Owner ID must be a valid UUID'),
     householdId: z.string().uuid('Household ID must be a valid UUID'),
   })

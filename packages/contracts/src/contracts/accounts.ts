@@ -26,7 +26,7 @@ export const editAccountSchema = z
       .max(255, 'Account name must be 255 characters or less')
       .optional(),
     type: accountTypeEnum.optional(),
-    currentBalance: z.number().positive('Balance must be positive').optional(),
+    currentBalance: z.coerce.number().min(10, 'Current balance must be 10 or greater').optional(),
   })
   .strict();
 
