@@ -6,12 +6,14 @@ import {JwtService} from '@nestjs/jwt';
 import {ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {HouseholdsService} from 'src/households/households.service';
+import {AccountsService} from 'src/accounts/accounts.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly householdsService: HouseholdsService,
+    private readonly accountsService: AccountsService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -25,6 +27,24 @@ export class AuthService {
       householdId: household.id,
     });
 
+    const accountPromises = [
+      this.accountsService.createAccount({
+        name: 'Emergency fund',
+        type: 'other',
+        initialBalance: 0,
+        ownerId: user.id,
+        householdId: household.id,
+      }),
+      this.accountsService.createAccount({
+        name: 'Dedicated fund',
+        type: 'other',
+        initialBalance: 0,
+        ownerId: user.id,
+        householdId: household.id,
+      }),
+    ];
+
+    await Promise.all(accountPromises);
     const token = await this.craftJwt(user.id, user.email);
 
     return {

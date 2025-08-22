@@ -39,7 +39,11 @@ const CreateAccount = () => {
   } = useValidateCreateAccount({householdId: household?.id ?? '', ownerId: data?.id ?? ''});
 
   const onSubmit = (data: CreateAccountDTO) => {
-    mutation.mutate(data);
+    mutation.mutate(data, {
+      onSettled: () => {
+        reset();
+      },
+    });
   };
 
   const handleTypeChange = (value: string) => {
@@ -49,7 +53,15 @@ const CreateAccount = () => {
   const selectedType = watch('type');
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          reset();
+        }
+        setIsOpen(open);
+      }}
+    >
       <DialogTrigger asChild>
         <Button>
           <PlusIcon className="w-4 h-4" />
@@ -126,14 +138,14 @@ const CreateAccount = () => {
 
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
             <DialogClose asChild>
-              <Button type="button" variant="outline" onClick={() => reset()} disabled={mutation.isPending}>
+              <Button type="button" variant="outline" disabled={mutation.isPending}>
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={mutation.isPending || !selectedType}>
+            <Button type="submit" disabled={mutation.isPending}>
               {mutation.isPending ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   Creating Account...
                 </>
               ) : (
