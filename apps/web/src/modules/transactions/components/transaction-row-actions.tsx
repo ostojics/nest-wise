@@ -18,7 +18,7 @@ interface TransactionActionsProps {
   transaction: TransactionContract;
 }
 
-const TransactionActions: React.FC<TransactionActionsProps> = ({transaction}) => {
+const TransactionRowActions: React.FC<TransactionActionsProps> = ({transaction}) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const deleteMutation = useDeleteTransaction();
 
@@ -38,9 +38,9 @@ const TransactionActions: React.FC<TransactionActionsProps> = ({transaction}) =>
               className="text-red-500 hover:text-red-500"
               size="icon"
               aria-label="Delete transaction"
-              title="Delete transaction"
             >
               {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+              <span className="sr-only">Delete transaction</span>
             </Button>
           </DialogTrigger>
         </TooltipTrigger>
@@ -65,4 +65,4 @@ const TransactionActions: React.FC<TransactionActionsProps> = ({transaction}) =>
   );
 };
 
-export default TransactionActions;
+export default TransactionRowActions;

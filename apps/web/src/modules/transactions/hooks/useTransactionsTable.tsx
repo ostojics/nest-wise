@@ -7,7 +7,7 @@ import {useNavigate, useSearch} from '@tanstack/react-router';
 import {ColumnDef, getCoreRowModel, SortingState, useReactTable} from '@tanstack/react-table';
 import {format} from 'date-fns';
 import {useMemo} from 'react';
-import TransactionActions from '../components/transaction-actions';
+import TransactionRowActions from '../components/transaction-row-actions';
 
 export const useTransactionsTable = (data: TransactionContract[]) => {
   const {formatBalance} = useFormatBalance();
@@ -78,7 +78,7 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
       {
         id: 'actions',
         header: 'Actions',
-        cell: ({row}) => <TransactionActions transaction={row.original} />,
+        cell: ({row}) => <TransactionRowActions transaction={row.original} />,
         enableSorting: false,
       },
     ],
