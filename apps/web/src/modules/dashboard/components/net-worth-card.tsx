@@ -17,7 +17,7 @@ const NetWorthCard: React.FC = () => {
     if (!accounts || accounts.length === 0) return 0;
 
     return accounts.reduce((total, account) => {
-      return total + (account.currentBalance || 0);
+      return total + Number(account.currentBalance);
     }, 0);
   }, [accounts]);
 
