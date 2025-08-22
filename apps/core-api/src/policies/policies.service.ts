@@ -14,4 +14,16 @@ export class PoliciesService {
     const account = await this.accountsService.findAccountById(accountId);
     return user.householdId === account.householdId;
   }
+
+  async canUserTransferBetweenAccounts(userId: string, fromAccountId: string, toAccountId: string): Promise<boolean> {
+    const user = await this.usersService.findUserById(userId);
+    const fromAccount = await this.accountsService.findAccountById(fromAccountId);
+    const toAccount = await this.accountsService.findAccountById(toAccountId);
+
+    const sameHousehold = fromAccount.householdId === toAccount.householdId;
+    const belongsToUserHousehold =
+      user.householdId === fromAccount.householdId && user.householdId === toAccount.householdId;
+
+    return sameHousehold && belongsToUserHousehold;
+  }
 }

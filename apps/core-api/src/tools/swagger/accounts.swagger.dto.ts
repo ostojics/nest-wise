@@ -120,3 +120,40 @@ export class UpdateAccountSwaggerDTO {
   })
   currentBalance?: number;
 }
+
+export class TransferFundsSwaggerDTO {
+  @ApiProperty({
+    description: 'Source account ID (UUID)',
+    format: 'uuid',
+    example: '11111111-1111-1111-1111-111111111111',
+  })
+  fromAccountId: string;
+
+  @ApiProperty({
+    description: 'Destination account ID (UUID)',
+    format: 'uuid',
+    example: '22222222-2222-2222-2222-222222222222',
+  })
+  toAccountId: string;
+
+  @ApiProperty({
+    description: 'Amount to transfer (minimum 1)',
+    example: 100.0,
+    minimum: 1,
+  })
+  amount: number;
+}
+
+export class TransferFundsResponseSwaggerDTO {
+  @ApiProperty({
+    description: 'Updated source account after transfer',
+    type: AccountResponseSwaggerDTO,
+  })
+  fromAccount: AccountResponseSwaggerDTO;
+
+  @ApiProperty({
+    description: 'Updated destination account after transfer',
+    type: AccountResponseSwaggerDTO,
+  })
+  toAccount: AccountResponseSwaggerDTO;
+}

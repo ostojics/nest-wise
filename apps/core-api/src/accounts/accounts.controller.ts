@@ -1,4 +1,4 @@
-import {EditAccountDTO, editAccountSchema} from '@maya-vault/contracts';
+import {EditAccountDTO, TransferFundsDTO, editAccountSchema, transferFundsSchema} from '@maya-vault/contracts';
 import {CreateAccountDTO, createAccountSchema} from '@maya-vault/validation';
 import {Body, Controller, ForbiddenException, Get, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
 import {
@@ -22,6 +22,8 @@ import {
   AccountResponseSwaggerDTO,
   CreateAccountSwaggerDTO,
   UpdateAccountSwaggerDTO,
+  TransferFundsSwaggerDTO,
+  TransferFundsResponseSwaggerDTO,
 } from 'src/tools/swagger/accounts.swagger.dto';
 import {AccountsService} from './accounts.service';
 
@@ -144,5 +146,37 @@ export class AccountsController {
     }
 
     return await this.accountsService.updateAccount(id, dto);
+  }
+
+  @ApiOperation({
+    summary: 'Transfer funds between two accounts',
+    description:
+      "Transfers funds from one account to another. Requires authentication and membership in the accounts' household.",
+  })
+  @ApiBody({
+    type: TransferFundsSwaggerDTO,
+    description: 'Transfer details',
+  })
+  @ApiOkResponse({
+    type: TransferFundsResponseSwaggerDTO,
+    description: 'Transfer completed successfully',
+  })
+  @ApiBadRequestResponse({description: 'Invalid input data or insufficient funds'})
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @UsePipes(new ZodValidationPipe(transferFundsSchema))
+  @Post('transfer')
+  async transferFunds(@Body() dto: TransferFundsDTO, @CurrentUser() user: JwtPayload) {
+    const allowed = await this.policiesService.canUserTransferBetweenAccounts(
+      user.sub,
+      dto.fromAccountId,
+      dto.toAccountId,
+    );
+    if (!allowed) {
+      throw new ForbiddenException('You cannot transfer between these accounts');
+    }
+
+    return await this.accountsService.transferFunds(dto);
   }
 }

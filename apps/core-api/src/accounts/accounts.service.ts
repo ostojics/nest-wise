@@ -1,12 +1,16 @@
-import {EditAccountDTO} from '@maya-vault/contracts';
+import {EditAccountDTO, TransferFundsDTO} from '@maya-vault/contracts';
 import {CreateAccountDTO} from '@maya-vault/validation';
-import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {Account} from './account.entity';
 import {AccountsRepository} from './accounts.repository';
+import {DataSource} from 'typeorm';
 
 @Injectable()
 export class AccountsService {
-  constructor(private readonly accountsRepository: AccountsRepository) {}
+  constructor(
+    private readonly accountsRepository: AccountsRepository,
+    private readonly dataSource: DataSource,
+  ) {}
 
   async createAccount(accountData: CreateAccountDTO): Promise<Account> {
     const nameExists = await this.accountsRepository.nameExistsForHousehold(accountData.name, accountData.householdId);
@@ -69,5 +73,44 @@ export class AccountsService {
     if (!deleted) {
       throw new NotFoundException('Account not found');
     }
+  }
+
+  async transferFunds(dto: TransferFundsDTO): Promise<{fromAccount: Account; toAccount: Account}> {
+    if (dto.fromAccountId === dto.toAccountId) {
+      throw new BadRequestException('fromAccountId and toAccountId must be different');
+    }
+
+    const fromAccount = await this.findAccountById(dto.fromAccountId);
+    const toAccount = await this.findAccountById(dto.toAccountId);
+
+    if (fromAccount.householdId !== toAccount.householdId) {
+      throw new BadRequestException('Accounts must belong to the same household');
+    }
+
+    const fromBalance = Number(fromAccount.currentBalance);
+    const toBalance = Number(toAccount.currentBalance);
+    const amount = Number(dto.amount);
+
+    if (fromBalance < amount) {
+      throw new BadRequestException('Insufficient funds for this transfer');
+    }
+
+    return await this.dataSource.transaction(async () => {
+      const updatedFrom = await this.accountsRepository.update(dto.fromAccountId, {
+        currentBalance: fromBalance - amount,
+      });
+      if (!updatedFrom) {
+        throw new NotFoundException('From account not found');
+      }
+
+      const updatedTo = await this.accountsRepository.update(dto.toAccountId, {
+        currentBalance: toBalance + amount,
+      });
+      if (!updatedTo) {
+        throw new NotFoundException('To account not found');
+      }
+
+      return {fromAccount: updatedFrom, toAccount: updatedTo};
+    });
   }
 }

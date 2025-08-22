@@ -31,3 +31,17 @@ export const editAccountSchema = z
   .strict();
 
 export type EditAccountDTO = z.infer<typeof editAccountSchema>;
+
+export const transferFundsSchema = z
+  .object({
+    fromAccountId: z.string().uuid('fromAccountId must be a valid UUID'),
+    toAccountId: z.string().uuid('toAccountId must be a valid UUID'),
+    amount: z.coerce.number().min(1, 'Transfer amount must be at least 1'),
+  })
+  .strict()
+  .refine((data) => data.fromAccountId !== data.toAccountId, {
+    message: 'fromAccountId and toAccountId must be different',
+    path: ['toAccountId'],
+  });
+
+export type TransferFundsDTO = z.infer<typeof transferFundsSchema>;
