@@ -29,3 +29,7 @@ export const createAiTransaction = async (transaction: CreateTransactionAiDTO) =
 export const getNetWorthTrend = async () => {
   return await httpClient.get('v1/transactions/net-worth-trend').json<NetWorthTrendPointContract[]>();
 };
+
+export const deleteTransaction = async (id: string) => {
+  return httpClient.delete(`v1/transactions/${id}`).json();
+};
