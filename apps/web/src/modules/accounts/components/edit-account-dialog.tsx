@@ -8,6 +8,7 @@ import {AccountContract} from '@maya-vault/contracts';
 import {DialogTrigger} from '@radix-ui/react-dialog';
 import {Pencil} from 'lucide-react';
 import React from 'react';
+import SelectedAccountType from './selected-account-type';
 
 interface EditAccountDialogProps {
   account: AccountContract;
@@ -52,6 +53,7 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
                   </SelectContent>
                 </Select>
               </div>
+              <SelectedAccountType type={type} />
               <div className="flex flex-col gap-2">
                 <Label htmlFor="edit-account-balance">Current Balance</Label>
                 <Input
