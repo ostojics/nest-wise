@@ -19,6 +19,7 @@ import {TransactionsModule} from './transactions/transactions.module';
 import {EmailsModule} from './emails/emails.module';
 import {BullModule} from '@nestjs/bullmq';
 import {queuesConfig, QueuesConfig, QueuesConfigName} from './config/queues.config';
+import {PoliciesModule} from './policies/policies.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import {queuesConfig, QueuesConfig, QueuesConfigName} from './config/queues.conf
     CategoriesModule,
     TransactionsModule,
     EmailsModule,
+    PoliciesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

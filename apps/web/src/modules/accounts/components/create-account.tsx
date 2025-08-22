@@ -19,6 +19,7 @@ import {CreateAccountDTO, useValidateCreateAccount} from '@maya-vault/validation
 import {Loader2, PlusIcon, Wallet} from 'lucide-react';
 import {useCreateAccountMutation} from '../hooks/useCreateAccountMutation';
 import {useState} from 'react';
+import SelectedAccountType from './selected-account-type';
 
 const CreateAccount = () => {
   const {data} = useGetMe();
@@ -46,7 +47,6 @@ const CreateAccount = () => {
   };
 
   const selectedType = watch('type');
-  const selectedAccountType = accountTypes.find((type) => type.value === selectedType);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -103,19 +103,7 @@ const CreateAccount = () => {
             </Select>
             {errors.type && <FormError error={errors.type.message ?? ''} />}
           </div>
-
-          {selectedAccountType && (
-            <div className="p-3 bg-muted/50 rounded-lg border">
-              <div className="flex items-center gap-2">
-                <selectedAccountType.icon className="w-4 h-4 text-primary" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{selectedAccountType.label}</p>
-                  <p className="text-xs text-muted-foreground">{selectedAccountType.description}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
+          <SelectedAccountType type={selectedType} />
           <div className="space-y-3">
             <Label htmlFor="initialBalance" className="text-sm font-medium">
               Initial Balance

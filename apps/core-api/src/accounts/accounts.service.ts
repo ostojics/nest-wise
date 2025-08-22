@@ -1,7 +1,8 @@
-import {Injectable, ConflictException, NotFoundException} from '@nestjs/common';
-import {AccountsRepository} from './accounts.repository';
+import {EditAccountDTO} from '@maya-vault/contracts';
+import {CreateAccountDTO} from '@maya-vault/validation';
+import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {Account} from './account.entity';
-import {CreateAccountDTO, UpdateAccountDTO} from '@maya-vault/validation';
+import {AccountsRepository} from './accounts.repository';
 
 @Injectable()
 export class AccountsService {
@@ -39,7 +40,7 @@ export class AccountsService {
     return await this.accountsRepository.findAll();
   }
 
-  async updateAccount(id: string, accountData: UpdateAccountDTO): Promise<Account> {
+  async updateAccount(id: string, accountData: EditAccountDTO): Promise<Account> {
     const existingAccount = await this.accountsRepository.findById(id);
     if (!existingAccount) {
       throw new NotFoundException('Account not found');
