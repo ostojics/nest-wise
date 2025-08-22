@@ -35,7 +35,7 @@ const SpendingVsTargetCard = () => {
   });
 
   const currentSpending = useMemo(() => {
-    return transactions?.data.reduce((acc, transaction) => acc + transaction.amount, 0) ?? 0;
+    return transactions?.data.reduce((acc, transaction) => acc + Number(transaction.amount), 0) ?? 0;
   }, [transactions]);
 
   const budget = household?.monthlyBudget ?? 0;

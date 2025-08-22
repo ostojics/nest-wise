@@ -7,6 +7,7 @@ import {useNavigate, useSearch} from '@tanstack/react-router';
 import {ColumnDef, getCoreRowModel, SortingState, useReactTable} from '@tanstack/react-table';
 import {format} from 'date-fns';
 import {useMemo} from 'react';
+import TransactionRowActions from '../components/transaction-row-actions';
 
 export const useTransactionsTable = (data: TransactionContract[]) => {
   const {formatBalance} = useFormatBalance();
@@ -73,6 +74,12 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
         cell: ({row}) => (
           <span className="text-foreground/80">{format(new Date(row.original.transactionDate), 'PP')}</span>
         ),
+      },
+      {
+        id: 'actions',
+        header: 'Actions',
+        cell: ({row}) => <TransactionRowActions transaction={row.original} />,
+        enableSorting: false,
       },
     ],
     [formatBalance],
