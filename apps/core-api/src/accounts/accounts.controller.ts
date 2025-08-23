@@ -1,6 +1,18 @@
 import {EditAccountDTO, TransferFundsDTO, editAccountSchema, transferFundsSchema} from '@maya-vault/contracts';
 import {CreateAccountDTO, createAccountSchema} from '@maya-vault/validation';
-import {Body, Controller, ForbiddenException, Get, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -166,6 +178,7 @@ export class AccountsController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @UsePipes(new ZodValidationPipe(transferFundsSchema))
+  @HttpCode(HttpStatus.OK)
   @Post('transfer')
   async transferFunds(@Body() dto: TransferFundsDTO, @CurrentUser() user: JwtPayload) {
     const allowed = await this.policiesService.canUserTransferBetweenAccounts(
@@ -177,6 +190,7 @@ export class AccountsController {
       throw new ForbiddenException('You cannot transfer between these accounts');
     }
 
-    return await this.accountsService.transferFunds(dto);
+    await this.accountsService.transferFunds(dto);
+    return {message: 'Transfer completed successfully'};
   }
 }
