@@ -6,3 +6,4 @@ export * from './transactions';
 export * from './enums';
 export * from './users';
 export * from './errors';
+export * from './category-budgets';

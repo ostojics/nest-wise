@@ -106,3 +106,32 @@ This is a rough estimate and can vary significantly based on experience, chosen 
 - **Advanced Reports:** Customizable reports with more filtering and visualization options.
 
 This project offers a significant opportunity to build a truly valuable and intelligent tool that goes beyond what's currently available in the open-source self-hosted space.
+
+## **6. Budgeting/Planning Feature (Initial)**
+
+### 6.1. What it allows
+
+- **Plan by category, per month**: Users assign a planned amount to each spending category for a selected month.
+- **Track progress as you spend**: As expense transactions are recorded and categorized, the UI shows how much of the plan is consumed.
+- **Month navigation**: Users switch months (past/current/future) to review or plan allocations. Each month is independent in this initial version.
+- **Simple setup**: All categories are visible in the planning view so users can quickly fill planned amounts. Optional “copy previous month” can prefill future months later on.
+
+### 6.2. Scope (MVP)
+
+- **Independent months**: No rollover rules (no overspend/underspend carryover) in v1.
+- **Expense focus**: “Spent” is derived only from expense transactions in that month. Income handling remains separate.
+
+### 6.3. How it works (Developer view)
+
+- **Data persistence**: Planned amounts are stored per `(household, category, month)` in the `category_budgets` table.
+- **Record creation**: Budget rows are created/updated on demand when a user edits a planned amount (no pre-creation for every category/month).
+- **Querying**: The primary filter is `month` (format `YYYY-MM`). The system returns persisted budget rows for that household and month. Any computed values (like spent/available) are derived from `transactions` and not stored.
+- **Consistency**: A unique key enforces a single row per `(household, category, month)`.
+
+### 6.4. Out of scope for v1 (future-ready)
+
+- **Rollover rules** for overspend/underspend.
+- **Auto-allocation rules** (e.g., recurring budgets, percentages).
+- **Advanced summaries/insights** beyond basic progress.
+
+This feature keeps the first iteration simple, familiar (YNAB-inspired), and focused on clear monthly planning while leaving room to add rollover logic and richer automation later.

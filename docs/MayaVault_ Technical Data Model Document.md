@@ -184,6 +184,26 @@ This document describes the relational database schema for the Personal Finance 
 
 | PRIMARY KEY (transaction_id, tag_id) | | | Composite primary key to ensure unique transaction-tag pairs. |
 
+### **3.8. category_budgets Table**
+
+- **Purpose:** Stores planned amounts per category per month for a given household. Enables month-by-month spending plans. Computed values like monthly "spent" and "available" are derived from `transactions` at query time and are not persisted here.
+
+- **Columns:**
+
+| Column Name    | Data Type                | Constraints                                           | Description                                          |
+| :------------- | :----------------------- | :---------------------------------------------------- | :--------------------------------------------------- |
+| id             | UUID                     | PRIMARY KEY, DEFAULT gen_random_uuid()                | Unique identifier for the category budget row.       |
+| household_id   | UUID                     | NOT NULL, REFERENCES households(id) ON DELETE CASCADE | Household that owns this budget entry.               |
+| category_id    | UUID                     | NOT NULL, REFERENCES categories(id) ON DELETE CASCADE | Category this planned amount applies to.             |
+| month          | VARCHAR(7)               | NOT NULL                                              | Month identifier in the format 'YYYY-MM'.            |
+| planned_amount | DECIMAL(18, 2)           | NOT NULL                                              | Planned allocation for the given category and month. |
+| created_at     | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp when the budget row was created.           |
+| updated_at     | TIMESTAMP WITH TIME ZONE | DEFAULT NOW()                                         | Timestamp when the budget row was last updated.      |
+
+- **Indexes & Constraints:**
+  - UNIQUE (household_id, category_id, month)
+  - INDEX (household_id, month)
+
 ## **4\. Relationships Overview**
 
 - **One-to-Many:**
@@ -221,3 +241,38 @@ The permission model is intentionally simple: all users within a household have 
 - **Household Isolation:** Users can only access data from their own household
 
 This design prioritizes simplicity and trust within household relationships over complex permission systems.
+
+## **6. Budgeting/Planning Feature**
+
+### 6.1. Overview
+
+- Users assign planned amounts per category for a specific month.
+- Planning data is stored in `category_budgets`; each row represents a single `(household, category, month)` plan.
+- Computed values like monthly "spent" per category and "available" (`planned - spent`) are derived from `transactions` and are not stored in `category_budgets`.
+- v1 treats months independently (no rollover). Each month starts fresh.
+
+### 6.2. Month Semantics
+
+- `month` uses the format 'YYYY-MM'.
+- The month maps to an inclusive date range from the first to the last day of the calendar month for reporting/aggregation.
+
+### 6.3. Record Creation Strategy
+
+- Rows in `category_budgets` are created via upsert when a user assigns a planned amount for a given `(category, month)`.
+- No pre-creation of rows for every category/month. If there is no plan for a category in a month, there is no row.
+- Future months use the same flow: navigate to a future month and assign values to create those rows.
+- Optional future enhancement: a server-side "clone month" action can bulk-create target month rows from a source month.
+
+### 6.4. Querying Budgets
+
+- Primary filter is `month`. Access is implicitly scoped by the authenticated user's `household_id`.
+- Responses focus on persisted `category_budgets` rows (records that exist) without computed fields or summary meta in v1.
+
+### 6.5. Integrity and Indexing
+
+- UNIQUE `(household_id, category_id, month)` ensures a single plan per category/month/household.
+- INDEX `(household_id, month)` supports fast retrieval of a household's plans for a month.
+
+### 6.6. Zero Values & Deletion
+
+- Implementations may delete a row when `planned_amount` becomes zero to keep the table sparse, or keep zero-value rows for history; both are supported by the schema.
