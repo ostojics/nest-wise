@@ -20,6 +20,8 @@ import {EmailsModule} from './emails/emails.module';
 import {BullModule} from '@nestjs/bullmq';
 import {queuesConfig, QueuesConfig, QueuesConfigName} from './config/queues.config';
 import {PoliciesModule} from './policies/policies.module';
+import {ScheduleModule} from '@nestjs/schedule';
+import {SavingsModule} from './savings/savings.module';
 
 @Module({
   imports: [
@@ -55,6 +57,7 @@ import {PoliciesModule} from './policies/policies.module';
         };
       },
     }),
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
     HouseholdsModule,
@@ -63,6 +66,7 @@ import {PoliciesModule} from './policies/policies.module';
     TransactionsModule,
     EmailsModule,
     PoliciesModule,
+    SavingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
