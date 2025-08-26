@@ -64,6 +64,14 @@ export class CategoryBudgetResponseSwaggerDTO {
   category: CategoryNameSwaggerDTO;
 }
 
+export class CategoryBudgetWithCurrentAmountResponseSwaggerDTO extends CategoryBudgetResponseSwaggerDTO {
+  @ApiProperty({
+    description: 'Current amount spent on the category for the given month',
+    example: 150.0,
+  })
+  currentAmount: number;
+}
+
 export class EditCategoryBudgetSwaggerDTO {
   @ApiProperty({
     description: 'Planned allocation for the given category and month',

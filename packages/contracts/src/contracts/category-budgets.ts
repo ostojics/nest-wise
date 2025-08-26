@@ -12,6 +12,10 @@ export interface CategoryBudgetContract {
   category: Pick<CategoryContract, 'name'>;
 }
 
+export interface CategoryBudgetWithCurrentAmountContract extends CategoryBudgetContract {
+  currentAmount: number;
+}
+
 export const getCategoryBudgetsQueryParamsSchema = z
   .object({
     month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Month must be in the format YYYY-MM'),

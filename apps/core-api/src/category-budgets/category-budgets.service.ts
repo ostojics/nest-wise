@@ -1,8 +1,15 @@
-import {CategoryBudgetContract, EditCategoryBudgetDTO} from '@maya-vault/contracts';
+import {
+  CategoryBudgetContract,
+  CategoryBudgetWithCurrentAmountContract,
+  EditCategoryBudgetDTO,
+} from '@maya-vault/contracts';
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {CategoriesService} from 'src/categories/categories.service';
 import {UsersService} from 'src/users/users.service';
 import {CategoryBudgetsRepository} from './category-budgets.repository';
+import {endOfMonth, format, startOfMonth} from 'date-fns';
+import {TransactionsService} from 'src/transactions/transactions.service';
+import {TransactionType} from 'src/common/enums/transaction.type.enum';
 
 @Injectable()
 export class CategoryBudgetsService {
@@ -10,9 +17,10 @@ export class CategoryBudgetsService {
     private readonly usersService: UsersService,
     private readonly categoriesService: CategoriesService,
     private readonly categoryBudgetsRepository: CategoryBudgetsRepository,
+    private readonly transactionsService: TransactionsService,
   ) {}
 
-  async getCategoryBudgetsForMonth(userId: string, month: string): Promise<CategoryBudgetContract[]> {
+  async getCategoryBudgetsForMonth(userId: string, month: string): Promise<CategoryBudgetWithCurrentAmountContract[]> {
     const me = await this.usersService.findUserById(userId);
     const [categories, budgets] = await Promise.all([
       this.categoriesService.findCategoriesByHouseholdId(me.householdId),
@@ -34,7 +42,30 @@ export class CategoryBudgetsService {
     }
 
     const all = await this.categoryBudgetsRepository.findByHouseholdAndMonth(me.householdId, month);
-    return all as CategoryBudgetContract[];
+
+    const {start: dateFrom, end: dateTo} = this.getCurrentMonthRange(month);
+    const txPage = await this.transactionsService.findTransactions({
+      householdId: me.householdId,
+      transactionDate_from: dateFrom,
+      transactionDate_to: dateTo,
+      type: TransactionType.EXPENSE,
+      page: 1,
+      pageSize: 3000,
+    });
+
+    const spentByCategory = new Map<string, number>();
+    for (const tx of txPage.data) {
+      if (!tx.categoryId) continue;
+      const prev = spentByCategory.get(tx.categoryId) ?? 0;
+      spentByCategory.set(tx.categoryId, prev + Number(tx.amount));
+    }
+
+    const mapped: CategoryBudgetWithCurrentAmountContract[] = all.map((b) => ({
+      ...b,
+      currentAmount: spentByCategory.get(b.categoryId) ?? 0,
+    }));
+
+    return mapped;
   }
 
   async findCategoryBudgetById(id: string): Promise<CategoryBudgetContract> {
@@ -55,5 +86,15 @@ export class CategoryBudgetsService {
     }
 
     return updated as CategoryBudgetContract;
+  }
+
+  private getCurrentMonthRange(currentMonth: string): {start: string; end: string} {
+    const date = new Date(currentMonth);
+    const dateFormat = 'yyyy-MM-dd';
+
+    return {
+      start: format(startOfMonth(date), dateFormat),
+      end: format(endOfMonth(date), dateFormat),
+    };
   }
 }

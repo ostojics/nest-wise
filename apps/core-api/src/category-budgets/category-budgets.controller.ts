@@ -1,5 +1,6 @@
 import {
   CategoryBudgetContract,
+  CategoryBudgetWithCurrentAmountContract,
   GetCategoryBudgetsQueryParams,
   getCategoryBudgetsQueryParamsSchema,
 } from '@maya-vault/contracts';
@@ -33,6 +34,7 @@ import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {
   CategoryBudgetResponseSwaggerDTO,
+  CategoryBudgetWithCurrentAmountResponseSwaggerDTO,
   EditCategoryBudgetSwaggerDTO,
 } from 'src/tools/swagger/category-budgets.swagger.dto';
 import {CategoryBudgetsService} from './category-budgets.service';
@@ -52,7 +54,10 @@ export class CategoryBudgetsController {
     description: 'Returns category budget records for the authenticated household and specified month',
   })
   @ApiQuery({name: 'month', required: true, type: String, description: "Month in format 'YYYY-MM'", example: '2025-09'})
-  @ApiOkResponse({description: 'Budgets retrieved successfully', type: [CategoryBudgetResponseSwaggerDTO]})
+  @ApiOkResponse({
+    description: 'Budgets retrieved successfully',
+    type: [CategoryBudgetWithCurrentAmountResponseSwaggerDTO],
+  })
   @ApiUnauthorizedResponse({description: 'Authentication required'})
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
@@ -60,7 +65,7 @@ export class CategoryBudgetsController {
   async getCategoryBudgets(
     @CurrentUser() user: JwtPayload,
     @Query(new ZodValidationPipe(getCategoryBudgetsQueryParamsSchema)) query: GetCategoryBudgetsQueryParams,
-  ): Promise<CategoryBudgetContract[]> {
+  ): Promise<CategoryBudgetWithCurrentAmountContract[]> {
     return await this.categoryBudgetsService.getCategoryBudgetsForMonth(user.sub, query.month);
   }
 
