@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {CategoryContract} from './categories';
 
 export interface CategoryBudgetContract {
   id: string;
@@ -8,6 +9,7 @@ export interface CategoryBudgetContract {
   plannedAmount: number;
   createdAt: Date;
   updatedAt: Date;
+  category: Pick<CategoryContract, 'name'>;
 }
 
 export const getCategoryBudgetsQueryParamsSchema = z
