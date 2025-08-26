@@ -47,6 +47,10 @@ export class CategoryBudget {
     scale: 2,
     nullable: false,
     name: 'planned_amount',
+    transformer: {
+      to: (value: number): number => value,
+      from: (value: string): number => Number(value),
+    },
   })
   plannedAmount: number;
 
