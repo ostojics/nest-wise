@@ -29,4 +29,21 @@ export class CategoryBudgetsRepository {
     const entities = this.categoryBudgetRepository.create(budgets);
     return await this.categoryBudgetRepository.save(entities);
   }
+
+  async findById(id: string): Promise<CategoryBudget | null> {
+    return await this.categoryBudgetRepository.findOne({
+      where: {id},
+      relations: {category: true},
+      select: {category: {name: true}},
+    });
+  }
+
+  async updatePlannedAmount(id: string, plannedAmount: number): Promise<CategoryBudget | null> {
+    const result = await this.categoryBudgetRepository.update(id, {plannedAmount});
+    if ((result.affected ?? 0) === 0) {
+      return null;
+    }
+
+    return await this.findById(id);
+  }
 }

@@ -1,5 +1,13 @@
 import {ApiProperty} from '@nestjs/swagger';
 
+export class CategoryNameSwaggerDTO {
+  @ApiProperty({
+    description: 'Category name',
+    example: 'Groceries',
+  })
+  name: string;
+}
+
 export class CategoryBudgetResponseSwaggerDTO {
   @ApiProperty({
     description: 'Unique identifier for the category budget row',
@@ -48,4 +56,19 @@ export class CategoryBudgetResponseSwaggerDTO {
     format: 'date-time',
   })
   updatedAt: Date;
+
+  @ApiProperty({
+    description: 'Category info',
+    type: CategoryNameSwaggerDTO,
+  })
+  category: CategoryNameSwaggerDTO;
+}
+
+export class EditCategoryBudgetSwaggerDTO {
+  @ApiProperty({
+    description: 'Planned allocation for the given category and month',
+    example: 300.0,
+    minimum: 0,
+  })
+  plannedAmount: number;
 }
