@@ -3,7 +3,18 @@ import {
   GetCategoryBudgetsQueryParams,
   getCategoryBudgetsQueryParamsSchema,
 } from '@maya-vault/contracts';
-import {Body, Controller, Get, Param, ParseUUIDPipe, Patch, Query, UseGuards, UsePipes} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Query,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -26,11 +37,15 @@ import {
 } from 'src/tools/swagger/category-budgets.swagger.dto';
 import {CategoryBudgetsService} from './category-budgets.service';
 import {EditCategoryBudgetDTO, editCategoryBudgetSchema} from '@maya-vault/contracts';
+import {PoliciesService} from 'src/policies/policies.service';
 
 @ApiTags('Category Budgets')
 @Controller({version: '1', path: 'category-budgets'})
 export class CategoryBudgetsController {
-  constructor(private readonly categoryBudgetsService: CategoryBudgetsService) {}
+  constructor(
+    private readonly categoryBudgetsService: CategoryBudgetsService,
+    private readonly policiesService: PoliciesService,
+  ) {}
 
   @ApiOperation({
     summary: 'Get category budgets for a month',
@@ -65,6 +80,11 @@ export class CategoryBudgetsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: EditCategoryBudgetDTO,
   ): Promise<CategoryBudgetContract> {
-    return await this.categoryBudgetsService.updateCategoryBudget(user.sub, id, dto);
+    const canUpdate = await this.policiesService.canUserUpdateCategoryBudget(user.sub, id);
+    if (!canUpdate) {
+      throw new ForbiddenException('You do not have access to this resource');
+    }
+
+    return await this.categoryBudgetsService.updateCategoryBudget(id, dto);
   }
 }

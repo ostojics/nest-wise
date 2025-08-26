@@ -1,10 +1,8 @@
-import {Injectable} from '@nestjs/common';
-import {UsersService} from 'src/users/users.service';
+import {CategoryBudgetContract, EditCategoryBudgetDTO} from '@maya-vault/contracts';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {CategoriesService} from 'src/categories/categories.service';
+import {UsersService} from 'src/users/users.service';
 import {CategoryBudgetsRepository} from './category-budgets.repository';
-import {CategoryBudgetContract} from '@maya-vault/contracts';
-import {BadRequestException, ForbiddenException, NotFoundException} from '@nestjs/common';
-import {EditCategoryBudgetDTO} from '@maya-vault/contracts';
 
 @Injectable()
 export class CategoryBudgetsService {
@@ -39,20 +37,17 @@ export class CategoryBudgetsService {
     return all as CategoryBudgetContract[];
   }
 
-  async updateCategoryBudget(userId: string, id: string, dto: EditCategoryBudgetDTO): Promise<CategoryBudgetContract> {
-    const me = await this.usersService.findUserById(userId);
+  async findCategoryBudgetById(id: string): Promise<CategoryBudgetContract> {
     const budget = await this.categoryBudgetsRepository.findById(id);
     if (!budget) {
       throw new NotFoundException('Category budget not found');
     }
 
-    if (budget.householdId !== me.householdId) {
-      throw new ForbiddenException('You do not have access to this resource');
-    }
+    return budget as CategoryBudgetContract;
+  }
 
-    if (dto.plannedAmount < 0) {
-      throw new BadRequestException('plannedAmount must be 0 or greater');
-    }
+  async updateCategoryBudget(id: string, dto: EditCategoryBudgetDTO): Promise<CategoryBudgetContract> {
+    await this.findCategoryBudgetById(id);
 
     const updated = await this.categoryBudgetsRepository.updatePlannedAmount(id, dto.plannedAmount);
     if (!updated) {

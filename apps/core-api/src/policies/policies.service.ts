@@ -1,5 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {AccountsService} from 'src/accounts/accounts.service';
+import {CategoryBudgetsService} from 'src/category-budgets/category-budgets.service';
 import {UsersService} from 'src/users/users.service';
 
 @Injectable()
@@ -7,6 +8,7 @@ export class PoliciesService {
   constructor(
     private readonly usersService: UsersService,
     private readonly accountsService: AccountsService,
+    private readonly categoryBudgetsService: CategoryBudgetsService,
   ) {}
 
   async canUserUpdateAccount(userId: string, accountId: string): Promise<boolean> {
@@ -25,5 +27,11 @@ export class PoliciesService {
       user.householdId === fromAccount.householdId && user.householdId === toAccount.householdId;
 
     return sameHousehold && belongsToUserHousehold;
+  }
+
+  async canUserUpdateCategoryBudget(userId: string, categoryBudgetId: string): Promise<boolean> {
+    const user = await this.usersService.findUserById(userId);
+    const categoryBudget = await this.categoryBudgetsService.findCategoryBudgetById(categoryBudgetId);
+    return user.householdId === categoryBudget.householdId;
   }
 }
