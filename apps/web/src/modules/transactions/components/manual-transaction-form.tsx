@@ -12,7 +12,7 @@ import {useCreateTransaction} from '@/modules/transactions/hooks/useCreateTransa
 import {accountTypes} from '@/common/constants/account-types';
 import {useValidateCreateTransaction} from '@maya-vault/validation';
 import {Plus} from 'lucide-react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {toast} from 'sonner';
 
 interface ManualTransactionFormProps {
@@ -44,6 +44,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
   });
 
   const watchedCategoryId = watch('categoryId');
+  const watchedType = watch('type');
 
   const handleCreateCategory = async () => {
     if (!newCategoryName.trim() || !household?.id) return;
@@ -81,6 +82,12 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
 
+  useEffect(() => {
+    if (watchedType === 'income') {
+      setValue('categoryId', null);
+    }
+  }, [watchedType, setValue]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
@@ -102,72 +109,74 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
         {errors.accountId && <p className="text-sm text-red-500">{errors.accountId.message}</p>}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="categoryId">
-          Category <span className="text-red-500">*</span>
-        </Label>
-        {showCreateCategory ? (
-          <div className="flex gap-2">
-            <Input
-              placeholder="Enter category name"
-              value={newCategoryName}
-              onChange={(e) => setNewCategoryName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  void handleCreateCategory();
-                }
-                if (e.key === 'Escape') {
+      {watchedType === 'expense' && (
+        <div className="space-y-2">
+          <Label htmlFor="categoryId">
+            Category <span className="text-red-500">*</span>
+          </Label>
+          {showCreateCategory ? (
+            <div className="flex gap-2">
+              <Input
+                placeholder="Enter category name"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    void handleCreateCategory();
+                  }
+                  if (e.key === 'Escape') {
+                    setShowCreateCategory(false);
+                    setNewCategoryName('');
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                onClick={() => void handleCreateCategory()}
+                disabled={!newCategoryName.trim() || createCategoryMutation.isPending}
+              >
+                Create
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
                   setShowCreateCategory(false);
                   setNewCategoryName('');
-                }
-              }}
-            />
-            <Button
-              type="button"
-              onClick={() => void handleCreateCategory()}
-              disabled={!newCategoryName.trim() || createCategoryMutation.isPending}
-            >
-              Create
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setShowCreateCategory(false);
-                setNewCategoryName('');
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
-        ) : (
-          <div className="flex gap-2">
-            <Select value={watchedCategoryId} onValueChange={(value) => setValue('categoryId', value)}>
-              <SelectTrigger className="flex-1">
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories && categories.length > 0 ? (
-                  categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                    No categories available. Create one using the + button.
-                  </div>
-                )}
-              </SelectContent>
-            </Select>
-            <Button type="button" variant="outline" size="icon" onClick={() => setShowCreateCategory(true)}>
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
-        {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
-      </div>
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <Select value={watchedCategoryId ?? ''} onValueChange={(value) => setValue('categoryId', value)}>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories && categories.length > 0 ? (
+                    categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                      No categories available. Create one using the + button.
+                    </div>
+                  )}
+                </SelectContent>
+              </Select>
+              <Button type="button" variant="outline" size="icon" onClick={() => setShowCreateCategory(true)}>
+                <Plus className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+          {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
+        </div>
+      )}
 
       <div className="space-y-2">
         <Label htmlFor="type">
