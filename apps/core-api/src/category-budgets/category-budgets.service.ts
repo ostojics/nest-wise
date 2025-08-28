@@ -3,13 +3,14 @@ import {
   CategoryBudgetWithCurrentAmountContract,
   EditCategoryBudgetDTO,
 } from '@maya-vault/contracts';
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {CategoriesService} from 'src/categories/categories.service';
 import {UsersService} from 'src/users/users.service';
 import {CategoryBudgetsRepository} from './category-budgets.repository';
-import {endOfMonth, format, startOfMonth} from 'date-fns';
+import {endOfMonth, format, isBefore, startOfMonth} from 'date-fns';
 import {TransactionsService} from 'src/transactions/transactions.service';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
+import {UTCDate} from '@date-fns/utc';
 
 @Injectable()
 export class CategoryBudgetsService {
@@ -78,7 +79,15 @@ export class CategoryBudgetsService {
   }
 
   async updateCategoryBudget(id: string, dto: EditCategoryBudgetDTO): Promise<CategoryBudgetContract> {
-    await this.findCategoryBudgetById(id);
+    const categoryBudget = await this.findCategoryBudgetById(id);
+    const currentDate = new UTCDate();
+    const categoryBudgetMonth = new UTCDate(categoryBudget.month);
+    const startOfBudgetMonth = startOfMonth(categoryBudgetMonth);
+    const startOfCurrentMonth = startOfMonth(currentDate);
+
+    if (isBefore(startOfBudgetMonth, startOfCurrentMonth)) {
+      throw new BadRequestException('Cannot edit a category budget for a past month');
+    }
 
     const updated = await this.categoryBudgetsRepository.updatePlannedAmount(id, dto.plannedAmount);
     if (!updated) {
