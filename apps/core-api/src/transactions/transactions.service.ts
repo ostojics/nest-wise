@@ -37,6 +37,10 @@ export class TransactionsService {
         throw new BadRequestException('Insufficient funds for this expense');
       }
 
+      if (transactionData.type === 'income') {
+        transactionData.categoryId = null;
+      }
+
       const transaction = await this.transactionsRepository.create(transactionData);
 
       await this.updateBalance(
@@ -92,7 +96,7 @@ export class TransactionsService {
         description: transactionData.description,
         amount: object.transactionAmount,
         type: object.transactionType as TransactionType,
-        categoryId,
+        categoryId: object.transactionType === 'income' ? null : categoryId,
         householdId: account.householdId,
         accountId: account.id,
         transactionDate: new Date(object.transactionDate),

@@ -38,6 +38,7 @@ Extract the numerical amount from the description:
 - Only suggest a **NEW** category if none of the existing ones are appropriate
 - For new categories, provide a clear, concise name (e.g., "Groceries", "Salary", "Entertainment")
 - **Be conservative** - most transactions should fit into existing categories
+- If the transaction is an income, do not suggest a category or create a new one. You MUST follow this rule.
 
 ### 4. **Transaction Date**
 Parse the date from the transaction description:

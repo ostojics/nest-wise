@@ -17,14 +17,30 @@ export const createTransactionSchema = z
   .object({
     householdId: z.string().uuid('Household ID must be valid'),
     accountId: z.string().uuid('Account must be selected'),
-    categoryId: z.string().uuid('Category must be selected'),
+    categoryId: z.string().uuid('Category must be selected').nullable(),
     amount: z.coerce.number().min(0.01, 'Amount must be greater than 0'),
     type: TransactionTypeEnum,
     description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
     transactionDate: z.coerce.date(),
     isReconciled: z.boolean().default(true),
   })
-  .strict();
+  .strict()
+  .superRefine((val, ctx) => {
+    if (val.type === 'income' && val.categoryId !== null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['categoryId'],
+        message: 'Income transactions must not have a category',
+      });
+    }
+    if (val.type === 'expense' && val.categoryId === null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['categoryId'],
+        message: 'Expense transactions must have a category',
+      });
+    }
+  });
 
 export const createTransactionAiSchema = z
   .object({
