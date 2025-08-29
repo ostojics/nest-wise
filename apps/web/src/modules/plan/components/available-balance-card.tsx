@@ -3,11 +3,11 @@ import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdA
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {IconWallet} from '@tabler/icons-react';
-import React, {useMemo} from 'react';
-import NetWorthCardSkeleton from './net-worth-card.skeleton';
-import NetWorthCardError from './net-worth-card.error';
+import {useMemo} from 'react';
+import AvailableBalanceCardSkeleton from './available-balance-card.skeleton';
+import AvailableBalanceCardError from './available-balance-card.error';
 
-const NetWorthCard: React.FC = () => {
+const AvailableBalanceCard = () => {
   const {data: me} = useGetMe();
   const {data: accounts, isLoading, isError, refetch} = useGetHouseholdAccounts(me?.householdId ?? '');
   const {formatBalance} = useFormatBalance();
@@ -22,11 +22,11 @@ const NetWorthCard: React.FC = () => {
   }, [accounts]);
 
   if (isLoading) {
-    return <NetWorthCardSkeleton />;
+    return <AvailableBalanceCardSkeleton />;
   }
 
   if (isError) {
-    return <NetWorthCardError onRetry={refetch} />;
+    return <AvailableBalanceCardError onRetry={refetch} />;
   }
 
   return (
@@ -34,14 +34,14 @@ const NetWorthCard: React.FC = () => {
       <CardHeader>
         <CardDescription className="flex items-center gap-2">
           <IconWallet className="h-4 w-4" />
-          Net Worth
+          Available Balance
         </CardDescription>
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl transition-colors text-green-600 dark:text-green-400">
           {formatBalance(netWorth)}
         </CardTitle>
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
-        <div className="line-clamp-1 flex gap-2 font-medium items-center">Total household value</div>
+        <div className="line-clamp-1 flex gap-2 font-medium items-center">Total available balance</div>
         <div className="text-muted-foreground">
           Across {accountCount} {accountCount === 1 ? 'account' : 'accounts'}
         </div>
@@ -50,4 +50,4 @@ const NetWorthCard: React.FC = () => {
   );
 };
 
-export default NetWorthCard;
+export default AvailableBalanceCard;

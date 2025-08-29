@@ -16,7 +16,7 @@ interface DateFromPickerProps {
 
 const DateFromPicker: React.FC<DateFromPickerProps> = ({className}) => {
   const [open, setOpen] = useState(false);
-  const search = useSearch({from: '/__pathlessLayout/dashboard'});
+  const search = useSearch({from: '/__pathlessLayout/plan'});
   const navigate = useNavigate();
   const selectedDate = search.transactionDate_from ? new Date(search.transactionDate_from) : undefined;
 

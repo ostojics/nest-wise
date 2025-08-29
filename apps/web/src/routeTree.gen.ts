@@ -14,8 +14,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitesRouteImport } from './routes/invites'
 import { Route as _pathlessLayoutRouteRouteImport } from './routes/__pathlessLayout/route'
 import { Route as _pathlessLayoutTransactionsRouteImport } from './routes/__pathlessLayout/transactions'
+import { Route as _pathlessLayoutPlanRouteImport } from './routes/__pathlessLayout/plan'
 import { Route as _pathlessLayoutMembersRouteImport } from './routes/__pathlessLayout/members'
-import { Route as _pathlessLayoutDashboardRouteImport } from './routes/__pathlessLayout/dashboard'
 import { Route as _pathlessLayoutAnalyticsRouteImport } from './routes/__pathlessLayout/analytics'
 import { Route as _pathlessLayoutAccountsRouteImport } from './routes/__pathlessLayout/accounts'
 
@@ -44,17 +44,16 @@ const _pathlessLayoutTransactionsRoute =
     path: '/transactions',
     getParentRoute: () => _pathlessLayoutRouteRoute,
   } as any)
+const _pathlessLayoutPlanRoute = _pathlessLayoutPlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
+  getParentRoute: () => _pathlessLayoutRouteRoute,
+} as any)
 const _pathlessLayoutMembersRoute = _pathlessLayoutMembersRouteImport.update({
   id: '/members',
   path: '/members',
   getParentRoute: () => _pathlessLayoutRouteRoute,
 } as any)
-const _pathlessLayoutDashboardRoute =
-  _pathlessLayoutDashboardRouteImport.update({
-    id: '/dashboard',
-    path: '/dashboard',
-    getParentRoute: () => _pathlessLayoutRouteRoute,
-  } as any)
 const _pathlessLayoutAnalyticsRoute =
   _pathlessLayoutAnalyticsRouteImport.update({
     id: '/analytics',
@@ -73,8 +72,8 @@ export interface FileRoutesByFullPath {
   '/setup': typeof SetupRoute
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
-  '/dashboard': typeof _pathlessLayoutDashboardRoute
   '/members': typeof _pathlessLayoutMembersRoute
+  '/plan': typeof _pathlessLayoutPlanRoute
   '/transactions': typeof _pathlessLayoutTransactionsRoute
 }
 export interface FileRoutesByTo {
@@ -83,8 +82,8 @@ export interface FileRoutesByTo {
   '/setup': typeof SetupRoute
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
-  '/dashboard': typeof _pathlessLayoutDashboardRoute
   '/members': typeof _pathlessLayoutMembersRoute
+  '/plan': typeof _pathlessLayoutPlanRoute
   '/transactions': typeof _pathlessLayoutTransactionsRoute
 }
 export interface FileRoutesById {
@@ -95,8 +94,8 @@ export interface FileRoutesById {
   '/setup': typeof SetupRoute
   '/__pathlessLayout/accounts': typeof _pathlessLayoutAccountsRoute
   '/__pathlessLayout/analytics': typeof _pathlessLayoutAnalyticsRoute
-  '/__pathlessLayout/dashboard': typeof _pathlessLayoutDashboardRoute
   '/__pathlessLayout/members': typeof _pathlessLayoutMembersRoute
+  '/__pathlessLayout/plan': typeof _pathlessLayoutPlanRoute
   '/__pathlessLayout/transactions': typeof _pathlessLayoutTransactionsRoute
 }
 export interface FileRouteTypes {
@@ -107,8 +106,8 @@ export interface FileRouteTypes {
     | '/setup'
     | '/accounts'
     | '/analytics'
-    | '/dashboard'
     | '/members'
+    | '/plan'
     | '/transactions'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -117,8 +116,8 @@ export interface FileRouteTypes {
     | '/setup'
     | '/accounts'
     | '/analytics'
-    | '/dashboard'
     | '/members'
+    | '/plan'
     | '/transactions'
   id:
     | '__root__'
@@ -128,8 +127,8 @@ export interface FileRouteTypes {
     | '/setup'
     | '/__pathlessLayout/accounts'
     | '/__pathlessLayout/analytics'
-    | '/__pathlessLayout/dashboard'
     | '/__pathlessLayout/members'
+    | '/__pathlessLayout/plan'
     | '/__pathlessLayout/transactions'
   fileRoutesById: FileRoutesById
 }
@@ -177,18 +176,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof _pathlessLayoutTransactionsRouteImport
       parentRoute: typeof _pathlessLayoutRouteRoute
     }
+    '/__pathlessLayout/plan': {
+      id: '/__pathlessLayout/plan'
+      path: '/plan'
+      fullPath: '/plan'
+      preLoaderRoute: typeof _pathlessLayoutPlanRouteImport
+      parentRoute: typeof _pathlessLayoutRouteRoute
+    }
     '/__pathlessLayout/members': {
       id: '/__pathlessLayout/members'
       path: '/members'
       fullPath: '/members'
       preLoaderRoute: typeof _pathlessLayoutMembersRouteImport
-      parentRoute: typeof _pathlessLayoutRouteRoute
-    }
-    '/__pathlessLayout/dashboard': {
-      id: '/__pathlessLayout/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof _pathlessLayoutDashboardRouteImport
       parentRoute: typeof _pathlessLayoutRouteRoute
     }
     '/__pathlessLayout/analytics': {
@@ -211,16 +210,16 @@ declare module '@tanstack/react-router' {
 interface _pathlessLayoutRouteRouteChildren {
   _pathlessLayoutAccountsRoute: typeof _pathlessLayoutAccountsRoute
   _pathlessLayoutAnalyticsRoute: typeof _pathlessLayoutAnalyticsRoute
-  _pathlessLayoutDashboardRoute: typeof _pathlessLayoutDashboardRoute
   _pathlessLayoutMembersRoute: typeof _pathlessLayoutMembersRoute
+  _pathlessLayoutPlanRoute: typeof _pathlessLayoutPlanRoute
   _pathlessLayoutTransactionsRoute: typeof _pathlessLayoutTransactionsRoute
 }
 
 const _pathlessLayoutRouteRouteChildren: _pathlessLayoutRouteRouteChildren = {
   _pathlessLayoutAccountsRoute: _pathlessLayoutAccountsRoute,
   _pathlessLayoutAnalyticsRoute: _pathlessLayoutAnalyticsRoute,
-  _pathlessLayoutDashboardRoute: _pathlessLayoutDashboardRoute,
   _pathlessLayoutMembersRoute: _pathlessLayoutMembersRoute,
+  _pathlessLayoutPlanRoute: _pathlessLayoutPlanRoute,
   _pathlessLayoutTransactionsRoute: _pathlessLayoutTransactionsRoute,
 }
 

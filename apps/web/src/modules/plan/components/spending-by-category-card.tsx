@@ -23,7 +23,7 @@ const renderCustomizedLabel = (entry: ChartDataEntry) => {
 
 const SpendingByCategoryCard: React.FC = () => {
   const {formatBalance} = useFormatBalance();
-  const search = useSearch({from: '/__pathlessLayout/dashboard'});
+  const search = useSearch({from: '/__pathlessLayout/plan'});
   const {data: me} = useGetMe();
   const {data, isLoading, isError, refetch} = useGetTransactions({
     search: {

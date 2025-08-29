@@ -1,11 +1,11 @@
 import {getStartAndEndOfMonth} from '@/lib/utils';
-import DashboardPage from '@/modules/dashboard/components/dashboard-page';
+import PlanPage from '@/modules/plan/components/plan-page';
 import {getTransactionsQuerySchema} from '@maya-vault/validation';
 import {createFileRoute} from '@tanstack/react-router';
 import {z} from 'zod';
 
 const {start, end} = getStartAndEndOfMonth();
-const dashboardQuerySchema = getTransactionsQuerySchema
+const planQuerySchema = getTransactionsQuerySchema
   .pick({
     transactionDate_from: true,
     transactionDate_to: true,
@@ -15,7 +15,7 @@ const dashboardQuerySchema = getTransactionsQuerySchema
     transactionDate_to: z.string().date().default(end).catch(end),
   });
 
-export const Route = createFileRoute('/__pathlessLayout/dashboard')({
-  component: DashboardPage,
-  validateSearch: dashboardQuerySchema,
+export const Route = createFileRoute('/__pathlessLayout/plan')({
+  component: PlanPage,
+  validateSearch: planQuerySchema,
 });
