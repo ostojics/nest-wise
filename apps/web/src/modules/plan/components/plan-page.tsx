@@ -1,21 +1,18 @@
-import {lazy, Suspense, useState} from 'react';
+import CategoryBudgetsList from '@/modules/category-budgets/components/category-budgets-list';
 import AvailableBalanceCard from './available-balance-card';
-const NetWorthTrendCard = lazy(() => import('./net-worth-trend-card'));
-import SpendingByCategoryCard from './spending-by-category-card';
 import SpendingVsTargetCard from './spending-vs-target-card';
-import {useIntersectionObserver} from 'usehooks-ts';
-import NetWorthTrendCardSkeleton from './net-worth-trend-card.skeleton';
+// const NetWorthTrendCard = lazy(() => import('./net-worth-trend-card'));
 
 const PlanPage = () => {
-  const {ref} = useIntersectionObserver({
-    threshold: 0.5,
-    onChange: (isIntersecting) => {
-      if (isIntersecting && !isVisible) {
-        setIsVisible(true);
-      }
-    },
-  });
-  const [isVisible, setIsVisible] = useState(false);
+  // const {ref} = useIntersectionObserver({
+  //   threshold: 0.5,
+  //   onChange: (isIntersecting) => {
+  //     if (isIntersecting && !isVisible) {
+  //       setIsVisible(true);
+  //     }
+  //   },
+  // });
+  // const [isVisible, setIsVisible] = useState(false);
 
   return (
     <section className="p-4 space-y-6 @container/dashboard">
@@ -24,11 +21,12 @@ const PlanPage = () => {
           <AvailableBalanceCard />
           <SpendingVsTargetCard />
         </div>
-        <SpendingByCategoryCard />
+        {/* <SpendingByCategoryCard />
         <Suspense fallback={<NetWorthTrendCardSkeleton />}>
           <div ref={ref}>{isVisible && <NetWorthTrendCard />}</div>
-        </Suspense>
+        </Suspense> */}
       </section>
+      <CategoryBudgetsList />
     </section>
   );
 };
