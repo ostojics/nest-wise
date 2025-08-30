@@ -1,6 +1,7 @@
 import CategoryBudgetsList from '@/modules/category-budgets/components/category-budgets-list';
 import AvailableBalanceCard from './available-balance-card';
 import SpendingVsTargetCard from './spending-vs-target-card';
+import {Button} from '@/components/ui/button';
 // const NetWorthTrendCard = lazy(() => import('./net-worth-trend-card'));
 
 const PlanPage = () => {
@@ -26,6 +27,16 @@ const PlanPage = () => {
           <div ref={ref}>{isVisible && <NetWorthTrendCard />}</div>
         </Suspense> */}
       </section>
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-1.5">
+          <h3 className="text-xl font-semibold">Plan your spending by category</h3>
+          <p className="text-muted-foreground text-sm">
+            Set a planned amount for each category. As you log transactions, your spending is tracked automatically for
+            the selected month.
+          </p>
+        </div>
+        <Button size="sm">New Category</Button>
+      </div>
       <CategoryBudgetsList />
     </section>
   );
