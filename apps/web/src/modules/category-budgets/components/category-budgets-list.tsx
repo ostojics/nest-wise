@@ -7,13 +7,13 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {useGetCategoryBudgets} from '../hooks/use-get-category-budgets';
-import CategoryBudgetItem from './category-budget-item';
+import CategoryBudgetsTable from './category-budgets-table';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {cn} from '@/lib/utils';
 
 const CategoryBudgetsList = () => {
   const search = useSearch({from: '/__pathlessLayout/plan'});
-  const {data, isLoading} = useGetCategoryBudgets(search);
+  const {data, isLoading} = useGetCategoryBudgets();
   const {formatBalance} = useFormatBalance();
 
   const isEditable = useMemo(() => {
@@ -70,15 +70,12 @@ const CategoryBudgetsList = () => {
       {isLoading ? (
         <div className="grid gap-3">
           <Skeleton className="h-24" />
-          <Skeleton className="h-24" />
-          <Skeleton className="h-24" />
+          <Skeleton className="h-8" />
+          <Skeleton className="h-8" />
+          <Skeleton className="h-8" />
         </div>
       ) : (
-        <div className="grid gap-3">
-          {items.map((item) => (
-            <CategoryBudgetItem key={item.id} item={item} isEditable={isEditable} />
-          ))}
-        </div>
+        <CategoryBudgetsTable data={items} isEditable={isEditable} />
       )}
     </div>
   );

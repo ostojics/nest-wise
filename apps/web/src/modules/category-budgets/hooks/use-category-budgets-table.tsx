@@ -1,0 +1,104 @@
+import {Badge} from '@/components/ui/badge';
+import {Progress} from '@/components/ui/progress';
+import {cn} from '@/lib/utils';
+import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {CategoryBudgetWithCurrentAmountContract} from '@maya-vault/contracts';
+import {ColumnDef, getCoreRowModel, useReactTable} from '@tanstack/react-table';
+import {useMemo} from 'react';
+import EditCategoryBudgetDialog from '../components/edit-category-budget-dialog';
+
+export const useCategoryBudgetsTable = (
+  data: CategoryBudgetWithCurrentAmountContract[],
+  opts?: {isEditable?: boolean},
+) => {
+  const {formatBalance} = useFormatBalance();
+
+  const columns = useMemo<ColumnDef<CategoryBudgetWithCurrentAmountContract>[]>(
+    () => [
+      {
+        id: 'category',
+        header: 'Category',
+        cell: ({row}) => {
+          const planned = row.original.plannedAmount;
+          const spent = row.original.currentAmount;
+          const value = planned <= 0 ? 0 : Math.min(100, Math.max(0, (spent / planned) * 100));
+
+          return (
+            <div className="min-w-[180px]">
+              <div className="text-foreground/90">{row.original.category.name}</div>
+              <div className="mt-1 flex items-center gap-2">
+                <Progress className="h-[6px]" value={value} />
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        id: 'status',
+        header: 'Status',
+        cell: ({row}) => {
+          const planned = row.original.plannedAmount;
+          const spent = row.original.currentAmount;
+          const available = planned - spent;
+          const isOverspent = available < 0;
+          const label = isOverspent ? 'Overspent' : planned > 0 ? 'On Track' : '—';
+          return <span className={cn('text-muted-foreground')}>{label}</span>;
+        },
+        enableSorting: false,
+      },
+      {
+        accessorKey: 'plannedAmount',
+        header: 'Assigned',
+        enableSorting: false,
+        cell: ({row}) => <span className="tabular-nums">{formatBalance(row.original.plannedAmount)}</span>,
+      },
+      {
+        id: 'spent',
+        header: 'Spent',
+        enableSorting: false,
+        cell: ({row}) => <span className="tabular-nums">{formatBalance(row.original.currentAmount)}</span>,
+      },
+      {
+        id: 'available',
+        header: 'Available',
+        cell: ({row}) => {
+          const available = row.original.plannedAmount - row.original.currentAmount;
+          const negative = available < 0;
+          return (
+            <Badge
+              className={cn(
+                'tabular-nums px-2.5 py-1',
+                negative
+                  ? 'bg-destructive text-white'
+                  : 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300',
+              )}
+              variant={negative ? 'destructive' : 'secondary'}
+            >
+              {formatBalance(available)}
+            </Badge>
+          );
+        },
+      },
+      {
+        id: 'actions',
+        header: 'Actions',
+        cell: ({row}) => (
+          <EditCategoryBudgetDialog enableTrigger={opts?.isEditable} initialValue={row.original.plannedAmount} />
+        ),
+        enableSorting: false,
+      },
+    ],
+    [formatBalance, opts?.isEditable],
+  );
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    enableSortingRemoval: false,
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
+    debugAll: import.meta.env.DEV,
+  });
+
+  return table;
+};

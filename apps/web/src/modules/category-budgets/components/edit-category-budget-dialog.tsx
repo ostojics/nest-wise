@@ -15,16 +15,17 @@ import {Input} from '@/components/ui/input';
 
 interface EditCategoryBudgetDialogProps {
   initialValue: number;
+  enableTrigger?: boolean;
 }
 
-const EditCategoryBudgetDialog = ({initialValue}: EditCategoryBudgetDialogProps) => {
+const EditCategoryBudgetDialog = ({initialValue, enableTrigger = true}: EditCategoryBudgetDialogProps) => {
   const [value, setValue] = useState<number>(initialValue);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline">
-          Edit
+        <Button size="sm" variant="outline" disabled={!enableTrigger}>
+          Assign
         </Button>
       </DialogTrigger>
       <DialogContent>

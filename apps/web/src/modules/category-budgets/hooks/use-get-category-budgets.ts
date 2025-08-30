@@ -1,11 +1,13 @@
-import {GetCategoryBudgetsQueryParams} from '@maya-vault/contracts';
-import {useQuery} from '@tanstack/react-query';
-import {getCategoryBudgets} from '../../api/category-budgets';
 import {queryKeys} from '@/modules/api/query-keys';
+import {useQuery} from '@tanstack/react-query';
+import {useSearch} from '@tanstack/react-router';
+import {getCategoryBudgets} from '../../api/category-budgets';
 
-export const useGetCategoryBudgets = (dto: GetCategoryBudgetsQueryParams) => {
+export const useGetCategoryBudgets = () => {
+  const search = useSearch({from: '/__pathlessLayout/plan'});
+
   return useQuery({
-    queryKey: queryKeys.categoryBudgets.all(dto),
-    queryFn: () => getCategoryBudgets(dto),
+    queryKey: queryKeys.categoryBudgets.all(search),
+    queryFn: () => getCategoryBudgets(search),
   });
 };
