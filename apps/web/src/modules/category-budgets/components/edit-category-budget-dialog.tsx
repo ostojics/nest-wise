@@ -1,5 +1,3 @@
-import {useState} from 'react';
-
 import {Button} from '@/components/ui/button';
 import {
   Dialog,
@@ -12,44 +10,82 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
+import {useValidateEditCategoryBudget} from '../hooks/use-validate-edit-category-budget';
+import {Label} from '@/components/ui/label';
+import FormError from '@/components/form-error';
+import {EditCategoryBudgetDTO} from '@maya-vault/contracts';
+import {useEditCategoryBudget} from '../hooks/use-edit-category-budget';
+import {useState} from 'react';
+import {Loader2} from 'lucide-react';
 
 interface EditCategoryBudgetDialogProps {
-  initialValue: number;
+  plannedAmount: number;
+  categoryBudgetId: string;
   enableTrigger?: boolean;
 }
 
-const EditCategoryBudgetDialog = ({initialValue, enableTrigger = true}: EditCategoryBudgetDialogProps) => {
-  const [value, setValue] = useState<number>(initialValue);
+const EditCategoryBudgetDialog = ({
+  plannedAmount,
+  enableTrigger = true,
+  categoryBudgetId,
+}: EditCategoryBudgetDialogProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: {errors},
+  } = useValidateEditCategoryBudget({defaultValues: {plannedAmount}});
+  const mutation = useEditCategoryBudget();
+
+  const handleEditCategoryBudget = async (data: EditCategoryBudgetDTO) => {
+    await mutation.mutateAsync(
+      {id: categoryBudgetId, dto: data},
+      {
+        onSettled: () => {
+          setIsOpen(false);
+        },
+      },
+    );
+  };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button size="sm" variant="outline" disabled={!enableTrigger}>
           Assign
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit planned amount</DialogTitle>
+        <DialogHeader className="mb-3">
+          <DialogTitle>Assign planned amount</DialogTitle>
           <DialogDescription>Set how much you plan to spend for this category in the selected month.</DialogDescription>
         </DialogHeader>
-        <div className="flex items-center gap-3">
-          <Input
-            inputMode="decimal"
-            type="number"
-            min={0}
-            value={Number.isNaN(value) ? '' : value}
-            onChange={(e) => setValue(Number(e.target.value))}
-            className="max-w-[220px]"
-          />
-          <div className="text-muted-foreground text-sm">Planned amount</div>
-        </div>
-        <DialogFooter>
-          <Button>Save</Button>
-          <DialogClose asChild>
-            <Button variant="ghost">Cancel</Button>
-          </DialogClose>
-        </DialogFooter>
+        <form onSubmit={handleSubmit(handleEditCategoryBudget)}>
+          <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="edit-account-name">Planned amount</Label>
+              <Input
+                id="edit-planned-amount"
+                type="number"
+                inputMode="decimal"
+                min="0"
+                step="0.01"
+                {...register('plannedAmount', {required: true})}
+              />
+              {errors.plannedAmount?.message && <FormError error={errors.plannedAmount.message} />}
+            </div>
+          </div>
+          <DialogFooter className="mt-10">
+            <DialogClose asChild>
+              <Button type="button" variant="outline" disabled={mutation.isPending}>
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit" disabled={mutation.isPending}>
+              {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Save'}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

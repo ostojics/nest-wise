@@ -83,7 +83,11 @@ export const useCategoryBudgetsTable = (
         id: 'actions',
         header: 'Actions',
         cell: ({row}) => (
-          <EditCategoryBudgetDialog enableTrigger={opts?.isEditable} initialValue={row.original.plannedAmount} />
+          <EditCategoryBudgetDialog
+            categoryBudgetId={row.original.id}
+            enableTrigger={opts?.isEditable}
+            plannedAmount={row.original.plannedAmount}
+          />
         ),
         enableSorting: false,
       },
