@@ -1,7 +1,7 @@
 import CategoryBudgetsList from '@/modules/category-budgets/components/category-budgets-list';
 import AvailableBalanceCard from './available-balance-card';
 import SpendingVsTargetCard from './spending-vs-target-card';
-import {Button} from '@/components/ui/button';
+import NewCategoryDialog from './new-category-dialog';
 // const NetWorthTrendCard = lazy(() => import('./net-worth-trend-card'));
 
 const PlanPage = () => {
@@ -35,7 +35,7 @@ const PlanPage = () => {
             the selected month.
           </p>
         </div>
-        <Button size="sm">New Category</Button>
+        <NewCategoryDialog />
       </div>
       <CategoryBudgetsList />
     </section>
