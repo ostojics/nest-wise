@@ -7,10 +7,12 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {useGetCategoryBudgets} from '../hooks/use-get-category-budgets';
 import CategoryBudgetsTable from './category-budgets-table';
+import CategoryBudgetsListSkeleton from './category-budgets-list.skeleton';
+import CategoryBudgetsListError from './category-budgets-list.error';
 
 const CategoryBudgetsList = () => {
   const search = useSearch({from: '/__pathlessLayout/plan'});
-  const {data} = useGetCategoryBudgets();
+  const {data, isLoading, isError, refetch} = useGetCategoryBudgets();
   const {formatBalance} = useFormatBalance();
 
   const isEditable = useMemo(() => {
@@ -27,6 +29,14 @@ const CategoryBudgetsList = () => {
     const available = planned - spent;
     return {planned, spent, available};
   }, [items]);
+
+  if (isLoading) {
+    return <CategoryBudgetsListSkeleton />;
+  }
+
+  if (isError) {
+    return <CategoryBudgetsListError onRetry={refetch} />;
+  }
 
   return (
     <div className="space-y-4">
