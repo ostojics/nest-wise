@@ -13,7 +13,7 @@ export const useSetupMutation = () => {
     onSuccess: async () => {
       await client.invalidateQueries({queryKey: [queryKeys.me]});
       toast.success('Setup successful');
-      void navigate({to: '/dashboard'});
+      void navigate({to: '/plan'});
     },
     onError: () => {
       toast.error('Setup failed');
