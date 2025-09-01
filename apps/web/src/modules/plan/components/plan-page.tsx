@@ -2,6 +2,7 @@ import CategoryBudgetsList from '@/modules/category-budgets/components/category-
 import AvailableBalanceCard from './available-balance-card';
 import SpendingVsTargetCard from './spending-vs-target-card';
 import NewCategoryDialog from './new-category-dialog';
+import MonthSwitcher from './selects/month-switcher';
 // const NetWorthTrendCard = lazy(() => import('./net-worth-trend-card'));
 
 const PlanPage = () => {
@@ -26,6 +27,9 @@ const PlanPage = () => {
         <Suspense fallback={<NetWorthTrendCardSkeleton />}>
           <div ref={ref}>{isVisible && <NetWorthTrendCard />}</div>
         </Suspense> */}
+      </section>
+      <section>
+        <MonthSwitcher />
       </section>
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1.5">
