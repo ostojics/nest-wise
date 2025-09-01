@@ -22,6 +22,7 @@ import {queuesConfig, QueuesConfig, QueuesConfigName} from './config/queues.conf
 import {PoliciesModule} from './policies/policies.module';
 import {ScheduleModule} from '@nestjs/schedule';
 import {SavingsModule} from './savings/savings.module';
+import {CategoryBudgetsModule} from './category-budgets/category-budgets.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import {SavingsModule} from './savings/savings.module';
     EmailsModule,
     PoliciesModule,
     SavingsModule,
+    CategoryBudgetsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

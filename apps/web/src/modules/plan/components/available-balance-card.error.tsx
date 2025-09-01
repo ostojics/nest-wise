@@ -2,17 +2,17 @@ import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/compon
 import {Button} from '@/components/ui/button';
 import {IconAlertTriangle, IconWallet} from '@tabler/icons-react';
 
-interface NetWorthCardErrorProps {
+interface AvailableBalanceCardErrorProps {
   onRetry: () => void;
 }
 
-const NetWorthCardError = ({onRetry}: NetWorthCardErrorProps) => {
+const AvailableBalanceCardError = ({onRetry}: AvailableBalanceCardErrorProps) => {
   return (
     <Card className="group flex-1 hover:shadow-md transition-all duration-200">
       <CardHeader>
         <CardDescription className="flex items-center gap-2">
           <IconWallet className="h-4 w-4" />
-          Net Worth
+          Available Balance
         </CardDescription>
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl transition-colors text-red-600 dark:text-red-400">
           Error
@@ -22,7 +22,7 @@ const NetWorthCardError = ({onRetry}: NetWorthCardErrorProps) => {
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center gap-2 text-muted-foreground">
             <IconAlertTriangle className="h-4 w-4 text-yellow-500" />
-            <span>Failed to load net worth.</span>
+            <span>Failed to load available balance.</span>
           </div>
           <Button variant="outline" size="sm" onClick={onRetry}>
             Retry
@@ -33,4 +33,4 @@ const NetWorthCardError = ({onRetry}: NetWorthCardErrorProps) => {
   );
 };
 
-export default NetWorthCardError;
+export default AvailableBalanceCardError;

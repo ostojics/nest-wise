@@ -11,7 +11,7 @@ export const useLoginMutation = () => {
     mutationFn: login,
     onSuccess: async () => {
       await client.invalidateQueries({queryKey: [queryKeys.me]});
-      await navigate({to: '/dashboard'});
+      await navigate({to: '/plan'});
     },
   });
 };
