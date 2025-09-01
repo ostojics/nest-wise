@@ -63,21 +63,23 @@
 
 ### UI Notes
 
-- Budget grid with month selector.
+- Stacked card list with month selector (no table UI).
 - Show plannedAmount (editable where allowed) and currentAmount (read-only).
-- Disable inputs for previous months.
+- Disable inputs for previous months (read-only state with label).
 - Show an error/toast when overplanning rule blocks an edit.
 
 - Layout and interactions
   - Header: a month selector with previous/next controls and a dropdown to pick a specific month.
-  - Below the header: a list/grid of category budgets showing for each category:
-    - Category name
-    - Planned amount (with an Edit action or inline editable input; disabled for previous months)
-    - Spent (currentAmount)
-    - Available (planned − spent)
-    - A progress bar visualizing spent vs planned
-  - Row-level Edit opens inline editing or a small modal to adjust the planned amount.
-  - Footer/summary displays totals (Total Planned, Total Spent, Remaining) as guidance.
+  - Below the header: a vertical list of cards, one per category budget:
+    - Card header: Category name, primary value shows Planned amount.
+    - Card action: Edit button for current/future months; shows read-only label for past months.
+    - Inline edit: numeric input for Planned amount with Save/Cancel buttons (UI only here; server validations apply on save).
+    - Card content stats:
+      - Planned (original plannedAmount)
+      - Spent (currentAmount)
+      - Available (planned − spent), turns destructive color when negative
+      - Progress bar visualizing spent vs planned with percentage label
+  - List footer/summary displays totals (Total Planned, Total Spent, Remaining) with negative remaining styled as destructive.
 
 ### Out of Scope (MVP)
 

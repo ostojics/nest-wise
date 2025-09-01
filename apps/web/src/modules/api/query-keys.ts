@@ -1,3 +1,4 @@
+import {GetCategoryBudgetsQueryParams} from '@maya-vault/contracts';
 import {GetTransactionsQueryDTO} from '@maya-vault/validation';
 
 export const queryKeys = {
@@ -17,5 +18,8 @@ export const queryKeys = {
   },
   users: {
     all: () => ['users'],
+  },
+  categoryBudgets: {
+    all: (search: GetCategoryBudgetsQueryParams) => ['category-budgets', search],
   },
 };
