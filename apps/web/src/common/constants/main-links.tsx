@@ -18,13 +18,13 @@ export const mainLinks = [
     icon: <IconReceipt />,
   },
   {
-    title: 'Members',
-    url: '/members',
-    icon: <IconUsers />,
-  },
-  {
     title: 'Reports',
     url: '/reports',
     icon: <IconChartBar />,
+  },
+  {
+    title: 'Members',
+    url: '/members',
+    icon: <IconUsers />,
   },
 ] as const;
