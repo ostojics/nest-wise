@@ -18,6 +18,8 @@ import { Route as _pathlessLayoutPlanRouteImport } from './routes/__pathlessLayo
 import { Route as _pathlessLayoutMembersRouteImport } from './routes/__pathlessLayout/members'
 import { Route as _pathlessLayoutAnalyticsRouteImport } from './routes/__pathlessLayout/analytics'
 import { Route as _pathlessLayoutAccountsRouteImport } from './routes/__pathlessLayout/accounts'
+import { Route as _pathlessLayoutReportsRouteRouteImport } from './routes/__pathlessLayout/reports/route'
+import { Route as _pathlessLayoutReportsCategorySpendingRouteImport } from './routes/__pathlessLayout/reports/category-spending'
 
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
@@ -65,26 +67,42 @@ const _pathlessLayoutAccountsRoute = _pathlessLayoutAccountsRouteImport.update({
   path: '/accounts',
   getParentRoute: () => _pathlessLayoutRouteRoute,
 } as any)
+const _pathlessLayoutReportsRouteRoute =
+  _pathlessLayoutReportsRouteRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => _pathlessLayoutRouteRoute,
+  } as any)
+const _pathlessLayoutReportsCategorySpendingRoute =
+  _pathlessLayoutReportsCategorySpendingRouteImport.update({
+    id: '/category-spending',
+    path: '/category-spending',
+    getParentRoute: () => _pathlessLayoutReportsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
+  '/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/members': typeof _pathlessLayoutMembersRoute
   '/plan': typeof _pathlessLayoutPlanRoute
   '/transactions': typeof _pathlessLayoutTransactionsRoute
+  '/reports/category-spending': typeof _pathlessLayoutReportsCategorySpendingRoute
 }
 export interface FileRoutesByTo {
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
+  '/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/members': typeof _pathlessLayoutMembersRoute
   '/plan': typeof _pathlessLayoutPlanRoute
   '/transactions': typeof _pathlessLayoutTransactionsRoute
+  '/reports/category-spending': typeof _pathlessLayoutReportsCategorySpendingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -92,11 +110,13 @@ export interface FileRoutesById {
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
+  '/__pathlessLayout/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
   '/__pathlessLayout/accounts': typeof _pathlessLayoutAccountsRoute
   '/__pathlessLayout/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/__pathlessLayout/members': typeof _pathlessLayoutMembersRoute
   '/__pathlessLayout/plan': typeof _pathlessLayoutPlanRoute
   '/__pathlessLayout/transactions': typeof _pathlessLayoutTransactionsRoute
+  '/__pathlessLayout/reports/category-spending': typeof _pathlessLayoutReportsCategorySpendingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -104,32 +124,38 @@ export interface FileRouteTypes {
     | '/invites'
     | '/login'
     | '/setup'
+    | '/reports'
     | '/accounts'
     | '/analytics'
     | '/members'
     | '/plan'
     | '/transactions'
+    | '/reports/category-spending'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/invites'
     | '/login'
     | '/setup'
+    | '/reports'
     | '/accounts'
     | '/analytics'
     | '/members'
     | '/plan'
     | '/transactions'
+    | '/reports/category-spending'
   id:
     | '__root__'
     | '/__pathlessLayout'
     | '/invites'
     | '/login'
     | '/setup'
+    | '/__pathlessLayout/reports'
     | '/__pathlessLayout/accounts'
     | '/__pathlessLayout/analytics'
     | '/__pathlessLayout/members'
     | '/__pathlessLayout/plan'
     | '/__pathlessLayout/transactions'
+    | '/__pathlessLayout/reports/category-spending'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -204,10 +230,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof _pathlessLayoutAccountsRouteImport
       parentRoute: typeof _pathlessLayoutRouteRoute
     }
+    '/__pathlessLayout/reports': {
+      id: '/__pathlessLayout/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof _pathlessLayoutReportsRouteRouteImport
+      parentRoute: typeof _pathlessLayoutRouteRoute
+    }
+    '/__pathlessLayout/reports/category-spending': {
+      id: '/__pathlessLayout/reports/category-spending'
+      path: '/category-spending'
+      fullPath: '/reports/category-spending'
+      preLoaderRoute: typeof _pathlessLayoutReportsCategorySpendingRouteImport
+      parentRoute: typeof _pathlessLayoutReportsRouteRoute
+    }
   }
 }
 
+interface _pathlessLayoutReportsRouteRouteChildren {
+  _pathlessLayoutReportsCategorySpendingRoute: typeof _pathlessLayoutReportsCategorySpendingRoute
+}
+
+const _pathlessLayoutReportsRouteRouteChildren: _pathlessLayoutReportsRouteRouteChildren =
+  {
+    _pathlessLayoutReportsCategorySpendingRoute:
+      _pathlessLayoutReportsCategorySpendingRoute,
+  }
+
+const _pathlessLayoutReportsRouteRouteWithChildren =
+  _pathlessLayoutReportsRouteRoute._addFileChildren(
+    _pathlessLayoutReportsRouteRouteChildren,
+  )
+
 interface _pathlessLayoutRouteRouteChildren {
+  _pathlessLayoutReportsRouteRoute: typeof _pathlessLayoutReportsRouteRouteWithChildren
   _pathlessLayoutAccountsRoute: typeof _pathlessLayoutAccountsRoute
   _pathlessLayoutAnalyticsRoute: typeof _pathlessLayoutAnalyticsRoute
   _pathlessLayoutMembersRoute: typeof _pathlessLayoutMembersRoute
@@ -216,6 +272,8 @@ interface _pathlessLayoutRouteRouteChildren {
 }
 
 const _pathlessLayoutRouteRouteChildren: _pathlessLayoutRouteRouteChildren = {
+  _pathlessLayoutReportsRouteRoute:
+    _pathlessLayoutReportsRouteRouteWithChildren,
   _pathlessLayoutAccountsRoute: _pathlessLayoutAccountsRoute,
   _pathlessLayoutAnalyticsRoute: _pathlessLayoutAnalyticsRoute,
   _pathlessLayoutMembersRoute: _pathlessLayoutMembersRoute,

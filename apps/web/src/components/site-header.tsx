@@ -13,7 +13,7 @@ export function SiteHeader() {
 
   const title = useMemo(() => {
     return mainLinks.find((link) => {
-      return link.url === pathname;
+      return pathname.startsWith(link.url);
     })?.title;
   }, [pathname]);
 
