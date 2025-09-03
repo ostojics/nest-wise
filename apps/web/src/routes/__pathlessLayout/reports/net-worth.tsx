@@ -1,3 +1,4 @@
+import NetWorthTrendCard from '@/modules/reports/components/net-worth-trend-card';
 import {createFileRoute} from '@tanstack/react-router';
 
 export const Route = createFileRoute('/__pathlessLayout/reports/net-worth')({
@@ -5,5 +6,9 @@ export const Route = createFileRoute('/__pathlessLayout/reports/net-worth')({
 });
 
 function RouteComponent() {
-  return <div>Hello "/__pathlessLayout/reports/net-worth"!</div>;
+  return (
+    <div>
+      <NetWorthTrendCard />
+    </div>
+  );
 }

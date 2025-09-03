@@ -6,9 +6,9 @@ import {NetWorthTrendPointContract} from '@maya-vault/contracts';
 import {IconTrendingUp} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
 import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell} from 'recharts';
-import {useGetNetWorthTrendData} from '../hooks/use-get-net-worth-trend-data';
-import NetWorthTrendCardSkeleton from './net-worth-trend-card.skeleton';
+import {useGetNetWorthTrendData} from '../../plan/hooks/use-get-net-worth-trend-data';
 import NetWorthTrendCardError from './net-worth-trend-card.error';
+import NetWorthTrendCardSkeleton from './net-worth-trend-card.skeleton';
 
 const chartConfig = {
   amount: {
@@ -17,7 +17,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const NetWorthTrendCard: React.FC = () => {
+const NetWorthTrendCard = () => {
   const {formatBalance} = useFormatBalance();
   const {data, isLoading, isError, refetch} = useGetNetWorthTrendData();
 
