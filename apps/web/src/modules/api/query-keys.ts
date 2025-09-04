@@ -22,4 +22,7 @@ export const queryKeys = {
   categoryBudgets: {
     all: (search: GetCategoryBudgetsQueryParams) => ['category-budgets', search],
   },
+  savings: {
+    trend: () => ['savings-trend'],
+  },
 };

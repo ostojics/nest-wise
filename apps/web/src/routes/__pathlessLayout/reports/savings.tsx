@@ -1,3 +1,4 @@
+import SavingsTrendCard from '@/modules/reports/components/savings-trend-card';
 import {createFileRoute} from '@tanstack/react-router';
 
 export const Route = createFileRoute('/__pathlessLayout/reports/savings')({
@@ -5,5 +6,9 @@ export const Route = createFileRoute('/__pathlessLayout/reports/savings')({
 });
 
 function RouteComponent() {
-  return <div>Hello "/__pathlessLayout/reports/savings"!</div>;
+  return (
+    <div>
+      <SavingsTrendCard />
+    </div>
+  );
 }
