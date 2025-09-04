@@ -5,13 +5,13 @@
 Returns household savings data for the last 12 calendar months, following the same pattern as the Net Worth Trend API. The household is inferred from the authenticated user.
 
 - Base URL: `v1`
-- Module: `transactions`
+- Module: `savings`
 - Content-Type: `application/json`
 
 ### Endpoint
 
 - Method: `GET`
-- Path: `/v1/transactions/savings-trend`
+- Path: `/v1/savings/trend`
 - Auth: `Bearer` token (JWT)
 
 ### Description
