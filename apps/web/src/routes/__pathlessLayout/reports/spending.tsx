@@ -1,5 +1,5 @@
 import {getStartAndEndOfMonth} from '@/lib/utils';
-import SpendingByCategoryCard from '@/modules/reports/components/spending-by-category-card';
+import SpendingReportPage from '@/modules/reports/components/spending-report-page';
 import {getTransactionsQuerySchema} from '@maya-vault/validation';
 import {createFileRoute} from '@tanstack/react-router';
 import z from 'zod';
@@ -16,14 +16,6 @@ const spendingQuerySchema = getTransactionsQuerySchema
   });
 
 export const Route = createFileRoute('/__pathlessLayout/reports/spending')({
-  component: RouteComponent,
+  component: SpendingReportPage,
   validateSearch: spendingQuerySchema,
 });
-
-function RouteComponent() {
-  return (
-    <div>
-      <SpendingByCategoryCard />
-    </div>
-  );
-}

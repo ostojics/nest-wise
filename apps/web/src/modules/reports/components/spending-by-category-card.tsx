@@ -15,8 +15,6 @@ import SpendingByCategoryCardEmpty from './spending-by-category-card.empty';
 import {ChartDataEntry} from '../interfaces/chart-data-entry';
 import {SpendingCategoryData} from '../interfaces/spending-category-data';
 import CategoryAmountLegend from './category-amount-legend';
-import DateFromPicker from './selects/date-from';
-import DateToPicker from './selects/date-to';
 
 const renderCustomizedLabel = (entry: ChartDataEntry) => {
   const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);
@@ -87,10 +85,6 @@ const SpendingByCategoryCard = () => {
           <IconChartPie className="h-4 w-4" />
           Spending by category
         </CardDescription>
-        <div className="flex flex-col gap-2 w-full flex-1 @2xl/card:flex-row">
-          <DateFromPicker />
-          <DateToPicker />
-        </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {isEmpty ? (
