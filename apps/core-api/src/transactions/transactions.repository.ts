@@ -1,7 +1,11 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository, SelectQueryBuilder} from 'typeorm';
-import {NetWorthTrendPointContract} from '@maya-vault/contracts';
+import {
+  AccountSpendingPointContract,
+  GetAccountsSpendingQueryDTO,
+  NetWorthTrendPointContract,
+} from '@maya-vault/contracts';
 import {Transaction} from './transaction.entity';
 import {CreateTransactionDTO, GetTransactionsQueryDTO, UpdateTransactionDTO} from '@maya-vault/validation';
 import {GetTransactionsResponseContract, SortOrder, TransactionContract} from '@maya-vault/contracts';
@@ -241,5 +245,54 @@ export class TransactionsRepository {
   async exists(id: string): Promise<boolean> {
     const count = await this.transactionRepository.count({where: {id}});
     return count > 0;
+  }
+
+  async getAccountsSpendingForHousehold(
+    householdId: string,
+    query: GetAccountsSpendingQueryDTO,
+  ): Promise<AccountSpendingPointContract[]> {
+    interface Row {
+      account_id: string;
+      name: string;
+      amount: string | number | null;
+    }
+
+    const dateFrom = query.transactionDate_from;
+    const dateTo = query.transactionDate_to;
+
+    const rows: Row[] = await this.transactionRepository.query(
+      `
+      WITH params AS (
+        SELECT
+          $2::date AS date_from,
+          $3::date AS date_to
+      ),
+      filtered_tx AS (
+        SELECT t.account_id, t.amount
+        FROM transactions t, params p
+        WHERE t.household_id = $1
+          AND t.type = 'expense'
+          AND (p.date_from IS NULL OR t.transaction_date >= p.date_from)
+          AND (p.date_to IS NULL OR t.transaction_date <= p.date_to)
+      ),
+      sums AS (
+        SELECT account_id, SUM(amount)::numeric AS amount
+        FROM filtered_tx
+        GROUP BY account_id
+      )
+      SELECT a.id AS account_id, a.name, COALESCE(s.amount, 0)::numeric AS amount
+      FROM accounts a
+      LEFT JOIN sums s ON s.account_id = a.id
+      WHERE a.household_id = $1
+      ORDER BY a.name ASC;
+      `,
+      [householdId, dateFrom, dateTo],
+    );
+
+    return rows.map((r) => ({
+      accountId: r.account_id,
+      name: r.name,
+      amount: r.amount === null ? 0 : Number(r.amount),
+    }));
   }
 }

@@ -292,3 +292,24 @@ export class NetWorthTrendPointSwaggerDTO {
 }
 
 export const NetWorthTrendArraySwagger = [NetWorthTrendPointSwaggerDTO];
+
+export class AccountSpendingPointSwaggerDTO {
+  @ApiProperty({
+    description: 'UUID of the account',
+    example: '2b7d1c22-3a4b-4a76-8b52-9e5d1b1d4f1a',
+    format: 'uuid',
+  })
+  accountId: string;
+
+  @ApiProperty({
+    description: 'Display name of the account',
+    example: 'Checking',
+  })
+  name: string;
+
+  @ApiProperty({
+    description: 'Total EXPENSE spending amount for this account in the selected window',
+    example: 1250.5,
+  })
+  amount: number;
+}
