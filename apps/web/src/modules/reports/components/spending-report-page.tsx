@@ -1,10 +1,23 @@
+import {lazy, Suspense, useState} from 'react';
 import DateFromPicker from './selects/date-from';
 import DateToPicker from './selects/date-to';
-import SpendingByAccountCard from './spending-by-account-card';
+const SpendingByAccountCard = lazy(() => import('./spending-by-account-card'));
 import SpendingByCategoryCard from './spending-by-category-card';
 import {Label} from '@/components/ui/label';
+import {useIntersectionObserver} from 'usehooks-ts';
+import SpendingByAccountCardSkeleton from './spending-by-account-card.skeleton';
 
 const SpendingReportPage = () => {
+  const {ref} = useIntersectionObserver({
+    threshold: 0.5,
+    onChange: (isIntersecting) => {
+      if (isIntersecting && !isVisible) {
+        setIsVisible(true);
+      }
+    },
+  });
+  const [isVisible, setIsVisible] = useState(false);
+
   return (
     <section>
       <section className="flex flex-col gap-2 flex-1 md:flex-row mb-4 w-[34.375rem] mt-4">
@@ -23,7 +36,9 @@ const SpendingReportPage = () => {
       </section>
       <SpendingByCategoryCard />
       <section className="mt-4">
-        <SpendingByAccountCard />
+        <Suspense fallback={<SpendingByAccountCardSkeleton />}>
+          <div ref={ref}>{isVisible && <SpendingByAccountCard />}</div>
+        </Suspense>
       </section>
     </section>
   );
