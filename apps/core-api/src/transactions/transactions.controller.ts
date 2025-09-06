@@ -1,11 +1,11 @@
 import {
   CreateTransactionAiDTO,
-  CreateTransactionDTO,
-  GetTransactionsQueryDTO,
-  UpdateTransactionDTO,
   createTransactionAiSchema,
+  CreateTransactionDTO,
   createTransactionSchema,
+  GetTransactionsQueryDTO,
   getTransactionsQuerySchema,
+  UpdateTransactionDTO,
   updateTransactionSchema,
 } from '@maya-vault/validation';
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UsePipes} from '@nestjs/common';
@@ -35,8 +35,14 @@ import {
 import {TransactionsService} from './transactions.service';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {UsersService} from 'src/users/users.service';
-import {NetWorthTrendPointContract} from '@maya-vault/contracts';
+import {
+  AccountSpendingPointContract,
+  GetAccountsSpendingQueryDTO,
+  NetWorthTrendPointContract,
+} from '@maya-vault/contracts';
 import {NetWorthTrendPointSwaggerDTO} from 'src/tools/swagger/transactions.swagger.dto';
+import {getAccountsSpendingQuerySchema} from '@maya-vault/contracts';
+import {AccountSpendingPointSwaggerDTO} from 'src/tools/swagger/transactions.swagger.dto';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 
 @ApiTags('Transactions')
@@ -357,5 +363,40 @@ export class TransactionsController {
   @Delete(':id')
   async deleteTransaction(@Param('id') id: string) {
     return await this.transactionsService.deleteTransaction(id);
+  }
+
+  @ApiOperation({
+    summary: 'Get household accounts spending distribution',
+    description:
+      'Aggregates total EXPENSE spending by account for the authenticated user household, within an optional date range.',
+  })
+  @ApiQuery({
+    name: 'transactionDate_from',
+    required: false,
+    type: String,
+    format: 'date',
+    description: 'Start date inclusive (YYYY-MM-DD)',
+  })
+  @ApiQuery({
+    name: 'transactionDate_to',
+    required: false,
+    type: String,
+    format: 'date',
+    description: 'End date inclusive (YYYY-MM-DD)',
+  })
+  @ApiOkResponse({
+    description: 'Spending by account computed successfully',
+    type: [AccountSpendingPointSwaggerDTO],
+  })
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get('accounts-spending')
+  async getAccountsSpending(
+    @CurrentUser() user: JwtPayload,
+    @Query(new ZodValidationPipe(getAccountsSpendingQuerySchema)) query: GetAccountsSpendingQueryDTO,
+  ): Promise<AccountSpendingPointContract[]> {
+    const me = await this.usersService.findUserById(user.sub);
+    return await this.transactionsService.getAccountsSpending(me.householdId, query);
   }
 }

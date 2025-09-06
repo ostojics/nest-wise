@@ -5,54 +5,36 @@ import {IconChartPie} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
 import {Cell, Pie, PieChart} from 'recharts';
 import {generateRandomHsl} from '@/lib/utils';
-
-import {useSearch} from '@tanstack/react-router';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransactions';
-import SpendingByCategoryCardSkeleton from './spending-by-category-card.skeleton';
-import SpendingByCategoryCardError from './spending-by-category-card.error';
-import SpendingByCategoryCardEmpty from './spending-by-category-card.empty';
-import {ChartDataEntry} from '../interfaces/chart-data-entry';
-import {SpendingCategoryData} from '../interfaces/spending-category-data';
+import {useGetSpendingByAccount} from '../../reports/hooks/use-get-spending-by-account';
 import CategoryAmountLegend from './category-amount-legend';
+import SpendingByAccountCardSkeleton from './spending-by-account-card.skeleton';
+import SpendingByAccountCardError from './spending-by-account-card.error';
 
-const renderCustomizedLabel = (entry: ChartDataEntry) => {
+interface AccountChartDataEntry {
+  category: string;
+  amount: number;
+  fill: string;
+  percentage: string;
+  totalValue: number;
+  value: number;
+}
+
+const renderCustomizedLabel = (entry: AccountChartDataEntry) => {
   const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);
   return `${percent}%`;
 };
 
-const SpendingByCategoryCard = () => {
+const SpendingByAccountCard = () => {
   const {formatBalance} = useFormatBalance();
-  const search = useSearch({from: '/__pathlessLayout/reports/spending'});
-  const {data: me} = useGetMe();
-  const {data, isLoading, isError, refetch} = useGetTransactions({
-    search: {
-      transactionDate_from: search.transactionDate_from,
-      transactionDate_to: search.transactionDate_to,
-      householdId: me?.householdId,
-      page: 1,
-      pageSize: 2000,
-      type: 'expense',
-    },
-  });
+  const {data, isLoading, isError, refetch} = useGetSpendingByAccount();
 
   const spendingData = useMemo(() => {
-    if (!data) return [];
-
-    const totalsByCategory = data.data.reduce<Record<string, number>>((acc, {category, amount}) => {
-      const key = category?.name ?? 'Other';
-      acc[key] = (acc[key] ?? 0) + Number(amount);
-      return acc;
-    }, {});
-
-    return Object.entries(totalsByCategory).map(
-      ([category, amount]) =>
-        ({
-          category,
-          amount,
-          fill: generateRandomHsl(),
-        }) satisfies SpendingCategoryData,
-    );
+    const items = data ?? [];
+    return items.map((item) => ({
+      category: item.name,
+      amount: item.amount,
+      fill: generateRandomHsl(),
+    }));
   }, [data]);
 
   const totalSpending = useMemo(() => {
@@ -62,33 +44,28 @@ const SpendingByCategoryCard = () => {
   const dataWithPercentages = useMemo(() => {
     return spendingData.map((item) => ({
       ...item,
-      percentage: ((item.amount / totalSpending) * 100).toFixed(1),
+      percentage: totalSpending === 0 ? '0' : ((item.amount / totalSpending) * 100).toFixed(1),
       totalValue: totalSpending,
       value: item.amount,
     }));
   }, [spendingData, totalSpending]);
 
-  const isEmpty = data?.data.length === 0;
+  const isEmpty = (data ?? []).every((i) => i.amount === 0);
 
-  if (isLoading) {
-    return <SpendingByCategoryCardSkeleton />;
-  }
-
-  if (isError) {
-    return <SpendingByCategoryCardError onRetry={refetch} />;
-  }
+  if (isLoading) return <SpendingByAccountCardSkeleton />;
+  if (isError) return <SpendingByAccountCardError onRetry={refetch} />;
 
   return (
     <Card className="@container/card group hover:shadow-md transition-all duration-200 flex flex-col">
       <CardHeader className="flex flex-col gap-4 justify-start @2xl/card:flex-row @2xl/card:items-center">
         <CardDescription className="flex items-center gap-2 flex-2">
           <IconChartPie className="h-4 w-4" />
-          Spending by category
+          Spending by account
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {isEmpty ? (
-          <SpendingByCategoryCardEmpty />
+          <div className="text-sm text-muted-foreground text-center py-16">No spending in the selected range.</div>
         ) : (
           <ChartContainer config={{}} className="mx-auto aspect-square max-h-[23.75rem] @2xs/card:max-h-[34.375rem]">
             <PieChart>
@@ -98,7 +75,7 @@ const SpendingByCategoryCard = () => {
                   <ChartTooltipContent
                     hideLabel
                     formatter={(value, name, props) => {
-                      const payload = props.payload as ChartDataEntry | undefined;
+                      const payload = props.payload as AccountChartDataEntry | undefined;
                       const percentage = payload?.percentage ?? '0';
                       return (
                         <div className="flex w-full justify-between items-center gap-4">
@@ -140,4 +117,4 @@ const SpendingByCategoryCard = () => {
   );
 };
 
-export default SpendingByCategoryCard;
+export default SpendingByAccountCard;

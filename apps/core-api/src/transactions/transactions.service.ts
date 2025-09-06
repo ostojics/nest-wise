@@ -5,7 +5,11 @@ import {
   GetTransactionsQueryDTO,
   UpdateTransactionDTO,
 } from '@maya-vault/validation';
-import {GetTransactionsResponseContract} from '@maya-vault/contracts';
+import {
+  AccountSpendingPointContract,
+  GetAccountsSpendingQueryDTO,
+  GetTransactionsResponseContract,
+} from '@maya-vault/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {generateObject} from 'ai';
 import {CategoriesService} from 'src/categories/categories.service';
@@ -55,6 +59,13 @@ export class TransactionsService {
 
   async getNetWorthTrend(householdId: string): Promise<NetWorthTrendPointContract[]> {
     return await this.transactionsRepository.getNetWorthTrendForHousehold(householdId);
+  }
+
+  async getAccountsSpending(
+    householdId: string,
+    query: GetAccountsSpendingQueryDTO,
+  ): Promise<AccountSpendingPointContract[]> {
+    return await this.transactionsRepository.getAccountsSpendingForHousehold(householdId, query);
   }
 
   async createTransactionAi(transactionData: CreateTransactionAiDTO): Promise<Transaction> {
