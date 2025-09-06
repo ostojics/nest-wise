@@ -15,7 +15,7 @@ const TransactionsPage = () => {
   const {data} = useGetTransactions({search: {...search, householdId}});
 
   return (
-    <section className="p-4 flex flex-col h-full">
+    <section className="p-4 flex flex-col h-full @container/transactions">
       <div className="flex-1">
         <TransactionsTableActions />
         <TransactionsTable data={data?.data ?? fallbackTransactions} />
