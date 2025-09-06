@@ -6,21 +6,17 @@ import MonthSwitcher from './selects/month-switcher';
 
 const PlanPage = () => {
   return (
-    <section className="p-4 space-y-6 @container/dashboard">
+    <section className="p-4 space-y-6 @container/plan">
       <section className="flex flex-col gap-3">
-        <div className="flex flex-col @4xl/dashboard:flex-row gap-3">
+        <div className="flex flex-col @4xl/plan:flex-row gap-3">
           <AvailableBalanceCard />
           <SpendingVsTargetCard />
         </div>
-        {/* <SpendingByCategoryCard />
-        <Suspense fallback={<NetWorthTrendCardSkeleton />}>
-          <div ref={ref}>{isVisible && <NetWorthTrendCard />}</div>
-        </Suspense> */}
       </section>
-      <section>
+      <section className="mt-10">
         <MonthSwitcher />
       </section>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col items-start justify-between gap-4">
         <div className="space-y-1.5">
           <h3 className="text-xl font-semibold">Plan your spending by category</h3>
           <p className="text-muted-foreground text-sm">
