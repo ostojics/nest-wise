@@ -1,3 +1,4 @@
+import {z} from 'zod';
 import {AccountContract} from './accounts';
 import {CategoryContract} from './categories';
 import {PaginationMetaContract} from './interfaces/paginated-response';
@@ -34,3 +35,18 @@ export interface NetWorthTrendPointContract {
   amount: number | null;
   hasData: boolean;
 }
+
+export interface AccountSpendingPointContract {
+  accountId: string;
+  name: string;
+  amount: number;
+}
+
+export const getAccountsSpendingQuerySchema = z
+  .object({
+    transactionDate_from: z.string().date().min(1),
+    transactionDate_to: z.string().date().min(1),
+  })
+  .strict();
+
+export type GetAccountsSpendingQueryDTO = z.infer<typeof getAccountsSpendingQuerySchema>;

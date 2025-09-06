@@ -8,6 +8,7 @@ import {endOfMonth, format, startOfMonth, subMonths} from 'date-fns';
 import {SavingsJobs} from 'src/common/enums/jobs.enum';
 import {Queues} from 'src/common/enums/queues.enum';
 import {CalculateSavingsPayload} from 'src/common/interfaces/savings.interfaces';
+import {SavingsTrendPointContract} from '@maya-vault/contracts';
 import {HouseholdsService} from 'src/households/households.service';
 import {TransactionsService} from 'src/transactions/transactions.service';
 import {Savings} from './savings.entity';
@@ -94,5 +95,9 @@ export class SavingsService {
       this.logger.error('Failed to calculate savings', error);
       throw error;
     }
+  }
+
+  async getSavingsTrend(householdId: string): Promise<SavingsTrendPointContract[]> {
+    return await this.savingsRepository.getSavingsTrendForHousehold(householdId);
   }
 }

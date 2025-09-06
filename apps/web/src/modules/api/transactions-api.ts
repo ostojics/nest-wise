@@ -1,6 +1,11 @@
 import {CreateTransactionDTO, CreateTransactionAiDTO, GetTransactionsQueryDTO} from '@maya-vault/validation';
 import httpClient from './http-client';
-import {GetTransactionsResponseContract, NetWorthTrendPointContract} from '@maya-vault/contracts';
+import {
+  AccountSpendingPointContract,
+  GetAccountsSpendingQueryDTO,
+  GetTransactionsResponseContract,
+  NetWorthTrendPointContract,
+} from '@maya-vault/contracts';
 
 export const getTransactions = async (query: GetTransactionsQueryDTO) => {
   return httpClient
@@ -32,4 +37,12 @@ export const getNetWorthTrend = async () => {
 
 export const deleteTransaction = async (id: string) => {
   return httpClient.delete(`v1/transactions/${id}`).json();
+};
+
+export const spendingByAccounts = async (dto: GetAccountsSpendingQueryDTO) => {
+  return httpClient
+    .get('v1/transactions/accounts-spending', {
+      searchParams: dto,
+    })
+    .json<AccountSpendingPointContract[]>();
 };

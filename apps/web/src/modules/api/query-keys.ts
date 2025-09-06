@@ -1,4 +1,4 @@
-import {GetCategoryBudgetsQueryParams} from '@maya-vault/contracts';
+import {GetAccountsSpendingQueryDTO, GetCategoryBudgetsQueryParams} from '@maya-vault/contracts';
 import {GetTransactionsQueryDTO} from '@maya-vault/validation';
 
 export const queryKeys = {
@@ -15,11 +15,15 @@ export const queryKeys = {
   transactions: {
     all: (search: GetTransactionsQueryDTO) => ['transactions', search],
     netWorthTrend: () => ['net-worth-trend'],
+    spendingByAccounts: (search: GetAccountsSpendingQueryDTO) => ['spending-by-accounts', search],
   },
   users: {
     all: () => ['users'],
   },
   categoryBudgets: {
     all: (search: GetCategoryBudgetsQueryParams) => ['category-budgets', search],
+  },
+  savings: {
+    trend: () => ['savings-trend'],
   },
 };

@@ -8,6 +8,7 @@ import {Queues} from 'src/common/enums/queues.enum';
 import {SavingsRepository} from './savings.repository';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {Savings} from './savings.entity';
+import {UsersModule} from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import {Savings} from './savings.entity';
     TransactionsModule,
     BullModule.registerQueue({name: Queues.SAVINGS}),
     TypeOrmModule.forFeature([Savings]),
+    UsersModule,
   ],
   controllers: [SavingsController],
   providers: [SavingsService, SavingsRepository],

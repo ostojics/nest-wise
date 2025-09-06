@@ -6,7 +6,7 @@ export class ZodValidationPipe implements PipeTransform {
   constructor(private schema: ZodSchema) {}
 
   transform(value: Record<string, unknown>, _metadata: ArgumentMetadata) {
-    if (_metadata.type !== 'body') {
+    if (_metadata.type !== 'body' && _metadata.type !== 'query') {
       return value;
     }
 
