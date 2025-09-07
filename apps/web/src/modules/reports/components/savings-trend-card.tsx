@@ -4,7 +4,7 @@ import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {SavingsTrendPointContract} from '@maya-vault/contracts';
 import {IconPigMoney} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
-import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell} from 'recharts';
+import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell, ResponsiveContainer} from 'recharts';
 import {useGetSavingsTrend} from '../hooks/use-get-savings-trend';
 import SavingsTrendCardError from './savings-trend-card.error';
 import SavingsTrendCardSkeleton from './savings-trend-card.skeleton';
@@ -58,67 +58,71 @@ const SavingsTrendCard = () => {
           }}
           className="mx-auto aspect-[2/1] max-h-[18.75rem] w-full"
         >
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              top: 40,
-              right: 20,
-              left: 20,
-              bottom: 20,
-            }}
-          >
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis
-              dataKey="monthShort"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              className="text-muted-foreground"
-            />
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent
-                  hideLabel
-                  formatter={(value, name, props) => {
-                    const payload = props.payload as SavingsTrendPointContract & {displayAmount: number};
-                    if (!payload.hasData) {
+          <ResponsiveContainer>
+            <BarChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                top: 40,
+                right: 20,
+                left: 20,
+                bottom: 20,
+              }}
+            >
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <XAxis
+                dataKey="monthShort"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                className="text-muted-foreground"
+              />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    hideLabel
+                    formatter={(value, name, props) => {
+                      const payload = props.payload as SavingsTrendPointContract & {displayAmount: number};
+                      if (!payload.hasData) {
+                        return (
+                          <div className="flex w-full justify-between items-center gap-4">
+                            <span>Savings</span>
+                            <div className="text-right">
+                              <div className="text-muted-foreground">No data available</div>
+                            </div>
+                          </div>
+                        );
+                      }
                       return (
                         <div className="flex w-full justify-between items-center gap-4">
                           <span>Savings</span>
                           <div className="text-right">
-                            <div className="text-muted-foreground">No data available</div>
+                            <div className="font-mono font-medium tabular-nums">
+                              {formatBalance(payload.amount ?? 0)}
+                            </div>
+                            <div className="text-sm text-muted-foreground">{payload.month}</div>
                           </div>
                         </div>
                       );
-                    }
-                    return (
-                      <div className="flex w-full justify-between items-center gap-4">
-                        <span>Savings</span>
-                        <div className="text-right">
-                          <div className="font-mono font-medium tabular-nums">{formatBalance(payload.amount ?? 0)}</div>
-                          <div className="text-sm text-muted-foreground">{payload.month}</div>
-                        </div>
-                      </div>
-                    );
-                  }}
-                />
-              }
-            />
-            <Bar dataKey="displayAmount" radius={[4, 4, 0, 0]} className="outline-hidden">
-              <LabelList
-                position="top"
-                offset={8}
-                className="fill-foreground text-xs"
-                fontSize={10}
-                formatter={(v: number) => (v === 0 ? 'No Data' : v)}
+                    }}
+                  />
+                }
               />
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.hasData ? 'var(--color-amount)' : 'hsl(var(--muted))'} />
-              ))}
-            </Bar>
-          </BarChart>
+              <Bar dataKey="displayAmount" radius={[4, 4, 0, 0]} className="outline-hidden">
+                <LabelList
+                  position="top"
+                  offset={8}
+                  className="fill-foreground text-xs"
+                  fontSize={10}
+                  formatter={(v: number) => (v === 0 ? 'No Data' : v)}
+                />
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.hasData ? 'var(--color-amount)' : 'hsl(var(--muted))'} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm pt-4" />

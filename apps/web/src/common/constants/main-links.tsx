@@ -19,7 +19,7 @@ export const mainLinks = [
   },
   {
     title: 'Reports',
-    url: '/reports/spending',
+    url: '/reports',
     icon: <IconChartBar />,
   },
   {

@@ -76,90 +76,94 @@ const NetWorthTrendCard = () => {
         <CardTitle className="text-lg font-semibold">Last 12 Months</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={{
-            ...chartConfig,
-            'no-data': {
-              label: 'No Data',
-              color: 'hsl(var(--muted))',
-            },
-          }}
-          className="mx-auto aspect-[2/1] max-h-[18.75rem] w-full"
-        >
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              top: 40,
-              right: 20,
-              left: 20,
-              bottom: 20,
+        <div className="w-full overflow-x-auto pb-2">
+          <ChartContainer
+            config={{
+              ...chartConfig,
+              'no-data': {
+                label: 'No Data',
+                color: 'hsl(var(--muted))',
+              },
             }}
+            className="mx-auto aspect-[2/1] max-h-[18.75rem] w-full min-w-[48rem]"
           >
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis
-              dataKey="monthShort"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              className="text-muted-foreground"
-            />
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent
-                  hideLabel
-                  formatter={(value, name, props) => {
-                    const payload = props.payload as NetWorthTrendPointContract & {displayAmount: number};
-                    if (!payload.hasData) {
+            <BarChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                top: 40,
+                right: 20,
+                left: 20,
+                bottom: 20,
+              }}
+            >
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <XAxis
+                dataKey="monthShort"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                className="text-muted-foreground"
+              />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    hideLabel
+                    formatter={(value, name, props) => {
+                      const payload = props.payload as NetWorthTrendPointContract & {displayAmount: number};
+                      if (!payload.hasData) {
+                        return (
+                          <div className="flex w-full justify-between items-center gap-4">
+                            <span>Net Worth</span>
+                            <div className="text-right">
+                              <div className="text-muted-foreground">No data available</div>
+                            </div>
+                          </div>
+                        );
+                      }
                       return (
                         <div className="flex w-full justify-between items-center gap-4">
                           <span>Net Worth</span>
                           <div className="text-right">
-                            <div className="text-muted-foreground">No data available</div>
+                            <div className="font-mono font-medium tabular-nums">
+                              {formatBalance(payload.amount ?? 0)}
+                            </div>
+                            <div className="text-sm text-muted-foreground">{payload.month}</div>
                           </div>
                         </div>
                       );
-                    }
-                    return (
-                      <div className="flex w-full justify-between items-center gap-4">
-                        <span>Net Worth</span>
-                        <div className="text-right">
-                          <div className="font-mono font-medium tabular-nums">{formatBalance(payload.amount ?? 0)}</div>
-                          <div className="text-sm text-muted-foreground">{payload.month}</div>
-                        </div>
-                      </div>
-                    );
-                  }}
-                />
-              }
-            />
-            <Bar dataKey="displayAmount" radius={[4, 4, 0, 0]} className="outline-hidden">
-              <LabelList
-                position="top"
-                offset={8}
-                className="fill-foreground text-xs"
-                fontSize={10}
-                formatter={customLabelFormatter}
+                    }}
+                  />
+                }
               />
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.hasData ? 'var(--color-amount)' : 'hsl(var(--muted))'} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ChartContainer>
+              <Bar dataKey="displayAmount" radius={[4, 4, 0, 0]} className="outline-hidden">
+                <LabelList
+                  position="top"
+                  offset={8}
+                  className="fill-foreground text-xs"
+                  fontSize={10}
+                  formatter={customLabelFormatter}
+                />
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.hasData ? 'var(--color-amount)' : 'hsl(var(--muted))'} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        </div>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm pt-4">
         {growth && (
           <div
             className={cn(
-              'flex gap-2 leading-none font-medium items-center',
+              'flex flex-col md:flex-row gap-2 leading-none text-sm font-medium items-center',
               growth.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
             )}
           >
+            <IconTrendingUp className={cn('h-4 w-4', growth.isPositive ? 'rotate-0' : 'rotate-180')} />
             {growth.isPositive ? 'Up' : 'Down'} by {formatBalance(Math.abs(growth.amount))} (
             {Math.abs(growth.percentage).toFixed(1)}%) from last data point
-            <IconTrendingUp className={cn('h-4 w-4', growth.isPositive ? 'rotate-0' : 'rotate-180')} />
           </div>
         )}
       </CardFooter>
