@@ -43,87 +43,89 @@ const SavingsTrendCard = () => {
       <CardHeader className="items-center pb-0">
         <CardDescription className="flex items-center gap-2">
           <IconPigMoney className="h-4 w-4" />
-          Savings Trend
+          Money Saved Trend
         </CardDescription>
         <CardTitle className="text-lg font-semibold">Last 12 Months</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={{
-            ...chartConfig,
-            'no-data': {
-              label: 'No Data',
-              color: 'hsl(var(--muted))',
-            },
-          }}
-          className="mx-auto aspect-[2/1] max-h-[18.75rem] w-full"
-        >
-          <ResponsiveContainer>
-            <BarChart
-              accessibilityLayer
-              data={chartData}
-              margin={{
-                top: 40,
-                right: 20,
-                left: 20,
-                bottom: 20,
-              }}
-            >
-              <CartesianGrid vertical={false} strokeDasharray="3 3" />
-              <XAxis
-                dataKey="monthShort"
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                className="text-muted-foreground"
-              />
-              <ChartTooltip
-                cursor={false}
-                content={
-                  <ChartTooltipContent
-                    hideLabel
-                    formatter={(value, name, props) => {
-                      const payload = props.payload as SavingsTrendPointContract & {displayAmount: number};
-                      if (!payload.hasData) {
+        <div className="w-full overflow-x-auto pb-2">
+          <ChartContainer
+            config={{
+              ...chartConfig,
+              'no-data': {
+                label: 'No Data',
+                color: 'hsl(var(--muted))',
+              },
+            }}
+            className="mx-auto aspect-[2/1] max-h-[18.75rem] w-full min-w-[48rem]"
+          >
+            <ResponsiveContainer>
+              <BarChart
+                accessibilityLayer
+                data={chartData}
+                margin={{
+                  top: 40,
+                  right: 20,
+                  left: 20,
+                  bottom: 20,
+                }}
+              >
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="monthShort"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  className="text-muted-foreground"
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={
+                    <ChartTooltipContent
+                      hideLabel
+                      formatter={(value, name, props) => {
+                        const payload = props.payload as SavingsTrendPointContract & {displayAmount: number};
+                        if (!payload.hasData) {
+                          return (
+                            <div className="flex w-full justify-between items-center gap-4">
+                              <span>Savings</span>
+                              <div className="text-right">
+                                <div className="text-muted-foreground">No data available</div>
+                              </div>
+                            </div>
+                          );
+                        }
                         return (
                           <div className="flex w-full justify-between items-center gap-4">
                             <span>Savings</span>
                             <div className="text-right">
-                              <div className="text-muted-foreground">No data available</div>
+                              <div className="font-mono font-medium tabular-nums">
+                                {formatBalance(payload.amount ?? 0)}
+                              </div>
+                              <div className="text-sm text-muted-foreground">{payload.month}</div>
                             </div>
                           </div>
                         );
-                      }
-                      return (
-                        <div className="flex w-full justify-between items-center gap-4">
-                          <span>Savings</span>
-                          <div className="text-right">
-                            <div className="font-mono font-medium tabular-nums">
-                              {formatBalance(payload.amount ?? 0)}
-                            </div>
-                            <div className="text-sm text-muted-foreground">{payload.month}</div>
-                          </div>
-                        </div>
-                      );
-                    }}
-                  />
-                }
-              />
-              <Bar dataKey="displayAmount" radius={[4, 4, 0, 0]} className="outline-hidden">
-                <LabelList
-                  position="top"
-                  offset={8}
-                  className="fill-foreground text-xs"
-                  fontSize={10}
-                  formatter={(v: number) => (v === 0 ? 'No Data' : v)}
+                      }}
+                    />
+                  }
                 />
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.hasData ? 'var(--color-amount)' : 'hsl(var(--muted))'} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+                <Bar dataKey="displayAmount" radius={[4, 4, 0, 0]} className="outline-hidden">
+                  <LabelList
+                    position="top"
+                    offset={8}
+                    className="fill-foreground text-xs"
+                    fontSize={10}
+                    formatter={(v: number) => (v === 0 ? 'No Data' : v)}
+                  />
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.hasData ? 'var(--color-amount)' : 'hsl(var(--muted))'} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </div>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm pt-4" />
     </Card>
