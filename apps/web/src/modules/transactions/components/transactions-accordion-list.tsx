@@ -61,7 +61,7 @@ export default function TransactionsAccordionList({data}: TransactionsAccordionL
                   </div>
                   <div>
                     <div className="text-muted-foreground">Type</div>
-                    <div className="mt-2">
+                    <div className="mt-1">
                       <Badge
                         className={cn(isIncome && 'bg-emerald-100 text-emerald-700')}
                         variant={tx.type === TransactionType.EXPENSE ? 'destructive' : 'secondary'}
