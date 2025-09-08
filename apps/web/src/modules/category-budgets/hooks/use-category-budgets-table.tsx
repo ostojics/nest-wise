@@ -42,7 +42,7 @@ export const useCategoryBudgetsTable = (
           const available = planned - spent;
           const isOverspent = available < 0;
           const label = isOverspent ? 'Overspent' : planned > 0 ? 'On Track' : '—';
-          return <span className={cn('text-primary')}>{label}</span>;
+          return <span>{label}</span>;
         },
         enableSorting: false,
       },

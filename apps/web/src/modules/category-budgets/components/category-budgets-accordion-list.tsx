@@ -21,7 +21,7 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
   if (isLoading) return <CategoryBudgetsAccordionListSkeleton />;
   if (isError) return <CategoryBudgetsAccordionListError onRetry={refetch} />;
 
-  if (!data?.length) {
+  if (!data.length) {
     return (
       <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">No category budgets found</div>
     );

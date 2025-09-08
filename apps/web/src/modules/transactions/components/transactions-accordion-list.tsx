@@ -13,7 +13,7 @@ interface TransactionsAccordionListProps {
 export default function TransactionsAccordionList({data}: TransactionsAccordionListProps) {
   const {formatBalance} = useFormatBalance();
 
-  if (!data?.length) {
+  if (!data.length) {
     return <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">No transactions found</div>;
   }
 

@@ -1,16 +1,18 @@
 import {useSearch} from '@tanstack/react-router';
 import {useGetTransactions} from '../hooks/useGetTransactions';
 import TransactionsPagination from './transactions-pagination';
-import {TransactionsTable} from './transactions-table';
 import TransactionsTableActions from './transactions-table-actions';
 import {TransactionContract} from '@maya-vault/contracts';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {TABLET_BREAKPOINT, useIsMobile} from '@/hooks/use-mobile';
-import TransactionsAccordionList from './transactions-accordion-list';
 import TransactionsTableSkeleton from './transactions-table.skeleton';
 import TransactionsTableError from './transactions-table.error';
 import TransactionsAccordionListSkeleton from './transactions-accordion-list.skeleton';
 import TransactionsAccordionListError from './transactions-accordion-list.error';
+import {lazy, Suspense} from 'react';
+
+const TransactionsTable = lazy(() => import('./transactions-table').then((m) => ({default: m.TransactionsTable})));
+const TransactionsAccordionList = lazy(() => import('./transactions-accordion-list'));
 
 const fallbackTransactions: TransactionContract[] = [];
 
@@ -35,7 +37,15 @@ const TransactionsPage = () => {
     }
 
     const items = data?.data ?? fallbackTransactions;
-    return isMobile ? <TransactionsAccordionList data={items} /> : <TransactionsTable data={items} />;
+    return isMobile ? (
+      <Suspense fallback={<TransactionsAccordionListSkeleton />}>
+        <TransactionsAccordionList data={items} />
+      </Suspense>
+    ) : (
+      <Suspense fallback={<TransactionsTableSkeleton />}>
+        <TransactionsTable data={items} />
+      </Suspense>
+    );
   };
 
   return (
