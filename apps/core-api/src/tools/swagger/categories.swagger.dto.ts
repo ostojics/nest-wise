@@ -15,6 +15,14 @@ export class CreateCategorySwaggerDTO {
     format: 'uuid',
   })
   householdId: string;
+
+  @ApiProperty({
+    description: 'Type of the category',
+    enum: ['shared', 'private'],
+    example: 'shared',
+    required: false,
+  })
+  type?: 'shared' | 'private';
 }
 
 export class UpdateCategorySwaggerDTO {
@@ -26,6 +34,14 @@ export class UpdateCategorySwaggerDTO {
     required: false,
   })
   name?: string;
+
+  @ApiProperty({
+    description: 'Type of the category',
+    enum: ['shared', 'private'],
+    example: 'shared',
+    required: false,
+  })
+  type?: 'shared' | 'private';
 }
 
 export class CategoryResponseSwaggerDTO {
@@ -48,6 +64,13 @@ export class CategoryResponseSwaggerDTO {
     format: 'uuid',
   })
   householdId: string;
+
+  @ApiProperty({
+    description: 'Type of the category',
+    enum: ['shared', 'private'],
+    example: 'shared',
+  })
+  type: 'shared' | 'private';
 
   @ApiProperty({
     description: 'Timestamp when the category was created',

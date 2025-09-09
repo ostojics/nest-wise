@@ -9,7 +9,7 @@ export interface CategoryBudgetContract {
   plannedAmount: number;
   createdAt: Date;
   updatedAt: Date;
-  category: Pick<CategoryContract, 'name'>;
+  category: Pick<CategoryContract, 'name' | 'type'>;
 }
 
 export interface CategoryBudgetWithCurrentAmountContract extends CategoryBudgetContract {

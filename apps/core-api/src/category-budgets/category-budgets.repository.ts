@@ -20,6 +20,7 @@ export class CategoryBudgetsRepository {
       select: {
         category: {
           name: true,
+          type: true,
         },
       },
     });
