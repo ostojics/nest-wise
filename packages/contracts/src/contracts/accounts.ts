@@ -18,7 +18,7 @@ export type TAccountVariant = z.infer<typeof accountVariantEnum>;
 export interface AccountContract {
   id: string;
   name: string;
-  type: string;
+  type: TAccountType;
   initialBalance: number;
   currentBalance: number;
   ownerId: string;

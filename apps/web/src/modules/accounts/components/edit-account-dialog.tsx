@@ -4,7 +4,7 @@ import {Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTi
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {AccountContract, EditAccountDTO} from '@maya-vault/contracts';
+import {AccountContract, EditAccountDTO, TAccountType, TAccountVariant} from '@maya-vault/contracts';
 import {DialogDescription, DialogTrigger} from '@radix-ui/react-dialog';
 import {Loader2, Pencil} from 'lucide-react';
 import React from 'react';
@@ -31,11 +31,13 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
     defaultValues: {
       name: account.name,
       currentBalance: account.currentBalance,
-      type: account.type as EditAccountDTO['type'],
+      type: account.type,
+      variant: account.variant,
     },
   });
   const mutation = useEditAccountMutation();
   const selectedType = watch('type');
+  const selectedVariant = watch('variant');
 
   const handleEditAccount = async (data: EditAccountDTO) => {
     await mutation.mutateAsync(
@@ -58,7 +60,8 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
             reset({
               name: account.name,
               currentBalance: account.currentBalance,
-              type: account.type as EditAccountDTO['type'],
+              type: account.type,
+              variant: account.variant,
             });
           }
         }}
@@ -82,10 +85,7 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="edit-account-type">Type</Label>
-                <Select
-                  value={selectedType}
-                  onValueChange={(value) => setValue('type', value as EditAccountDTO['type'])}
-                >
+                <Select value={selectedType} onValueChange={(value) => setValue('type', value as TAccountType)}>
                   <SelectTrigger id="edit-account-type" className="w-full">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
@@ -98,6 +98,22 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
                   </SelectContent>
                 </Select>
                 {errors.type?.message && <FormError error={errors.type.message} />}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="edit-account-variant">Visibility</Label>
+                <Select
+                  value={selectedVariant}
+                  onValueChange={(value) => setValue('variant', value as TAccountVariant)}
+                >
+                  <SelectTrigger id="edit-account-variant" className="w-full">
+                    <SelectValue placeholder="Select visibility" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="shared">Shared</SelectItem>
+                    <SelectItem value="private">Private</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.variant?.message && <FormError error={errors.variant.message} />}
               </div>
               <SelectedAccountType type={selectedType} />
               <div className="flex flex-col gap-2">
