@@ -22,6 +22,7 @@ export class AccountsRepository {
         'id',
         'name',
         'type',
+        'variant',
         'initialBalance',
         'currentBalance',
         'createdAt',

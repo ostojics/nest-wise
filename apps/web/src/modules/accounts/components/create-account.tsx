@@ -15,11 +15,12 @@ import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
-import {CreateAccountDTO, useValidateCreateAccount} from '@maya-vault/validation';
 import {Loader2, PlusIcon, Wallet} from 'lucide-react';
 import {useCreateAccountMutation} from '../hooks/useCreateAccountMutation';
 import {useState} from 'react';
 import SelectedAccountType from './selected-account-type';
+import {useValidateCreateAccount} from '../hooks/use-validate-create-account';
+import {CreateAccountDTO} from '@maya-vault/contracts';
 
 const CreateAccount = () => {
   const {data} = useGetMe();
@@ -50,7 +51,12 @@ const CreateAccount = () => {
     setValue('type', value as CreateAccountDTO['type']);
   };
 
+  const handleVariantChange = (value: string) => {
+    setValue('variant', value as CreateAccountDTO['variant']);
+  };
+
   const selectedType = watch('type');
+  const selectedVariant = watch('variant');
 
   return (
     <Dialog
@@ -114,6 +120,23 @@ const CreateAccount = () => {
               </SelectContent>
             </Select>
             {errors.type && <FormError error={errors.type.message ?? ''} />}
+          </div>
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Account Visibility</Label>
+            <Select value={selectedVariant} onValueChange={handleVariantChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select visibility (shared or private)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="shared" className="cursor-pointer">
+                  Shared
+                </SelectItem>
+                <SelectItem value="private" className="cursor-pointer">
+                  Private
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.variant && <FormError error={errors.variant.message ?? ''} />}
           </div>
           <SelectedAccountType type={selectedType} />
           <div className="space-y-3">

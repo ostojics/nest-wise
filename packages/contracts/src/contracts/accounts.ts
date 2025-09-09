@@ -6,6 +6,15 @@ export const accountTypeEnum = z.enum(['checking', 'savings', 'credit_card', 'in
   }),
 });
 
+export const accountVariantEnum = z.enum(['shared', 'private'], {
+  errorMap: () => ({
+    message: 'Account variant must be one of: shared, private',
+  }),
+});
+
+export type TAccountType = z.infer<typeof accountTypeEnum>;
+export type TAccountVariant = z.infer<typeof accountVariantEnum>;
+
 export interface AccountContract {
   id: string;
   name: string;
@@ -14,9 +23,27 @@ export interface AccountContract {
   currentBalance: number;
   ownerId: string;
   householdId: string;
+  variant: TAccountVariant;
   createdAt: Date;
   updatedAt: Date;
 }
+
+export const createAccountSchema = z
+  .object({
+    name: z.string().min(1, 'Account name is required').max(255, 'Account name must be 255 characters or less'),
+    type: z.enum(['checking', 'savings', 'credit_card', 'investment', 'cash', 'other'], {
+      errorMap: () => ({
+        message: 'Account type must be one of: checking, savings, credit_card, investment, cash, other',
+      }),
+    }),
+    variant: accountVariantEnum,
+    initialBalance: z.coerce.number().min(0, 'Balance must be 0 or greater'),
+    ownerId: z.string().uuid('Owner ID must be a valid UUID'),
+    householdId: z.string().uuid('Household ID must be a valid UUID'),
+  })
+  .strict();
+
+export type CreateAccountDTO = z.infer<typeof createAccountSchema>;
 
 export const editAccountSchema = z
   .object({
@@ -26,6 +53,7 @@ export const editAccountSchema = z
       .max(255, 'Account name must be 255 characters or less')
       .optional(),
     type: accountTypeEnum.optional(),
+    variant: accountVariantEnum.optional(),
     currentBalance: z.coerce.number().min(0, 'Balance must be 0 or greater').optional(),
   })
   .strict();

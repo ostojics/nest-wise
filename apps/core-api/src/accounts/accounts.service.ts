@@ -1,5 +1,4 @@
-import {EditAccountDTO, TransferFundsDTO} from '@maya-vault/contracts';
-import {CreateAccountDTO} from '@maya-vault/validation';
+import {CreateAccountDTO, EditAccountDTO, TransferFundsDTO} from '@maya-vault/contracts';
 import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {Account} from './account.entity';
 import {AccountsRepository} from './accounts.repository';
@@ -21,6 +20,7 @@ export class AccountsService {
     return await this.accountsRepository.create({
       name: accountData.name,
       type: accountData.type,
+      variant: accountData.variant,
       initialBalance: accountData.initialBalance,
       currentBalance: accountData.initialBalance,
       ownerId: accountData.ownerId,

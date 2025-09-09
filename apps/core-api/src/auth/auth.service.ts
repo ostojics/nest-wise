@@ -29,15 +29,9 @@ export class AuthService {
 
     const accountPromises = [
       this.accountsService.createAccount({
-        name: 'Emergency fund',
-        type: 'other',
-        initialBalance: 0,
-        ownerId: user.id,
-        householdId: household.id,
-      }),
-      this.accountsService.createAccount({
-        name: 'Dedicated fund',
-        type: 'other',
+        name: 'Household Account',
+        type: 'checking',
+        variant: 'shared',
         initialBalance: 0,
         ownerId: user.id,
         householdId: household.id,

@@ -1,5 +1,11 @@
-import {EditAccountDTO, TransferFundsDTO, editAccountSchema, transferFundsSchema} from '@maya-vault/contracts';
-import {CreateAccountDTO, createAccountSchema} from '@maya-vault/validation';
+import {
+  CreateAccountDTO,
+  EditAccountDTO,
+  TransferFundsDTO,
+  createAccountSchema,
+  editAccountSchema,
+  transferFundsSchema,
+} from '@maya-vault/contracts';
 import {
   Body,
   Controller,
@@ -63,6 +69,7 @@ export class AccountsController {
         value: {
           name: 'Main Checking',
           type: 'checking',
+          variant: 'shared',
           initialBalance: 1000.0,
           ownerId: 'uuid-here',
           householdId: 'uuid-here',
@@ -73,6 +80,7 @@ export class AccountsController {
         value: {
           name: 'Emergency Fund',
           type: 'savings',
+          variant: 'private',
           initialBalance: 5000.0,
           ownerId: 'uuid-here',
           householdId: 'uuid-here',

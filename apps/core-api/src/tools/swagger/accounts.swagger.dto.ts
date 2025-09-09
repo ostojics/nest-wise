@@ -21,6 +21,13 @@ export class AccountResponseSwaggerDTO {
   type: string;
 
   @ApiProperty({
+    description: 'Account visibility variant',
+    enum: ['shared', 'private'],
+    example: 'shared',
+  })
+  variant: 'shared' | 'private';
+
+  @ApiProperty({
     description: 'Initial balance',
     example: 1000.0,
   })
@@ -75,6 +82,13 @@ export class CreateAccountSwaggerDTO {
   type: string;
 
   @ApiProperty({
+    description: 'Account visibility variant',
+    enum: ['shared', 'private'],
+    example: 'shared',
+  })
+  variant: 'shared' | 'private';
+
+  @ApiProperty({
     description: 'Initial balance for the account',
     example: 1000.0,
     minimum: 0,
@@ -112,6 +126,14 @@ export class UpdateAccountSwaggerDTO {
     required: false,
   })
   type?: string;
+
+  @ApiProperty({
+    description: 'Account visibility variant',
+    enum: ['shared', 'private'],
+    example: 'private',
+    required: false,
+  })
+  variant?: 'shared' | 'private';
 
   @ApiProperty({
     description: 'New current balance',
