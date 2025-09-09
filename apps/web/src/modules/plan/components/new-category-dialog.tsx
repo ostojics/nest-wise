@@ -63,7 +63,9 @@ const NewCategoryDialog = () => {
       <DialogContent>
         <DialogHeader className="mb-3">
           <DialogTitle>Create category</DialogTitle>
-          <DialogDescription>Add a category to plan and track your spending.</DialogDescription>
+          <DialogDescription className="text-balance">
+            Add a category to plan and track your spending.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleCreateCategory)}>
           <div className="flex items-center gap-3">

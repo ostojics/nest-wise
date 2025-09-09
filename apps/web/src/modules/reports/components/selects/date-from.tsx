@@ -41,7 +41,7 @@ const DateFromPicker: React.FC<DateFromPickerProps> = ({className}) => {
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" id="dashboard-date-from" className="h-9 min-w-50 justify-between font-normal">
+          <Button variant="outline" id="dashboard-date-from" className="h-9 justify-between font-normal">
             {selectedDate ? format(selectedDate, 'PPP') : 'Select date from'}
             <ChevronsUpDown className="ml-2 size-4 opacity-50" />
           </Button>

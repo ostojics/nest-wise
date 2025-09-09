@@ -8,6 +8,7 @@ import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {cn} from '@/lib/utils';
 import {useNavigate, useSearch} from '@tanstack/react-router';
+import {useGetCategoryBudgets} from '@/modules/category-budgets/hooks/use-get-category-budgets';
 
 interface MonthSwitcherProps {
   className?: string;
@@ -17,6 +18,7 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
   const search = useSearch({from: '/__pathlessLayout/plan'});
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const {isLoading} = useGetCategoryBudgets();
 
   const current = useMemo(() => parse(search.month, 'yyyy-MM', new Date()), [search.month]);
 
@@ -72,13 +74,25 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <Button variant="outline" size="icon" className="h-9 w-9" onClick={handlePrev} aria-label="Previous month">
+      <Button
+        variant="outline"
+        size="icon"
+        disabled={isLoading}
+        className="h-9 w-9"
+        onClick={handlePrev}
+        aria-label="Previous month"
+      >
         <ChevronLeft className="size-4" />
         <span className="sr-only">Previous month</span>
       </Button>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" title="Select month" className="h-9 min-w-50 justify-between font-normal">
+          <Button
+            disabled={isLoading}
+            variant="outline"
+            title="Select month"
+            className="h-9 min-w-50 justify-between font-normal"
+          >
             {format(current, 'LLLL yyyy')}
           </Button>
         </PopoverTrigger>
@@ -121,7 +135,14 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
           </div>
         </PopoverContent>
       </Popover>
-      <Button variant="outline" size="icon" className="h-9 w-9" onClick={handleNext} aria-label="Next month">
+      <Button
+        disabled={isLoading}
+        variant="outline"
+        size="icon"
+        className="h-9 w-9"
+        onClick={handleNext}
+        aria-label="Next month"
+      >
         <ChevronRight className="size-4" />
         <span className="sr-only">Next month</span>
       </Button>

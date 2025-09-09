@@ -1,19 +1,25 @@
 import {CategoryBudgetWithCurrentAmountContract} from '@maya-vault/contracts';
 import {useSearch} from '@tanstack/react-router';
 import {format, isAfter, parse} from 'date-fns';
-import {useMemo} from 'react';
 
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {useGetCategoryBudgets} from '../hooks/use-get-category-budgets';
-import CategoryBudgetsTable from './category-budgets-table';
+import {lazy, Suspense, useMemo} from 'react';
+import CategoryBudgetsTableSkeleton from './category-budgets-table.skeleton';
 import CategoryBudgetsListSkeleton from './category-budgets-list.skeleton';
 import CategoryBudgetsListError from './category-budgets-list.error';
+import CategoryBudgetsAccordionListSkeleton from './category-budgets-accordion-list.skeleton';
+import {useIsMobile, TABLET_BREAKPOINT} from '@/hooks/use-mobile';
+
+const CategoryBudgetsTable = lazy(() => import('./category-budgets-table'));
+const CategoryBudgetsAccordionList = lazy(() => import('./category-budgets-accordion-list'));
 
 const CategoryBudgetsList = () => {
   const search = useSearch({from: '/__pathlessLayout/plan'});
   const {data, isLoading, isError, refetch} = useGetCategoryBudgets();
   const {formatBalance} = useFormatBalance();
+  const isMobile = useIsMobile(TABLET_BREAKPOINT);
 
   const isEditable = useMemo(() => {
     const monthDate = parse(search.month, 'yyyy-MM', new Date());
@@ -30,13 +36,8 @@ const CategoryBudgetsList = () => {
     return {planned, spent, available};
   }, [items]);
 
-  if (isLoading) {
-    return <CategoryBudgetsListSkeleton />;
-  }
-
-  if (isError) {
-    return <CategoryBudgetsListError onRetry={refetch} />;
-  }
+  if (isLoading && !isMobile) return <CategoryBudgetsListSkeleton />;
+  if (isError && !isMobile) return <CategoryBudgetsListError onRetry={refetch} />;
 
   return (
     <div className="space-y-4">
@@ -50,7 +51,15 @@ const CategoryBudgetsList = () => {
         </CardContent>
       </Card>
 
-      <CategoryBudgetsTable data={items} isEditable={isEditable} />
+      {isMobile ? (
+        <Suspense fallback={<CategoryBudgetsAccordionListSkeleton />}>
+          <CategoryBudgetsAccordionList data={items} isEditable={isEditable} />
+        </Suspense>
+      ) : (
+        <Suspense fallback={<CategoryBudgetsTableSkeleton />}>
+          <CategoryBudgetsTable data={items} isEditable={isEditable} />
+        </Suspense>
+      )}
     </div>
   );
 };

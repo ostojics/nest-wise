@@ -22,12 +22,12 @@ const Account: React.FC<AccountProps> = ({account}) => {
   };
 
   return (
-    <Card className="@container/card hover:shadow-md transition-shadow duration-200">
+    <Card className="@container/account-card hover:shadow-md transition-shadow duration-200">
       <CardHeader>
         <div className="flex flex-col items-start gap-3 md:gap-0 md:flex-row md:items-center justify-between">
           <div className="flex items-center gap-3">
             {IconComponent && (
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/50">
+              <div className="flex h-10 min-w-10 items-center justify-center rounded-lg bg-accent/50">
                 <IconComponent className="h-5 w-5 text-accent-foreground" />
               </div>
             )}
@@ -47,7 +47,7 @@ const Account: React.FC<AccountProps> = ({account}) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-start @lg/account-card:flex-row  @lg/account-card:items-center justify-between">
           <div className="text-sm text-muted-foreground">Current Balance</div>
           <div
             className={cn(

@@ -69,7 +69,7 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, on
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-3">
           <div className="space-y-2">
             <Label htmlFor="monthlyBudget">
               Monthly Budget <span className="text-red-500">*</span>

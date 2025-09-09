@@ -7,7 +7,7 @@ export function ReportsNav() {
 
   const tabs = [
     {value: '/reports/spending', label: 'Spending'},
-    {value: '/reports/savings', label: 'Savings'},
+    {value: '/reports/savings', label: 'Money Saved'},
     {value: '/reports/net-worth', label: 'Net Worth'},
   ];
 
