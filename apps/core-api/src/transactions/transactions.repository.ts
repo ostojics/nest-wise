@@ -137,8 +137,11 @@ export class TransactionsRepository {
   async findTransactionsWithFilters(query: GetTransactionsQueryDTO): Promise<GetTransactionsResponseContract> {
     const queryBuilder = this.transactionRepository
       .createQueryBuilder('transaction')
-      .leftJoinAndSelect('transaction.account', 'account')
-      .leftJoinAndSelect('transaction.category', 'category');
+      .leftJoin('transaction.account', 'account')
+      .leftJoin('transaction.category', 'category')
+      .addSelect(['account.name', 'account.variant'])
+      .addSelect(['category.name', 'category.type']);
+    // .where('account.variant = :variant', {variant: 'shared'});
 
     this.applyFilters(queryBuilder, query);
     this.applySorting(queryBuilder, query.sort);

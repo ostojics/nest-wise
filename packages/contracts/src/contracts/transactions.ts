@@ -20,8 +20,8 @@ export interface TransactionContract {
   isReconciled: boolean;
   createdAt: Date;
   updatedAt: Date;
-  account?: AccountContract;
-  category?: CategoryContract;
+  account?: Pick<AccountContract, 'name' | 'variant'>;
+  category?: Pick<CategoryContract, 'name' | 'type'>;
 }
 
 export interface GetTransactionsResponseContract {
