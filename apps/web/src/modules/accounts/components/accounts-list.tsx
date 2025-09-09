@@ -1,57 +1,57 @@
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdAccounts} from '../hooks/useGetHouseholdAccounts';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
-import {Skeleton} from '@/components/ui/skeleton';
 import Account from './account';
+import AccountsListSkeleton from './accounts-list.skeleton';
+import AccountsListEmpty from './accounts-list.empty';
+import AccountsListError from './accounts-list.error';
 
 const AccountsList = () => {
   const {data: me} = useGetMe();
   const {data: household} = useGetHouseholdById(me?.householdId ?? '');
-  const {data: accounts, isLoading} = useGetHouseholdAccounts(household?.id ?? '');
+  const {data: accounts, isLoading, isError, refetch} = useGetHouseholdAccounts(household?.id ?? '');
 
   if (isLoading) {
-    return (
-      <div className="mt-6 grid grid-cols-2 gap-4 @5xl/main:grid-cols-3">
-        {Array.from({length: 6}).map((_, index) => (
-          <div key={index} className="space-y-4 rounded-xl border p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Skeleton className="h-10 w-10 rounded-lg" />
-                <div className="space-y-2">
-                  <Skeleton className="h-5 w-32" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
-              </div>
-              <Skeleton className="h-6 w-20 rounded-full" />
-            </div>
-            <div className="flex items-center justify-between pt-2">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-6 w-20" />
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+    return <AccountsListSkeleton />;
+  }
+
+  if (isError) {
+    return <AccountsListError onRetry={refetch} />;
   }
 
   if (!accounts || accounts.length === 0) {
-    return (
-      <div className="mt-6 flex flex-col items-center justify-center py-12">
-        <div className="text-center">
-          <h3 className="text-lg font-semibold text-foreground">No accounts found</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            Create your first account to get started with managing your finances.
-          </p>
-        </div>
-      </div>
-    );
+    return <AccountsListEmpty />;
   }
 
+  const shared = accounts.filter((a) => a.variant === 'shared');
+  const priv = accounts.filter((a) => a.variant === 'private');
+
   return (
-    <div className="mt-6 grid grid-cols-1 @[871px]/list:grid-cols-2 gap-4">
-      {accounts.map((account) => (
-        <Account key={account.id} account={account} />
-      ))}
+    <div className="mt-6 space-y-8">
+      <section>
+        <h3 className="text-base font-semibold text-foreground">Shared accounts</h3>
+        {shared.length === 0 ? (
+          <AccountsListEmpty />
+        ) : (
+          <div className="mt-4 grid grid-cols-1 @[871px]/list:grid-cols-2 gap-4">
+            {shared.map((account) => (
+              <Account key={account.id} account={account} />
+            ))}
+          </div>
+        )}
+      </section>
+      <section>
+        <h3 className="text-base font-semibold text-foreground">Private accounts</h3>
+        {priv.length === 0 ? (
+          <AccountsListEmpty />
+        ) : (
+          <div className="mt-4 grid grid-cols-1 @[871px]/list:grid-cols-2 gap-4">
+            {priv.map((account) => (
+              <Account key={account.id} account={account} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 };
