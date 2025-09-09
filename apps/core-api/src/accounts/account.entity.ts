@@ -49,6 +49,14 @@ export class Account {
   type: string;
 
   @Column({
+    type: 'enum',
+    enum: ['shared', 'private'],
+    nullable: false,
+    default: 'shared',
+  })
+  variant: 'shared' | 'private';
+
+  @Column({
     type: 'decimal',
     precision: 18,
     scale: 2,

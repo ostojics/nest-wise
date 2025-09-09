@@ -33,6 +33,14 @@ export class Category {
   })
   name: string;
 
+  @Column({
+    type: 'enum',
+    enum: ['shared', 'private'],
+    nullable: false,
+    default: 'shared',
+  })
+  type: 'shared' | 'private';
+
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at',
