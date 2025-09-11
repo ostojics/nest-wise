@@ -5,10 +5,11 @@ import {PrivateTransactionsController} from './private-transactions.controller';
 import {PrivateTransaction} from './private-transactions.entity';
 import {AccountsModule} from 'src/accounts/accounts.module';
 import {PoliciesModule} from 'src/policies/policies.module';
+import {PrivateTransactionsRepository} from './private-transactions.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PrivateTransaction]), AccountsModule, PoliciesModule],
   controllers: [PrivateTransactionsController],
-  providers: [PrivateTransactionsService],
+  providers: [PrivateTransactionsService, PrivateTransactionsRepository],
 })
 export class PrivateTransactionsModule {}

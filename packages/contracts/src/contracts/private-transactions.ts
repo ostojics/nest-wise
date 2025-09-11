@@ -1,11 +1,7 @@
 import {z} from 'zod';
 import {PaginationMetaContract} from './interfaces/paginated-response';
 import {AccountContract} from './accounts';
-
-export enum PrivateTransactionType {
-  INCOME = 'income',
-  EXPENSE = 'expense',
-}
+import {TransactionType} from './transactions';
 
 export interface PrivateTransactionContract {
   id: string;
@@ -13,12 +9,12 @@ export interface PrivateTransactionContract {
   accountId: string;
   userId: string;
   amount: number;
-  type: PrivateTransactionType;
+  type: TransactionType;
   description: string | null;
-  transactionDate: string;
-  account: Pick<AccountContract, 'id' | 'name'>;
-  createdAt: string;
-  updatedAt: string;
+  transactionDate: Date;
+  account?: AccountContract;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface GetPrivateTransactionsResponseContract {

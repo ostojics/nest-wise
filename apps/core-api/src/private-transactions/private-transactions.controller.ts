@@ -2,9 +2,11 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
+  Query,
   ParseUUIDPipe,
   Post,
   UseGuards,
@@ -19,12 +21,20 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiNoContentResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import {CreatePrivateTransactionDTO, createPrivateTransactionSchema} from '@maya-vault/contracts';
+import {
+  CreatePrivateTransactionDTO,
+  GetPrivateTransactionsQueryDTO,
+  GetPrivateTransactionsResponseContract,
+  createPrivateTransactionSchema,
+  getPrivateTransactionsQuerySchema,
+} from '@maya-vault/contracts';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 
@@ -63,6 +73,32 @@ export class PrivateTransactionsController {
   @Post('')
   async create(@CurrentUser() user: JwtPayload, @Body() dto: CreatePrivateTransactionDTO) {
     return await this.privateTransactionsService.create(user.sub, dto);
+  }
+
+  @ApiOperation({
+    summary: 'Get private transactions (only mine)',
+    description: 'Retrieves private transactions for the current user with filtering, sorting, and pagination',
+  })
+  @ApiQuery({name: 'page', required: false, type: Number, example: 1})
+  @ApiQuery({name: 'pageSize', required: false, type: Number, example: 15})
+  @ApiQuery({name: 'sort', required: false, type: String, example: '-transactionDate'})
+  @ApiQuery({name: 'householdId', required: false, type: String, format: 'uuid'})
+  @ApiQuery({name: 'type', required: false, type: String, example: 'expense'})
+  @ApiQuery({name: 'accountId', required: false, type: String, format: 'uuid'})
+  @ApiQuery({name: 'transactionDate_from', required: false, type: String, format: 'date'})
+  @ApiQuery({name: 'transactionDate_to', required: false, type: String, format: 'date'})
+  @ApiOkResponse({description: 'Private transactions retrieved successfully'})
+  @ApiBadRequestResponse({description: 'Invalid query parameters'})
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @UsePipes(new ZodValidationPipe(getPrivateTransactionsQuerySchema))
+  @Get('')
+  async getMine(
+    @CurrentUser() user: JwtPayload,
+    @Query() query: GetPrivateTransactionsQueryDTO,
+  ): Promise<GetPrivateTransactionsResponseContract> {
+    return await this.privateTransactionsService.find(user.sub, query);
   }
 
   @ApiOperation({

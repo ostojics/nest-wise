@@ -2,11 +2,16 @@ import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository, DataSource} from 'typeorm';
 import {PrivateTransaction} from './private-transactions.entity';
-import {CreatePrivateTransactionDTO} from '@maya-vault/contracts';
+import {
+  CreatePrivateTransactionDTO,
+  GetPrivateTransactionsQueryDTO,
+  GetPrivateTransactionsResponseContract,
+} from '@maya-vault/contracts';
 import {AccountsService} from 'src/accounts/accounts.service';
 import {PoliciesService} from 'src/policies/policies.service';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
 import {UTCDate} from '@date-fns/utc';
+import {PrivateTransactionsRepository} from './private-transactions.repository';
 
 @Injectable()
 export class PrivateTransactionsService {
@@ -16,6 +21,7 @@ export class PrivateTransactionsService {
     private readonly dataSource: DataSource,
     private readonly accountsService: AccountsService,
     private readonly policiesService: PoliciesService,
+    private readonly privateTransactionsRepository: PrivateTransactionsRepository,
   ) {}
 
   async create(userId: string, dto: CreatePrivateTransactionDTO): Promise<PrivateTransaction> {
@@ -33,8 +39,8 @@ export class PrivateTransactionsService {
       throw new BadRequestException('Insufficient funds for this expense');
     }
 
-    return await this.dataSource.transaction(async (manager) => {
-      const created = await manager.getRepository(PrivateTransaction).save({
+    return await this.dataSource.transaction(async () => {
+      const created = await this.privateTransactionsRepository.create({
         householdId: dto.householdId,
         accountId: dto.accountId,
         userId,
@@ -53,8 +59,8 @@ export class PrivateTransactionsService {
   }
 
   async delete(userId: string, id: string): Promise<void> {
-    return await this.dataSource.transaction(async (manager) => {
-      const tx = await manager.getRepository(PrivateTransaction).findOne({where: {id}});
+    return await this.dataSource.transaction(async () => {
+      const tx = await this.privateTransactionsRepository.findById(id);
       if (!tx) {
         throw new NotFoundException('Private transaction not found');
       }
@@ -70,7 +76,11 @@ export class PrivateTransactionsService {
       const newBalance = tx.type === TransactionType.INCOME ? current - amount : current + amount;
       await this.accountsService.updateAccount(tx.accountId, {currentBalance: newBalance});
 
-      await manager.getRepository(PrivateTransaction).delete(id);
+      await this.privateTransactionsRepository.delete(id);
     });
+  }
+
+  async find(userId: string, query: GetPrivateTransactionsQueryDTO): Promise<GetPrivateTransactionsResponseContract> {
+    return await this.privateTransactionsRepository.findWithFilters(userId, query);
   }
 }
