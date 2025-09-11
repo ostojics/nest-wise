@@ -31,7 +31,7 @@ export const createPrivateTransactionSchema = z
     accountId: z.string().uuid(),
     amount: z.number().positive(),
     type: z.enum(['income', 'expense']),
-    description: z.string().max(2048).nullable().optional(),
+    description: z.string().min(1, 'Description is required').max(2048),
     transactionDate: z.string(),
   })
   .strict();
