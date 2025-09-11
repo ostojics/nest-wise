@@ -50,4 +50,27 @@ export class PrivateTransactionsService {
       return created;
     });
   }
+
+  async delete(userId: string, id: string): Promise<void> {
+    return await this.dataSource.transaction(async (manager) => {
+      const tx = await manager.getRepository(PrivateTransaction).findOne({where: {id}});
+      if (!tx) {
+        throw new NotFoundException('Private transaction not found');
+      }
+
+      const can = await this.policiesService.canUserUpdateAccount(userId, tx.accountId);
+      if (!can) {
+        throw new BadRequestException('You cannot delete this private transaction');
+      }
+
+      const account = await this.accountsService.findAccountById(tx.accountId);
+      const current = Number(account.currentBalance);
+      const amount = Number(tx.amount);
+
+      const newBalance = tx.type === TransactionType.INCOME ? current - amount : current + amount;
+      await this.accountsService.updateAccount(tx.accountId, {currentBalance: newBalance});
+
+      await manager.getRepository(PrivateTransaction).delete(id);
+    });
+  }
 }

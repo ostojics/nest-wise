@@ -1,4 +1,15 @@
-import {Body, Controller, Post, UseGuards, UsePipes} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import {PrivateTransactionsService} from './private-transactions.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
@@ -7,7 +18,9 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -50,5 +63,26 @@ export class PrivateTransactionsController {
   @Post('')
   async create(@CurrentUser() user: JwtPayload, @Body() dto: CreatePrivateTransactionDTO) {
     return await this.privateTransactionsService.create(user.sub, dto);
+  }
+
+  @ApiOperation({
+    summary: 'Delete a private transaction',
+    description: 'Deletes a private transaction and reverses the account balance update',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Private transaction ID',
+    type: String,
+    format: 'uuid',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse({description: 'Private transaction deleted successfully'})
+  @ApiBadRequestResponse({description: 'Not allowed to delete this private transaction'})
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  async delete(@CurrentUser() user: JwtPayload, @Param('id', ParseUUIDPipe) id: string) {
+    await this.privateTransactionsService.delete(user.sub, id);
   }
 }
