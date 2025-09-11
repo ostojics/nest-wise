@@ -23,6 +23,7 @@ import {PoliciesModule} from './policies/policies.module';
 import {ScheduleModule} from '@nestjs/schedule';
 import {SavingsModule} from './savings/savings.module';
 import {CategoryBudgetsModule} from './category-budgets/category-budgets.module';
+import {PrivateTransactionsModule} from './private-transactions/private-transactions.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import {CategoryBudgetsModule} from './category-budgets/category-budgets.module'
     PoliciesModule,
     SavingsModule,
     CategoryBudgetsModule,
+    PrivateTransactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

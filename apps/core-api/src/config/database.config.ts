@@ -7,6 +7,7 @@ import {Category} from 'src/categories/categories.entity';
 import {Transaction} from 'src/transactions/transaction.entity';
 import {Savings} from 'src/savings/savings.entity';
 import {CategoryBudget} from 'src/category-budgets/category-budgets.entity';
+import {PrivateTransaction} from 'src/private-transactions/private-transactions.entity';
 
 export const DatabaseConfigName = 'database';
 
@@ -24,7 +25,7 @@ export function getConfig(): DatabaseConfig {
     database: process.env.DB_DATABASE ?? 'mayavault_dev',
     synchronize: isDevelopment,
     ssl: !isDevelopment,
-    entities: [User, Household, Account, Category, Transaction, Savings, CategoryBudget],
+    entities: [User, Household, Account, Category, Transaction, Savings, CategoryBudget, PrivateTransaction],
     useUTC: true,
   };
 }
