@@ -8,3 +8,4 @@ export * from './users';
 export * from './errors';
 export * from './category-budgets';
 export * from './savings';
+export * from './private-transactions';
