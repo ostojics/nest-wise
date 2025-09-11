@@ -37,6 +37,7 @@ export class PrivateTransactionsService {
       const created = await manager.getRepository(PrivateTransaction).save({
         householdId: dto.householdId,
         accountId: dto.accountId,
+        userId,
         amount: dto.amount,
         type: dto.type as TransactionType,
         description: dto.description,
@@ -58,8 +59,7 @@ export class PrivateTransactionsService {
         throw new NotFoundException('Private transaction not found');
       }
 
-      const can = await this.policiesService.canUserUpdateAccount(userId, tx.accountId);
-      if (!can) {
+      if (tx.userId !== userId) {
         throw new BadRequestException('You cannot delete this private transaction');
       }
 

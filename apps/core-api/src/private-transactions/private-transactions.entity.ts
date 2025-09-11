@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import {Household} from 'src/households/household.entity';
 import {Account} from 'src/accounts/account.entity';
+import {User} from 'src/users/user.entity';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
 
 @Entity('private_transactions')
@@ -32,6 +33,14 @@ export class PrivateTransaction {
   })
   @Index()
   accountId: string;
+
+  @Column({
+    type: 'uuid',
+    nullable: false,
+    name: 'user_id',
+  })
+  @Index()
+  userId: string;
 
   @Column({
     type: 'decimal',
@@ -84,4 +93,10 @@ export class PrivateTransaction {
   })
   @JoinColumn({name: 'account_id'})
   account: Account;
+
+  @ManyToOne(() => User, (user) => user.accounts, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({name: 'user_id'})
+  user: User;
 }

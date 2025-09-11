@@ -11,6 +11,7 @@ export interface PrivateTransactionContract {
   id: string;
   householdId: string;
   accountId: string;
+  userId: string;
   amount: number;
   type: PrivateTransactionType;
   description: string | null;
