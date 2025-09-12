@@ -71,7 +71,9 @@ export const usePrivateTransactionsTable = (data: PrivateTransactionContract[]) 
         enableSorting: false,
       },
     ],
-    [formatBalance],
+    // eslint-disable-next-line react-hooks/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   const table = useReactTable({
