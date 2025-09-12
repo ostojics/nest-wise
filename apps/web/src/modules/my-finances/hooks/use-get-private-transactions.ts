@@ -1,7 +1,7 @@
 import {getPrivateTransactions} from '@/modules/api/private-transactions';
 import {queryKeys} from '@/modules/api/query-keys';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {useQuery} from '@tanstack/react-query';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {useSearch} from '@tanstack/react-router';
 
 export const useGetPrivateTransactions = () => {
@@ -12,5 +12,6 @@ export const useGetPrivateTransactions = () => {
     queryKey: queryKeys.privateTransactions.all({...search, householdId: me?.householdId ?? ''}),
     queryFn: () => getPrivateTransactions({...search, householdId: me?.householdId ?? ''}),
     enabled: Boolean(me?.householdId),
+    placeholderData: keepPreviousData,
   });
 };

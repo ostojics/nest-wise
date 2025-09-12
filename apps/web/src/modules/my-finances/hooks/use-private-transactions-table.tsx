@@ -99,6 +99,7 @@ export const usePrivateTransactionsTable = (data: PrivateTransactionContract[]) 
     manualSorting: true,
     manualFiltering: true,
     manualPagination: true,
+    enableSortingRemoval: false,
     // eslint-disable-next-line turbo/no-undeclared-env-vars
     debugAll: import.meta.env.DEV,
   });
