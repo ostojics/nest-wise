@@ -84,7 +84,7 @@ export const usePrivateTransactionsTable = (data: PrivateTransactionContract[]) 
         const sort = sorted[0];
         if (sort) {
           void navigate({
-            search: (prev: {page?: number; pageSize?: number}) => ({
+            search: (prev) => ({
               ...prev,
               sort: serializeSortOption(sort) as TPrivateTransactionSortField,
             }),
