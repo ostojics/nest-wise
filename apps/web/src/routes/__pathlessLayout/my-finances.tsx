@@ -8,9 +8,5 @@ export const Route = createFileRoute('/__pathlessLayout/my-finances')({
 });
 
 function RouteComponent() {
-  return (
-    <section className="p-4">
-      <MyFinancesPage />
-    </section>
-  );
+  return <MyFinancesPage />;
 }

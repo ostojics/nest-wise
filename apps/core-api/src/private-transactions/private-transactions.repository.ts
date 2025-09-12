@@ -85,6 +85,12 @@ export class PrivateTransactionsRepository {
     if (query.transactionDate_to) {
       qb.andWhere('pt.transactionDate <= :dateTo', {dateTo: query.transactionDate_to});
     }
+
+    if (query.q) {
+      qb.andWhere('pt.description ILIKE :q', {
+        q: `%${query.q}%`,
+      });
+    }
   }
 
   private applySorting(qb: SelectQueryBuilder<PrivateTransaction>, sort?: string): void {

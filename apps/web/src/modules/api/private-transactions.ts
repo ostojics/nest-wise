@@ -1,4 +1,8 @@
-import {CreatePrivateTransactionDTO, GetPrivateTransactionsQueryDTO} from '@maya-vault/contracts';
+import {
+  CreatePrivateTransactionDTO,
+  GetPrivateTransactionsQueryDTO,
+  GetPrivateTransactionsResponseContract,
+} from '@maya-vault/contracts';
 import httpClient from './http-client';
 
 export const createPrivateTransaction = async (dto: CreatePrivateTransactionDTO) => {
@@ -14,7 +18,7 @@ export const getPrivateTransactions = async (search: GetPrivateTransactionsQuery
     .get('v1/private-transactions', {
       searchParams: search,
     })
-    .json();
+    .json<GetPrivateTransactionsResponseContract>();
 };
 
 export const deletePrivateTransaction = async (id: string) => {

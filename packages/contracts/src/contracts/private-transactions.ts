@@ -55,6 +55,7 @@ export type TPrivateTransactionSortField = z.infer<typeof privateTransactionSort
 
 export const getPrivateTransactionsQuerySchema = z
   .object({
+    q: z.string().max(2048, 'Search query must be less than 2048 characters').optional(),
     householdId: z.string().uuid().optional(),
     accountId: z.string().uuid().optional(),
     type: z.enum(['income', 'expense']).optional(),
