@@ -1,4 +1,4 @@
-import {createPrivateTransaction} from '@/modules/api/private-transaction';
+import {createPrivateTransaction} from '@/modules/api/private-transactions';
 import {ErrorResponse} from '@maya-vault/contracts';
 import {useMutation} from '@tanstack/react-query';
 import {HTTPError} from 'ky';

@@ -1,4 +1,8 @@
-import {GetAccountsSpendingQueryDTO, GetCategoryBudgetsQueryParams} from '@maya-vault/contracts';
+import {
+  GetAccountsSpendingQueryDTO,
+  GetCategoryBudgetsQueryParams,
+  GetPrivateTransactionsQueryDTO,
+} from '@maya-vault/contracts';
 import {GetTransactionsQueryDTO} from '@maya-vault/validation';
 
 export const queryKeys = {
@@ -25,5 +29,8 @@ export const queryKeys = {
   },
   savings: {
     trend: () => ['savings-trend'],
+  },
+  privateTransactions: {
+    all: (search: GetPrivateTransactionsQueryDTO) => ['private-transactions', search],
   },
 };

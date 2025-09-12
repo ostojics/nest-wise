@@ -40,14 +40,27 @@ export const createPrivateTransactionSchema = z
 
 export type CreatePrivateTransactionDTO = z.infer<typeof createPrivateTransactionSchema>;
 
+export const privateTransactionSortFieldEnum = z.enum([
+  'amount',
+  '-amount',
+  'type',
+  '-type',
+  'transactionDate',
+  '-transactionDate',
+  'createdAt',
+  '-createdAt',
+]);
+
+export type TPrivateTransactionSortField = z.infer<typeof privateTransactionSortFieldEnum>;
+
 export const getPrivateTransactionsQuerySchema = z
   .object({
-    householdId: z.string().uuid(),
+    householdId: z.string().uuid().optional(),
     accountId: z.string().uuid().optional(),
     type: z.enum(['income', 'expense']).optional(),
     transactionDate_from: z.string().optional(),
     transactionDate_to: z.string().optional(),
-    sort: z.string().optional(),
+    sort: privateTransactionSortFieldEnum.optional().default('transactionDate'),
     page: z.coerce.number().int().min(1).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(15),
   })
