@@ -11,7 +11,7 @@ import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdByI
 import {useCreateTransaction} from '@/modules/transactions/hooks/useCreateTransaction';
 import {accountTypes} from '@/common/constants/account-types';
 import {useValidateCreateTransaction} from '@maya-vault/validation';
-import {Plus} from 'lucide-react';
+import {Loader2, Plus} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {toast} from 'sonner';
 
@@ -231,7 +231,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
           disabled={createTransactionMutation.isPending}
           className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
         >
-          {createTransactionMutation.isPending ? 'Creating...' : 'Log Transaction'}
+          {createTransactionMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Log Transaction'}
         </Button>
       </div>
     </form>

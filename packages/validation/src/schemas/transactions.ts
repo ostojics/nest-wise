@@ -18,7 +18,10 @@ export const createTransactionSchema = z
     householdId: z.string().uuid('Household ID must be valid'),
     accountId: z.string().uuid('Account must be selected'),
     categoryId: z.string().uuid('Category must be selected').nullable(),
-    amount: z.coerce.number().min(0.01, 'Amount must be greater than 0'),
+    amount: z.coerce
+      .number()
+      .min(1, 'Amount must be greater than 0')
+      .max(10000000, 'Amount must be less than 10,000,000'),
     type: TransactionTypeEnum,
     description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
     transactionDate: z.coerce.date(),

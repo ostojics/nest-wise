@@ -25,11 +25,16 @@ export interface GetPrivateTransactionsResponseContract {
 export const createPrivateTransactionSchema = z
   .object({
     householdId: z.string().uuid(),
-    accountId: z.string().uuid(),
-    amount: z.number().positive(),
-    type: z.enum(['income', 'expense']),
+    accountId: z.string().uuid('Account must be selected'),
+    amount: z.coerce
+      .number()
+      .min(1, 'Amount must be greater than 0')
+      .max(10000000, 'Amount must be less than 10,000,000'),
+    type: z.enum(['income', 'expense'], {
+      errorMap: () => ({message: 'Type must be either income or expense'}),
+    }),
     description: z.string().min(1, 'Description is required').max(2048),
-    transactionDate: z.string(),
+    transactionDate: z.coerce.date(),
   })
   .strict();
 

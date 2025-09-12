@@ -15,6 +15,7 @@ import { Route as InvitesRouteImport } from './routes/invites'
 import { Route as _pathlessLayoutRouteRouteImport } from './routes/__pathlessLayout/route'
 import { Route as _pathlessLayoutTransactionsRouteImport } from './routes/__pathlessLayout/transactions'
 import { Route as _pathlessLayoutPlanRouteImport } from './routes/__pathlessLayout/plan'
+import { Route as _pathlessLayoutMyFinancesRouteImport } from './routes/__pathlessLayout/my-finances'
 import { Route as _pathlessLayoutMembersRouteImport } from './routes/__pathlessLayout/members'
 import { Route as _pathlessLayoutAnalyticsRouteImport } from './routes/__pathlessLayout/analytics'
 import { Route as _pathlessLayoutAccountsRouteImport } from './routes/__pathlessLayout/accounts'
@@ -53,6 +54,12 @@ const _pathlessLayoutPlanRoute = _pathlessLayoutPlanRouteImport.update({
   path: '/plan',
   getParentRoute: () => _pathlessLayoutRouteRoute,
 } as any)
+const _pathlessLayoutMyFinancesRoute =
+  _pathlessLayoutMyFinancesRouteImport.update({
+    id: '/my-finances',
+    path: '/my-finances',
+    getParentRoute: () => _pathlessLayoutRouteRoute,
+  } as any)
 const _pathlessLayoutMembersRoute = _pathlessLayoutMembersRouteImport.update({
   id: '/members',
   path: '/members',
@@ -102,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/members': typeof _pathlessLayoutMembersRoute
+  '/my-finances': typeof _pathlessLayoutMyFinancesRoute
   '/plan': typeof _pathlessLayoutPlanRoute
   '/transactions': typeof _pathlessLayoutTransactionsRoute
   '/reports/net-worth': typeof _pathlessLayoutReportsNetWorthRoute
@@ -116,6 +124,7 @@ export interface FileRoutesByTo {
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/members': typeof _pathlessLayoutMembersRoute
+  '/my-finances': typeof _pathlessLayoutMyFinancesRoute
   '/plan': typeof _pathlessLayoutPlanRoute
   '/transactions': typeof _pathlessLayoutTransactionsRoute
   '/reports/net-worth': typeof _pathlessLayoutReportsNetWorthRoute
@@ -132,6 +141,7 @@ export interface FileRoutesById {
   '/__pathlessLayout/accounts': typeof _pathlessLayoutAccountsRoute
   '/__pathlessLayout/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/__pathlessLayout/members': typeof _pathlessLayoutMembersRoute
+  '/__pathlessLayout/my-finances': typeof _pathlessLayoutMyFinancesRoute
   '/__pathlessLayout/plan': typeof _pathlessLayoutPlanRoute
   '/__pathlessLayout/transactions': typeof _pathlessLayoutTransactionsRoute
   '/__pathlessLayout/reports/net-worth': typeof _pathlessLayoutReportsNetWorthRoute
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/analytics'
     | '/members'
+    | '/my-finances'
     | '/plan'
     | '/transactions'
     | '/reports/net-worth'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/analytics'
     | '/members'
+    | '/my-finances'
     | '/plan'
     | '/transactions'
     | '/reports/net-worth'
@@ -177,6 +189,7 @@ export interface FileRouteTypes {
     | '/__pathlessLayout/accounts'
     | '/__pathlessLayout/analytics'
     | '/__pathlessLayout/members'
+    | '/__pathlessLayout/my-finances'
     | '/__pathlessLayout/plan'
     | '/__pathlessLayout/transactions'
     | '/__pathlessLayout/reports/net-worth'
@@ -233,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/plan'
       fullPath: '/plan'
       preLoaderRoute: typeof _pathlessLayoutPlanRouteImport
+      parentRoute: typeof _pathlessLayoutRouteRoute
+    }
+    '/__pathlessLayout/my-finances': {
+      id: '/__pathlessLayout/my-finances'
+      path: '/my-finances'
+      fullPath: '/my-finances'
+      preLoaderRoute: typeof _pathlessLayoutMyFinancesRouteImport
       parentRoute: typeof _pathlessLayoutRouteRoute
     }
     '/__pathlessLayout/members': {
@@ -310,6 +330,7 @@ interface _pathlessLayoutRouteRouteChildren {
   _pathlessLayoutAccountsRoute: typeof _pathlessLayoutAccountsRoute
   _pathlessLayoutAnalyticsRoute: typeof _pathlessLayoutAnalyticsRoute
   _pathlessLayoutMembersRoute: typeof _pathlessLayoutMembersRoute
+  _pathlessLayoutMyFinancesRoute: typeof _pathlessLayoutMyFinancesRoute
   _pathlessLayoutPlanRoute: typeof _pathlessLayoutPlanRoute
   _pathlessLayoutTransactionsRoute: typeof _pathlessLayoutTransactionsRoute
 }
@@ -320,6 +341,7 @@ const _pathlessLayoutRouteRouteChildren: _pathlessLayoutRouteRouteChildren = {
   _pathlessLayoutAccountsRoute: _pathlessLayoutAccountsRoute,
   _pathlessLayoutAnalyticsRoute: _pathlessLayoutAnalyticsRoute,
   _pathlessLayoutMembersRoute: _pathlessLayoutMembersRoute,
+  _pathlessLayoutMyFinancesRoute: _pathlessLayoutMyFinancesRoute,
   _pathlessLayoutPlanRoute: _pathlessLayoutPlanRoute,
   _pathlessLayoutTransactionsRoute: _pathlessLayoutTransactionsRoute,
 }
