@@ -1,14 +1,18 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository, SelectQueryBuilder} from 'typeorm';
+import {Transaction} from './transaction.entity';
 import {
+  CreateTransactionDTO,
+  GetTransactionsQueryDTO,
+  UpdateTransactionDTO,
+  GetTransactionsResponseContract,
+  TransactionContract,
+  SortOrder,
   AccountSpendingPointContract,
   GetAccountsSpendingQueryDTO,
   NetWorthTrendPointContract,
 } from '@maya-vault/contracts';
-import {Transaction} from './transaction.entity';
-import {CreateTransactionDTO, GetTransactionsQueryDTO, UpdateTransactionDTO} from '@maya-vault/validation';
-import {GetTransactionsResponseContract, SortOrder, TransactionContract} from '@maya-vault/contracts';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 
 @Injectable()

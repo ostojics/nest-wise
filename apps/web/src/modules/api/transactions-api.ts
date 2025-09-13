@@ -1,4 +1,4 @@
-import {CreateTransactionDTO, CreateTransactionAiDTO, GetTransactionsQueryDTO} from '@maya-vault/validation';
+import {CreateTransactionDTO, CreateTransactionAiDTO, GetTransactionsQueryDTO} from '@maya-vault/contracts';
 import httpClient from './http-client';
 import {
   AccountSpendingPointContract,

@@ -4,11 +4,10 @@ import {
   CreateTransactionDTO,
   GetTransactionsQueryDTO,
   UpdateTransactionDTO,
-} from '@maya-vault/validation';
-import {
   AccountSpendingPointContract,
   GetAccountsSpendingQueryDTO,
   GetTransactionsResponseContract,
+  NetWorthTrendPointContract,
 } from '@maya-vault/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {generateObject} from 'ai';
@@ -21,7 +20,6 @@ import {AccountsService} from '../accounts/accounts.service';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 import {Transaction} from './transaction.entity';
 import {TransactionsRepository} from './transactions.repository';
-import {NetWorthTrendPointContract} from '@maya-vault/contracts';
 
 @Injectable()
 export class TransactionsService {

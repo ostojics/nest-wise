@@ -2,8 +2,8 @@ import {
   GetAccountsSpendingQueryDTO,
   GetCategoryBudgetsQueryParams,
   GetPrivateTransactionsQueryDTO,
+  GetTransactionsQueryDTO,
 } from '@maya-vault/contracts';
-import {GetTransactionsQueryDTO} from '@maya-vault/validation';
 
 export const queryKeys = {
   me: () => ['me'],

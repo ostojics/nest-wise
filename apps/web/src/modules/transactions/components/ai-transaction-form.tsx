@@ -7,7 +7,8 @@ import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdA
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useCreateTransactionAI} from '@/modules/transactions/hooks/useCreateTransactionAI';
-import {useValidateCreateAiTransaction, CreateTransactionAiDTO} from '@maya-vault/validation';
+import {CreateTransactionAiDTO} from '@maya-vault/contracts';
+import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/useValidateCreateAiTransaction';
 import AiBanner from './ai-banner';
 import {AiDescriptionTooltip} from './ai-description-tooltip';
 

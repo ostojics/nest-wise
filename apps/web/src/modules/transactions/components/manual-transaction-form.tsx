@@ -10,7 +10,7 @@ import {useGetHouseholdCategories} from '@/modules/categories/hooks/useGetHouseh
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useCreateTransaction} from '@/modules/transactions/hooks/useCreateTransaction';
 import {accountTypes} from '@/common/constants/account-types';
-import {useValidateCreateTransaction} from '@maya-vault/validation';
+import {useValidateCreateTransaction} from '@/modules/transactions/hooks/useValidateCreateTransaction';
 import {Loader2, Plus} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {toast} from 'sonner';

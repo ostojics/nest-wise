@@ -1,8 +1,7 @@
 import {Badge} from '@/components/ui/badge';
 import {cn, deserializeSortOption, serializeSortOption} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
-import {TransactionContract, TransactionType} from '@maya-vault/contracts';
-import {TransactionSortField} from '@maya-vault/validation';
+import {TransactionContract, TransactionType, TransactionSortField} from '@maya-vault/contracts';
 import {useNavigate, useSearch} from '@tanstack/react-router';
 import {ColumnDef, getCoreRowModel, SortingState, useReactTable} from '@tanstack/react-table';
 import {format} from 'date-fns';
