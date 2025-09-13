@@ -1,4 +1,5 @@
-import {LoginDTO, SetupDTO} from '@maya-vault/validation';
+import {LoginDTO} from '@maya-vault/contracts';
+import {SetupDTO} from '@maya-vault/validation';
 import httpClient from './http-client';
 import {UserContract} from '@maya-vault/contracts';
 

@@ -1,6 +1,7 @@
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {UsersService} from 'src/users/users.service';
-import {LoginDTO, SetupDTO} from '@maya-vault/validation';
+import {LoginDTO} from '@maya-vault/contracts';
+import {SetupDTO} from '@maya-vault/validation';
 import {verifyPassword} from 'src/lib/hashing/hashing';
 import {JwtService} from '@nestjs/jwt';
 import {ConfigService} from '@nestjs/config';
@@ -56,13 +57,13 @@ export class AuthService {
     return await this.usersService.findUserById(userId);
   }
 
-  async loginUser(userData: LoginDTO) {
-    const user = await this.usersService.findUserByEmail(userData.email);
+  async loginUser({email, password}: LoginDTO) {
+    const user = await this.usersService.findUserByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const passwordValid = await verifyPassword(userData.password, user.passwordHash);
+    const passwordValid = await verifyPassword(password, user.passwordHash);
     if (!passwordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
