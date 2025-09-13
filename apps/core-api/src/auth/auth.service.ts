@@ -1,7 +1,6 @@
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {UsersService} from 'src/users/users.service';
-import {LoginDTO} from '@maya-vault/contracts';
-import {SetupDTO} from '@maya-vault/validation';
+import {LoginDTO, SetupDTO} from '@maya-vault/contracts';
 import {verifyPassword} from 'src/lib/hashing/hashing';
 import {JwtService} from '@nestjs/jwt';
 import {ConfigService} from '@nestjs/config';

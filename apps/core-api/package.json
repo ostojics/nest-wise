@@ -24,7 +24,6 @@
     "@date-fns/utc": "^2.1.1",
     "date-fns": "catalog:",
     "@maya-vault/contracts": "workspace:*",
-    "@maya-vault/validation": "workspace:*",
     "@nestjs/bullmq": "^11.0.3",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",

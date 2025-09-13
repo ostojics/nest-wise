@@ -14,6 +14,7 @@ import {useValidateCreateTransaction} from '@/modules/transactions/hooks/useVali
 import {Loader2, Plus} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {toast} from 'sonner';
+import {CreateTransactionDTO} from '@maya-vault/contracts';
 
 interface ManualTransactionFormProps {
   onSuccess: () => void;
@@ -62,7 +63,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
     }
   };
 
-  const onSubmit = async (data: Parameters<typeof createTransactionMutation.mutateAsync>[0]) => {
+  const onSubmit = async (data: CreateTransactionDTO) => {
     try {
       await createTransactionMutation.mutateAsync(data);
       reset();
@@ -89,6 +90,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
   }, [watchedType, setValue]);
 
   return (
+    // @ts-expect-error DTO is inferred from the schema
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="accountId">
