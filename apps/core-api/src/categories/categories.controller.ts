@@ -1,4 +1,4 @@
-import {CreateCategoryDTO, UpdateCategoryDTO, createCategorySchema, updateCategorySchema} from '@maya-vault/validation';
+import {CreateCategoryDTO, UpdateCategoryDTO, createCategorySchema, updateCategorySchema} from '@maya-vault/contracts';
 import {Body, Controller, Delete, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
 import {
   ApiBadRequestResponse,

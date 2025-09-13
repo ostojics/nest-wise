@@ -1,6 +1,6 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
-import {CreateCategoryDTO, createCategorySchema} from '@maya-vault/validation';
+import {CreateCategoryDTO, createCategorySchema} from '@maya-vault/contracts';
 
 interface UseValidateCreateCategoryArgs {
   householdId: string;
