@@ -10,8 +10,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import {AuthService} from './auth.service';
-import {loginSchema, LoginDTO} from '@maya-vault/contracts';
-import {SetupDTO, setupSchema} from '@maya-vault/validation';
+import {loginSchema, LoginDTO, SetupDTO, setupSchema, UserContract} from '@maya-vault/contracts';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {ZodSchema} from 'zod';
 import {Response} from 'express';
@@ -25,7 +24,6 @@ import {
   SetupSwaggerDTO,
   UserResponseSwaggerDTO,
 } from 'src/tools/swagger/auth.swagger.dto';
-import {UserContract} from '@maya-vault/contracts';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 
 @ApiTags('Authentication')

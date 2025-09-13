@@ -8,7 +8,8 @@ import {Brain, Loader2} from 'lucide-react';
 import {useValidateStep2} from '../hooks/useValidateStep2';
 import {useSetupContext} from '../hooks/useSetup';
 import {useSetupMutation} from '../hooks/useSetupMutation';
-import {CreateHouseholdDTO, SetupDTO} from '@maya-vault/validation';
+import {CreateHouseholdDTO} from '@maya-vault/contracts';
+import {SetupDTO} from '@maya-vault/validation';
 import {CURRENCIES} from '../currencies';
 
 const Step2 = () => {

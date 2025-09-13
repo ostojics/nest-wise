@@ -1,5 +1,6 @@
 import {z} from 'zod';
 import {userRegistrationSchema} from './users';
+import {createHouseholdSchema} from './households';
 
 export const loginSchema = z
   .object({
@@ -13,7 +14,7 @@ export type LoginDTO = z.infer<typeof loginSchema>;
 export const setupSchema = z
   .object({
     user: userRegistrationSchema,
-    // household: createHouseholdSchema,
+    household: createHouseholdSchema,
   })
   .strict();
 

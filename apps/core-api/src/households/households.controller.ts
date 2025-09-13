@@ -17,9 +17,8 @@ import {HouseholdResponseSwaggerDTO, UpdateHouseholdSwaggerDTO} from 'src/tools/
 import {AccountContract, HouseholdContract} from '@maya-vault/contracts';
 import {Category} from 'src/categories/categories.entity';
 import {CategoryResponseSwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
-import {UpdateHouseholdDTO} from '@maya-vault/validation';
+import {UpdateHouseholdDTO, updateHouseholdSchema} from '@maya-vault/contracts';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
-import {updateHouseholdSchema} from '@maya-vault/validation';
 
 @ApiTags('Households')
 @Controller({

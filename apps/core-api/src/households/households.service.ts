@@ -3,7 +3,7 @@ import {HouseholdsRepository} from './households.repository';
 import {Household} from './household.entity';
 import {AccountsService} from 'src/accounts/accounts.service';
 import {Account} from 'src/accounts/account.entity';
-import type {CreateHouseholdDTO, UpdateHouseholdDTO} from '@maya-vault/validation';
+import type {CreateHouseholdDTO, UpdateHouseholdDTO} from '@maya-vault/contracts';
 import {CategoriesService} from 'src/categories/categories.service';
 import {Category} from 'src/categories/categories.entity';
 

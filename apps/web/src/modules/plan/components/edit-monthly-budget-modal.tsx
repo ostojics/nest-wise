@@ -7,7 +7,7 @@ import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useUpdateHousehold} from '@/modules/households/hooks/useUpdateHousehold';
-import {useValidateEditHousehold} from '@maya-vault/validation';
+import {useValidateEditHousehold} from '@/modules/households/hooks/use-validate-edit-household';
 import {Loader2} from 'lucide-react';
 import React, {useEffect} from 'react';
 
