@@ -1,5 +1,11 @@
-import {EditAccountDTO, TransferFundsDTO, editAccountSchema, transferFundsSchema} from '@maya-vault/contracts';
-import {CreateAccountDTO, createAccountSchema} from '@maya-vault/validation';
+import {
+  EditAccountDTO,
+  TransferFundsDTO,
+  editAccountSchema,
+  transferFundsSchema,
+  CreateAccountDTO,
+  createAccountSchema,
+} from '@maya-vault/contracts';
 import {
   Body,
   Controller,

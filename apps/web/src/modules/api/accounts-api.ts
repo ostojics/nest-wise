@@ -1,4 +1,4 @@
-import {CreateAccountDTO} from '@maya-vault/validation';
+import {CreateAccountDTO} from '@maya-vault/contracts';
 import httpClient from './http-client';
 import {EditAccountDTO, TransferFundsDTO} from '@maya-vault/contracts';
 
