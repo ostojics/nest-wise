@@ -31,6 +31,7 @@ export const queryKeys = {
     trend: () => ['savings-trend'],
   },
   privateTransactions: {
+    tag: () => ['private-transactions'],
     all: (search: GetPrivateTransactionsQueryDTO) => ['private-transactions', search],
   },
 };

@@ -1,16 +1,19 @@
 import {createPrivateTransaction} from '@/modules/api/private-transactions';
+import {queryKeys} from '@/modules/api/query-keys';
 import {ErrorResponse} from '@maya-vault/contracts';
-import {useMutation} from '@tanstack/react-query';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
 
 export const useCreatePrivateTransaction = () => {
-  //   const client = useQueryClient();
+  const client = useQueryClient();
 
   return useMutation({
     mutationFn: createPrivateTransaction,
-    onSuccess: () => {
-      //   void client.invalidateQueries({queryKey: queryKeys.categories.all()});
+    onSuccess: async () => {
+      await client.invalidateQueries({
+        queryKey: queryKeys.privateTransactions.tag(),
+      });
       toast.success('Private transaction created successfully');
     },
     onError: async (error) => {
