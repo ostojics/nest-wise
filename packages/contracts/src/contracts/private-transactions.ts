@@ -28,7 +28,7 @@ export const createPrivateTransactionSchema = z
     accountId: z.string().uuid('Account must be selected'),
     amount: z.coerce
       .number()
-      .min(1, 'Amount must be greater than 0')
+      .min(0.01, 'Amount must be greater than 0')
       .max(10000000, 'Amount must be less than 10,000,000'),
     type: z.enum(['income', 'expense'], {
       errorMap: () => ({message: 'Type must be either income or expense'}),
