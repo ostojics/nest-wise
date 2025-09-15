@@ -18,7 +18,7 @@ const PrivateTransactionsTableActions = () => {
           <AccountCombobox accounts={accounts ?? []} />
           <PrivateTransactionDateFromPicker />
           <PrivateTransactionDateToPicker />
-          <Button onClick={() => navigate({search: {page: 1, pageSize: 15}, to: '/my-finances'})}>Reset filters</Button>
+          <Button onClick={() => navigate({to: '/my-finances'})}>Reset filters</Button>
         </div>
       </div>
     </section>

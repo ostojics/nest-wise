@@ -1,20 +1,19 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader} from '@/components/ui/card';
 import {ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
+import {generateRandomHsl} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {IconChartPie} from '@tabler/icons-react';
-import React, {useMemo} from 'react';
+import {useMemo} from 'react';
 import {Cell, Pie, PieChart} from 'recharts';
-import {generateRandomHsl} from '@/lib/utils';
 
-import {useSearch} from '@tanstack/react-router';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransactions';
-import SpendingByCategoryCardSkeleton from './spending-by-category-card.skeleton';
-import SpendingByCategoryCardError from './spending-by-category-card.error';
-import SpendingByCategoryCardEmpty from './spending-by-category-card.empty';
+import {useSearch} from '@tanstack/react-router';
 import {ChartDataEntry} from '../interfaces/chart-data-entry';
 import {SpendingCategoryData} from '../interfaces/spending-category-data';
 import CategoryAmountLegend from './category-amount-legend';
+import SpendingByCategoryCardEmpty from './spending-by-category-card.empty';
+import SpendingByCategoryCardError from './spending-by-category-card.error';
+import SpendingByCategoryCardSkeleton from './spending-by-category-card.skeleton';
 
 const renderCustomizedLabel = (entry: ChartDataEntry) => {
   const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);
@@ -24,14 +23,10 @@ const renderCustomizedLabel = (entry: ChartDataEntry) => {
 const SpendingByCategoryCard = () => {
   const {formatBalance} = useFormatBalance();
   const search = useSearch({from: '/__pathlessLayout/reports/spending'});
-  const {data: me} = useGetMe();
   const {data, isLoading, isError, refetch} = useGetTransactions({
     search: {
       transactionDate_from: search.transactionDate_from,
       transactionDate_to: search.transactionDate_to,
-      householdId: me?.householdId,
-      page: 1,
-      pageSize: 2000,
       type: 'expense',
     },
   });

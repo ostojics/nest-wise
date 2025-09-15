@@ -68,8 +68,6 @@ export class SavingsService {
         transactionDate_from: format(prevMonthStart, dateFormat),
         transactionDate_to: format(prevMonthEnd, dateFormat),
         householdId: payload.householdId,
-        page: 1,
-        pageSize: 3000,
         type: TransactionType.EXPENSE,
       });
 

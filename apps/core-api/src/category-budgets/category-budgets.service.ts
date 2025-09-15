@@ -50,8 +50,6 @@ export class CategoryBudgetsService {
       transactionDate_from: dateFrom,
       transactionDate_to: dateTo,
       type: TransactionType.EXPENSE,
-      page: 1,
-      pageSize: 3000,
     });
 
     const spentByCategory = new Map<string, number>();

@@ -2,7 +2,6 @@ import {Button} from '@/components/ui/button';
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Progress} from '@/components/ui/progress';
 import {cn, getStartAndEndOfMonth} from '@/lib/utils';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransactions';
@@ -15,7 +14,6 @@ import SpendingVsTargetCardError from './spending-vs-target-card.error';
 const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const {formatBalance} = useFormatBalance();
-  const {data} = useGetMe();
   const {data: household} = useGetHouseholdById();
   const {start, end} = getStartAndEndOfMonth();
   const {
@@ -25,10 +23,7 @@ const SpendingVsTargetCard = () => {
     refetch,
   } = useGetTransactions({
     search: {
-      page: 1,
-      pageSize: 15,
       type: 'expense',
-      householdId: data?.householdId,
       transactionDate_from: start,
       transactionDate_to: end,
     },
