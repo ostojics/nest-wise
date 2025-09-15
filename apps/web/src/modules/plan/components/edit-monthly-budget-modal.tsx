@@ -3,7 +3,6 @@ import {Button} from '@/components/ui/button';
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useUpdateHousehold} from '@/modules/households/hooks/useUpdateHousehold';
@@ -24,8 +23,7 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, on
     reset,
     formState: {errors},
   } = useValidateEditHousehold();
-  const {data} = useGetMe();
-  const {data: household} = useGetHouseholdById(data?.householdId ?? '');
+  const {data: household} = useGetHouseholdById();
 
   const updateHouseholdMutation = useUpdateHousehold();
 

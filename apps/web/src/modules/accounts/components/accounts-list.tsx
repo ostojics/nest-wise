@@ -1,13 +1,9 @@
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {useGetHouseholdAccounts} from '../hooks/useGetHouseholdAccounts';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {Skeleton} from '@/components/ui/skeleton';
+import {useGetHouseholdAccounts} from '../hooks/useGetHouseholdAccounts';
 import Account from './account';
 
 const AccountsList = () => {
-  const {data: me} = useGetMe();
-  const {data: household} = useGetHouseholdById(me?.householdId ?? '');
-  const {data: accounts, isLoading} = useGetHouseholdAccounts(household?.id ?? '');
+  const {data: accounts, isLoading} = useGetHouseholdAccounts();
 
   if (isLoading) {
     return (

@@ -16,7 +16,7 @@ const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const {formatBalance} = useFormatBalance();
   const {data} = useGetMe();
-  const {data: household} = useGetHouseholdById(data?.householdId ?? '');
+  const {data: household} = useGetHouseholdById();
   const {start, end} = getStartAndEndOfMonth();
   const {
     data: transactions,

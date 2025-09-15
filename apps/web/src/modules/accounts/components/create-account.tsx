@@ -24,7 +24,7 @@ import SelectedAccountType from './selected-account-type';
 
 const CreateAccount = () => {
   const {data} = useGetMe();
-  const {data: household} = useGetHouseholdById(data?.householdId ?? '');
+  const {data: household} = useGetHouseholdById();
   const [isOpen, setIsOpen] = useState(false);
   const mutation = useCreateAccountMutation({
     closeDialog: () => setIsOpen(false),

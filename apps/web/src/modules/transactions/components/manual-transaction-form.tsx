@@ -5,7 +5,6 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/useGetHouseholdCategories';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useCreateTransaction} from '@/modules/transactions/hooks/useCreateTransaction';
@@ -21,10 +20,9 @@ interface ManualTransactionFormProps {
 }
 
 export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFormProps) {
-  const {data: me} = useGetMe();
-  const {data: household} = useGetHouseholdById(me?.householdId ?? '');
-  const {data: accounts} = useGetHouseholdAccounts(household?.id ?? '');
-  const {data: categories} = useGetHouseholdCategories(household?.id ?? '');
+  const {data: household} = useGetHouseholdById();
+  const {data: accounts} = useGetHouseholdAccounts();
+  const {data: categories} = useGetHouseholdCategories();
 
   const createTransactionMutation = useCreateTransaction();
 
