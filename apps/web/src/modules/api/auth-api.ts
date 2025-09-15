@@ -17,3 +17,7 @@ export const setup = (data: SetupDTO) => {
 export const me = () => {
   return httpClient.get('v1/auth/me').json<UserContract>();
 };
+
+export const logout = () => {
+  return httpClient.post('v1/auth/logout').json();
+};
