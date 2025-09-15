@@ -17,6 +17,7 @@ export const queryKeys = {
     all: () => ['categories'],
   },
   transactions: {
+    key: () => ['transactions'],
     all: (search: GetTransactionsQueryDTO) => ['transactions', search],
     netWorthTrend: () => ['net-worth-trend'],
     spendingByAccounts: (search: GetAccountsSpendingQueryDTO) => ['spending-by-accounts', search],
@@ -25,13 +26,14 @@ export const queryKeys = {
     all: () => ['users'],
   },
   categoryBudgets: {
+    key: () => ['category-budgets'],
     all: (search: GetCategoryBudgetsQueryParams) => ['category-budgets', search],
   },
   savings: {
     trend: () => ['savings-trend'],
   },
   privateTransactions: {
-    tag: () => ['private-transactions'],
+    key: () => ['private-transactions'],
     all: (search: GetPrivateTransactionsQueryDTO) => ['private-transactions', search],
   },
 };

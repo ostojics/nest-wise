@@ -12,7 +12,7 @@ export const useCreatePrivateTransaction = () => {
     mutationFn: createPrivateTransaction,
     onSuccess: async () => {
       await client.invalidateQueries({
-        queryKey: queryKeys.privateTransactions.tag(),
+        queryKey: queryKeys.privateTransactions.key(),
       });
       toast.success('Private transaction created successfully');
     },
