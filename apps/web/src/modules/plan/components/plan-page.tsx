@@ -18,7 +18,7 @@ const PlanPage = () => {
       </section>
       <div className="flex flex-col items-start justify-between gap-4">
         <div className="space-y-1.5">
-          <h3 className="text-xl font-semibold">Plan your spending by category</h3>
+          <h3 className="text-xl font-semibold">Plan your household's spending by category</h3>
           <p className="text-muted-foreground text-sm">
             Set a planned amount for each category. As you log transactions, your spending is tracked automatically for
             the selected month.

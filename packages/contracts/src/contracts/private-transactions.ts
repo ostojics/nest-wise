@@ -61,7 +61,7 @@ export const getPrivateTransactionsQuerySchema = z
     type: z.enum(['income', 'expense']).optional(),
     transactionDate_from: z.string().optional(),
     transactionDate_to: z.string().optional(),
-    sort: privateTransactionSortFieldEnum.optional().default('transactionDate'),
+    sort: privateTransactionSortFieldEnum.optional().default('-transactionDate'),
     page: z.coerce.number().int().min(1).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(15),
   })
