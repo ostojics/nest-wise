@@ -34,6 +34,7 @@ const EditCategoryBudgetDialog = ({
     register,
     handleSubmit,
     formState: {errors},
+    reset,
   } = useValidateEditCategoryBudget({defaultValues: {plannedAmount}});
   const mutation = useEditCategoryBudget();
 
@@ -49,7 +50,15 @@ const EditCategoryBudgetDialog = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          reset();
+        }
+        setIsOpen(open);
+      }}
+    >
       <DialogTrigger asChild>
         <Button size="sm" variant="outline" disabled={!enableTrigger}>
           Assign
@@ -68,9 +77,8 @@ const EditCategoryBudgetDialog = ({
                 id="edit-planned-amount"
                 type="number"
                 inputMode="decimal"
-                min="0"
                 step="0.01"
-                {...register('plannedAmount', {required: true})}
+                {...register('plannedAmount')}
               />
               {errors.plannedAmount?.message && <FormError error={errors.plannedAmount.message} />}
             </div>

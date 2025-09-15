@@ -31,7 +31,7 @@ export const updateHouseholdSchema = z
       .length(3, 'Currency code must be exactly 3 characters')
       .regex(/^[A-Z]{3}$/, 'Currency code must be 3 uppercase letters (e.g., USD, EUR, GBP)')
       .optional(),
-    monthlyBudget: z.number().positive('Monthly budget must be a positive number').optional(),
+    monthlyBudget: z.coerce.number().min(0, 'Monthly budget must be 0 or greater').optional(),
   })
   .strict();
 

@@ -107,7 +107,7 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
                   type="number"
                   inputMode="decimal"
                   step="0.01"
-                  {...register('currentBalance', {required: true})}
+                  {...register('currentBalance')}
                 />
                 {errors.currentBalance?.message && <FormError error={errors.currentBalance.message} />}
               </div>

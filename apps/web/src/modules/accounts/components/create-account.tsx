@@ -125,8 +125,8 @@ const CreateAccount = () => {
               <Input
                 id="initialBalance"
                 type="number"
+                inputMode="decimal"
                 step="0.01"
-                min="0"
                 {...register('initialBalance')}
                 placeholder="0.00"
               />

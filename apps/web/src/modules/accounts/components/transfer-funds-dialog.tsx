@@ -107,7 +107,7 @@ const TransferFundsDialog = () => {
               Amount
             </Label>
             <div className="relative">
-              <Input id="amount" type="number" step="0.01" min="1" placeholder="0.00" {...register('amount')} />
+              <Input id="amount" type="number" step="0.01" placeholder="0.00" {...register('amount')} />
             </div>
             {errors.amount && <FormError error={errors.amount.message ?? ''} />}
           </div>

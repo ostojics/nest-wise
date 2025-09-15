@@ -1,20 +1,19 @@
-import {Button} from '@/components/ui/button';
+import {accountTypes} from '@/common/constants/account-types';
 import {DatePicker} from '@/components/date-picker';
+import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {useCreateCategory} from '@/modules/categories/hooks/useCreateCategory';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/useGetHouseholdCategories';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useCreateTransaction} from '@/modules/transactions/hooks/useCreateTransaction';
-import {accountTypes} from '@/common/constants/account-types';
 import {useValidateCreateTransaction} from '@/modules/transactions/hooks/useValidateCreateTransaction';
-import {Loader2, Plus} from 'lucide-react';
-import {useEffect, useState} from 'react';
-import {toast} from 'sonner';
 import {CreateTransactionDTO} from '@maya-vault/contracts';
+import {Loader2} from 'lucide-react';
+import {useEffect} from 'react';
+import {toast} from 'sonner';
 
 interface ManualTransactionFormProps {
   onSuccess: () => void;
@@ -22,16 +21,12 @@ interface ManualTransactionFormProps {
 }
 
 export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFormProps) {
-  const [showCreateCategory, setShowCreateCategory] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState('');
-
   const {data: me} = useGetMe();
   const {data: household} = useGetHouseholdById(me?.householdId ?? '');
   const {data: accounts} = useGetHouseholdAccounts(household?.id ?? '');
   const {data: categories} = useGetHouseholdCategories(household?.id ?? '');
 
   const createTransactionMutation = useCreateTransaction();
-  const createCategoryMutation = useCreateCategory();
 
   const {
     register,
@@ -47,28 +42,11 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
   const watchedCategoryId = watch('categoryId');
   const watchedType = watch('type');
 
-  const handleCreateCategory = async () => {
-    if (!newCategoryName.trim() || !household?.id) return;
-
-    try {
-      const newCategory = await createCategoryMutation.mutateAsync({
-        name: newCategoryName.trim(),
-        householdId: household.id,
-      });
-      setValue('categoryId', newCategory.id);
-      setNewCategoryName('');
-      setShowCreateCategory(false);
-    } catch {
-      toast.error('Failed to create category');
-    }
-  };
-
   const onSubmit = async (data: CreateTransactionDTO) => {
     try {
       await createTransactionMutation.mutateAsync(data);
       reset();
-      setShowCreateCategory(false);
-      setNewCategoryName('');
+
       onSuccess();
     } catch {
       toast.error('Failed to create transaction');
@@ -116,66 +94,26 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
           <Label htmlFor="categoryId">
             Category <span className="text-red-500">*</span>
           </Label>
-          {showCreateCategory ? (
-            <div className="flex gap-2">
-              <Input
-                placeholder="Enter category name"
-                value={newCategoryName}
-                onChange={(e) => setNewCategoryName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    void handleCreateCategory();
-                  }
-                  if (e.key === 'Escape') {
-                    setShowCreateCategory(false);
-                    setNewCategoryName('');
-                  }
-                }}
-              />
-              <Button
-                type="button"
-                onClick={() => void handleCreateCategory()}
-                disabled={!newCategoryName.trim() || createCategoryMutation.isPending}
-              >
-                Create
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setShowCreateCategory(false);
-                  setNewCategoryName('');
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <Select value={watchedCategoryId ?? ''} onValueChange={(value) => setValue('categoryId', value)}>
-                <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories && categories.length > 0 ? (
-                    categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                      No categories available. Create one using the + button.
-                    </div>
-                  )}
-                </SelectContent>
-              </Select>
-              <Button type="button" variant="outline" size="icon" onClick={() => setShowCreateCategory(true)}>
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-          )}
+          <div className="flex gap-2">
+            <Select value={watchedCategoryId ?? ''} onValueChange={(value) => setValue('categoryId', value)}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories && categories.length > 0 ? (
+                  categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                    <span>No categories available. Create one on the plan page.</span>
+                  </div>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
           {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
         </div>
       )}
@@ -200,7 +138,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
         <Label htmlFor="amount">
           Amount <span className="text-red-500">*</span>
         </Label>
-        <Input type="number" step="0.01" min="1" placeholder="0.00" {...register('amount')} />
+        <Input type="number" step="0.01" placeholder="0.00" {...register('amount')} />
         {errors.amount && <p className="text-sm text-red-500">{errors.amount.message}</p>}
       </div>
 

@@ -74,14 +74,7 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, on
             <Label htmlFor="monthlyBudget">
               Monthly Budget <span className="text-red-500">*</span>
             </Label>
-            <Input
-              id="monthlyBudget"
-              type="number"
-              step="0.01"
-              min="0.01"
-              placeholder="0.00"
-              {...register('monthlyBudget', {valueAsNumber: true})}
-            />
+            <Input id="monthlyBudget" type="number" step="0.01" placeholder="0.00" {...register('monthlyBudget')} />
             {errors.monthlyBudget && <FormError error={errors.monthlyBudget.message ?? ''} />}
           </div>
 
