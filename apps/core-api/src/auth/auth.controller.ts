@@ -8,6 +8,7 @@ import {
   ApiUnauthorizedResponse,
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiNoContentResponse,
 } from '@nestjs/swagger';
 import {AuthService} from './auth.service';
 import {loginSchema, LoginDTO, SetupDTO, setupSchema, UserContract} from '@maya-vault/contracts';
@@ -132,6 +133,26 @@ export class AuthController {
     return {
       message: 'Logged in successfully',
     };
+  }
+
+  @ApiOperation({
+    summary: 'User logout',
+    description: 'Clears the authentication cookie to log the user out',
+  })
+  @ApiNoContentResponse({
+    description: 'Logout successful. Authentication cookie cleared.',
+  })
+  @Post('logout')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AuthGuard)
+  logout(@Res({passthrough: true}) res: Response): void {
+    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
+    res.clearCookie('auth', {
+      httpOnly: true,
+      secure: appConfig.environment === 'production',
+      sameSite: 'strict',
+      path: '/',
+    });
   }
 
   @ApiOperation({
