@@ -55,6 +55,7 @@ export class CategoryBudgetsService {
     const spentByCategory = new Map<string, number>();
     for (const tx of txPage.data) {
       if (!tx.categoryId) continue;
+
       const prev = spentByCategory.get(tx.categoryId) ?? 0;
       spentByCategory.set(tx.categoryId, prev + Number(tx.amount));
     }

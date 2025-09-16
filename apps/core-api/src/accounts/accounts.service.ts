@@ -99,14 +99,14 @@ export class AccountsService {
         currentBalance: fromBalance - amount,
       });
       if (!updatedFrom) {
-        throw new NotFoundException('From account not found');
+        throw new NotFoundException('Source account not found');
       }
 
       const updatedTo = await this.accountsRepository.update(dto.toAccountId, {
         currentBalance: toBalance + amount,
       });
       if (!updatedTo) {
-        throw new NotFoundException('To account not found');
+        throw new NotFoundException('Destination account not found');
       }
 
       return {fromAccount: updatedFrom, toAccount: updatedTo};
