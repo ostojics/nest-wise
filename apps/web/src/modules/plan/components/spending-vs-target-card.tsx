@@ -4,12 +4,12 @@ import {Progress} from '@/components/ui/progress';
 import {cn, getStartAndEndOfMonth} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
-import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransactions';
 import {IconEdit, IconTarget} from '@tabler/icons-react';
 import {useMemo, useState} from 'react';
 import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
 import SpendingVsTargetCardSkeleton from './spending-vs-target-card.skeleton';
 import SpendingVsTargetCardError from './spending-vs-target-card.error';
+import {useGetAllTransactions} from '@/modules/transactions/hooks/useGetAllTransactions';
 
 const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -21,7 +21,7 @@ const SpendingVsTargetCard = () => {
     isLoading,
     isError,
     refetch,
-  } = useGetTransactions({
+  } = useGetAllTransactions({
     search: {
       type: 'expense',
       transactionDate_from: start,
@@ -30,7 +30,7 @@ const SpendingVsTargetCard = () => {
   });
 
   const currentSpending = useMemo(() => {
-    return transactions?.data.reduce((acc, transaction) => acc + Number(transaction.amount), 0) ?? 0;
+    return transactions?.reduce((acc, transaction) => acc + Number(transaction.amount), 0) ?? 0;
   }, [transactions]);
 
   const budget = household?.monthlyBudget ?? 0;

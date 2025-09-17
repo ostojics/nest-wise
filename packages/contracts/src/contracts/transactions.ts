@@ -117,8 +117,8 @@ export const updateTransactionSchema = z
 
 export const getTransactionsQuerySchema = z
   .object({
-    page: z.coerce.number().min(1).optional(),
-    pageSize: z.coerce.number().min(1).max(100).optional(),
+    page: z.coerce.number().min(1).default(1),
+    pageSize: z.coerce.number().min(1).max(100).default(15),
     sort: TransactionSortFieldEnum.optional(),
     householdId: z.string().uuid().optional(),
     accountId: z.string().uuid().optional(),
@@ -128,27 +128,7 @@ export const getTransactionsQuerySchema = z
     transactionDate_to: z.string().date().optional(),
     q: z.string().optional(),
   })
-  .strict()
-  .superRefine((val, ctx) => {
-    const hasPage = typeof val.page !== 'undefined';
-    const hasPageSize = typeof val.pageSize !== 'undefined';
-    if (hasPage !== hasPageSize) {
-      if (hasPage && !hasPageSize) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['pageSize'],
-          message: 'pageSize is required when page is provided',
-        });
-      }
-      if (hasPageSize && !hasPage) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['page'],
-          message: 'page is required when pageSize is provided',
-        });
-      }
-    }
-  });
+  .strict();
 
 export type CreateTransactionDTO = z.infer<typeof createTransactionSchema>;
 export type CreateTransactionAiDTO = z.infer<typeof createTransactionAiSchema>;

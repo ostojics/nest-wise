@@ -150,13 +150,11 @@ export class TransactionsRepository {
     this.applySorting(queryBuilder, query.sort);
 
     const totalCount = await queryBuilder.getCount();
-    const pageSize = query.pageSize ?? null;
-    const currentPage = query.page ?? null;
-    const totalPages = pageSize ? Math.ceil(totalCount / pageSize) : null;
+    const pageSize = query.pageSize;
+    const currentPage = query.page;
+    const totalPages = Math.ceil(totalCount / pageSize);
 
-    if (currentPage && pageSize) {
-      queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
-    }
+    queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
 
     const data = (await queryBuilder.getMany()) as TransactionContract[];
 

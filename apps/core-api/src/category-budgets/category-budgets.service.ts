@@ -45,7 +45,7 @@ export class CategoryBudgetsService {
     const all = await this.categoryBudgetsRepository.findByHouseholdAndMonth(me.householdId, month);
 
     const {start: dateFrom, end: dateTo} = this.getCurrentMonthRange(month);
-    const txPage = await this.transactionsService.findTransactions({
+    const transactions = await this.transactionsService.findAllTransactions({
       householdId: me.householdId,
       transactionDate_from: dateFrom,
       transactionDate_to: dateTo,
@@ -53,7 +53,7 @@ export class CategoryBudgetsService {
     });
 
     const spentByCategory = new Map<string, number>();
-    for (const tx of txPage.data) {
+    for (const tx of transactions) {
       if (!tx.categoryId) continue;
 
       const prev = spentByCategory.get(tx.categoryId) ?? 0;

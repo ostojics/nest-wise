@@ -19,6 +19,7 @@ export const queryKeys = {
   transactions: {
     key: () => ['transactions'],
     all: (search: GetTransactionsQueryDTO) => ['transactions', search],
+    allPages: (search: Partial<GetTransactionsQueryDTO>) => ['transactions-all-pages', search],
     netWorthTrend: () => ['net-worth-trend'],
     spendingByAccounts: (search: GetAccountsSpendingQueryDTO) => ['spending-by-accounts', search],
   },

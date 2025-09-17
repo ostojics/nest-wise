@@ -6,7 +6,6 @@ import {IconChartPie} from '@tabler/icons-react';
 import {useMemo} from 'react';
 import {Cell, Pie, PieChart} from 'recharts';
 
-import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransactions';
 import {useSearch} from '@tanstack/react-router';
 import {ChartDataEntry} from '../interfaces/chart-data-entry';
 import {SpendingCategoryData} from '../interfaces/spending-category-data';
@@ -14,6 +13,7 @@ import CategoryAmountLegend from './category-amount-legend';
 import SpendingByCategoryCardEmpty from './spending-by-category-card.empty';
 import SpendingByCategoryCardError from './spending-by-category-card.error';
 import SpendingByCategoryCardSkeleton from './spending-by-category-card.skeleton';
+import {useGetAllTransactions} from '@/modules/transactions/hooks/useGetAllTransactions';
 
 const renderCustomizedLabel = (entry: ChartDataEntry) => {
   const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);
@@ -23,7 +23,7 @@ const renderCustomizedLabel = (entry: ChartDataEntry) => {
 const SpendingByCategoryCard = () => {
   const {formatBalance} = useFormatBalance();
   const search = useSearch({from: '/__pathlessLayout/reports/spending'});
-  const {data, isLoading, isError, refetch} = useGetTransactions({
+  const {data, isLoading, isError, refetch} = useGetAllTransactions({
     search: {
       transactionDate_from: search.transactionDate_from,
       transactionDate_to: search.transactionDate_to,
@@ -34,7 +34,7 @@ const SpendingByCategoryCard = () => {
   const spendingData = useMemo(() => {
     if (!data) return [];
 
-    const totalsByCategory = data.data.reduce<Record<string, number>>((acc, {category, amount}) => {
+    const totalsByCategory = data.reduce<Record<string, number>>((acc, {category, amount}) => {
       const key = category?.name ?? 'Other';
       acc[key] = (acc[key] ?? 0) + Number(amount);
       return acc;
@@ -63,7 +63,7 @@ const SpendingByCategoryCard = () => {
     }));
   }, [spendingData, totalSpending]);
 
-  const isEmpty = data?.data.length === 0;
+  const isEmpty = data?.length === 0;
 
   if (isLoading) {
     return <SpendingByCategoryCardSkeleton />;
