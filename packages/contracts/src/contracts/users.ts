@@ -11,6 +11,15 @@ export interface UserContract {
   updatedAt: Date;
 }
 
+const passwordSchema = z
+  .string()
+  .min(8, 'Password must be at least 8 characters')
+  .max(25, 'Password must be 25 characters or less')
+  .regex(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+    'Password must contain at least one lowercase letter, one uppercase letter, and one number',
+  );
+
 export const inviteUserSchema = z.object({
   email: z.string({message: 'Email is required'}).email({message: 'Email must be valid'}),
 });
@@ -27,14 +36,7 @@ export const acceptInviteSchema = z
       .min(1, 'Email is required')
       .email('Invalid email format')
       .max(255, 'Email must be 255 characters or less'),
-    password: z
-      .string()
-      .min(8, 'Password must be at least 8 characters')
-      .max(128, 'Password must be 128 characters or less')
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        'Password must contain at least one lowercase letter, one uppercase letter, and one number',
-      ),
+    password: passwordSchema,
     confirm_password: z.string().min(1, 'Password confirmation is required'),
     token: z.string(),
   })
@@ -66,14 +68,7 @@ export const userRegistrationSchema = z
       .min(1, 'Email is required')
       .email('Invalid email format')
       .max(255, 'Email must be 255 characters or less'),
-    password: z
-      .string()
-      .min(8, 'Password must be at least 8 characters')
-      .max(128, 'Password must be 128 characters or less')
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        'Password must contain at least one lowercase letter, one uppercase letter, and one number',
-      ),
+    password: passwordSchema,
     confirm_password: z.string().min(1, 'Password confirmation is required'),
   })
   .strict()
@@ -97,14 +92,7 @@ export const userUpdateSchema = z
 export const passwordChangeSchema = z
   .object({
     currentPassword: z.string().min(1, 'Current password is required'),
-    newPassword: z
-      .string()
-      .min(8, 'New password must be at least 8 characters')
-      .max(128, 'New password must be 128 characters or less')
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        'New password must contain at least one lowercase letter, one uppercase letter, and one number',
-      ),
+    newPassword: passwordSchema,
     confirm_password: z.string().min(1, 'Password confirmation is required'),
   })
   .strict()

@@ -8,7 +8,7 @@ interface UseGetAllTransactionsArgs {
   search: Omit<GetTransactionsQueryDTO, 'page' | 'pageSize'>;
 }
 
-// TODO: Move this logic to a backend endpoint that uses the service method
+// TODO: Move this logic to backend endpoints that use the service method
 export const useGetAllTransactions = ({search}: UseGetAllTransactionsArgs) => {
   const {data: me} = useGetMe();
 
