@@ -1,6 +1,14 @@
-import {Controller, Get, UseGuards} from '@nestjs/common';
+import {Controller, Get, UseGuards, Param} from '@nestjs/common';
 import {SavingsService} from './savings.service';
-import {ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse} from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+  ApiParam,
+  ApiNotFoundResponse,
+} from '@nestjs/swagger';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {UsersService} from 'src/users/users.service';

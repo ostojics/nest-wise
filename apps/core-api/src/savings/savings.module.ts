@@ -1,6 +1,7 @@
-import {Module} from '@nestjs/common';
+import {Module, forwardRef} from '@nestjs/common';
 import {SavingsService} from './savings.service';
 import {SavingsController} from './savings.controller';
+import {HouseholdSavingsController} from './household-savings.controller';
 import {HouseholdsModule} from 'src/households/households.module';
 import {TransactionsModule} from 'src/transactions/transactions.module';
 import {BullModule} from '@nestjs/bullmq';
@@ -12,13 +13,13 @@ import {UsersModule} from 'src/users/users.module';
 
 @Module({
   imports: [
-    HouseholdsModule,
+    forwardRef(() => HouseholdsModule),
     TransactionsModule,
     BullModule.registerQueue({name: Queues.SAVINGS}),
     TypeOrmModule.forFeature([Savings]),
     UsersModule,
   ],
-  controllers: [SavingsController],
+  controllers: [SavingsController, HouseholdSavingsController],
   providers: [SavingsService, SavingsRepository],
   exports: [SavingsService],
 })
