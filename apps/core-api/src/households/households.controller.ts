@@ -36,7 +36,6 @@ import {UserResponseSwaggerDTO, InviteUserSwaggerDTO} from 'src/tools/swagger/us
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {Logger} from 'pino-nestjs';
-import {PoliciesService} from 'src/policies/policies.service';
 
 @ApiTags('Households')
 @Controller({
@@ -48,7 +47,6 @@ export class HouseholdsController {
     private readonly householdsService: HouseholdsService,
     private readonly usersService: UsersService,
     private readonly logger: Logger,
-    private readonly policiesService: PoliciesService,
   ) {}
 
   @ApiOperation({
