@@ -9,6 +9,7 @@ import {
 } from '@nest-wise/contracts';
 import {AccountsService} from 'src/accounts/accounts.service';
 import {PoliciesService} from 'src/policies/policies.service';
+import {UsersService} from 'src/users/users.service';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
 import {UTCDate} from '@date-fns/utc';
 import {PrivateTransactionsRepository} from './private-transactions.repository';
@@ -21,6 +22,7 @@ export class PrivateTransactionsService {
     private readonly dataSource: DataSource,
     private readonly accountsService: AccountsService,
     private readonly policiesService: PoliciesService,
+    private readonly usersService: UsersService,
     private readonly privateTransactionsRepository: PrivateTransactionsRepository,
   ) {}
 
@@ -30,9 +32,11 @@ export class PrivateTransactionsService {
       throw new BadRequestException('You cannot create a private transaction for this account/household');
     }
 
+    const user = await this.usersService.findUserById(userId);
     const account = await this.accountsService.findAccountById(dto.accountId);
-    if (account.householdId !== dto.householdId) {
-      throw new NotFoundException('Account not found in specified household');
+
+    if (account.householdId !== user.householdId) {
+      throw new NotFoundException('Account not found in your household');
     }
 
     if (dto.type === 'expense' && Number(account.currentBalance) < dto.amount) {
@@ -41,7 +45,7 @@ export class PrivateTransactionsService {
 
     return await this.dataSource.transaction(async () => {
       const created = await this.privateTransactionsRepository.create({
-        householdId: dto.householdId,
+        householdId: user.householdId,
         accountId: dto.accountId,
         userId,
         amount: dto.amount,

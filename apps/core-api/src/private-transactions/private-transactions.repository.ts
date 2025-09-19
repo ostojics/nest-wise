@@ -68,7 +68,7 @@ export class PrivateTransactionsRepository {
   }
 
   private applyFilters(qb: SelectQueryBuilder<PrivateTransaction>, query: GetPrivateTransactionsQueryDTO): void {
-    qb.andWhere('pt.householdId = :householdId', {householdId: query.householdId});
+    // Note: householdId filtering is removed since we scope by userId and join account
 
     if (query.accountId) {
       qb.andWhere('pt.accountId = :accountId', {accountId: query.accountId});
@@ -78,12 +78,16 @@ export class PrivateTransactionsRepository {
       qb.andWhere('pt.type = :type', {type: query.type});
     }
 
-    if (query.transactionDate_from) {
-      qb.andWhere('pt.transactionDate >= :dateFrom', {dateFrom: query.transactionDate_from});
+    // Handle date filtering with priority: date_from/date_to > from/to > transactionDate_from/transactionDate_to
+    const dateFrom = query.date_from ?? query.from ?? query.transactionDate_from;
+    const dateTo = query.date_to ?? query.to ?? query.transactionDate_to;
+
+    if (dateFrom) {
+      qb.andWhere('pt.transactionDate >= :dateFrom', {dateFrom});
     }
 
-    if (query.transactionDate_to) {
-      qb.andWhere('pt.transactionDate <= :dateTo', {dateTo: query.transactionDate_to});
+    if (dateTo) {
+      qb.andWhere('pt.transactionDate <= :dateTo', {dateTo});
     }
 
     if (query.q) {

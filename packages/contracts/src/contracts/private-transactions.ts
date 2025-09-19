@@ -24,7 +24,6 @@ export interface GetPrivateTransactionsResponseContract {
 
 export const createPrivateTransactionSchema = z
   .object({
-    householdId: z.string().uuid(),
     accountId: z.string().uuid('Account must be selected'),
     amount: z.coerce
       .number()
@@ -56,9 +55,14 @@ export type TPrivateTransactionSortField = z.infer<typeof privateTransactionSort
 export const getPrivateTransactionsQuerySchema = z
   .object({
     q: z.string().max(2048, 'Search query must be less than 2048 characters').optional(),
-    householdId: z.string().uuid().optional(),
     accountId: z.string().uuid().optional(),
     type: z.enum(['income', 'expense']).optional(),
+    // Preferred parameter names
+    date_from: z.string().optional(),
+    date_to: z.string().optional(),
+    // Legacy parameter names for backward compatibility
+    from: z.string().optional(),
+    to: z.string().optional(),
     transactionDate_from: z.string().optional(),
     transactionDate_to: z.string().optional(),
     sort: privateTransactionSortFieldEnum.optional().default('-transactionDate'),
