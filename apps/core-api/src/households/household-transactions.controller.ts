@@ -1,20 +1,19 @@
 import {
-  CreateTransactionAiDTO,
-  createTransactionAiSchema,
-  CreateTransactionDTO,
-  createTransactionSchema,
-  GetTransactionsQueryDTO,
-  getTransactionsQuerySchema,
-  UpdateTransactionDTO,
-  updateTransactionSchema,
+  CreateTransactionHouseholdDTO,
+  createTransactionHouseholdSchema,
+  CreateTransactionAiHouseholdDTO,
+  createTransactionAiHouseholdSchema,
+  GetTransactionsQueryHouseholdDTO,
+  getTransactionsQueryHouseholdSchema,
+  GetAccountsSpendingQueryHouseholdDTO,
+  getAccountsSpendingQueryHouseholdSchema,
 } from '@nest-wise/contracts';
-import {Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UsePipes} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Query, UseGuards, UsePipes} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
-  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -30,36 +29,31 @@ import {
   CreateTransactionSwaggerDTO,
   GetTransactionsResponseSwaggerDTO,
   TransactionResponseSwaggerDTO,
-  UpdateTransactionSwaggerDTO,
+  NetWorthTrendPointSwaggerDTO,
+  AccountSpendingPointSwaggerDTO,
 } from 'src/tools/swagger/transactions.swagger.dto';
-import {TransactionsService} from './transactions.service';
-import {CurrentUser} from 'src/common/decorators/current-user.decorator';
-import {UsersService} from 'src/users/users.service';
-import {
-  AccountSpendingPointContract,
-  GetAccountsSpendingQueryDTO,
-  NetWorthTrendPointContract,
-} from '@nest-wise/contracts';
-import {NetWorthTrendPointSwaggerDTO} from 'src/tools/swagger/transactions.swagger.dto';
-import {getAccountsSpendingQuerySchema} from '@nest-wise/contracts';
-import {AccountSpendingPointSwaggerDTO} from 'src/tools/swagger/transactions.swagger.dto';
-import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
+import {TransactionsService} from '../transactions/transactions.service';
+import {AccountSpendingPointContract, NetWorthTrendPointContract} from '@nest-wise/contracts';
 
-@ApiTags('Transactions')
+@ApiTags('Household Transactions')
 @Controller({
   version: '1',
-  path: 'transactions',
+  path: 'households/:householdId/transactions',
 })
-export class TransactionsController {
-  constructor(
-    private readonly transactionsService: TransactionsService,
-    private readonly usersService: UsersService,
-  ) {}
+export class HouseholdTransactionsController {
+  constructor(private readonly transactionsService: TransactionsService) {}
 
   @ApiOperation({
-    summary: 'Get transactions with filtering, sorting, and pagination',
-    description: 'Retrieves transactions with comprehensive filtering, sorting, and pagination options',
-    deprecated: true,
+    summary: 'Get transactions for a household with filtering, sorting, and pagination',
+    description:
+      'Retrieves transactions for a specific household with comprehensive filtering, sorting, and pagination options',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   })
   @ApiQuery({
     name: 'page',
@@ -82,14 +76,6 @@ export class TransactionsController {
     description:
       'Sort field. Allowed: amount, -amount, type, -type, transactionDate, -transactionDate, createdAt, -createdAt',
     example: '-transactionDate',
-  })
-  @ApiQuery({
-    name: 'householdId',
-    required: false,
-    type: String,
-    format: 'uuid',
-    description: 'Filter by household ID',
-    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   })
   @ApiQuery({
     name: 'type',
@@ -115,7 +101,7 @@ export class TransactionsController {
     example: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
   })
   @ApiQuery({
-    name: 'transactionDate_from',
+    name: 'date_from',
     required: false,
     type: String,
     format: 'date',
@@ -123,7 +109,7 @@ export class TransactionsController {
     example: '2024-01-01',
   })
   @ApiQuery({
-    name: 'transactionDate_to',
+    name: 'date_to',
     required: false,
     type: String,
     format: 'date',
@@ -150,33 +136,23 @@ export class TransactionsController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Get('')
-  async getTransactions(@Query(new ZodValidationPipe(getTransactionsQuerySchema)) query: GetTransactionsQueryDTO) {
-    return await this.transactionsService.findTransactions(query);
+  async getTransactions(
+    @Param('householdId') householdId: string,
+    @Query(new ZodValidationPipe(getTransactionsQueryHouseholdSchema)) query: GetTransactionsQueryHouseholdDTO,
+  ) {
+    return await this.transactionsService.findTransactionsForHousehold(householdId, query);
   }
 
   @ApiOperation({
-    summary: 'Get net worth trend (last 12 months)',
-    description:
-      'Returns month-by-month household net worth for the last 12 months. Household inferred from current user.',
-    deprecated: true,
+    summary: 'Create a new transaction for a household',
+    description: 'Creates a new transaction for the specified household and updates the account balance automatically',
   })
-  @ApiOkResponse({
-    description: 'Net worth trend computed successfully',
-    type: [NetWorthTrendPointSwaggerDTO],
-  })
-  @ApiUnauthorizedResponse({description: 'Authentication required'})
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @Get('net-worth-trend')
-  async getNetWorthTrend(@CurrentUser() user: JwtPayload): Promise<NetWorthTrendPointContract[]> {
-    const me = await this.usersService.findUserById(user.sub);
-    return await this.transactionsService.getNetWorthTrend(me.householdId);
-  }
-
-  @ApiOperation({
-    summary: 'Create a new transaction',
-    description: 'Creates a new transaction and updates the account balance automatically',
-    deprecated: true,
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   })
   @ApiBody({
     type: CreateTransactionSwaggerDTO,
@@ -185,7 +161,6 @@ export class TransactionsController {
       expense: {
         summary: 'Expense Transaction',
         value: {
-          householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
           accountId: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
           categoryId: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
           amount: 50.75,
@@ -198,9 +173,8 @@ export class TransactionsController {
       income: {
         summary: 'Income Transaction',
         value: {
-          householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
           accountId: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
-          categoryId: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
+          categoryId: null,
           amount: 2500.0,
           type: 'income',
           description: 'Salary deposit',
@@ -225,17 +199,23 @@ export class TransactionsController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @UsePipes(new ZodValidationPipe(createTransactionSchema))
+  @UsePipes(new ZodValidationPipe(createTransactionHouseholdSchema))
   @Post('')
-  async createTransaction(@Body() dto: CreateTransactionDTO) {
-    return await this.transactionsService.createTransaction(dto);
+  async createTransaction(@Param('householdId') householdId: string, @Body() dto: CreateTransactionHouseholdDTO) {
+    return await this.transactionsService.createTransactionForHousehold(householdId, dto);
   }
 
   @ApiOperation({
-    summary: 'Create a transaction using AI analysis',
+    summary: 'Create a transaction using AI analysis for a household',
     description:
-      'Creates a transaction by analyzing a natural language description using AI to extract amount, type, and category',
-    deprecated: true,
+      'Creates a transaction for the specified household by analyzing a natural language description using AI to extract amount, type, and category',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   })
   @ApiBody({
     type: CreateTransactionAiSwaggerDTO,
@@ -244,7 +224,6 @@ export class TransactionsController {
       expense: {
         summary: 'Expense Transaction',
         value: {
-          householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
           accountId: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
           description: 'Paid $50 for groceries at Walmart',
           transactionDate: '2024-01-15',
@@ -253,7 +232,6 @@ export class TransactionsController {
       income: {
         summary: 'Income Transaction',
         value: {
-          householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
           accountId: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
           description: 'Received $2500 salary deposit from company',
           transactionDate: '2024-01-15',
@@ -262,7 +240,6 @@ export class TransactionsController {
       restaurant: {
         summary: 'Restaurant Expense',
         value: {
-          householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
           accountId: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
           description: 'Coffee and pastry at Starbucks for $12.50',
           transactionDate: '2024-01-15',
@@ -285,105 +262,56 @@ export class TransactionsController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @UsePipes(new ZodValidationPipe(createTransactionAiSchema))
+  @UsePipes(new ZodValidationPipe(createTransactionAiHouseholdSchema))
   @Post('/ai')
-  async createTransactionAi(@Body() dto: CreateTransactionAiDTO) {
-    return await this.transactionsService.createTransactionAi(dto);
+  async createTransactionAi(@Param('householdId') householdId: string, @Body() dto: CreateTransactionAiHouseholdDTO) {
+    return await this.transactionsService.createTransactionAiForHousehold(householdId, dto);
   }
 
   @ApiOperation({
-    summary: 'Update a transaction',
-    description: 'Updates an existing transaction and adjusts the account balance automatically',
+    summary: 'Get household net worth trend (last 12 months)',
+    description: 'Returns month-by-month household net worth for the last 12 months.',
   })
   @ApiParam({
-    name: 'id',
+    name: 'householdId',
     type: 'string',
     format: 'uuid',
-    description: 'The unique identifier of the transaction',
+    description: 'The unique identifier of the household',
     example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  })
-  @ApiBody({
-    type: UpdateTransactionSwaggerDTO,
-    description: 'Transaction update data',
-    examples: {
-      updateAmount: {
-        summary: 'Update Amount',
-        value: {
-          amount: 55.0,
-          description: 'Coffee at Starbucks - updated amount',
-        },
-      },
-      reconcile: {
-        summary: 'Mark as Reconciled',
-        value: {
-          isReconciled: true,
-        },
-      },
-    },
   })
   @ApiOkResponse({
-    type: TransactionResponseSwaggerDTO,
-    description: 'Transaction updated successfully',
+    description: 'Net worth trend computed successfully',
+    type: [NetWorthTrendPointSwaggerDTO],
   })
-  @ApiBadRequestResponse({
-    description: 'Invalid input data',
-  })
-  @ApiNotFoundResponse({
-    description: 'Transaction not found',
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Authentication required',
-  })
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @UsePipes(new ZodValidationPipe(updateTransactionSchema))
-  @Put(':id')
-  async updateTransaction(@Param('id') id: string, @Body() dto: UpdateTransactionDTO) {
-    return await this.transactionsService.updateTransaction(id, dto);
-  }
-
-  @ApiOperation({
-    summary: 'Delete a transaction',
-    description: 'Deletes a transaction and adjusts the account balance automatically',
-  })
-  @ApiParam({
-    name: 'id',
-    type: 'string',
-    format: 'uuid',
-    description: 'The unique identifier of the transaction',
-    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  })
-  @ApiNoContentResponse({
-    description: 'Transaction deleted successfully',
-  })
-  @ApiNotFoundResponse({
-    description: 'Transaction not found',
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Authentication required',
-  })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @Delete(':id')
-  async deleteTransaction(@Param('id') id: string) {
-    return await this.transactionsService.deleteTransaction(id);
+  @Get('net-worth-trend')
+  async getNetWorthTrend(@Param('householdId') householdId: string): Promise<NetWorthTrendPointContract[]> {
+    return await this.transactionsService.getNetWorthTrend(householdId);
   }
 
   @ApiOperation({
     summary: 'Get household accounts spending distribution',
     description:
-      'Aggregates total EXPENSE spending by account for the authenticated user household, within an optional date range.',
-    deprecated: true,
+      'Aggregates total EXPENSE spending by account for the specified household, within an optional date range.',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   })
   @ApiQuery({
-    name: 'transactionDate_from',
+    name: 'date_from',
     required: false,
     type: String,
     format: 'date',
     description: 'Start date inclusive (YYYY-MM-DD)',
   })
   @ApiQuery({
-    name: 'transactionDate_to',
+    name: 'date_to',
     required: false,
     type: String,
     format: 'date',
@@ -398,10 +326,9 @@ export class TransactionsController {
   @UseGuards(AuthGuard)
   @Get('accounts-spending')
   async getAccountsSpending(
-    @CurrentUser() user: JwtPayload,
-    @Query(new ZodValidationPipe(getAccountsSpendingQuerySchema)) query: GetAccountsSpendingQueryDTO,
+    @Param('householdId') householdId: string,
+    @Query(new ZodValidationPipe(getAccountsSpendingQueryHouseholdSchema)) query: GetAccountsSpendingQueryHouseholdDTO,
   ): Promise<AccountSpendingPointContract[]> {
-    const me = await this.usersService.findUserById(user.sub);
-    return await this.transactionsService.getAccountsSpending(me.householdId, query);
+    return await this.transactionsService.getAccountsSpendingForHousehold(householdId, query);
   }
 }
