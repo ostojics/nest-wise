@@ -36,6 +36,7 @@ import {UserResponseSwaggerDTO, InviteUserSwaggerDTO} from 'src/tools/swagger/us
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {Logger} from 'pino-nestjs';
+import {PoliciesService} from 'src/policies/policies.service';
 
 @ApiTags('Households')
 @Controller({
@@ -47,6 +48,7 @@ export class HouseholdsController {
     private readonly householdsService: HouseholdsService,
     private readonly usersService: UsersService,
     private readonly logger: Logger,
+    private readonly policiesService: PoliciesService,
   ) {}
 
   @ApiOperation({
@@ -196,9 +198,9 @@ export class HouseholdsController {
     @Param('id') householdId: string,
     @CurrentUser() user: JwtPayload,
   ): Promise<UserContract[]> {
-    // Ensure user belongs to the household they're trying to access
-    const currentUser = await this.usersService.findUserById(user.sub);
-    if (currentUser.householdId !== householdId) {
+    // Check if user can access this household
+    const canAccess = await this.policiesService.canUserAccessHousehold(user.sub, householdId);
+    if (!canAccess) {
       throw new ForbiddenException('Cannot access users from different household');
     }
 
@@ -243,13 +245,16 @@ export class HouseholdsController {
     @Body() body: InviteUserDTO,
   ): Promise<void> {
     try {
-      // Ensure user belongs to the household they're trying to invite to
-      const currentUser = await this.usersService.findUserById(user.sub);
-      if (currentUser.householdId !== householdId) {
+      // Check if user can invite to this household
+      const canInvite = await this.policiesService.canUserInviteToHousehold(user.sub, householdId);
+      if (!canInvite) {
         throw new ForbiddenException('Cannot invite users to different household');
       }
 
       await this.usersService.inviteUser(householdId, body.email);
+
+      // Get current user for logging
+      const currentUser = await this.usersService.findUserById(user.sub);
       this.logger.log(`User invitation sent to ${body.email} for household ${householdId} by ${currentUser.email}`);
     } catch (error) {
       this.logger.error('Failed to invite user to household', error);
