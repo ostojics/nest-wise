@@ -24,7 +24,7 @@ import SelectedAccountType from './selected-account-type';
 
 const CreateAccount = () => {
   const {data} = useGetMe();
-  const {data: household} = useGetHouseholdById(data?.householdId ?? '');
+  const {data: household} = useGetHouseholdById();
   const [isOpen, setIsOpen] = useState(false);
   const mutation = useCreateAccountMutation({
     closeDialog: () => setIsOpen(false),
@@ -125,8 +125,8 @@ const CreateAccount = () => {
               <Input
                 id="initialBalance"
                 type="number"
+                inputMode="decimal"
                 step="0.01"
-                min="0"
                 {...register('initialBalance')}
                 placeholder="0.00"
               />

@@ -71,7 +71,7 @@ export const createTransactionSchema = z
     categoryId: z.string().uuid('Category must be selected').nullable(),
     amount: z.coerce
       .number()
-      .min(1, 'Amount must be greater than 0')
+      .min(0.01, 'Amount must be greater than 0')
       .max(10000000, 'Amount must be less than 10,000,000'),
     type: TransactionTypeEnum,
     description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
@@ -118,7 +118,7 @@ export const updateTransactionSchema = z
 export const getTransactionsQuerySchema = z
   .object({
     page: z.coerce.number().min(1).default(1),
-    pageSize: z.coerce.number().min(1).max(2000).default(15),
+    pageSize: z.coerce.number().min(1).max(100).default(15),
     sort: TransactionSortFieldEnum.optional(),
     householdId: z.string().uuid().optional(),
     accountId: z.string().uuid().optional(),

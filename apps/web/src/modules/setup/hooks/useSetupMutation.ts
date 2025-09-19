@@ -12,8 +12,8 @@ export const useSetupMutation = () => {
     mutationFn: setup,
     onSuccess: async () => {
       await client.invalidateQueries({queryKey: [queryKeys.me]});
+      void navigate({to: '/plan', reloadDocument: true});
       toast.success('Setup successful');
-      void navigate({to: '/plan'});
     },
     onError: () => {
       toast.error('Setup failed');

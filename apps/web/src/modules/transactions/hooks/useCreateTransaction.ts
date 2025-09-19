@@ -10,6 +10,8 @@ export const useCreateTransaction = () => {
     mutationFn: createTransaction,
     onSuccess: () => {
       void client.invalidateQueries({queryKey: queryKeys.accounts.all()});
+      void client.invalidateQueries({queryKey: queryKeys.transactions.key()});
+      void client.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
       toast.success('Transaction created successfully');
     },
     onError: () => {

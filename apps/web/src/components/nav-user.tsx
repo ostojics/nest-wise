@@ -13,6 +13,7 @@ import {
 import {SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar} from '@/components/ui/sidebar';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useMemo} from 'react';
+import {useLogOut} from '@/modules/auth/hooks/use-log-out';
 
 export function NavUser() {
   const {isMobile} = useSidebar();
@@ -20,6 +21,8 @@ export function NavUser() {
   const userInitials = useMemo(() => {
     return `${user?.username.charAt(0).toUpperCase()}${user?.username.charAt(user.username.length - 1).toUpperCase()}`;
   }, [user]);
+
+  const mutation = useLogOut();
 
   return (
     <SidebarMenu>
@@ -75,7 +78,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => mutation.mutate()} disabled={mutation.isPending}>
               <IconLogout />
               Log out
             </DropdownMenuItem>

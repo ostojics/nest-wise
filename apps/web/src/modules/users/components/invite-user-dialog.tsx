@@ -83,14 +83,8 @@ const InviteUserDialog = () => {
             <Label htmlFor="email" className="text-sm font-medium">
               Email <span className="text-red-500">*</span>
             </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="name@example.com"
-              className="w-full"
-              {...register('email', {required: true})}
-            />
-            <FormError error={errors.email?.message ?? ''} />
+            <Input id="email" type="email" placeholder="name@example.com" className="w-full" {...register('email')} />
+            {errors.email?.message && <FormError error={errors.email.message} />}
           </div>
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
             <DialogClose asChild>

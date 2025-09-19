@@ -14,10 +14,6 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
   const navigate = useNavigate();
 
   const sortValue: SortingState = useMemo(() => {
-    if (!search.sort) {
-      return [{id: 'transactionDate', desc: true}];
-    }
-
     return [deserializeSortOption(search.sort)];
   }, [search.sort]);
 

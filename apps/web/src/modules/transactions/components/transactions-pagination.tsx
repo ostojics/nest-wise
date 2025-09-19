@@ -16,7 +16,7 @@ const TransactionsPagination = () => {
   const navigate = useNavigate();
   const {data} = useGetTransactions({search: {...search, householdId: me?.householdId ?? ''}});
 
-  const currentPage = Number(search.page);
+  const currentPage = search.page;
   const totalPages = data?.meta.totalPages ?? 1;
   const canGoPrev = currentPage > 1;
   const canGoNext = currentPage < totalPages;

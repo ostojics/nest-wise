@@ -16,7 +16,7 @@ import {useState} from 'react';
 export function CreatePrivateTransactionDialog() {
   const [open, setOpen] = useState(false);
   const {data: me} = useGetMe();
-  const {data: accounts} = useGetHouseholdAccounts(me?.householdId ?? '');
+  const {data: accounts} = useGetHouseholdAccounts();
   const createMutation = useCreatePrivateTransaction();
 
   const {

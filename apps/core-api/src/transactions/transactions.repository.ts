@@ -141,8 +141,10 @@ export class TransactionsRepository {
   async findTransactionsWithFilters(query: GetTransactionsQueryDTO): Promise<GetTransactionsResponseContract> {
     const queryBuilder = this.transactionRepository
       .createQueryBuilder('transaction')
-      .leftJoinAndSelect('transaction.account', 'account')
-      .leftJoinAndSelect('transaction.category', 'category');
+      .leftJoin('transaction.account', 'account')
+      .leftJoin('transaction.category', 'category')
+      .addSelect(['account.id', 'account.name'])
+      .addSelect(['category.id', 'category.name']);
 
     this.applyFilters(queryBuilder, query);
     this.applySorting(queryBuilder, query.sort);

@@ -2,40 +2,35 @@ import {Button} from '@/components/ui/button';
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Progress} from '@/components/ui/progress';
 import {cn, getStartAndEndOfMonth} from '@/lib/utils';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
-import {useGetTransactions} from '@/modules/transactions/hooks/useGetTransactions';
 import {IconEdit, IconTarget} from '@tabler/icons-react';
 import {useMemo, useState} from 'react';
 import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
 import SpendingVsTargetCardSkeleton from './spending-vs-target-card.skeleton';
 import SpendingVsTargetCardError from './spending-vs-target-card.error';
+import {useGetAllTransactions} from '@/modules/transactions/hooks/useGetAllTransactions';
 
 const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const {formatBalance} = useFormatBalance();
-  const {data} = useGetMe();
-  const {data: household} = useGetHouseholdById(data?.householdId ?? '');
+  const {data: household} = useGetHouseholdById();
   const {start, end} = getStartAndEndOfMonth();
   const {
     data: transactions,
     isLoading,
     isError,
     refetch,
-  } = useGetTransactions({
+  } = useGetAllTransactions({
     search: {
-      page: 1,
-      pageSize: 15,
       type: 'expense',
-      householdId: data?.householdId,
       transactionDate_from: start,
       transactionDate_to: end,
     },
   });
 
   const currentSpending = useMemo(() => {
-    return transactions?.data.reduce((acc, transaction) => acc + Number(transaction.amount), 0) ?? 0;
+    return transactions?.reduce((acc, transaction) => acc + Number(transaction.amount), 0) ?? 0;
   }, [transactions]);
 
   const budget = household?.monthlyBudget ?? 0;

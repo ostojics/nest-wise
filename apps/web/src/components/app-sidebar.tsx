@@ -13,9 +13,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import {HouseIcon} from 'lucide-react';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
+import {HouseIcon} from 'lucide-react';
 
 const data = {
   user: {
@@ -38,8 +37,7 @@ const data = {
 };
 
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
-  const {data: user} = useGetMe();
-  const {data: household} = useGetHouseholdById(user?.householdId ?? '');
+  const {data: household} = useGetHouseholdById();
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>

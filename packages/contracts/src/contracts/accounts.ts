@@ -46,8 +46,8 @@ export type EditAccountDTO = z.infer<typeof editAccountSchema>;
 
 export const transferFundsSchema = z
   .object({
-    fromAccountId: z.string().uuid('From account must be selected'),
-    toAccountId: z.string().uuid('To account must be selected'),
+    fromAccountId: z.string().uuid('Source account must be selected'),
+    toAccountId: z.string().uuid('Destination account must be selected'),
     amount: z.coerce.number().min(1, 'Transfer amount must be at least 1'),
   })
   .strict()

@@ -8,7 +8,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 import {Loader2, Trash2} from 'lucide-react';
 import React from 'react';
 import {useDeletePrivateTransaction} from '../hooks/use-delete-private-transaction';
@@ -30,20 +29,21 @@ export default function PrivateTransactionRowActions({transactionId}: PrivateTra
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <Tooltip delayDuration={300}>
-        <TooltipTrigger asChild>
-          <DialogTrigger asChild>
-            <Button variant="ghost" className="text-red-500 hover:text-red-500" size="icon" aria-label="Delete">
-              {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
-              <span className="sr-only">Delete private transaction</span>
-            </Button>
-          </DialogTrigger>
-        </TooltipTrigger>
-        <TooltipContent>Delete transaction</TooltipContent>
-      </Tooltip>
+      <DialogTrigger asChild>
+        <Button
+          variant="ghost"
+          className="text-red-500 hover:text-red-500"
+          title="Delete private transaction"
+          size="icon"
+          aria-label="Delete"
+        >
+          {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+          <span className="sr-only">Delete private transaction</span>
+        </Button>
+      </DialogTrigger>
 
       <DialogContent>
-        <DialogHeader>
+        <DialogHeader className="mb-3">
           <DialogTitle>Delete private transaction</DialogTitle>
           <DialogDescription>Are you sure you want to delete this private transaction?</DialogDescription>
         </DialogHeader>

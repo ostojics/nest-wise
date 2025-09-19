@@ -32,7 +32,7 @@ export const upsertCategoryBudgetSchema = z
         z
           .object({
             categoryId: z.string().uuid('categoryId must be a valid UUID'),
-            plannedAmount: z.coerce.number().min(0, 'plannedAmount must be 0 or greater'),
+            plannedAmount: z.coerce.number().min(0, 'Planned amount must be 0 or greater'),
           })
           .strict(),
       )
@@ -44,7 +44,7 @@ export type UpsertCategoryBudgetDTO = z.infer<typeof upsertCategoryBudgetSchema>
 
 export const editCategoryBudgetSchema = z
   .object({
-    plannedAmount: z.coerce.number().min(0, 'plannedAmount must be 0 or greater'),
+    plannedAmount: z.coerce.number().min(0, 'Planned amount must be 0 or greater'),
   })
   .strict();
 
