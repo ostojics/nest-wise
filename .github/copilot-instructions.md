@@ -1,166 +1,266 @@
-## Expert Guidelines for Web and App Development
+# NestWise Monorepo Development Instructions
 
-This document outlines a set of expert-level rules and conventions for developing modern web and mobile applications. It covers a range of topics, including API design, UI/UX principles, and specific best practices for popular technologies.
+Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
 
-1. API Design Guide: Sorting, Filtering, and Searching
+## Working Effectively
 
-This section outlines conventions for creating simple yet professional RESTful APIs.
+### Prerequisites and Environment Setup
 
-1.1. Filtering
+Install required Node.js version and pnpm:
+
+- **Node Version**: v22.12.0 or higher (check .nvmrc file)
+- **Package Manager**: pnpm v10.11.1
+- Current environment uses Node v20.19.5 which shows warnings but works
+
+Install pnpm globally:
+
+```bash
+npm install -g pnpm@10.11.1
+```
+
+### Bootstrap, Build, and Test the Repository
+
+Install dependencies:
+
+```bash
+pnpm install
+```
+
+- Takes approximately 1.5 minutes. NEVER CANCEL. Set timeout to 3+ minutes.
+
+Build all applications and packages:
+
+```bash
+pnpm build
+```
+
+- Takes approximately 50 seconds. NEVER CANCEL. Set timeout to 2+ minutes.
+- Builds @nest-wise/contracts, @nest-wise/core-api, and @nest-wise/web packages
+
+Lint all code:
+
+```bash
+pnpm lint
+```
+
+- Takes approximately 32 seconds. NEVER CANCEL. Set timeout to 1+ minute.
+
+### Development Environment Setup
+
+Set up Docker services (PostgreSQL, Redis, PgAdmin, RedisInsight):
+
+```bash
+docker compose up -d
+```
+
+- Takes 10-15 seconds for initial setup
+- Services run on ports: PostgreSQL (5432), Redis (6379), PgAdmin (5050), RedisInsight (5540)
+
+Set up environment files:
+
+```bash
+# Backend environment
+cp apps/core-api/.env.example apps/core-api/.env
+# Web frontend environment
+cp apps/web/.env.example apps/web/.env
+```
+
+**CRITICAL**: Update `apps/core-api/.env` with a dummy value for RESEND_API_KEY:
+
+```bash
+RESEND_API_KEY=dummy-key-for-dev
+```
+
+### Run Development Servers
+
+Start all development servers with Docker dependencies:
+
+```bash
+make dev
+```
+
+**WARNING**: This command may fail due to pino-pretty certificate issues. Use individual commands instead.
+
+Start backend API (alternative method):
+
+```bash
+pnpm --filter @nest-wise/core-api start:debug
+```
+
+- Runs on http://localhost:8080
+- Swagger API documentation available at http://localhost:8080/swagger
+- Takes 5-10 seconds to start
+
+Start web frontend:
+
+```bash
+pnpm --filter @nest-wise/web dev
+```
+
+- Runs on http://localhost:5173
+- Takes 5-10 seconds to start after dependencies are built
+
+Start contracts package in watch mode:
+
+```bash
+pnpm --filter @nest-wise/contracts dev
+```
+
+## Validation
+
+### Manual Testing Requirements
+
+Always manually validate functionality after making changes:
+
+1. **API Health Check**: `curl http://localhost:8080/` should return "Hello World!"
+2. **Web App Loading**: `curl http://localhost:5173/` should return HTML with "NestWise" title
+3. **Swagger Documentation**: `curl http://localhost:8080/swagger` should return Swagger UI HTML
+
+### Test Suite Status
+
+**KNOWN ISSUE**: Unit tests currently fail due to path resolution issues:
+
+```bash
+pnpm --filter @nest-wise/core-api test
+```
+
+- Returns exit code 1 with module resolution errors
+- Do NOT rely on unit tests for validation currently
+- E2E tests exist but are not validated in this setup
+
+### Pre-commit Validation
+
+Always run these commands before committing:
+
+```bash
+pnpm lint
+pnpm build
+```
+
+- Lint takes ~32 seconds, build takes ~50 seconds
+- Both must pass for CI pipeline to succeed
+
+## Common Tasks and Project Structure
+
+### Monorepo Layout
+
+```
+apps/
+  core-api/          # NestJS backend API (port 8080)
+  web/               # React + Vite frontend (port 5173)
+packages/
+  contracts/         # Shared TypeScript types and DTOs
+tooling/
+  eslint/           # Shared ESLint configuration
+  typescript/       # Shared TypeScript configuration
+```
+
+### Key Scripts Reference
+
+| Command        | Description                    | Timing                            |
+| -------------- | ------------------------------ | --------------------------------- |
+| `pnpm install` | Install all dependencies       | ~1.5 minutes                      |
+| `pnpm build`   | Build all apps and packages    | ~50 seconds                       |
+| `pnpm lint`    | Lint all code                  | ~32 seconds                       |
+| `pnpm dev`     | Start all dev servers          | May fail, use individual commands |
+| `make dev`     | Start Docker + all dev servers | May fail, use individual commands |
+
+### Individual App Commands
+
+Backend (core-api):
+
+```bash
+pnpm --filter @nest-wise/core-api <command>
+```
+
+Available commands: `build`, `start:debug`, `dev`, `test`, `test:e2e`, `lint`
+
+Frontend (web):
+
+```bash
+pnpm --filter @nest-wise/web <command>
+```
+
+Available commands: `build`, `dev`, `lint`, `preview`
+
+Contracts (shared types):
+
+```bash
+pnpm --filter @nest-wise/contracts <command>
+```
+
+Available commands: `build`, `dev`, `lint`
+
+### Configuration Files
+
+- **Docker**: `docker-compose.yml` - PostgreSQL, Redis, PgAdmin, RedisInsight
+- **Turborepo**: `turbo.json` - Build pipeline configuration
+- **Package Management**: `pnpm-workspace.yaml` - Workspace definitions
+- **Environment**: `.env.example` files in `apps/core-api/` and `apps/web/`
+
+### Database and External Services
+
+- **PostgreSQL**: localhost:5432 (user: root, password: root, db: nestwise_dev)
+- **Redis**: localhost:6379
+- **PgAdmin**: http://localhost:5050 (admin@admin.com / admin)
+- **RedisInsight**: http://localhost:5540
+
+### Technology Stack
+
+- **Backend**: NestJS 11, TypeORM, PostgreSQL, Redis, BullMQ, Swagger
+- **Frontend**: React 19, Vite 6, TailwindCSS 4, React Query, React Router
+- **Shared**: TypeScript 5.8, Zod validation, ESLint 9, Prettier
+- **Build System**: Turborepo 2.5, pnpm workspaces
+
+### Common Issues and Workarounds
+
+1. **Node Version Warning**: Shows warning with Node v20.19.5 but works fine
+2. **Pino-Pretty Failure**: Certificate issues prevent `pnpm dev` from working, use `start:debug` instead
+3. **RESEND_API_KEY Required**: Backend fails without this environment variable, use dummy value
+4. **Unit Tests Failing**: Path resolution issues, rely on manual testing instead
+
+## Critical Timing Information
+
+- **NEVER CANCEL** build operations before 2 minutes
+- **NEVER CANCEL** lint operations before 1 minute
+- **NEVER CANCEL** install operations before 3 minutes
+- Set explicit timeouts: build (120s), lint (60s), install (180s)
+- Docker startup takes 10-15 seconds
+- Development servers start in 5-10 seconds each
+
+## API Design Guide and Codebase Context
+
+### API Design Conventions
 
 Use query parameters for all filtering. For simple, exact matches, use the field name as the parameter. For advanced filtering, append an underscore and an operator to the field name.
 
-    Simple Filtering: GET /resources?field_name=value
-
-        Example: GET /products?category=electronics
-
-    Advanced Operators: Use _gt, _gte, _lt, _lte, _in, and _like.
-
-        Example: GET /products?price_gt=50
-
-    Date Range: Use _from and _to suffixes.
-
-        Example: GET /orders?createdAt_from=2023-01-01T00:00:00Z&createdAt_to=2023-03-31T23:59:59Z
-
-1.2. Sorting
-
-Use the sort query parameter. Use a hyphen (-) prefix for descending order.
-
-    Convention: GET /resources?sort=field1,-field2
-
-        Example: GET /products?sort=-price,name
-
-1.3. Pagination
-
-Use simple page and pageSize parameters. Include metadata in the response to provide context to the client.
-
-    Convention: GET /resources?page=page_number&pageSize=items_per_page
-
-        Example: GET /products?page=1&pageSize=10
-
-    Response Structure:
-    JSON
-
-    {
-      "data": [
-        // Array of resource objects
-      ],
-      "meta": {
-        "totalCount": 50,
-        "pageSize": 10,
-        "currentPage": 1,
-        "totalPages": 5
-      }
-    }
-
-2. UI/UX Design Principles
-
-You are an expert in UI/UX design. Use these principles to create intuitive, accessible, and performant user interfaces.
-
-    Visual Design: Establish a clear visual hierarchy, use a cohesive color palette, and maintain sufficient contrast.
-
-    Interaction Design: Create intuitive navigation, use familiar UI components, and provide clear calls-to-action.
-
-    Accessibility: Adhere to WCAG guidelines. Use semantic HTML and provide alternative text for non-text content. Ensure full keyboard navigability.
-
-    Responsive Design: Use a mobile-first approach. Use relative units (%, em, rem) and CSS Grid/Flexbox for fluid layouts. Use media queries to adjust layouts for different screen sizes.
-
-    Performance: Optimize images and assets, implement lazy loading, and monitor Core Web Vitals.
-
-    User Feedback: Incorporate clear feedback mechanisms for user actions, including loading indicators and helpful error messages.
-
-    Consistency: Develop and adhere to a design system. Use consistent terminology and styling throughout the application.
-
-3. General Web Development Guidelines
-
-This section provides general guidelines for building web products and generating code.
-
-3.1. Code Style and Structure
-
-    Write concise, readable, and type-safe TypeScript.
-
-    Use functional components and hooks over class components.
-
-    Organize files by feature, grouping related code together.
-
-    Avoid barrel imports (index.ts files).
-
-    Do NOT write comments in the code unless explicitly asked.
-
-3.2. Naming Conventions
-
-    camelCase for variables and functions (isFetchingData).
-
-    PascalCase for components (UserProfile).
-
-    lowercase-hyphenated for directory names (user-profile).
-
-3.3. TypeScript Usage
-
-    Use TypeScript for all components.
-
-    Enable strict typing in tsconfig.json.
-
-    Avoid using any. Strive for precise types.
-
-3.4. Performance Optimization
-
-    Minimize heavy computations inside render methods.
-
-    Use React.memo() to prevent unnecessary re-renders.
-
-    For web, use Next.js features like next/image and next/link.
-
-    For React Native, optimize FlatLists with removeClippedSubviews and getItemLayout.
-
-3.5. UI and Styling
-
-    For web, use Tailwind CSS or Shadcn/ui for reusable, responsive components.
-
-    For React Native, use StyleSheet.create().
-
-    Use responsive images with srcset and sizes attributes for the web.
-
-3.6. Framework-Specific Guidelines
-
-React Native & Expo
-
-    Use Expo's managed workflow.
-
-    Leverage Expo SDK for native features.
-
-    Use react-navigation for navigation.
-
-Next.js
-
-    Use file-based routing and API routes.
-
-    Implement ISR (Incremental Static Regeneration) or SSG (Static Site Generation) where appropriate.
-
-Tailwind & Shadcn/ui
-
-    Use Tailwind's utility classes for rapid UI development.
-
-    Customize Shadcn/ui components to match the design system.
-
-Container query sizes reference
-
-    Tailwind includes container sizes ranging from 16rem (256px) to 80rem (1280px).
-
-    Example: @md corresponds to @container (width >= 28rem) { … }
-
-4. Codebase Overview
+- Simple Filtering: `GET /resources?field_name=value`
+- Advanced Operators: Use `_gt`, `_gte`, `_lt`, `_lte`, `_in`, and `_like`
+- Date Range: Use `_from` and `_to` suffixes
+- Sorting: Use `sort=field1,-field2` (hyphen for descending)
+- Pagination: Use `page` and `pageSize` parameters with meta response
+
+Response Structure:
+
+```json
+{
+  "data": [
+    /* Array of resource objects */
+  ],
+  "meta": {
+    "totalCount": 50,
+    "pageSize": 10,
+    "currentPage": 1,
+    "totalPages": 5
+  }
+}
+```
+
+### Codebase Overview
 
 This monorepo contains a NestJS backend (core API), a React web client, and shared TypeScript contracts. It uses pnpm workspaces, TypeORM, Zod, and Swagger.
 
-4.1. Monorepo layout
-
-- apps/core-api: NestJS backend service
-- apps/web: React (Vite) web client
-- packages/contracts: Shared DTOs, schemas, and TypeScript contracts consumed by both backend and frontend
-- tooling/: Shared linting/tsconfig presets
-
-  4.2. Backend (apps/core-api)
+#### Backend (apps/core-api)
 
 - Framework: NestJS 11 (TypeORM, Swagger, BullMQ, Throttler, Schedule)
 - Entities: Household, User, Account, Category, Transaction, PrivateTransaction, Savings, CategoryBudget
@@ -172,14 +272,14 @@ This monorepo contains a NestJS backend (core API), a React web client, and shar
 - Swagger: auto-setup via tools/swagger; endpoints and examples documented
 - CORS: enabled for http://localhost:5173 with credentials
 
-  4.2.1. Important paths
+#### Important Paths
 
-- src/app.module.ts: root module registering all feature modules
-- src/main.ts: bootstrapping (versioning, helmet, cookies, CORS, swagger)
-- src/common: guards, decorators (e.g., CurrentUser), enums, interfaces
-- src/tools/swagger: OpenAPI DTOs for documentation
+- `src/app.module.ts`: root module registering all feature modules
+- `src/main.ts`: bootstrapping (versioning, helmet, cookies, CORS, swagger)
+- `src/common`: guards, decorators (e.g., CurrentUser), enums, interfaces
+- `src/tools/swagger`: OpenAPI DTOs for documentation
 
-  4.2.2. Data model relations (high-level)
+#### Data Model Relations (high-level)
 
 - Household 1—N Users, Accounts, Categories, Transactions, Savings, CategoryBudgets
 - User N—1 Household; owns many Accounts
@@ -188,48 +288,42 @@ This monorepo contains a NestJS backend (core API), a React web client, and shar
 - Transaction N—1 Household; N—1 Account; N—1 Category (nullable)
 - PrivateTransaction N—1 Household; N—1 Account; N—1 User (owner)
 
-  4.2.3. API conventions
+#### API Conventions
 
-- Filtering/search: query params; operators like \_gt/\_gte/\_lt/\_lte/\_in/\_like; date ranges use date_from/date_to (aliases from/to accepted during deprecation); pagination page/pageSize with meta
-- Sorting: sort=field,-field2; default sort set per endpoint (e.g., -transactionDate)
+- Filtering/search: query params; operators like `_gt/_gte/_lt/_lte/_in/_like`; date ranges use `date_from/date_to` (aliases `from/to` accepted during deprecation); pagination `page/pageSize` with meta
+- Sorting: `sort=field,-field2`; default sort set per endpoint (e.g., `-transactionDate`)
 - Authentication required for most endpoints; auth cookie (httpOnly) used
 
-  4.2.4. Repositories/Services
+#### Repositories/Services
 
 - Each module has a service that encapsulates business logic and a repository that wraps TypeORM queries
 - Repositories often expose filter-by-household helpers and complex query builders for pagination/sorting
 
-  4.3. Frontend (apps/web)
+#### Frontend (apps/web)
 
 - Stack: React + Vite + TypeScript; ky HTTP client with prefixUrl VITE_API_URL and credentials included
-- API clients live in apps/web/src/modules/api; they consume @nest-wise/contracts types
+- API clients live in `apps/web/src/modules/api`; they consume @nest-wise/contracts types
 - Auth handling: ky afterResponse hook redirects to /login on 401/403 for non-public routes
 - Router: react-router; generated route tree present
 
-  4.4. Local development
+#### Local Development
 
-- Install: pnpm install
-- Run backend: pnpm --filter @nest-wise/core-api dev
-- Run web: pnpm --filter @nest-wise/web dev (ensure VITE_API_URL points to backend, default CORS origin is http://localhost:5173)
-- Env/config: Backend config via Nest ConfigModule; see src/config/\* for app, database, queues; DB via TypeORM (Postgres)
+- Install: `pnpm install`
+- Run backend: `pnpm --filter @nest-wise/core-api start:debug`
+- Run web: `pnpm --filter @nest-wise/web dev` (ensure VITE_API_URL points to backend, default CORS origin is http://localhost:5173)
+- Env/config: Backend config via Nest ConfigModule; see `src/config/*` for app, database, queues; DB via TypeORM (Postgres)
 
-  4.5. Testing
+#### Testing
 
-- Backend: jest unit/e2e; run via pnpm --filter @nest-wise/core-api test:e2e
+- Backend: jest unit/e2e; run via `pnpm --filter @nest-wise/core-api test:e2e`
 - Contracts: type safety validated across packages by TypeScript
 
-  4.6. Security & policies
+#### Security & Policies
 
 - Authorization decisions centralized in Policies module; controllers/services call Policies before mutating sensitive resources (e.g., account update, transfers)
 - Deletion cascades configured in entities (e.g., on household deletion)
 
-  4.7. Upcoming API refactor (high-level)
-
-- Collections will be nested under household (e.g., /v1/households/{householdId}/transactions)
-- Private transactions will be under /v1/users/me/private-transactions
-- date_from/date_to are the standard date filters; legacy names are deprecated with a sunset plan
-
-  4.8. Tips for contributors
+#### Tips for Contributors
 
 - Prefer using shared contracts from @nest-wise/contracts for DTOs and types
 - Validate all inputs with ZodValidationPipe + contracts schemas
