@@ -148,3 +148,91 @@ Container query sizes reference
     Tailwind includes container sizes ranging from 16rem (256px) to 80rem (1280px).
 
     Example: @md corresponds to @container (width >= 28rem) { … }
+
+4. Codebase Overview
+
+This monorepo contains a NestJS backend (core API), a React web client, and shared TypeScript contracts. It uses pnpm workspaces, TypeORM, Zod, and Swagger.
+
+4.1. Monorepo layout
+
+- apps/core-api: NestJS backend service
+- apps/web: React (Vite) web client
+- packages/contracts: Shared DTOs, schemas, and TypeScript contracts consumed by both backend and frontend
+- tooling/: Shared linting/tsconfig presets
+
+  4.2. Backend (apps/core-api)
+
+- Framework: NestJS 11 (TypeORM, Swagger, BullMQ, Throttler, Schedule)
+- Entities: Household, User, Account, Category, Transaction, PrivateTransaction, Savings, CategoryBudget
+- Modules: auth, users, households, accounts, categories, transactions, category-budgets, private-transactions, savings, policies
+- Validation: Zod via a custom ZodValidationPipe; DTOs/schemas live in @nest-wise/contracts
+- Auth: JWT-based, cookie set on login/setup; guard `AuthGuard` protects routes; `@CurrentUser()` provides JwtPayload
+- API versioning: URI versioning enabled (e.g., /v1/...)
+- Logging: pino-nestjs; pretty logs in dev
+- Swagger: auto-setup via tools/swagger; endpoints and examples documented
+- CORS: enabled for http://localhost:5173 with credentials
+
+  4.2.1. Important paths
+
+- src/app.module.ts: root module registering all feature modules
+- src/main.ts: bootstrapping (versioning, helmet, cookies, CORS, swagger)
+- src/common: guards, decorators (e.g., CurrentUser), enums, interfaces
+- src/tools/swagger: OpenAPI DTOs for documentation
+
+  4.2.2. Data model relations (high-level)
+
+- Household 1—N Users, Accounts, Categories, Transactions, Savings, CategoryBudgets
+- User N—1 Household; owns many Accounts
+- Account N—1 Household; N—1 User (owner); 1—N Transactions
+- Category N—1 Household; 1—N Transactions
+- Transaction N—1 Household; N—1 Account; N—1 Category (nullable)
+- PrivateTransaction N—1 Household; N—1 Account; N—1 User (owner)
+
+  4.2.3. API conventions
+
+- Filtering/search: query params; operators like \_gt/\_gte/\_lt/\_lte/\_in/\_like; date ranges use date_from/date_to (aliases from/to accepted during deprecation); pagination page/pageSize with meta
+- Sorting: sort=field,-field2; default sort set per endpoint (e.g., -transactionDate)
+- Authentication required for most endpoints; auth cookie (httpOnly) used
+
+  4.2.4. Repositories/Services
+
+- Each module has a service that encapsulates business logic and a repository that wraps TypeORM queries
+- Repositories often expose filter-by-household helpers and complex query builders for pagination/sorting
+
+  4.3. Frontend (apps/web)
+
+- Stack: React + Vite + TypeScript; ky HTTP client with prefixUrl VITE_API_URL and credentials included
+- API clients live in apps/web/src/modules/api; they consume @nest-wise/contracts types
+- Auth handling: ky afterResponse hook redirects to /login on 401/403 for non-public routes
+- Router: react-router; generated route tree present
+
+  4.4. Local development
+
+- Install: pnpm install
+- Run backend: pnpm --filter @nest-wise/core-api dev
+- Run web: pnpm --filter @nest-wise/web dev (ensure VITE_API_URL points to backend, default CORS origin is http://localhost:5173)
+- Env/config: Backend config via Nest ConfigModule; see src/config/\* for app, database, queues; DB via TypeORM (Postgres)
+
+  4.5. Testing
+
+- Backend: jest unit/e2e; run via pnpm --filter @nest-wise/core-api test:e2e
+- Contracts: type safety validated across packages by TypeScript
+
+  4.6. Security & policies
+
+- Authorization decisions centralized in Policies module; controllers/services call Policies before mutating sensitive resources (e.g., account update, transfers)
+- Deletion cascades configured in entities (e.g., on household deletion)
+
+  4.7. Upcoming API refactor (high-level)
+
+- Collections will be nested under household (e.g., /v1/households/{householdId}/transactions)
+- Private transactions will be under /v1/users/me/private-transactions
+- date_from/date_to are the standard date filters; legacy names are deprecated with a sunset plan
+
+  4.8. Tips for contributors
+
+- Prefer using shared contracts from @nest-wise/contracts for DTOs and types
+- Validate all inputs with ZodValidationPipe + contracts schemas
+- Keep endpoints CRUD-oriented and scoped to parent resources when applicable
+- Use repository methods for DB access; avoid inline query logic in services
+- Update Swagger DTOs/examples whenever endpoints or DTOs change
