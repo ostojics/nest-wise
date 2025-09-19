@@ -19,6 +19,7 @@ interface AiTransactionFormProps {
 export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps) {
   const {data: household} = useGetHouseholdById();
   const {data: accounts} = useGetHouseholdAccounts();
+  const hasAccounts = (accounts ?? []).length > 0;
 
   const createAiTransactionMutation = useCreateTransactionAI();
 
@@ -60,11 +61,13 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
               <SelectValue placeholder="Select account" />
             </SelectTrigger>
             <SelectContent>
-              {accounts?.map((account) => (
-                <SelectItem key={account.id} value={account.id}>
-                  {getAccountDisplayName(account.id)}
-                </SelectItem>
-              ))}
+              {!hasAccounts && <span className="text-sm text-muted-foreground">No accounts available.</span>}
+              {hasAccounts &&
+                accounts?.map((account) => (
+                  <SelectItem key={account.id} value={account.id}>
+                    {getAccountDisplayName(account.id)}
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
           {errors.accountId && <p className="text-sm text-red-500">{errors.accountId.message}</p>}

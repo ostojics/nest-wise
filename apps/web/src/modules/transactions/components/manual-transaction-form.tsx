@@ -23,6 +23,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
   const {data: household} = useGetHouseholdById();
   const {data: accounts} = useGetHouseholdAccounts();
   const {data: categories} = useGetHouseholdCategories();
+  const hasAccounts = (accounts ?? []).length > 0;
 
   const createTransactionMutation = useCreateTransaction();
 
@@ -77,11 +78,13 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
             <SelectValue placeholder="Select account" />
           </SelectTrigger>
           <SelectContent>
-            {accounts?.map((account) => (
-              <SelectItem key={account.id} value={account.id}>
-                {getAccountDisplayName(account.id)}
-              </SelectItem>
-            ))}
+            {!hasAccounts && <span className="text-sm text-muted-foreground">No accounts available.</span>}
+            {hasAccounts &&
+              accounts?.map((account) => (
+                <SelectItem key={account.id} value={account.id}>
+                  {getAccountDisplayName(account.id)}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
         {errors.accountId && <p className="text-sm text-red-500">{errors.accountId.message}</p>}
