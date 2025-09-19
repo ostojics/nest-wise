@@ -25,7 +25,6 @@ export const queryKeys = {
     spendingByAccounts: (search: GetAccountsSpendingQueryDTO) => ['spending-by-accounts', search],
   },
   users: {
-    all: () => ['users'],
     byHousehold: (householdId: string) => ['users', 'household', householdId],
   },
   categoryBudgets: {
