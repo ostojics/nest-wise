@@ -9,7 +9,7 @@ import {
   GetTransactionsResponseContract,
   NetWorthTrendPointContract,
   TransactionContract,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {generateObject} from 'ai';
 import {CategoriesService} from 'src/categories/categories.service';

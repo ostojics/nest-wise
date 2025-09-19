@@ -1,4 +1,4 @@
-import {EditAccountDTO, TransferFundsDTO, CreateAccountDTO} from '@maya-vault/contracts';
+import {EditAccountDTO, TransferFundsDTO, CreateAccountDTO} from '@nest-wise/contracts';
 import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {Account} from './account.entity';
 import {AccountsRepository} from './accounts.repository';

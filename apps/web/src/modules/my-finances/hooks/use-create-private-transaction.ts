@@ -1,6 +1,6 @@
 import {createPrivateTransaction} from '@/modules/api/private-transactions';
 import {queryKeys} from '@/modules/api/query-keys';
-import {ErrorResponse} from '@maya-vault/contracts';
+import {ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';

@@ -1,4 +1,4 @@
-import {AcceptInviteDTO, InviteUserDTO, UserContract} from '@maya-vault/contracts';
+import {AcceptInviteDTO, InviteUserDTO, UserContract} from '@nest-wise/contracts';
 import httpClient from './http-client';
 
 export const getUsers = () => {

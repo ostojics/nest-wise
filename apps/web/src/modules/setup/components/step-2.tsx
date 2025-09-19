@@ -8,7 +8,7 @@ import {Brain, Loader2} from 'lucide-react';
 import {useValidateStep2} from '../hooks/useValidateStep2';
 import {useSetupContext} from '../hooks/useSetup';
 import {useSetupMutation} from '../hooks/useSetupMutation';
-import {CreateHouseholdDTO, SetupDTO} from '@maya-vault/contracts';
+import {CreateHouseholdDTO, SetupDTO} from '@nest-wise/contracts';
 import {CURRENCIES} from '../currencies';
 
 const Step2 = () => {
@@ -40,7 +40,7 @@ const Step2 = () => {
     <div className="flex flex-col w-full max-w-lg mx-auto p-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-md">Tailor Maya Vault to Your Life (and Loved Ones!)</CardTitle>
+          <CardTitle className="text-md">Tailor NestWise to Your Life (and Loved Ones!)</CardTitle>
           <CardDescription>Define your financial home for smart, shared insights powered by AI</CardDescription>
         </CardHeader>
         <CardContent>

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {TransferFundsDTO} from '@maya-vault/contracts';
+import {TransferFundsDTO} from '@nest-wise/contracts';
 import {ArrowLeftRight, Loader2, Wallet} from 'lucide-react';
 import {useState} from 'react';
 import {useTransferFundsMutation} from '../hooks/use-transfer-funds-mutation';

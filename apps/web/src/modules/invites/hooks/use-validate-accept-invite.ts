@@ -1,5 +1,5 @@
 import {zodResolver} from '@hookform/resolvers/zod';
-import {acceptInviteSchema} from '@maya-vault/contracts';
+import {acceptInviteSchema} from '@nest-wise/contracts';
 import {useForm} from 'react-hook-form';
 
 interface UseValidateAcceptInviteFormArgs {

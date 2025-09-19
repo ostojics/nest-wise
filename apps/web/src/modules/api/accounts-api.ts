@@ -1,6 +1,6 @@
-import {CreateAccountDTO} from '@maya-vault/contracts';
+import {CreateAccountDTO} from '@nest-wise/contracts';
 import httpClient from './http-client';
-import {EditAccountDTO, TransferFundsDTO} from '@maya-vault/contracts';
+import {EditAccountDTO, TransferFundsDTO} from '@nest-wise/contracts';
 
 export const createAccount = (dto: CreateAccountDTO) => {
   return httpClient

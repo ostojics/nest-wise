@@ -1,6 +1,6 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
-import {CreateTransactionDTO, createTransactionSchema} from '@maya-vault/contracts';
+import {CreateTransactionDTO, createTransactionSchema} from '@nest-wise/contracts';
 
 interface UseValidateCreateTransactionArgs {
   householdId: string;

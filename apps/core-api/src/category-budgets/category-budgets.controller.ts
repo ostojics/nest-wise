@@ -3,7 +3,7 @@ import {
   CategoryBudgetWithCurrentAmountContract,
   GetCategoryBudgetsQueryParams,
   getCategoryBudgetsQueryParamsSchema,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 import {
   Body,
   Controller,
@@ -38,7 +38,7 @@ import {
   EditCategoryBudgetSwaggerDTO,
 } from 'src/tools/swagger/category-budgets.swagger.dto';
 import {CategoryBudgetsService} from './category-budgets.service';
-import {EditCategoryBudgetDTO, editCategoryBudgetSchema} from '@maya-vault/contracts';
+import {EditCategoryBudgetDTO, editCategoryBudgetSchema} from '@nest-wise/contracts';
 import {PoliciesService} from 'src/policies/policies.service';
 
 @ApiTags('Category Budgets')

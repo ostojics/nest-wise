@@ -133,7 +133,7 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} f
 import {ChartContainer, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
 import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell} from 'recharts';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
-import {SavingsTrendPointContract} from '@maya-vault/contracts';
+import {SavingsTrendPointContract} from '@nest-wise/contracts';
 
 export function SavingsTrendCard() {
   const {formatBalance} = useFormatBalance();

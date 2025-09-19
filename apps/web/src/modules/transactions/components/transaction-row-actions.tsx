@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {TransactionContract} from '@maya-vault/contracts';
+import {TransactionContract} from '@nest-wise/contracts';
 import {Loader2, Trash2} from 'lucide-react';
 import React from 'react';
 import {useDeleteTransaction} from '../hooks/useDeleteTransaction';

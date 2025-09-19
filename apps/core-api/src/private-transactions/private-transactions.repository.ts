@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository, SelectQueryBuilder} from 'typeorm';
 import {PrivateTransaction} from './private-transactions.entity';
-import {GetPrivateTransactionsQueryDTO, GetPrivateTransactionsResponseContract, SortOrder} from '@maya-vault/contracts';
+import {GetPrivateTransactionsQueryDTO, GetPrivateTransactionsResponseContract, SortOrder} from '@nest-wise/contracts';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
 
 @Injectable()

@@ -2,7 +2,7 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} f
 import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
 import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
-import {NetWorthTrendPointContract} from '@maya-vault/contracts';
+import {NetWorthTrendPointContract} from '@nest-wise/contracts';
 import {IconTrendingUp} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
 import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell} from 'recharts';

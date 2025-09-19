@@ -2,7 +2,7 @@ import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {UserRegistrationDTO} from '@maya-vault/contracts';
+import {UserRegistrationDTO} from '@nest-wise/contracts';
 import FormError from '@/components/form-error';
 import {useValidateStep1} from '../hooks/useValidateStep1';
 import {useSetupContext} from '../hooks/useSetup';
@@ -30,7 +30,7 @@ const Step1 = () => {
         <CardHeader>
           <CardTitle className="text-md">Your Journey to Financial Clarity Starts Here</CardTitle>
           <CardDescription>
-            Set up your secure access to Maya Vault and unlock intelligent money management
+            Set up your secure access to NestWise and unlock intelligent money management
           </CardDescription>
         </CardHeader>
         <CardContent>

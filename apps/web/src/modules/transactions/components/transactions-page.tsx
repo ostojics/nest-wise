@@ -1,5 +1,5 @@
 import {TABLET_BREAKPOINT, useIsMobile} from '@/hooks/use-mobile';
-import {TransactionContract} from '@maya-vault/contracts';
+import {TransactionContract} from '@nest-wise/contracts';
 import {useSearch} from '@tanstack/react-router';
 import {lazy, Suspense} from 'react';
 import {useGetTransactions} from '../hooks/useGetTransactions';

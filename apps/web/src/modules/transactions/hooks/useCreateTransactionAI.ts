@@ -12,6 +12,7 @@ export const useCreateTransactionAI = () => {
       void client.invalidateQueries({queryKey: queryKeys.accounts.all()});
       void client.invalidateQueries({queryKey: queryKeys.transactions.key()});
       void client.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
+      void client.invalidateQueries({queryKey: queryKeys.transactions.allPagesKey()});
 
       toast.success('Transaction processed successfully');
     },

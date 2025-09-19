@@ -1,5 +1,5 @@
 {
-  "name": "@maya-vault/contracts",
+  "name": "@nest-wise/contracts",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -19,10 +19,10 @@
   "devDependencies": {
     "tsup": "catalog:",
     "typescript": "catalog:",
-    "@maya-vault/linting": "workspace:*",
+    "@nest-wise/linting": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "@maya-vault/tsconfig": "workspace:*",
+    "@nest-wise/tsconfig": "workspace:*",
     "zod": "catalog:"
   }
 }

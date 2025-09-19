@@ -1,5 +1,5 @@
 import {zodResolver} from '@hookform/resolvers/zod';
-import {inviteUserSchema} from '@maya-vault/contracts';
+import {inviteUserSchema} from '@nest-wise/contracts';
 import {useForm} from 'react-hook-form';
 
 export const useValidateInviteUser = () => {

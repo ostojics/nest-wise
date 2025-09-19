@@ -6,7 +6,7 @@ import {
   CreatePrivateTransactionDTO,
   GetPrivateTransactionsQueryDTO,
   GetPrivateTransactionsResponseContract,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 import {AccountsService} from 'src/accounts/accounts.service';
 import {PoliciesService} from 'src/policies/policies.service';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';

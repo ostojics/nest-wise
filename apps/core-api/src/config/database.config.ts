@@ -22,7 +22,7 @@ export function getConfig(): DatabaseConfig {
     port: +(process.env.DB_PORT ?? 5432),
     username: process.env.DB_USERNAME ?? 'root',
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE ?? 'mayavault_dev',
+    database: process.env.DB_DATABASE ?? 'nestwise_dev',
     synchronize: isDevelopment,
     ssl: !isDevelopment,
     entities: [User, Household, Account, Category, Transaction, Savings, CategoryBudget, PrivateTransaction],

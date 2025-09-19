@@ -1,4 +1,4 @@
-import {CategoryBudgetContract, EditCategoryBudgetDTO, GetCategoryBudgetsQueryParams} from '@maya-vault/contracts';
+import {CategoryBudgetContract, EditCategoryBudgetDTO, GetCategoryBudgetsQueryParams} from '@nest-wise/contracts';
 import httpClient from './http-client';
 
 export const getCategoryBudgets = (dto: GetCategoryBudgetsQueryParams) => {

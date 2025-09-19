@@ -3,7 +3,7 @@ import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {LoginDTO} from '@maya-vault/contracts';
+import {LoginDTO} from '@nest-wise/contracts';
 import {useValidateLogin} from '../hooks/useValidateLogin';
 import FormError from '@/components/form-error';
 import {useLoginMutation} from '../hooks/useLoginMutation';

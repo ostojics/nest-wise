@@ -1,5 +1,5 @@
 import {zodResolver} from '@hookform/resolvers/zod';
-import {CreatePrivateTransactionDTO, createPrivateTransactionSchema} from '@maya-vault/contracts';
+import {CreatePrivateTransactionDTO, createPrivateTransactionSchema} from '@nest-wise/contracts';
 import {useForm} from 'react-hook-form';
 
 interface UseValidateCreatePrivateTransactionArgs {

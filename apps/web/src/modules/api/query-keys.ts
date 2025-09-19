@@ -3,7 +3,7 @@ import {
   GetCategoryBudgetsQueryParams,
   GetPrivateTransactionsQueryDTO,
   GetTransactionsQueryDTO,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 
 export const queryKeys = {
   me: () => ['me'],
@@ -19,6 +19,7 @@ export const queryKeys = {
   transactions: {
     key: () => ['transactions'],
     all: (search: GetTransactionsQueryDTO) => ['transactions', search],
+    allPagesKey: () => ['transactions-all-pages'],
     allPages: (search: Partial<GetTransactionsQueryDTO>) => ['transactions-all-pages', search],
     netWorthTrend: () => ['net-worth-trend'],
     spendingByAccounts: (search: GetAccountsSpendingQueryDTO) => ['spending-by-accounts', search],

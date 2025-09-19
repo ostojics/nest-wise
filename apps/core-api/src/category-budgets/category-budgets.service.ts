@@ -2,7 +2,7 @@ import {
   CategoryBudgetContract,
   CategoryBudgetWithCurrentAmountContract,
   EditCategoryBudgetDTO,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {CategoriesService} from 'src/categories/categories.service';
 import {UsersService} from 'src/users/users.service';

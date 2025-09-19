@@ -1,4 +1,4 @@
-import {CategoryBudgetWithCurrentAmountContract} from '@maya-vault/contracts';
+import {CategoryBudgetWithCurrentAmountContract} from '@nest-wise/contracts';
 import {useSearch} from '@tanstack/react-router';
 import {format, isAfter, parse} from 'date-fns';
 

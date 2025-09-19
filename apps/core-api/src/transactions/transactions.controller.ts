@@ -7,7 +7,7 @@ import {
   getTransactionsQuerySchema,
   UpdateTransactionDTO,
   updateTransactionSchema,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UsePipes} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -39,9 +39,9 @@ import {
   AccountSpendingPointContract,
   GetAccountsSpendingQueryDTO,
   NetWorthTrendPointContract,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 import {NetWorthTrendPointSwaggerDTO} from 'src/tools/swagger/transactions.swagger.dto';
-import {getAccountsSpendingQuerySchema} from '@maya-vault/contracts';
+import {getAccountsSpendingQuerySchema} from '@nest-wise/contracts';
 import {AccountSpendingPointSwaggerDTO} from 'src/tools/swagger/transactions.swagger.dto';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 

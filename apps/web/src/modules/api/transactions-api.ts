@@ -1,11 +1,11 @@
-import {CreateTransactionDTO, CreateTransactionAiDTO, GetTransactionsQueryDTO} from '@maya-vault/contracts';
+import {CreateTransactionDTO, CreateTransactionAiDTO, GetTransactionsQueryDTO} from '@nest-wise/contracts';
 import httpClient from './http-client';
 import {
   AccountSpendingPointContract,
   GetAccountsSpendingQueryDTO,
   GetTransactionsResponseContract,
   NetWorthTrendPointContract,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 
 export const getTransactions = async (query: GetTransactionsQueryDTO) => {
   return httpClient

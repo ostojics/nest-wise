@@ -4,7 +4,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {cn} from '@/lib/utils';
-import {AcceptInviteDTO} from '@maya-vault/contracts';
+import {AcceptInviteDTO} from '@nest-wise/contracts';
 import {useSearch} from '@tanstack/react-router';
 import {Loader2} from 'lucide-react';
 import {useAcceptInvite} from '../hooks/use-accept-invite';

@@ -1,5 +1,5 @@
 {
-  "name": "@maya-vault/linting",
+  "name": "@nest-wise/linting",
   "private": true,
   "version": "0.3.0",
   "type": "module",
@@ -23,7 +23,7 @@
     "typescript-eslint": "^8.33.1"
   },
   "devDependencies": {
-    "@maya-vault/tsconfig": "workspace:*",
+    "@nest-wise/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "eslint-plugin-import": "^2.32.0",
     "prettier": "catalog:",

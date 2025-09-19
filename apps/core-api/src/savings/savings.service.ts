@@ -1,5 +1,5 @@
 import {UTCDate} from '@date-fns/utc';
-import {TransactionType} from '@maya-vault/contracts';
+import {TransactionType} from '@nest-wise/contracts';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Injectable} from '@nestjs/common';
 import {Cron} from '@nestjs/schedule';
@@ -8,7 +8,7 @@ import {endOfMonth, format, startOfMonth, subMonths} from 'date-fns';
 import {SavingsJobs} from 'src/common/enums/jobs.enum';
 import {Queues} from 'src/common/enums/queues.enum';
 import {CalculateSavingsPayload} from 'src/common/interfaces/savings.interfaces';
-import {SavingsTrendPointContract} from '@maya-vault/contracts';
+import {SavingsTrendPointContract} from '@nest-wise/contracts';
 import {HouseholdsService} from 'src/households/households.service';
 import {TransactionsService} from 'src/transactions/transactions.service';
 import {Savings} from './savings.entity';

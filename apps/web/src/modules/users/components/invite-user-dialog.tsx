@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {ErrorResponse, InviteUserDTO} from '@maya-vault/contracts';
+import {ErrorResponse, InviteUserDTO} from '@nest-wise/contracts';
 import {HTTPError} from 'ky';
 import {Mail, UserPlus2} from 'lucide-react';
 import {useState} from 'react';

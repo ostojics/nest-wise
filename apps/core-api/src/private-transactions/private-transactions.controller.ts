@@ -34,7 +34,7 @@ import {
   GetPrivateTransactionsResponseContract,
   createPrivateTransactionSchema,
   getPrivateTransactionsQuerySchema,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 

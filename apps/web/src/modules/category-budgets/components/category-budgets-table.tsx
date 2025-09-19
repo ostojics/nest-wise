@@ -1,5 +1,5 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
-import {CategoryBudgetWithCurrentAmountContract} from '@maya-vault/contracts';
+import {CategoryBudgetWithCurrentAmountContract} from '@nest-wise/contracts';
 import {flexRender} from '@tanstack/react-table';
 import {ArrowUpDown} from 'lucide-react';
 import {cn} from '@/lib/utils';

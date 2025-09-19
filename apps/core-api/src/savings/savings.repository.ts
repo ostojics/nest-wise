@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Savings} from './savings.entity';
-import {SavingsTrendPointContract} from '@maya-vault/contracts';
+import {SavingsTrendPointContract} from '@nest-wise/contracts';
 
 @Injectable()
 export class SavingsRepository {

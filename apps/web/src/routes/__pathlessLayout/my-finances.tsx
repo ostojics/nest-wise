@@ -1,5 +1,5 @@
 import MyFinancesPage from '@/modules/my-finances/components/my-finances-page';
-import {getPrivateTransactionsQuerySchema} from '@maya-vault/contracts';
+import {getPrivateTransactionsQuerySchema} from '@nest-wise/contracts';
 import {createFileRoute} from '@tanstack/react-router';
 
 export const Route = createFileRoute('/__pathlessLayout/my-finances')({
