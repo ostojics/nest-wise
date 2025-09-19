@@ -1,11 +1,11 @@
 import UsersListSkeleton from './users-list.skeleton';
 import UsersListError from './users-list.error';
-import {useGetUsers} from '../hooks/use-get-users';
+import {useGetHouseholdUsers} from '../hooks/use-get-users';
 import UserCard from './user-card';
 import InviteUserDialog from './invite-user-dialog';
 
 const UsersList = () => {
-  const {data: users, isLoading, isError, refetch, isFetching} = useGetUsers();
+  const {data: users, isLoading, isError, refetch, isFetching} = useGetHouseholdUsers();
 
   if (isLoading) {
     return <UsersListSkeleton />;
