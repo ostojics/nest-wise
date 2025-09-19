@@ -22,7 +22,8 @@ export class SavingsController {
   @ApiOperation({
     summary: 'Get household savings trend (last 12 months)',
     description:
-      'Returns month-by-month household savings for the last 12 months. Household inferred from current user.',
+      'Returns month-by-month household savings for the last 12 months. Household inferred from current user. DEPRECATED: Use /households/{id}/savings/trend instead.',
+    deprecated: true,
   })
   @ApiOkResponse({description: 'Savings trend computed successfully', type: [SavingsTrendPointSwaggerDTO]})
   @ApiUnauthorizedResponse({description: 'Authentication required'})

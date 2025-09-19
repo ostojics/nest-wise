@@ -14,11 +14,13 @@ import {HouseholdsService} from './households.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
 import {HouseholdResponseSwaggerDTO, UpdateHouseholdSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
-import {AccountContract, HouseholdContract} from '@nest-wise/contracts';
+import {AccountContract, HouseholdContract, SavingsTrendPointContract} from '@nest-wise/contracts';
 import {Category} from 'src/categories/categories.entity';
 import {CategoryResponseSwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
 import {UpdateHouseholdDTO, updateHouseholdSchema} from '@nest-wise/contracts';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
+import {SavingsService} from 'src/savings/savings.service';
+import {SavingsTrendPointSwaggerDTO} from 'src/tools/swagger/savings.swagger.dto';
 
 @ApiTags('Households')
 @Controller({
@@ -26,7 +28,10 @@ import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
   path: 'households',
 })
 export class HouseholdsController {
-  constructor(private readonly householdsService: HouseholdsService) {}
+  constructor(
+    private readonly householdsService: HouseholdsService,
+    private readonly savingsService: SavingsService,
+  ) {}
 
   @ApiOperation({
     summary: 'Get household by ID',
@@ -107,6 +112,34 @@ export class HouseholdsController {
   @Get(':id/categories')
   async getCategoriesByHouseholdId(@Param('id') id: string): Promise<Category[]> {
     return await this.householdsService.findCategoriesByHouseholdId(id);
+  }
+
+  @ApiOperation({
+    summary: 'Get household savings trend (last 12 months)',
+    description: 'Returns month-by-month household savings for the last 12 months',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+  })
+  @ApiOkResponse({
+    type: [SavingsTrendPointSwaggerDTO],
+    description: 'Savings trend computed successfully',
+  })
+  @ApiNotFoundResponse({
+    description: 'Household not found',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get(':id/savings/trend')
+  async getSavingsTrendByHouseholdId(@Param('id') id: string): Promise<SavingsTrendPointContract[]> {
+    return await this.savingsService.getSavingsTrend(id);
   }
 
   @ApiOperation({
