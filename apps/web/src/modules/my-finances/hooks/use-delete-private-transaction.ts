@@ -12,7 +12,7 @@ export const useDeletePrivateTransaction = () => {
     mutationFn: async (id: string) => deletePrivateTransaction(id),
     onSuccess: async () => {
       await client.invalidateQueries({
-        queryKey: queryKeys.privateTransactions.tag(),
+        queryKey: queryKeys.privateTransactions.key(),
       });
       toast.success('Private transaction deleted');
     },

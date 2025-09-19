@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Household} from './household.entity';
-import {CreateHouseholdDTO, UpdateHouseholdDTO} from '@maya-vault/validation';
+import {CreateHouseholdDTO, UpdateHouseholdDTO} from '@maya-vault/contracts';
 
 @Injectable()
 export class HouseholdsRepository {

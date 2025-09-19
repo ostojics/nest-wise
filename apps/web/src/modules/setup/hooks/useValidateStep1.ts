@@ -1,4 +1,4 @@
-import {UserRegistrationDTO, userRegistrationSchema} from '@maya-vault/validation';
+import {UserRegistrationDTO, userRegistrationSchema} from '@maya-vault/contracts';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 

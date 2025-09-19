@@ -1,5 +1,5 @@
 import React, {createContext, useState, ReactNode} from 'react';
-import {UserRegistrationDTO} from '@maya-vault/validation';
+import {UserRegistrationDTO} from '@maya-vault/contracts';
 
 interface SetupContextType {
   currentStep: number;

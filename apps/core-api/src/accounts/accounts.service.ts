@@ -1,5 +1,4 @@
-import {EditAccountDTO, TransferFundsDTO} from '@maya-vault/contracts';
-import {CreateAccountDTO} from '@maya-vault/validation';
+import {EditAccountDTO, TransferFundsDTO, CreateAccountDTO} from '@maya-vault/contracts';
 import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {Account} from './account.entity';
 import {AccountsRepository} from './accounts.repository';
@@ -100,14 +99,14 @@ export class AccountsService {
         currentBalance: fromBalance - amount,
       });
       if (!updatedFrom) {
-        throw new NotFoundException('From account not found');
+        throw new NotFoundException('Source account not found');
       }
 
       const updatedTo = await this.accountsRepository.update(dto.toAccountId, {
         currentBalance: toBalance + amount,
       });
       if (!updatedTo) {
-        throw new NotFoundException('To account not found');
+        throw new NotFoundException('Destination account not found');
       }
 
       return {fromAccount: updatedFrom, toAccount: updatedTo};

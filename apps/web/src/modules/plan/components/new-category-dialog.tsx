@@ -16,7 +16,7 @@ import {queryKeys} from '@/modules/api/query-keys';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useValidateCreateCategory} from '@/modules/categories/hooks/use-validate-create-category';
 import {useCreateCategory} from '@/modules/categories/hooks/useCreateCategory';
-import {CreateCategoryDTO} from '@maya-vault/validation';
+import {CreateCategoryDTO} from '@maya-vault/contracts';
 import {useQueryClient} from '@tanstack/react-query';
 import {useSearch} from '@tanstack/react-router';
 import {useState} from 'react';

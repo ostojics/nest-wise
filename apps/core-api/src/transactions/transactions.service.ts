@@ -4,11 +4,11 @@ import {
   CreateTransactionDTO,
   GetTransactionsQueryDTO,
   UpdateTransactionDTO,
-} from '@maya-vault/validation';
-import {
   AccountSpendingPointContract,
   GetAccountsSpendingQueryDTO,
   GetTransactionsResponseContract,
+  NetWorthTrendPointContract,
+  TransactionContract,
 } from '@maya-vault/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {generateObject} from 'ai';
@@ -21,16 +21,19 @@ import {AccountsService} from '../accounts/accounts.service';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 import {Transaction} from './transaction.entity';
 import {TransactionsRepository} from './transactions.repository';
-import {NetWorthTrendPointContract} from '@maya-vault/contracts';
+import {Logger} from 'pino-nestjs';
 
 @Injectable()
 export class TransactionsService {
+  private readonly CHUNK_SIZE = 100;
+
   constructor(
     private readonly transactionsRepository: TransactionsRepository,
     private readonly accountsService: AccountsService,
     private readonly householdsService: HouseholdsService,
     private readonly categoriesService: CategoriesService,
     private readonly dataSource: DataSource,
+    private readonly logger: Logger,
   ) {}
 
   async createTransaction(transactionData: CreateTransactionDTO): Promise<Transaction> {
@@ -140,6 +143,30 @@ export class TransactionsService {
 
   async findTransactions(query: GetTransactionsQueryDTO): Promise<GetTransactionsResponseContract> {
     return await this.transactionsRepository.findTransactionsWithFilters(query);
+  }
+
+  async findAllTransactions(query: Omit<GetTransactionsQueryDTO, 'page' | 'pageSize'>): Promise<TransactionContract[]> {
+    const results: TransactionContract[] = [];
+    const pageSize = this.CHUNK_SIZE;
+    let currentPage = 1;
+    let hasMore = true;
+    this.logger.debug('Finding all transactions', {query});
+
+    while (hasMore) {
+      const {data, meta} = await this.transactionsRepository.findTransactionsWithFilters({
+        ...query,
+        page: currentPage,
+        pageSize,
+      });
+
+      results.push(...data);
+      hasMore = currentPage < meta.totalPages;
+      currentPage += 1;
+      this.logger.debug('Found transactions', {data, meta});
+    }
+
+    this.logger.debug('Found all transactions', {resultsSize: results.length});
+    return results;
   }
 
   async updateTransaction(id: string, transactionData: UpdateTransactionDTO): Promise<Transaction> {

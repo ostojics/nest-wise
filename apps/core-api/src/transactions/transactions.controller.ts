@@ -7,7 +7,7 @@ import {
   getTransactionsQuerySchema,
   UpdateTransactionDTO,
   updateTransactionSchema,
-} from '@maya-vault/validation';
+} from '@maya-vault/contracts';
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UsePipes} from '@nestjs/common';
 import {
   ApiBadRequestResponse,

@@ -1,9 +1,9 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
-import {updateHouseholdSchema} from '../schemas';
+import {UpdateHouseholdDTO, updateHouseholdSchema} from '@maya-vault/contracts';
 
 export const useValidateEditHousehold = () => {
-  return useForm({
+  return useForm<UpdateHouseholdDTO>({
     resolver: zodResolver(updateHouseholdSchema),
   });
 };

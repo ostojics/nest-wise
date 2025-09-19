@@ -1,5 +1,5 @@
 import {zodResolver} from '@hookform/resolvers/zod';
-import {CreateHouseholdDTO, createHouseholdSchema} from '@maya-vault/validation';
+import {CreateHouseholdDTO, createHouseholdSchema} from '@maya-vault/contracts';
 import {useForm} from 'react-hook-form';
 
 export const useValidateStep2 = () => {

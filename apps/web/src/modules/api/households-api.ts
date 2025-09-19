@@ -1,5 +1,4 @@
-import {AccountContract, CategoryContract, HouseholdContract} from '@maya-vault/contracts';
-import {UpdateHouseholdDTO} from '@maya-vault/validation';
+import {AccountContract, CategoryContract, HouseholdContract, UpdateHouseholdDTO} from '@maya-vault/contracts';
 import httpClient from './http-client';
 
 export const getHouseholdById = (id: string) => {

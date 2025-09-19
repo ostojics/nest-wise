@@ -1,6 +1,5 @@
 import {Button} from '@/components/ui/button';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/useGetHouseholdCategories';
 import AccountCombobox from './selects/account-combobox';
 import CategoryCombobox from './selects/category-combobox';
@@ -10,10 +9,9 @@ import TransactionsTableSearch from './transactions-table-search';
 import {useNavigate} from '@tanstack/react-router';
 
 const TransactionsTableActions = () => {
-  const {data: me} = useGetMe();
   const navigate = useNavigate();
-  const {data: accounts} = useGetHouseholdAccounts(me?.householdId ?? '');
-  const {data: categories} = useGetHouseholdCategories(me?.householdId ?? '');
+  const {data: accounts} = useGetHouseholdAccounts();
+  const {data: categories} = useGetHouseholdCategories();
 
   return (
     <section className="mb-5 @container/transactions-table-actions">
@@ -24,9 +22,7 @@ const TransactionsTableActions = () => {
           <CategoryCombobox categories={categories ?? []} />
           <TransactionDateFromPicker />
           <TransactionDateToPicker />
-          <Button onClick={() => navigate({search: {page: 1, pageSize: 15}, to: '/transactions'})}>
-            Reset filters
-          </Button>
+          <Button onClick={() => navigate({to: '/transactions'})}>Reset filters</Button>
         </div>
       </div>
     </section>

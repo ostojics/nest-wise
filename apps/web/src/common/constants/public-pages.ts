@@ -1,1 +1,1 @@
-export const PUBLIC_PAGES = ['/invites', '/login'] as const;
+export const PUBLIC_PAGES = ['/invites', '/login', '/setup'] as const;

@@ -1,19 +1,17 @@
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {UsersService} from 'src/users/users.service';
-import {LoginDTO, SetupDTO} from '@maya-vault/validation';
+import {LoginDTO, SetupDTO} from '@maya-vault/contracts';
 import {verifyPassword} from 'src/lib/hashing/hashing';
 import {JwtService} from '@nestjs/jwt';
 import {ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {HouseholdsService} from 'src/households/households.service';
-import {AccountsService} from 'src/accounts/accounts.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly householdsService: HouseholdsService,
-    private readonly accountsService: AccountsService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -27,24 +25,6 @@ export class AuthService {
       householdId: household.id,
     });
 
-    const accountPromises = [
-      this.accountsService.createAccount({
-        name: 'Emergency fund',
-        type: 'other',
-        initialBalance: 0,
-        ownerId: user.id,
-        householdId: household.id,
-      }),
-      this.accountsService.createAccount({
-        name: 'Dedicated fund',
-        type: 'other',
-        initialBalance: 0,
-        ownerId: user.id,
-        householdId: household.id,
-      }),
-    ];
-
-    await Promise.all(accountPromises);
     const token = await this.craftJwt(user.id, user.email);
 
     return {
@@ -56,14 +36,13 @@ export class AuthService {
     return await this.usersService.findUserById(userId);
   }
 
-  async loginUser(userData: LoginDTO) {
-    const user = await this.usersService.findUserByEmail(userData.email);
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+  async loginUser({email, password}: LoginDTO) {
+    const user = await this.usersService.findUserByEmail(email);
 
-    const passwordValid = await verifyPassword(userData.password, user.passwordHash);
-    if (!passwordValid) {
+    const hashToVerify = user ? user.passwordHash : 'a-dummy-hash-that-is-long-and-complex';
+    const passwordIsValid = await verifyPassword(password, hashToVerify);
+
+    if (!user || !passwordIsValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
 

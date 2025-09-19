@@ -1,15 +1,14 @@
+import {TABLET_BREAKPOINT, useIsMobile} from '@/hooks/use-mobile';
+import {TransactionContract} from '@maya-vault/contracts';
 import {useSearch} from '@tanstack/react-router';
+import {lazy, Suspense} from 'react';
 import {useGetTransactions} from '../hooks/useGetTransactions';
+import TransactionsAccordionListError from './transactions-accordion-list.error';
+import TransactionsAccordionListSkeleton from './transactions-accordion-list.skeleton';
 import TransactionsPagination from './transactions-pagination';
 import TransactionsTableActions from './transactions-table-actions';
-import {TransactionContract} from '@maya-vault/contracts';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {TABLET_BREAKPOINT, useIsMobile} from '@/hooks/use-mobile';
-import TransactionsTableSkeleton from './transactions-table.skeleton';
 import TransactionsTableError from './transactions-table.error';
-import TransactionsAccordionListSkeleton from './transactions-accordion-list.skeleton';
-import TransactionsAccordionListError from './transactions-accordion-list.error';
-import {lazy, Suspense} from 'react';
+import TransactionsTableSkeleton from './transactions-table.skeleton';
 
 const TransactionsTable = lazy(() => import('./transactions-table').then((m) => ({default: m.TransactionsTable})));
 const TransactionsAccordionList = lazy(() => import('./transactions-accordion-list'));
@@ -18,9 +17,9 @@ const fallbackTransactions: TransactionContract[] = [];
 
 const TransactionsPage = () => {
   const search = useSearch({from: '/__pathlessLayout/transactions'});
-  const {data: me} = useGetMe();
-  const householdId = me?.householdId;
-  const {data, isLoading, isError, refetch} = useGetTransactions({search: {...search, householdId}});
+  const {data, isLoading, isError, refetch} = useGetTransactions({
+    search,
+  });
   const isMobile = useIsMobile(TABLET_BREAKPOINT);
 
   const renderContent = () => {

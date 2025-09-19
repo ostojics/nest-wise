@@ -54,7 +54,7 @@ export class SavingsService {
       const prevMonth = subMonths(currentUTCDate, 1);
       const prevMonthStart = startOfMonth(prevMonth);
       const prevMonthEnd = endOfMonth(prevMonth);
-      this.logger.log('Calculated months for savings calculation', {
+      this.logger.debug('Calculated months for savings calculation', {
         prevMonthStart,
         prevMonthEnd,
         prevMonth,
@@ -64,16 +64,14 @@ export class SavingsService {
 
       const household = await this.householdsService.findHouseholdById(payload.householdId);
 
-      const transactions = await this.transactionsService.findTransactions({
+      const transactions = await this.transactionsService.findAllTransactions({
         transactionDate_from: format(prevMonthStart, dateFormat),
         transactionDate_to: format(prevMonthEnd, dateFormat),
         householdId: payload.householdId,
-        page: 1,
-        pageSize: 3000,
         type: TransactionType.EXPENSE,
       });
 
-      const totalExpenses = transactions.data.reduce((acc, transaction) => acc + transaction.amount, 0);
+      const totalExpenses = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
       const monthlySpendingTarget = household.monthlyBudget;
       const savings = Math.max(0, monthlySpendingTarget - totalExpenses);
 
@@ -83,7 +81,7 @@ export class SavingsService {
         month: format(prevMonth, 'MMM'),
       });
 
-      this.logger.log('Savings calculated successfully for household', {
+      this.logger.debug('Savings calculated successfully for household', {
         savings,
         monthlySpendingTarget,
         totalExpenses,

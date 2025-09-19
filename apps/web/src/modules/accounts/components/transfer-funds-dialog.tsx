@@ -11,8 +11,6 @@ import {
 } from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {TransferFundsDTO} from '@maya-vault/contracts';
 import {ArrowLeftRight, Loader2, Wallet} from 'lucide-react';
 import {useState} from 'react';
@@ -23,9 +21,7 @@ import AccountSelect from './account-select';
 
 const TransferFundsDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const {data: me} = useGetMe();
-  const {data: household} = useGetHouseholdById(me?.householdId ?? '');
-  const {data: accounts = []} = useGetHouseholdAccounts(household?.id ?? '');
+  const {data: accounts = []} = useGetHouseholdAccounts();
   const mutation = useTransferFundsMutation();
 
   const {
@@ -107,7 +103,7 @@ const TransferFundsDialog = () => {
               Amount
             </Label>
             <div className="relative">
-              <Input id="amount" type="number" step="0.01" min="1" placeholder="0.00" {...register('amount')} />
+              <Input id="amount" type="number" step="0.01" placeholder="0.00" {...register('amount')} />
             </div>
             {errors.amount && <FormError error={errors.amount.message ?? ''} />}
           </div>

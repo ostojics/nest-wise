@@ -44,7 +44,7 @@ const CategoryBudgetsList = () => {
       <Card className="@container/card overflow-hidden">
         <CardHeader className="border-b">
           <CardTitle className="text-base">Total planned</CardTitle>
-          <CardDescription>{format(parse(search.month, 'yyyy-MM', new Date()), 'LLLL yyyy')}</CardDescription>
+          <CardDescription>{format(new Date(search.month), 'LLLL yyyy')}</CardDescription>
         </CardHeader>
         <CardContent className="py-1">
           <div className="text-xl font-semibold tabular-nums">{formatBalance(totals.planned)}</div>

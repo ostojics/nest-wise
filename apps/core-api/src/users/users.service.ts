@@ -1,4 +1,4 @@
-import {CreateUserDTO} from '@maya-vault/validation';
+import {CreateUserDTO} from '@maya-vault/contracts';
 import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {EmailsService} from 'src/emails/emails.service';
 import {HouseholdsService} from 'src/households/households.service';

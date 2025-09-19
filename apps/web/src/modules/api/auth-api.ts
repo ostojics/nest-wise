@@ -1,4 +1,4 @@
-import {LoginDTO, SetupDTO} from '@maya-vault/validation';
+import {LoginDTO, SetupDTO} from '@maya-vault/contracts';
 import httpClient from './http-client';
 import {UserContract} from '@maya-vault/contracts';
 
@@ -16,4 +16,8 @@ export const setup = (data: SetupDTO) => {
 
 export const me = () => {
   return httpClient.get('v1/auth/me').json<UserContract>();
+};
+
+export const logout = () => {
+  return httpClient.post('v1/auth/logout').json();
 };

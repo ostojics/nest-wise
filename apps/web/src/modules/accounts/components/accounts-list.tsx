@@ -1,13 +1,9 @@
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {useGetHouseholdAccounts} from '../hooks/useGetHouseholdAccounts';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {Skeleton} from '@/components/ui/skeleton';
+import {useGetHouseholdAccounts} from '../hooks/useGetHouseholdAccounts';
 import Account from './account';
 
 const AccountsList = () => {
-  const {data: me} = useGetMe();
-  const {data: household} = useGetHouseholdById(me?.householdId ?? '');
-  const {data: accounts, isLoading} = useGetHouseholdAccounts(household?.id ?? '');
+  const {data: accounts, isLoading} = useGetHouseholdAccounts();
 
   if (isLoading) {
     return (
@@ -40,7 +36,7 @@ const AccountsList = () => {
         <div className="text-center">
           <h3 className="text-lg font-semibold text-foreground">No accounts found</h3>
           <p className="text-sm text-muted-foreground mt-1">
-            Create your first account to get started with managing your finances.
+            Create your first financial account to get started with managing your finances.
           </p>
         </div>
       </div>

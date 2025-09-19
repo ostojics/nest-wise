@@ -2,8 +2,8 @@ import {
   GetAccountsSpendingQueryDTO,
   GetCategoryBudgetsQueryParams,
   GetPrivateTransactionsQueryDTO,
+  GetTransactionsQueryDTO,
 } from '@maya-vault/contracts';
-import {GetTransactionsQueryDTO} from '@maya-vault/validation';
 
 export const queryKeys = {
   me: () => ['me'],
@@ -17,7 +17,9 @@ export const queryKeys = {
     all: () => ['categories'],
   },
   transactions: {
+    key: () => ['transactions'],
     all: (search: GetTransactionsQueryDTO) => ['transactions', search],
+    allPages: (search: Partial<GetTransactionsQueryDTO>) => ['transactions-all-pages', search],
     netWorthTrend: () => ['net-worth-trend'],
     spendingByAccounts: (search: GetAccountsSpendingQueryDTO) => ['spending-by-accounts', search],
   },
@@ -25,13 +27,14 @@ export const queryKeys = {
     all: () => ['users'],
   },
   categoryBudgets: {
+    key: () => ['category-budgets'],
     all: (search: GetCategoryBudgetsQueryParams) => ['category-budgets', search],
   },
   savings: {
     trend: () => ['savings-trend'],
   },
   privateTransactions: {
-    tag: () => ['private-transactions'],
+    key: () => ['private-transactions'],
     all: (search: GetPrivateTransactionsQueryDTO) => ['private-transactions', search],
   },
 };

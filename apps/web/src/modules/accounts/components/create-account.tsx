@@ -15,7 +15,8 @@ import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
-import {CreateAccountDTO, useValidateCreateAccount} from '@maya-vault/validation';
+import {CreateAccountDTO} from '@maya-vault/contracts';
+import {useValidateCreateAccount} from '@/modules/accounts/hooks/use-validate-create-account';
 import {Loader2, PlusIcon, Wallet} from 'lucide-react';
 import {useCreateAccountMutation} from '../hooks/useCreateAccountMutation';
 import {useState} from 'react';
@@ -23,7 +24,7 @@ import SelectedAccountType from './selected-account-type';
 
 const CreateAccount = () => {
   const {data} = useGetMe();
-  const {data: household} = useGetHouseholdById(data?.householdId ?? '');
+  const {data: household} = useGetHouseholdById();
   const [isOpen, setIsOpen] = useState(false);
   const mutation = useCreateAccountMutation({
     closeDialog: () => setIsOpen(false),
@@ -124,8 +125,8 @@ const CreateAccount = () => {
               <Input
                 id="initialBalance"
                 type="number"
+                inputMode="decimal"
                 step="0.01"
-                min="0"
                 {...register('initialBalance')}
                 placeholder="0.00"
               />

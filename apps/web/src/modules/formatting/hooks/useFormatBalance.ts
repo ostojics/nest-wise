@@ -1,9 +1,7 @@
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 
 export const useFormatBalance = () => {
-  const {data: me} = useGetMe();
-  const {data: household, isLoading} = useGetHouseholdById(me?.householdId ?? '');
+  const {data: household, isLoading} = useGetHouseholdById();
 
   const formatBalance = (amount: number): string => {
     if (isLoading) return '';

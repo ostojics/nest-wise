@@ -4,10 +4,10 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useCreateTransactionAI} from '@/modules/transactions/hooks/useCreateTransactionAI';
-import {useValidateCreateAiTransaction, CreateTransactionAiDTO} from '@maya-vault/validation';
+import {CreateTransactionAiDTO} from '@maya-vault/contracts';
+import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/useValidateCreateAiTransaction';
 import AiBanner from './ai-banner';
 import {AiDescriptionTooltip} from './ai-description-tooltip';
 
@@ -17,9 +17,9 @@ interface AiTransactionFormProps {
 }
 
 export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps) {
-  const {data: me} = useGetMe();
-  const {data: household} = useGetHouseholdById(me?.householdId ?? '');
-  const {data: accounts} = useGetHouseholdAccounts(household?.id ?? '');
+  const {data: household} = useGetHouseholdById();
+  const {data: accounts} = useGetHouseholdAccounts();
+  const hasAccounts = (accounts ?? []).length > 0;
 
   const createAiTransactionMutation = useCreateTransactionAI();
 
@@ -61,11 +61,13 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
               <SelectValue placeholder="Select account" />
             </SelectTrigger>
             <SelectContent>
-              {accounts?.map((account) => (
-                <SelectItem key={account.id} value={account.id}>
-                  {getAccountDisplayName(account.id)}
-                </SelectItem>
-              ))}
+              {!hasAccounts && <span className="text-sm text-muted-foreground">No accounts available.</span>}
+              {hasAccounts &&
+                accounts?.map((account) => (
+                  <SelectItem key={account.id} value={account.id}>
+                    {getAccountDisplayName(account.id)}
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
           {errors.accountId && <p className="text-sm text-red-500">{errors.accountId.message}</p>}

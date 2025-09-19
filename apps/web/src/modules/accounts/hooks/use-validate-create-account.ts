@@ -1,6 +1,6 @@
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {CreateAccountDTO, createAccountSchema} from '../schemas';
+import {CreateAccountDTO, createAccountSchema} from '@maya-vault/contracts';
 
 interface UseValidateCreateAccountProps {
   householdId: string;
@@ -15,6 +15,7 @@ export const useValidateCreateAccount = ({householdId, ownerId}: UseValidateCrea
       type: 'checking',
       householdId,
       ownerId,
+      initialBalance: 0,
     },
   });
 };

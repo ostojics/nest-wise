@@ -1,7 +1,7 @@
 import {Injectable, ConflictException, NotFoundException} from '@nestjs/common';
 import {CategoriesRepository} from './categories.repository';
 import {Category} from './categories.entity';
-import {CreateCategoryDTO, UpdateCategoryDTO} from '@maya-vault/validation';
+import {CreateCategoryDTO, UpdateCategoryDTO} from '@maya-vault/contracts';
 
 @Injectable()
 export class CategoriesService {
@@ -24,6 +24,7 @@ export class CategoriesService {
     if (!category) {
       throw new NotFoundException('Category not found');
     }
+
     return category;
   }
 

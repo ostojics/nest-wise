@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Category} from './categories.entity';
-import {CreateCategoryDTO, UpdateCategoryDTO} from '@maya-vault/validation';
+import {CreateCategoryDTO, UpdateCategoryDTO} from '@maya-vault/contracts';
 
 @Injectable()
 export class CategoriesRepository {
