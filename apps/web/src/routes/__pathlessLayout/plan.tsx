@@ -1,5 +1,5 @@
 import PlanPage from '@/modules/plan/components/plan-page';
-import {getCategoryBudgetsQueryParamsSchema} from '@maya-vault/contracts';
+import {getCategoryBudgetsQueryParamsSchema} from '@nest-wise/contracts';
 import {createFileRoute} from '@tanstack/react-router';
 import {format} from 'date-fns';
 import z from 'zod';

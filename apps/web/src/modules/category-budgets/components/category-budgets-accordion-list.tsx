@@ -3,7 +3,7 @@ import {Badge} from '@/components/ui/badge';
 import {Progress} from '@/components/ui/progress';
 import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
-import {CategoryBudgetWithCurrentAmountContract} from '@maya-vault/contracts';
+import {CategoryBudgetWithCurrentAmountContract} from '@nest-wise/contracts';
 import EditCategoryBudgetDialog from './edit-category-budget-dialog';
 import CategoryBudgetsAccordionListSkeleton from './category-budgets-accordion-list.skeleton';
 import CategoryBudgetsAccordionListError from './category-budgets-accordion-list.error';

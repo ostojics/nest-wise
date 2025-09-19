@@ -1,6 +1,6 @@
 import {editAccount} from '@/modules/api/accounts-api';
 import {queryKeys} from '@/modules/api/query-keys';
-import {EditAccountDTO, ErrorResponse} from '@maya-vault/contracts';
+import {EditAccountDTO, ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';

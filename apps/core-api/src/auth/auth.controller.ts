@@ -11,7 +11,7 @@ import {
   ApiNoContentResponse,
 } from '@nestjs/swagger';
 import {AuthService} from './auth.service';
-import {loginSchema, LoginDTO, SetupDTO, setupSchema, UserContract} from '@maya-vault/contracts';
+import {loginSchema, LoginDTO, SetupDTO, setupSchema, UserContract} from '@nest-wise/contracts';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {ZodSchema} from 'zod';
 import {Response} from 'express';

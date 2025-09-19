@@ -14,10 +14,10 @@ import {HouseholdsService} from './households.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
 import {HouseholdResponseSwaggerDTO, UpdateHouseholdSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
-import {AccountContract, HouseholdContract} from '@maya-vault/contracts';
+import {AccountContract, HouseholdContract} from '@nest-wise/contracts';
 import {Category} from 'src/categories/categories.entity';
 import {CategoryResponseSwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
-import {UpdateHouseholdDTO, updateHouseholdSchema} from '@maya-vault/contracts';
+import {UpdateHouseholdDTO, updateHouseholdSchema} from '@nest-wise/contracts';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 
 @ApiTags('Households')

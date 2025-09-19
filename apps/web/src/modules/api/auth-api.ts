@@ -1,6 +1,6 @@
-import {LoginDTO, SetupDTO} from '@maya-vault/contracts';
+import {LoginDTO, SetupDTO} from '@nest-wise/contracts';
 import httpClient from './http-client';
-import {UserContract} from '@maya-vault/contracts';
+import {UserContract} from '@nest-wise/contracts';
 
 export const login = (dto: LoginDTO) => {
   return httpClient.post('v1/auth/login', {json: dto}).json();

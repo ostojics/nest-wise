@@ -4,7 +4,7 @@ import {Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTi
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {AccountContract, EditAccountDTO} from '@maya-vault/contracts';
+import {AccountContract, EditAccountDTO} from '@nest-wise/contracts';
 import {DialogDescription, DialogTrigger} from '@radix-ui/react-dialog';
 import {Loader2, Pencil} from 'lucide-react';
 import React from 'react';

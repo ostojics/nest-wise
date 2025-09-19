@@ -1,5 +1,5 @@
 import InvitesPage from '@/modules/invites/components/invite-page';
-import {acceptInviteQueryParamsSchema} from '@maya-vault/contracts';
+import {acceptInviteQueryParamsSchema} from '@nest-wise/contracts';
 import {createFileRoute} from '@tanstack/react-router';
 import z from 'zod';
 

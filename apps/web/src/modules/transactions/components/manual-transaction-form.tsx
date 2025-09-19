@@ -9,7 +9,7 @@ import {useGetHouseholdCategories} from '@/modules/categories/hooks/useGetHouseh
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useCreateTransaction} from '@/modules/transactions/hooks/useCreateTransaction';
 import {useValidateCreateTransaction} from '@/modules/transactions/hooks/useValidateCreateTransaction';
-import {CreateTransactionDTO} from '@maya-vault/contracts';
+import {CreateTransactionDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
 import {useEffect} from 'react';
 import {toast} from 'sonner';

@@ -2,7 +2,7 @@ import {Badge} from '@/components/ui/badge';
 import {Progress} from '@/components/ui/progress';
 import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
-import {CategoryBudgetWithCurrentAmountContract} from '@maya-vault/contracts';
+import {CategoryBudgetWithCurrentAmountContract} from '@nest-wise/contracts';
 import {ColumnDef, getCoreRowModel, useReactTable} from '@tanstack/react-table';
 import {useMemo} from 'react';
 import EditCategoryBudgetDialog from '../components/edit-category-budget-dialog';

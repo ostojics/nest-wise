@@ -1,4 +1,4 @@
-import {SavingsTrendPointContract} from '@maya-vault/contracts';
+import {SavingsTrendPointContract} from '@nest-wise/contracts';
 import httpClient from './http-client';
 
 export const getSavingsTrend = async () => {

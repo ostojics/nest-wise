@@ -1,4 +1,4 @@
-import {CreateCategoryDTO, UpdateCategoryDTO, createCategorySchema, updateCategorySchema} from '@maya-vault/contracts';
+import {CreateCategoryDTO, UpdateCategoryDTO, createCategorySchema, updateCategorySchema} from '@nest-wise/contracts';
 import {Body, Controller, Delete, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -22,7 +22,7 @@ import {
   UpdateCategorySwaggerDTO,
 } from 'src/tools/swagger/categories.swagger.dto';
 import {CategoriesService} from './categories.service';
-import {CategoryContract} from '@maya-vault/contracts';
+import {CategoryContract} from '@nest-wise/contracts';
 
 @ApiTags('Categories')
 @Controller({

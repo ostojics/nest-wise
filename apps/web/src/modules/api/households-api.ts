@@ -1,4 +1,4 @@
-import {AccountContract, CategoryContract, HouseholdContract, UpdateHouseholdDTO} from '@maya-vault/contracts';
+import {AccountContract, CategoryContract, HouseholdContract, UpdateHouseholdDTO} from '@nest-wise/contracts';
 import httpClient from './http-client';
 
 export const getHouseholdById = (id: string) => {

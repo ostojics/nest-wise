@@ -1,10 +1,4 @@
-import {
-  AcceptInviteDTO,
-  acceptInviteSchema,
-  InviteUserDTO,
-  inviteUserSchema,
-  UserContract,
-} from '@maya-vault/contracts';
+import {AcceptInviteDTO, acceptInviteSchema, InviteUserDTO, inviteUserSchema, UserContract} from '@nest-wise/contracts';
 import {Body, Controller, Get, HttpCode, Post, Res, UseGuards, UsePipes} from '@nestjs/common';
 import {
   ApiBadRequestResponse,

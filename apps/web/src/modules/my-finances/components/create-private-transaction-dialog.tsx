@@ -8,7 +8,7 @@ import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdA
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useCreatePrivateTransaction} from '@/modules/my-finances/hooks/use-create-private-transaction';
 import {useValidateCreatePrivateTransaction} from '@/modules/my-finances/hooks/use-validate-create-private-transaction';
-import {CreatePrivateTransactionDTO} from '@maya-vault/contracts';
+import {CreatePrivateTransactionDTO} from '@nest-wise/contracts';
 import {DialogClose, DialogTrigger} from '@radix-ui/react-dialog';
 import {Loader2} from 'lucide-react';
 import {useState} from 'react';

@@ -1,6 +1,6 @@
 import {useMemo, useState} from 'react';
 import {ChevronsUpDown} from 'lucide-react';
-import {CategoryContract} from '@maya-vault/contracts';
+import {CategoryContract} from '@nest-wise/contracts';
 
 import {Button} from '@/components/ui/button';
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from '@/components/ui/command';

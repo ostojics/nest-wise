@@ -1,7 +1,7 @@
 import {queryKeys} from '@/modules/api/query-keys';
 import {getTransactions} from '@/modules/api/transactions-api';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {GetTransactionsQueryDTO} from '@maya-vault/contracts';
+import {GetTransactionsQueryDTO} from '@nest-wise/contracts';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 
 interface UseGetTransactionsArgs {

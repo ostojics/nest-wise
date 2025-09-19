@@ -2,7 +2,7 @@ import {
   CreatePrivateTransactionDTO,
   GetPrivateTransactionsQueryDTO,
   GetPrivateTransactionsResponseContract,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 import httpClient from './http-client';
 
 export const createPrivateTransaction = async (dto: CreatePrivateTransactionDTO) => {

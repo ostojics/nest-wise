@@ -1,5 +1,5 @@
 import {useMemo, useState} from 'react';
-import {AccountContract} from '@maya-vault/contracts';
+import {AccountContract} from '@nest-wise/contracts';
 import {Button} from '@/components/ui/button';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from '@/components/ui/command';

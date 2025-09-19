@@ -1,5 +1,5 @@
 import {zodResolver} from '@hookform/resolvers/zod';
-import {EditAccountDTO, editAccountSchema} from '@maya-vault/contracts';
+import {EditAccountDTO, editAccountSchema} from '@nest-wise/contracts';
 import {useForm} from 'react-hook-form';
 
 interface UseValidateEditAccountArgs {

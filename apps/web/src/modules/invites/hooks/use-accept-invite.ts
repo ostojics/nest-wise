@@ -1,6 +1,6 @@
 import {queryKeys} from '@/modules/api/query-keys';
 import {acceptInvite} from '@/modules/api/users-api';
-import {ErrorResponse} from '@maya-vault/contracts';
+import {ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {useNavigate} from '@tanstack/react-router';
 import {HTTPError} from 'ky';

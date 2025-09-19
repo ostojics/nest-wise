@@ -1,5 +1,5 @@
 import {zodResolver} from '@hookform/resolvers/zod';
-import {TransferFundsDTO, transferFundsSchema} from '@maya-vault/contracts';
+import {TransferFundsDTO, transferFundsSchema} from '@nest-wise/contracts';
 import {useForm} from 'react-hook-form';
 
 export const useValidateTransferFunds = () => {

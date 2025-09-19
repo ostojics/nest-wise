@@ -5,7 +5,7 @@ import {AuthGuard} from 'src/common/guards/auth.guard';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {UsersService} from 'src/users/users.service';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
-import {SavingsTrendPointContract} from '@maya-vault/contracts';
+import {SavingsTrendPointContract} from '@nest-wise/contracts';
 import {SavingsTrendPointSwaggerDTO} from 'src/tools/swagger/savings.swagger.dto';
 
 @ApiTags('Savings')

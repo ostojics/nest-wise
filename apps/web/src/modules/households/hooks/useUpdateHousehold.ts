@@ -2,7 +2,7 @@ import {queryKeys} from '@/modules/api/query-keys';
 import {updateHousehold} from '@/modules/api/households-api';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {toast} from 'sonner';
-import {UpdateHouseholdDTO} from '@maya-vault/contracts';
+import {UpdateHouseholdDTO} from '@nest-wise/contracts';
 
 interface UpdateHouseholdParams {
   id: string;

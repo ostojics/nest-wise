@@ -1,11 +1,11 @@
-import {CreateUserDTO} from '@maya-vault/contracts';
+import {CreateUserDTO} from '@nest-wise/contracts';
 import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {EmailsService} from 'src/emails/emails.service';
 import {HouseholdsService} from 'src/households/households.service';
 import {hashPassword} from 'src/lib/hashing/hashing';
 import {User} from './user.entity';
 import {UsersRepository} from './users.repository';
-import {AcceptInviteDTO} from '@maya-vault/contracts';
+import {AcceptInviteDTO} from '@nest-wise/contracts';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {JwtService} from '@nestjs/jwt';
 import {Logger} from 'pino-nestjs';

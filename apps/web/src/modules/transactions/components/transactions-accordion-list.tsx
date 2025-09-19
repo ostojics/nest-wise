@@ -2,7 +2,7 @@ import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/co
 import {Badge} from '@/components/ui/badge';
 import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
-import {TransactionContract, TransactionType} from '@maya-vault/contracts';
+import {TransactionContract, TransactionType} from '@nest-wise/contracts';
 import {format} from 'date-fns';
 import TransactionRowActions from './transaction-row-actions';
 

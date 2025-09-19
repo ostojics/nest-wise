@@ -13,7 +13,7 @@ import {Input} from '@/components/ui/input';
 import {useValidateEditCategoryBudget} from '../hooks/use-validate-edit-category-budget';
 import {Label} from '@/components/ui/label';
 import FormError from '@/components/form-error';
-import {EditCategoryBudgetDTO} from '@maya-vault/contracts';
+import {EditCategoryBudgetDTO} from '@nest-wise/contracts';
 import {useEditCategoryBudget} from '../hooks/use-edit-category-budget';
 import {useState} from 'react';
 import {Loader2} from 'lucide-react';

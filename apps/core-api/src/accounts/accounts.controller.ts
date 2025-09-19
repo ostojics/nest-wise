@@ -5,7 +5,7 @@ import {
   transferFundsSchema,
   CreateAccountDTO,
   createAccountSchema,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 import {
   Body,
   Controller,

@@ -4,7 +4,7 @@ import {toast} from 'sonner';
 import {useQueryClient} from '@tanstack/react-query';
 import {queryKeys} from '@/modules/api/query-keys';
 import {HTTPError} from 'ky';
-import {ErrorResponse} from '@maya-vault/contracts';
+import {ErrorResponse} from '@nest-wise/contracts';
 
 export const useTransferFundsMutation = () => {
   const queryClient = useQueryClient();

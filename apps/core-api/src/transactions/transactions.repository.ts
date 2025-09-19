@@ -12,7 +12,7 @@ import {
   AccountSpendingPointContract,
   GetAccountsSpendingQueryDTO,
   NetWorthTrendPointContract,
-} from '@maya-vault/contracts';
+} from '@nest-wise/contracts';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 
 @Injectable()

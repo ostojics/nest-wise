@@ -3,25 +3,25 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: mayavault-postgres-dev
+    container_name: nestwise-postgres-dev
     restart: always
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=mayavault_dev
+      - POSTGRES_DB=nestwise_dev
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U root -d mayavault_dev']
+      test: ['CMD-SHELL', 'pg_isready -U root -d nestwise_dev']
       interval: 10s
       timeout: 5s
       retries: 5
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: mayavault-pgadmin-dev
+    container_name: nestwise-pgadmin-dev
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
@@ -36,7 +36,7 @@ services:
 
   redis:
     image: redis:latest
-    container_name: mayavault-redis-dev
+    container_name: nestwise-redis-dev
     restart: always
     ports:
       - '6379:6379'
@@ -50,7 +50,7 @@ services:
 
   redisinsight:
     image: redis/redisinsight:latest
-    container_name: mayavault-redisinsight-dev
+    container_name: nestwise-redisinsight-dev
     restart: always
     environment:
       - RI_REDIS_HOST=redis

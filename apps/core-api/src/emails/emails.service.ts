@@ -1,4 +1,4 @@
-import {AcceptInviteQueryParams} from '@maya-vault/contracts';
+import {AcceptInviteQueryParams} from '@nest-wise/contracts';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Injectable} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
@@ -53,9 +53,9 @@ export class EmailsService {
     const {error} = await this.resendClient.emails.send({
       to: payload.email,
       from: 'no-reply@resend.dev',
-      subject: `[Maya Vault] Invitation to join household`,
+      subject: `[NestWise] Invitation to join household`,
       html: `
-      <p>You have been invited to join household <b>${payload.householdName}</b> on Maya Vault. Please click the link below to accept the invitation:</p>
+      <p>You have been invited to join household <b>${payload.householdName}</b> on NestWise. Please click the link below to accept the invitation:</p>
       <a href="${webAppUrl}/invites?${queryParams}">Accept Invitation</a>
       `,
     });

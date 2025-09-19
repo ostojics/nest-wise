@@ -1,5 +1,5 @@
 import React from 'react';
-import {AccountContract} from '@maya-vault/contracts';
+import {AccountContract} from '@nest-wise/contracts';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
 import {accountTypes} from '@/common/constants/account-types';

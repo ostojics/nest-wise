@@ -1,6 +1,6 @@
 import {editCategoryBudget} from '@/modules/api/category-budgets';
 import {queryKeys} from '@/modules/api/query-keys';
-import {EditCategoryBudgetDTO, ErrorResponse} from '@maya-vault/contracts';
+import {EditCategoryBudgetDTO, ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {useSearch} from '@tanstack/react-router';
 import {HTTPError} from 'ky';

@@ -1,5 +1,5 @@
 import TransactionsPage from '@/modules/transactions/components/transactions-page';
-import {TransactionSortFieldEnum} from '@maya-vault/contracts';
+import {TransactionSortFieldEnum} from '@nest-wise/contracts';
 import {createFileRoute} from '@tanstack/react-router';
 import z from 'zod';
 

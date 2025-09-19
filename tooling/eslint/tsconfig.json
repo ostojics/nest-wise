@@ -1,5 +1,5 @@
 {
-  "extends": "@maya-vault/tsconfig/base.json",
+  "extends": "@nest-wise/tsconfig/base.json",
   "compilerOptions": {
     "module": "nodenext"
   },
