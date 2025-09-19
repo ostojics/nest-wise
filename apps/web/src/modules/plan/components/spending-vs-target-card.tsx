@@ -24,8 +24,8 @@ const SpendingVsTargetCard = () => {
   } = useGetAllTransactions({
     search: {
       type: 'expense',
-      date_from: start,
-      date_to: end,
+      from: start,
+      to: end,
     },
   });
 

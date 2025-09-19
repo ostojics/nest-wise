@@ -101,7 +101,7 @@ export class HouseholdTransactionsController {
     example: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
   })
   @ApiQuery({
-    name: 'date_from',
+    name: 'from',
     required: false,
     type: String,
     format: 'date',
@@ -109,7 +109,7 @@ export class HouseholdTransactionsController {
     example: '2024-01-01',
   })
   @ApiQuery({
-    name: 'date_to',
+    name: 'to',
     required: false,
     type: String,
     format: 'date',
@@ -304,14 +304,14 @@ export class HouseholdTransactionsController {
     example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   })
   @ApiQuery({
-    name: 'date_from',
+    name: 'from',
     required: false,
     type: String,
     format: 'date',
     description: 'Start date inclusive (YYYY-MM-DD)',
   })
   @ApiQuery({
-    name: 'date_to',
+    name: 'to',
     required: false,
     type: String,
     format: 'date',

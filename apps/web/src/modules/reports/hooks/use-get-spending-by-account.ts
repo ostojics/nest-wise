@@ -8,10 +8,10 @@ export const useGetSpendingByAccount = () => {
   const search = useSearch({from: '/__pathlessLayout/reports/spending'});
   const {data: me} = useGetMe();
 
-  // Convert legacy parameters to new format
+  // Use the simplified date parameters
   const queryParams = {
-    date_from: search.transactionDate_from,
-    date_to: search.transactionDate_to,
+    from: search.transactionDate_from,
+    to: search.transactionDate_to,
   };
 
   return useQuery({

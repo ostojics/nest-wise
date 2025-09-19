@@ -256,16 +256,13 @@ export class TransactionsRepository {
       queryBuilder.andWhere('transaction.categoryId = :categoryId', {categoryId: query.categoryId});
     }
 
-    // Handle date parameters with priority: date_from/date_to > from/to > transactionDate_from/to
-    const dateFrom = query.date_from ?? query.from ?? query.transactionDate_from;
-    const dateTo = query.date_to ?? query.to ?? query.transactionDate_to;
-
-    if (dateFrom) {
-      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom', {dateFrom});
+    // Use simplified date parameters
+    if (query.from) {
+      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom', {dateFrom: query.from});
     }
 
-    if (dateTo) {
-      queryBuilder.andWhere('transaction.transactionDate <= :dateTo', {dateTo});
+    if (query.to) {
+      queryBuilder.andWhere('transaction.transactionDate <= :dateTo', {dateTo: query.to});
     }
 
     if (query.type) {
@@ -386,9 +383,9 @@ export class TransactionsRepository {
       amount: string | number | null;
     }
 
-    // Handle date parameters with priority: date_from/date_to > from/to > transactionDate_from/to
-    const dateFrom = query.date_from ?? query.from ?? query.transactionDate_from;
-    const dateTo = query.date_to ?? query.to ?? query.transactionDate_to;
+    // Use simplified date parameters
+    const dateFrom = query.from;
+    const dateTo = query.to;
 
     const rows: Row[] = await this.transactionRepository.query(
       `

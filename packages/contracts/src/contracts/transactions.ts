@@ -49,17 +49,11 @@ export const getAccountsSpendingQuerySchema = z
   })
   .strict();
 
-// New household-scoped schema with standardized date parameters
+// New household-scoped schema with simplified date parameters
 export const getAccountsSpendingQueryHouseholdSchema = z
   .object({
-    date_from: z.string().date().optional(),
-    date_to: z.string().date().optional(),
-    // Legacy aliases for backward compatibility during transition
     from: z.string().date().optional(),
     to: z.string().date().optional(),
-    // Deprecated but still supported
-    transactionDate_from: z.string().date().optional(),
-    transactionDate_to: z.string().date().optional(),
   })
   .strict();
 
@@ -186,7 +180,7 @@ export const getTransactionsQuerySchema = z
   })
   .strict();
 
-// New household-scoped schema without householdId (provided in path) with standardized date parameters
+// New household-scoped schema without householdId (provided in path) with simplified date parameters
 export const getTransactionsQueryHouseholdSchema = z
   .object({
     page: z.coerce.number().min(1).default(1),
@@ -195,14 +189,8 @@ export const getTransactionsQueryHouseholdSchema = z
     accountId: z.string().uuid().optional(),
     categoryId: z.string().uuid().optional(),
     type: TransactionTypeEnum.optional(),
-    date_from: z.string().date().optional(),
-    date_to: z.string().date().optional(),
-    // Legacy aliases for backward compatibility during transition
     from: z.string().date().optional(),
     to: z.string().date().optional(),
-    // Deprecated but still supported
-    transactionDate_from: z.string().date().optional(),
-    transactionDate_to: z.string().date().optional(),
     q: z.string().optional(),
   })
   .strict();
