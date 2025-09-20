@@ -68,8 +68,6 @@ export class PrivateTransactionsRepository {
   }
 
   private applyFilters(qb: SelectQueryBuilder<PrivateTransaction>, query: GetPrivateTransactionsQueryDTO): void {
-    // Note: householdId filtering is removed since we scope by userId and join account
-
     if (query.accountId) {
       qb.andWhere('pt.accountId = :accountId', {accountId: query.accountId});
     }
@@ -78,7 +76,6 @@ export class PrivateTransactionsRepository {
       qb.andWhere('pt.type = :type', {type: query.type});
     }
 
-    // Handle date filtering
     if (query.from) {
       qb.andWhere('pt.transactionDate >= :dateFrom', {dateFrom: query.from});
     }

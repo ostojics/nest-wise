@@ -6,15 +6,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useNavigate, useSearch} from '@tanstack/react-router';
 import {useGetTransactions} from '../hooks/useGetTransactions';
 
 const TransactionsPagination = () => {
   const search = useSearch({from: '/__pathlessLayout/transactions'});
-  const {data: me} = useGetMe();
   const navigate = useNavigate();
-  const {data} = useGetTransactions({search: {...search, householdId: me?.householdId ?? ''}});
+  const {data} = useGetTransactions({search});
 
   const currentPage = search.page;
   const totalPages = data?.meta.totalPages ?? 1;

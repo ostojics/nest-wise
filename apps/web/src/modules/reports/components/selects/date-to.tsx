@@ -19,17 +19,17 @@ const DateToPicker: React.FC<DateToPickerProps> = ({className}) => {
   const search = useSearch({from: '/__pathlessLayout/reports/spending'});
   const navigate = useNavigate();
 
-  const selectedDate = search.transactionDate_to ? new Date(search.transactionDate_to) : undefined;
+  const selectedDate = search.to ? new Date(search.to) : undefined;
 
   const dateDisableReference = useMemo(() => {
-    return getDateDisableReference(new Date(search.transactionDate_from), false);
-  }, [search.transactionDate_from]);
+    return getDateDisableReference(new Date(search.from), false);
+  }, [search.from]);
 
   const handleSelectDate = (value: Date | undefined) => {
     if (!value) return;
 
     void navigate({
-      search: (prev) => ({...prev, transactionDate_to: formatSelectedDate(value)}),
+      search: (prev) => ({...prev, to: formatSelectedDate(value)}),
       to: '/reports/spending',
     });
     setOpen(false);

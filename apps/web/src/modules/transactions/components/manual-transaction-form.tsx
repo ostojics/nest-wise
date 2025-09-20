@@ -6,10 +6,9 @@ import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/useGetHouseholdCategories';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {useCreateTransaction} from '@/modules/transactions/hooks/useCreateTransaction';
 import {useValidateCreateTransaction} from '@/modules/transactions/hooks/useValidateCreateTransaction';
-import {CreateTransactionDTO} from '@nest-wise/contracts';
+import {CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
 import {useEffect} from 'react';
 import {toast} from 'sonner';
@@ -20,7 +19,6 @@ interface ManualTransactionFormProps {
 }
 
 export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFormProps) {
-  const {data: household} = useGetHouseholdById();
   const {data: accounts} = useGetHouseholdAccounts();
   const {data: categories} = useGetHouseholdCategories();
   const hasAccounts = (accounts ?? []).length > 0;
@@ -34,14 +32,12 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
     watch,
     reset,
     formState: {errors},
-  } = useValidateCreateTransaction({
-    householdId: household?.id ?? '',
-  });
+  } = useValidateCreateTransaction();
 
   const watchedCategoryId = watch('categoryId');
   const watchedType = watch('type');
 
-  const onSubmit = async (data: CreateTransactionDTO) => {
+  const onSubmit = async (data: CreateTransactionHouseholdDTO) => {
     try {
       await createTransactionMutation.mutateAsync(data);
       reset();

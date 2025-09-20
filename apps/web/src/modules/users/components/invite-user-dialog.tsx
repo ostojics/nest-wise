@@ -16,12 +16,12 @@ import {HTTPError} from 'ky';
 import {Mail, UserPlus2} from 'lucide-react';
 import {useState} from 'react';
 import {toast} from 'sonner';
-import {useInviteUser} from '../hooks/use-invite-user';
+import {useInviteUserToHousehold} from '../hooks/use-invite-user';
 import {useValidateInviteUser} from '../hooks/use-validate-invite-user';
 
 const InviteUserDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const mutation = useInviteUser();
+  const mutation = useInviteUserToHousehold();
   const {
     register,
     handleSubmit,
@@ -31,7 +31,7 @@ const InviteUserDialog = () => {
   } = useValidateInviteUser();
 
   const handleInviteUser = async (data: InviteUserDTO) => {
-    await mutation.mutateAsync(data, {
+    await mutation.mutateAsync(data.email, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onError: async (error) => {
         const typedError = error as HTTPError<ErrorResponse>;

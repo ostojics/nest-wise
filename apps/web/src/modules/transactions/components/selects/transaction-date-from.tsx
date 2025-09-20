@@ -19,19 +19,19 @@ const TransactionDateFromPicker: React.FC<TransactionDateFromPickerProps> = ({cl
   const search = useSearch({from: '/__pathlessLayout/transactions'});
   const navigate = useNavigate();
 
-  const selectedDate = search.transactionDate_from ? new Date(search.transactionDate_from) : undefined;
+  const selectedDate = search.from ? new Date(search.from) : undefined;
 
   const dateDisableReference = useMemo(() => {
-    if (!search.transactionDate_to) return;
+    if (!search.to) return;
 
-    return getDateDisableReference(new Date(search.transactionDate_to), true);
-  }, [search.transactionDate_to]);
+    return getDateDisableReference(new Date(search.to), true);
+  }, [search.to]);
 
   const handleSelectDate = (value: Date | undefined) => {
     if (!value) return;
 
     void navigate({
-      search: (prev) => ({...prev, transactionDate_from: formatSelectedDate(value)}),
+      search: (prev) => ({...prev, from: formatSelectedDate(value)}),
       to: '/transactions',
     });
     setOpen(false);
