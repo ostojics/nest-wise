@@ -142,9 +142,8 @@ export class TransactionsService {
       let categoryId: string | null = null;
 
       if (isNewCategorySuggested) {
-        const newCategory = await this.categoriesService.createCategory({
+        const newCategory = await this.categoriesService.createCategoryForHousehold(household.id, {
           name: object.suggestedCategory.newCategoryName,
-          householdId: household.id,
         });
 
         categoryId = newCategory.id;
@@ -203,9 +202,8 @@ export class TransactionsService {
       let categoryId: string | null = null;
 
       if (isNewCategorySuggested) {
-        const newCategory = await this.categoriesService.createCategory({
+        const newCategory = await this.categoriesService.createCategoryForHousehold(householdId, {
           name: object.suggestedCategory.newCategoryName,
-          householdId: household.id,
         });
 
         categoryId = newCategory.id;

@@ -1,12 +1,28 @@
 import {
+  HouseholdContract,
+  AccountContract,
+  createCategorySchema,
+  CreateCategoryDTO,
+  CategoryContract,
+  updateHouseholdSchema,
+  UpdateHouseholdDTO,
+  transferFundsSchema,
+  TransferFundsDTO,
+  UserContract,
+  inviteUserSchema,
+  InviteUserDTO,
+  createAccountHouseholdScopedSchema,
+  CreateAccountHouseholdScopedDTO,
+} from '@nest-wise/contracts';
+import {
   Controller,
+  UseGuards,
   Get,
   Param,
-  UseGuards,
-  Put,
-  Body,
-  Post,
   UsePipes,
+  Post,
+  Body,
+  Put,
   HttpCode,
   HttpStatus,
   ForbiddenException,
@@ -15,47 +31,37 @@ import {
   ApiTags,
   ApiOperation,
   ApiParam,
-  ApiBearerAuth,
   ApiOkResponse,
   ApiNotFoundResponse,
   ApiUnauthorizedResponse,
+  ApiBearerAuth,
   ApiBody,
-  ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiConflictResponse,
   ApiNoContentResponse,
 } from '@nestjs/swagger';
-import {HouseholdsService} from './households.service';
+import {Logger} from 'pino-nestjs';
+import {AccountsService} from 'src/accounts/accounts.service';
+import {Category} from 'src/categories/categories.entity';
+import {CategoriesService} from 'src/categories/categories.service';
+import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {AuthGuard} from 'src/common/guards/auth.guard';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
+import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
+import {PoliciesService} from 'src/policies/policies.service';
 import {
   AccountResponseSwaggerDTO,
   CreateAccountHouseholdScopedSwaggerDTO,
   TransferFundsSwaggerDTO,
   TransferFundsResponseSwaggerDTO,
 } from 'src/tools/swagger/accounts.swagger.dto';
+import {UserResponseSwaggerDTO} from 'src/tools/swagger/auth.swagger.dto';
+import {CategoryResponseSwaggerDTO, CreateCategorySwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
 import {HouseholdResponseSwaggerDTO, UpdateHouseholdSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
-import {
-  AccountContract,
-  HouseholdContract,
-  UserContract,
-  CreateAccountHouseholdScopedDTO,
-  createAccountHouseholdScopedSchema,
-  TransferFundsDTO,
-  transferFundsSchema,
-  UpdateHouseholdDTO,
-  updateHouseholdSchema,
-  InviteUserDTO,
-  inviteUserSchema,
-} from '@nest-wise/contracts';
-import {Category} from 'src/categories/categories.entity';
-import {CategoryResponseSwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
-import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
-import {AccountsService} from 'src/accounts/accounts.service';
-import {PoliciesService} from 'src/policies/policies.service';
-import {CurrentUser} from 'src/common/decorators/current-user.decorator';
-import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
+import {InviteUserSwaggerDTO} from 'src/tools/swagger/users.swagger.dto';
 import {UsersService} from 'src/users/users.service';
-import {UserResponseSwaggerDTO, InviteUserSwaggerDTO} from 'src/tools/swagger/users.swagger.dto';
-import {Logger} from 'pino-nestjs';
+import {HouseholdsService} from './households.service';
 
 @ApiTags('Households')
 @Controller({
@@ -65,6 +71,7 @@ import {Logger} from 'pino-nestjs';
 export class HouseholdsController {
   constructor(
     private readonly householdsService: HouseholdsService,
+    private readonly categoriesService: CategoriesService,
     private readonly accountsService: AccountsService,
     private readonly usersService: UsersService,
     private readonly logger: Logger,
@@ -150,6 +157,56 @@ export class HouseholdsController {
   @Get(':id/categories')
   async getCategoriesByHouseholdId(@Param('id') id: string): Promise<Category[]> {
     return await this.householdsService.findCategoriesByHouseholdId(id);
+  }
+
+  @ApiOperation({
+    summary: 'Create a new category for household',
+    description: 'Creates a new transaction category for a specific household',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiBody({
+    type: CreateCategorySwaggerDTO,
+    description: 'Category creation data',
+    examples: {
+      groceries: {
+        summary: 'Groceries Category',
+        value: {
+          name: 'Groceries',
+        },
+      },
+      utilities: {
+        summary: 'Utilities Category',
+        value: {
+          name: 'Utilities',
+        },
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    type: CategoryResponseSwaggerDTO,
+    description: 'Category created successfully',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data',
+  })
+  @ApiConflictResponse({
+    description: 'Category name already exists for this household',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @UsePipes(new ZodValidationPipe(createCategorySchema))
+  @Post(':id/categories')
+  async createCategoryForHousehold(@Param('id') id: string, @Body() dto: CreateCategoryDTO): Promise<CategoryContract> {
+    return (await this.categoriesService.createCategoryForHousehold(id, dto)) as CategoryContract;
   }
 
   @ApiOperation({

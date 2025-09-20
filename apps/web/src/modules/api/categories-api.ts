@@ -1,9 +1,9 @@
 import httpClient from './http-client';
 import {CategoryContract, CreateCategoryDTO} from '@nest-wise/contracts';
 
-export const createCategory = async (category: CreateCategoryDTO) => {
+export const createCategoryForHousehold = async (householdId: string, category: CreateCategoryDTO) => {
   return await httpClient
-    .post('v1/categories', {
+    .post(`v1/households/${householdId}/categories`, {
       json: category,
     })
     .json<CategoryContract>();

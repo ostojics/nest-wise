@@ -1,11 +1,10 @@
-import {CreateCategoryDTO, UpdateCategoryDTO, createCategorySchema, updateCategorySchema} from '@nest-wise/contracts';
-import {Body, Controller, Delete, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
+import {UpdateCategoryDTO, updateCategorySchema} from '@nest-wise/contracts';
+import {Body, Controller, Delete, Param, Put, UseGuards, UsePipes} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiConflictResponse,
-  ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -16,13 +15,8 @@ import {
 } from '@nestjs/swagger';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
-import {
-  CategoryResponseSwaggerDTO,
-  CreateCategorySwaggerDTO,
-  UpdateCategorySwaggerDTO,
-} from 'src/tools/swagger/categories.swagger.dto';
+import {CategoryResponseSwaggerDTO, UpdateCategorySwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
 import {CategoriesService} from './categories.service';
-import {CategoryContract} from '@nest-wise/contracts';
 
 @ApiTags('Categories')
 @Controller({
@@ -31,51 +25,6 @@ import {CategoryContract} from '@nest-wise/contracts';
 })
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
-
-  @ApiOperation({
-    summary: 'Create a new category',
-    description: 'Creates a new transaction category for a specific household',
-  })
-  @ApiBody({
-    type: CreateCategorySwaggerDTO,
-    description: 'Category creation data',
-    examples: {
-      groceries: {
-        summary: 'Groceries Category',
-        value: {
-          name: 'Groceries',
-          householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-        },
-      },
-      utilities: {
-        summary: 'Utilities Category',
-        value: {
-          name: 'Utilities',
-          householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-        },
-      },
-    },
-  })
-  @ApiCreatedResponse({
-    type: CategoryResponseSwaggerDTO,
-    description: 'Category created successfully',
-  })
-  @ApiBadRequestResponse({
-    description: 'Invalid input data',
-  })
-  @ApiConflictResponse({
-    description: 'Category name already exists for this household',
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Authentication required',
-  })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @UsePipes(new ZodValidationPipe(createCategorySchema))
-  @Post('')
-  async createCategory(@Body() dto: CreateCategoryDTO) {
-    return (await this.categoriesService.createCategory(dto)) as CategoryContract;
-  }
 
   @ApiOperation({
     summary: 'Update a category',
