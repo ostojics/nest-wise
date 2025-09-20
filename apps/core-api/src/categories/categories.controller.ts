@@ -34,7 +34,9 @@ export class CategoriesController {
 
   @ApiOperation({
     summary: 'Create a new category',
-    description: 'Creates a new transaction category for a specific household',
+    description:
+      'Creates a new transaction category for a specific household. DEPRECATED: Use POST /v1/households/{householdId}/categories instead.',
+    deprecated: true,
   })
   @ApiBody({
     type: CreateCategorySwaggerDTO,

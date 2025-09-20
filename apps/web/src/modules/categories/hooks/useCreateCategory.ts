@@ -1,15 +1,24 @@
-import {createCategory} from '@/modules/api/categories-api';
+import {createCategory, createCategoryForHousehold} from '@/modules/api/categories-api';
 import {queryKeys} from '@/modules/api/query-keys';
-import {ErrorResponse} from '@nest-wise/contracts';
+import {ErrorResponse, CreateCategoryHouseholdDTO} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
 
-export const useCreateCategory = () => {
+export const useCreateCategory = (householdId?: string) => {
   const client = useQueryClient();
 
   return useMutation({
-    mutationFn: createCategory,
+    mutationFn: (data: CreateCategoryHouseholdDTO) => {
+      if (householdId) {
+        return createCategoryForHousehold(householdId, data);
+      }
+      // Legacy fallback - reconstruct old DTO
+      if (!householdId) {
+        throw new Error('Household ID is required');
+      }
+      return createCategory({...data, householdId});
+    },
     onSuccess: () => {
       void client.invalidateQueries({queryKey: queryKeys.categories.all()});
       toast.success('Category created successfully');

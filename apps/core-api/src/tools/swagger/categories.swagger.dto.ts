@@ -17,6 +17,16 @@ export class CreateCategorySwaggerDTO {
   householdId: string;
 }
 
+export class CreateCategoryHouseholdSwaggerDTO {
+  @ApiProperty({
+    description: 'Name of the category',
+    example: 'Groceries',
+    minLength: 1,
+    maxLength: 100,
+  })
+  name: string;
+}
+
 export class UpdateCategorySwaggerDTO {
   @ApiProperty({
     description: 'Name of the category',

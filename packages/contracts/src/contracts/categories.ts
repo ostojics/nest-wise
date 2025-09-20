@@ -15,6 +15,12 @@ export const createCategorySchema = z
   })
   .strict();
 
+export const createCategoryHouseholdSchema = z
+  .object({
+    name: z.string().min(1, 'Category name is required').max(100, 'Category name must be 100 characters or less'),
+  })
+  .strict();
+
 export const updateCategorySchema = z
   .object({
     name: z
@@ -36,5 +42,6 @@ export const categoryResponseSchema = z
   .strict();
 
 export type CreateCategoryDTO = z.infer<typeof createCategorySchema>;
+export type CreateCategoryHouseholdDTO = z.infer<typeof createCategoryHouseholdSchema>;
 export type UpdateCategoryDTO = z.infer<typeof updateCategorySchema>;
 export type CategoryResponseDTO = z.infer<typeof categoryResponseSchema>;

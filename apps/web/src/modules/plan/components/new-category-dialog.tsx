@@ -16,7 +16,7 @@ import {queryKeys} from '@/modules/api/query-keys';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useValidateCreateCategory} from '@/modules/categories/hooks/use-validate-create-category';
 import {useCreateCategory} from '@/modules/categories/hooks/useCreateCategory';
-import {CreateCategoryDTO} from '@nest-wise/contracts';
+import {CreateCategoryHouseholdDTO} from '@nest-wise/contracts';
 import {useQueryClient} from '@tanstack/react-query';
 import {useSearch} from '@tanstack/react-router';
 import {useState} from 'react';
@@ -30,11 +30,11 @@ const NewCategoryDialog = () => {
     reset,
     formState: {errors},
   } = useValidateCreateCategory({householdId: me?.householdId ?? ''});
-  const mutation = useCreateCategory();
+  const mutation = useCreateCategory(me?.householdId);
   const client = useQueryClient();
   const search = useSearch({from: '/__pathlessLayout/plan'});
 
-  const handleCreateCategory = async (data: CreateCategoryDTO) => {
+  const handleCreateCategory = async (data: CreateCategoryHouseholdDTO) => {
     await mutation.mutateAsync(data, {
       onSuccess: () => {
         void client.invalidateQueries({queryKey: queryKeys.categoryBudgets.all(search)});
