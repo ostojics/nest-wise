@@ -7,8 +7,8 @@ export const useGetHouseholdUsers = () => {
   const {data: me} = useGetMe();
 
   return useQuery({
-    queryKey: queryKeys.users.byHousehold(me?.householdId || ''),
-    queryFn: () => getHouseholdUsers(me!.householdId),
+    queryKey: queryKeys.users.byHousehold(me?.householdId ?? ''),
+    queryFn: () => getHouseholdUsers(me?.householdId ?? ''),
     enabled: !!me?.householdId,
   });
 };

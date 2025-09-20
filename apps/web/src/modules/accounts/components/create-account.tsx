@@ -15,7 +15,7 @@ import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
-import {CreateAccountDTO} from '@nest-wise/contracts';
+import {CreateAccountHouseholdScopedDTO} from '@nest-wise/contracts';
 import {useValidateCreateAccount} from '@/modules/accounts/hooks/use-validate-create-account';
 import {Loader2, PlusIcon, Wallet} from 'lucide-react';
 import {useCreateAccountMutation} from '../hooks/useCreateAccountMutation';
@@ -27,6 +27,7 @@ const CreateAccount = () => {
   const {data: household} = useGetHouseholdById();
   const [isOpen, setIsOpen] = useState(false);
   const mutation = useCreateAccountMutation({
+    householdId: household?.id ?? '',
     closeDialog: () => setIsOpen(false),
   });
 
@@ -37,9 +38,9 @@ const CreateAccount = () => {
     watch,
     reset,
     formState: {errors},
-  } = useValidateCreateAccount({householdId: household?.id ?? '', ownerId: data?.id ?? ''});
+  } = useValidateCreateAccount({ownerId: data?.id ?? ''});
 
-  const onSubmit = (data: CreateAccountDTO) => {
+  const onSubmit = (data: CreateAccountHouseholdScopedDTO) => {
     mutation.mutate(data, {
       onSettled: () => {
         reset();
@@ -48,7 +49,7 @@ const CreateAccount = () => {
   };
 
   const handleTypeChange = (value: string) => {
-    setValue('type', value as CreateAccountDTO['type']);
+    setValue('type', value as CreateAccountHouseholdScopedDTO['type']);
   };
 
   const selectedType = watch('type');

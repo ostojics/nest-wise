@@ -1,4 +1,4 @@
-import {EditAccountDTO, TransferFundsDTO, CreateAccountDTO} from '@nest-wise/contracts';
+import {EditAccountDTO, CreateAccountHouseholdScopedDTO, TransferFundsDTO} from '@nest-wise/contracts';
 import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {Account} from './account.entity';
 import {AccountsRepository} from './accounts.repository';
@@ -11,8 +11,9 @@ export class AccountsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async createAccount(accountData: CreateAccountDTO): Promise<Account> {
-    const nameExists = await this.accountsRepository.nameExistsForHousehold(accountData.name, accountData.householdId);
+  // Household-scoped version where householdId comes from path parameter
+  async createAccountForHousehold(householdId: string, accountData: CreateAccountHouseholdScopedDTO): Promise<Account> {
+    const nameExists = await this.accountsRepository.nameExistsForHousehold(accountData.name, householdId);
     if (nameExists) {
       throw new ConflictException('Account name already exists for this household');
     }
@@ -23,7 +24,7 @@ export class AccountsService {
       initialBalance: accountData.initialBalance,
       currentBalance: accountData.initialBalance,
       ownerId: accountData.ownerId,
-      householdId: accountData.householdId,
+      householdId: householdId,
     });
   }
 
@@ -74,13 +75,25 @@ export class AccountsService {
     }
   }
 
-  async transferFunds(dto: TransferFundsDTO): Promise<{fromAccount: Account; toAccount: Account}> {
+  // Household-scoped version that validates accounts belong to the specified household
+  async transferFundsForHousehold(
+    householdId: string,
+    dto: TransferFundsDTO,
+  ): Promise<{fromAccount: Account; toAccount: Account}> {
     if (dto.fromAccountId === dto.toAccountId) {
       throw new BadRequestException('fromAccountId and toAccountId must be different');
     }
 
     const fromAccount = await this.findAccountById(dto.fromAccountId);
     const toAccount = await this.findAccountById(dto.toAccountId);
+
+    // Validate both accounts belong to the specified household
+    if (fromAccount.householdId !== householdId) {
+      throw new BadRequestException('Source account does not belong to the specified household');
+    }
+    if (toAccount.householdId !== householdId) {
+      throw new BadRequestException('Destination account does not belong to the specified household');
+    }
 
     if (fromAccount.householdId !== toAccount.householdId) {
       throw new BadRequestException('Accounts must belong to the same household');
