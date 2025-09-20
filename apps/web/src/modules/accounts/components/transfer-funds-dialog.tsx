@@ -77,7 +77,7 @@ const TransferFundsDialog = () => {
         </DialogHeader>
         <form onSubmit={handleSubmit(handleTransferFunds)} className="space-y-6">
           <div className="space-y-3">
-            <Label className="text-sm font-medium">From account</Label>
+            <Label className="text-sm font-medium">Source account</Label>
             <AccountSelect
               accounts={accounts}
               value={fromAccountId}
@@ -90,7 +90,7 @@ const TransferFundsDialog = () => {
           </div>
 
           <div className="space-y-3">
-            <Label className="text-sm font-medium">To account</Label>
+            <Label className="text-sm font-medium">Destination account</Label>
             <AccountSelect
               accounts={accounts}
               value={toAccountId}
