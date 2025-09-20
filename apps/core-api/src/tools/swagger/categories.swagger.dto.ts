@@ -8,23 +8,6 @@ export class CreateCategorySwaggerDTO {
     maxLength: 100,
   })
   name: string;
-
-  @ApiProperty({
-    description: 'UUID of the household this category belongs to',
-    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-    format: 'uuid',
-  })
-  householdId: string;
-}
-
-export class CreateCategoryHouseholdSwaggerDTO {
-  @ApiProperty({
-    description: 'Name of the category',
-    example: 'Groceries',
-    minLength: 1,
-    maxLength: 100,
-  })
-  name: string;
 }
 
 export class UpdateCategorySwaggerDTO {

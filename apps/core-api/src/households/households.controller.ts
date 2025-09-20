@@ -18,13 +18,8 @@ import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto'
 import {HouseholdResponseSwaggerDTO, UpdateHouseholdSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
 import {AccountContract, HouseholdContract} from '@nest-wise/contracts';
 import {Category} from 'src/categories/categories.entity';
-import {CategoryResponseSwaggerDTO, CreateCategoryHouseholdSwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
-import {
-  UpdateHouseholdDTO,
-  updateHouseholdSchema,
-  CreateCategoryHouseholdDTO,
-  createCategoryHouseholdSchema,
-} from '@nest-wise/contracts';
+import {CategoryResponseSwaggerDTO, CreateCategorySwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
+import {UpdateHouseholdDTO, updateHouseholdSchema, CreateCategoryDTO, createCategorySchema} from '@nest-wise/contracts';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {CategoriesService} from 'src/categories/categories.service';
 import {CategoryContract} from '@nest-wise/contracts';
@@ -133,7 +128,7 @@ export class HouseholdsController {
     example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   })
   @ApiBody({
-    type: CreateCategoryHouseholdSwaggerDTO,
+    type: CreateCategorySwaggerDTO,
     description: 'Category creation data',
     examples: {
       groceries: {
@@ -165,12 +160,9 @@ export class HouseholdsController {
   })
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @UsePipes(new ZodValidationPipe(createCategoryHouseholdSchema))
+  @UsePipes(new ZodValidationPipe(createCategorySchema))
   @Post(':id/categories')
-  async createCategoryForHousehold(
-    @Param('id') id: string,
-    @Body() dto: CreateCategoryHouseholdDTO,
-  ): Promise<CategoryContract> {
+  async createCategoryForHousehold(@Param('id') id: string, @Body() dto: CreateCategoryDTO): Promise<CategoryContract> {
     return (await this.categoriesService.createCategoryForHousehold(id, dto)) as CategoryContract;
   }
 
