@@ -1,4 +1,16 @@
-import {Controller, Get, Param, UseGuards, Put, Body} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  UseGuards,
+  Put,
+  Body,
+  Post,
+  UsePipes,
+  HttpCode,
+  HttpStatus,
+  ForbiddenException,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -9,16 +21,33 @@ import {
   ApiUnauthorizedResponse,
   ApiBody,
   ApiBadRequestResponse,
+  ApiCreatedResponse,
 } from '@nestjs/swagger';
 import {HouseholdsService} from './households.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
-import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
+import {
+  AccountResponseSwaggerDTO,
+  CreateAccountHouseholdScopedSwaggerDTO,
+  TransferFundsSwaggerDTO,
+  TransferFundsResponseSwaggerDTO,
+} from 'src/tools/swagger/accounts.swagger.dto';
 import {HouseholdResponseSwaggerDTO, UpdateHouseholdSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
-import {AccountContract, HouseholdContract} from '@nest-wise/contracts';
+import {
+  AccountContract,
+  HouseholdContract,
+  CreateAccountHouseholdScopedDTO,
+  createAccountHouseholdScopedSchema,
+  TransferFundsDTO,
+  transferFundsSchema,
+} from '@nest-wise/contracts';
 import {Category} from 'src/categories/categories.entity';
 import {CategoryResponseSwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
 import {UpdateHouseholdDTO, updateHouseholdSchema} from '@nest-wise/contracts';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
+import {AccountsService} from 'src/accounts/accounts.service';
+import {PoliciesService} from 'src/policies/policies.service';
+import {CurrentUser} from 'src/common/decorators/current-user.decorator';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 
 @ApiTags('Households')
 @Controller({
@@ -26,7 +55,11 @@ import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
   path: 'households',
 })
 export class HouseholdsController {
-  constructor(private readonly householdsService: HouseholdsService) {}
+  constructor(
+    private readonly householdsService: HouseholdsService,
+    private readonly accountsService: AccountsService,
+    private readonly policiesService: PoliciesService,
+  ) {}
 
   @ApiOperation({
     summary: 'Get household by ID',
@@ -145,5 +178,106 @@ export class HouseholdsController {
     @Body(new ZodValidationPipe(updateHouseholdSchema)) updateData: UpdateHouseholdDTO,
   ): Promise<HouseholdContract> {
     return (await this.householdsService.updateHousehold(id, updateData)) as HouseholdContract;
+  }
+
+  @ApiOperation({
+    summary: 'Create a new account for household',
+    description: 'Creates a new financial account within a specific household',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+  })
+  @ApiBody({
+    type: CreateAccountHouseholdScopedSwaggerDTO,
+    description: 'Account creation data',
+    examples: {
+      checking: {
+        summary: 'Checking Account',
+        value: {
+          name: 'Main Checking',
+          type: 'checking',
+          initialBalance: 1000.0,
+          ownerId: 'uuid-here',
+        },
+      },
+      savings: {
+        summary: 'Savings Account',
+        value: {
+          name: 'Emergency Fund',
+          type: 'savings',
+          initialBalance: 5000.0,
+          ownerId: 'uuid-here',
+        },
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    type: AccountResponseSwaggerDTO,
+    description: 'Account created successfully',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @UsePipes(new ZodValidationPipe(createAccountHouseholdScopedSchema))
+  @Post(':id/accounts')
+  async createAccountForHousehold(
+    @Param('id') householdId: string,
+    @Body() dto: CreateAccountHouseholdScopedDTO,
+  ): Promise<AccountContract> {
+    return (await this.accountsService.createAccountForHousehold(householdId, dto)) as AccountContract;
+  }
+
+  @ApiOperation({
+    summary: 'Transfer funds between accounts in household',
+    description:
+      'Transfers funds from one account to another within the same household. Requires authentication and membership in the household.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+  })
+  @ApiBody({
+    type: TransferFundsSwaggerDTO,
+    description: 'Transfer details',
+  })
+  @ApiOkResponse({
+    type: TransferFundsResponseSwaggerDTO,
+    description: 'Transfer completed successfully',
+  })
+  @ApiBadRequestResponse({description: 'Invalid input data or insufficient funds'})
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @UsePipes(new ZodValidationPipe(transferFundsSchema))
+  @HttpCode(HttpStatus.OK)
+  @Post(':id/accounts/transfer')
+  async transferFundsForHousehold(
+    @Param('id') householdId: string,
+    @Body() dto: TransferFundsDTO,
+    @CurrentUser() user: JwtPayload,
+  ) {
+    const allowed = await this.policiesService.canUserTransferBetweenAccounts(
+      user.sub,
+      dto.fromAccountId,
+      dto.toAccountId,
+    );
+    if (!allowed) {
+      throw new ForbiddenException('You cannot transfer between these accounts');
+    }
+
+    await this.accountsService.transferFundsForHousehold(householdId, dto);
+    return {message: 'Transfer completed successfully'};
   }
 }
