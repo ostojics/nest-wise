@@ -1,17 +1,12 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
-import {CreateTransactionDTO, createTransactionSchema} from '@nest-wise/contracts';
+import {CreateTransactionHouseholdDTO, createTransactionHouseholdSchema} from '@nest-wise/contracts';
 
-interface UseValidateCreateTransactionArgs {
-  householdId: string;
-}
-
-export const useValidateCreateTransaction = ({householdId}: UseValidateCreateTransactionArgs) => {
-  return useForm<CreateTransactionDTO>({
+export const useValidateCreateTransaction = () => {
+  return useForm<CreateTransactionHouseholdDTO>({
     // @ts-expect-error DTO is inferred from the schema
-    resolver: zodResolver(createTransactionSchema),
+    resolver: zodResolver(createTransactionHouseholdSchema),
     defaultValues: {
-      householdId,
       accountId: '',
       categoryId: '',
       amount: 0,
