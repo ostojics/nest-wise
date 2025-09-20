@@ -78,16 +78,13 @@ export class PrivateTransactionsRepository {
       qb.andWhere('pt.type = :type', {type: query.type});
     }
 
-    // Handle date filtering with priority: date_from/date_to > from/to > transactionDate_from/transactionDate_to
-    const dateFrom = query.date_from ?? query.from ?? query.transactionDate_from;
-    const dateTo = query.date_to ?? query.to ?? query.transactionDate_to;
-
-    if (dateFrom) {
-      qb.andWhere('pt.transactionDate >= :dateFrom', {dateFrom});
+    // Handle date filtering
+    if (query.from) {
+      qb.andWhere('pt.transactionDate >= :dateFrom', {dateFrom: query.from});
     }
 
-    if (dateTo) {
-      qb.andWhere('pt.transactionDate <= :dateTo', {dateTo});
+    if (query.to) {
+      qb.andWhere('pt.transactionDate <= :dateTo', {dateTo: query.to});
     }
 
     if (query.q) {

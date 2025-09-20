@@ -84,30 +84,8 @@ export class PrivateTransactionsController {
   @ApiQuery({name: 'type', required: false, type: String, example: 'expense'})
   @ApiQuery({name: 'accountId', required: false, type: String, format: 'uuid'})
   @ApiQuery({name: 'q', required: false, type: String, description: 'Search in description'})
-  @ApiQuery({name: 'date_from', required: false, type: String, format: 'date'})
-  @ApiQuery({name: 'date_to', required: false, type: String, format: 'date'})
-  @ApiQuery({
-    name: 'from',
-    required: false,
-    type: String,
-    format: 'date',
-    description: 'Alias for date_from (deprecated)',
-  })
-  @ApiQuery({name: 'to', required: false, type: String, format: 'date', description: 'Alias for date_to (deprecated)'})
-  @ApiQuery({
-    name: 'transactionDate_from',
-    required: false,
-    type: String,
-    format: 'date',
-    description: 'Legacy parameter (deprecated)',
-  })
-  @ApiQuery({
-    name: 'transactionDate_to',
-    required: false,
-    type: String,
-    format: 'date',
-    description: 'Legacy parameter (deprecated)',
-  })
+  @ApiQuery({name: 'from', required: false, type: String, format: 'date'})
+  @ApiQuery({name: 'to', required: false, type: String, format: 'date'})
   @ApiOkResponse({description: 'Private transactions retrieved successfully'})
   @ApiBadRequestResponse({description: 'Invalid query parameters'})
   @ApiUnauthorizedResponse({description: 'Authentication required'})

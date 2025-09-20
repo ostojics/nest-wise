@@ -57,14 +57,8 @@ export const getPrivateTransactionsQuerySchema = z
     q: z.string().max(2048, 'Search query must be less than 2048 characters').optional(),
     accountId: z.string().uuid().optional(),
     type: z.enum(['income', 'expense']).optional(),
-    // Preferred parameter names
-    date_from: z.string().optional(),
-    date_to: z.string().optional(),
-    // Legacy parameter names for backward compatibility
     from: z.string().optional(),
     to: z.string().optional(),
-    transactionDate_from: z.string().optional(),
-    transactionDate_to: z.string().optional(),
     sort: privateTransactionSortFieldEnum.optional().default('-transactionDate'),
     page: z.coerce.number().int().min(1).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(15),
