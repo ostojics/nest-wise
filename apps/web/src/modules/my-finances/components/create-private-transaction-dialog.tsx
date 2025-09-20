@@ -5,7 +5,6 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useCreatePrivateTransaction} from '@/modules/my-finances/hooks/use-create-private-transaction';
 import {useValidateCreatePrivateTransaction} from '@/modules/my-finances/hooks/use-validate-create-private-transaction';
 import {CreatePrivateTransactionDTO} from '@nest-wise/contracts';
@@ -15,7 +14,6 @@ import {useState} from 'react';
 
 export function CreatePrivateTransactionDialog() {
   const [open, setOpen] = useState(false);
-  const {data: me} = useGetMe();
   const {data: accounts} = useGetHouseholdAccounts();
   const createMutation = useCreatePrivateTransaction();
 
@@ -26,7 +24,7 @@ export function CreatePrivateTransactionDialog() {
     watch,
     reset,
     formState: {errors},
-  } = useValidateCreatePrivateTransaction({householdId: me?.householdId ?? ''});
+  } = useValidateCreatePrivateTransaction();
 
   const onSubmit = async (data: CreatePrivateTransactionDTO) => {
     await createMutation.mutateAsync(data, {

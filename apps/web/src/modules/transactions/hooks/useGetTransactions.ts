@@ -1,11 +1,11 @@
 import {queryKeys} from '@/modules/api/query-keys';
-import {getTransactions} from '@/modules/api/transactions-api';
+import {getTransactionsForHousehold} from '@/modules/api/transactions-api';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {GetTransactionsQueryDTO} from '@nest-wise/contracts';
+import {GetTransactionsQueryHouseholdDTO} from '@nest-wise/contracts';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 
 interface UseGetTransactionsArgs {
-  search: GetTransactionsQueryDTO;
+  search: GetTransactionsQueryHouseholdDTO;
 }
 
 export const useGetTransactions = ({search}: UseGetTransactionsArgs) => {
@@ -13,7 +13,10 @@ export const useGetTransactions = ({search}: UseGetTransactionsArgs) => {
 
   return useQuery({
     queryKey: queryKeys.transactions.all(search),
-    queryFn: () => getTransactions({...search, householdId: me?.householdId}),
+    queryFn: () => {
+      if (!me?.householdId) throw new Error('No household ID available');
+      return getTransactionsForHousehold(me.householdId, search);
+    },
     enabled: Boolean(me?.householdId),
     placeholderData: keepPreviousData,
   });

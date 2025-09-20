@@ -17,12 +17,16 @@ import {useState} from 'react';
 import {useTransferFundsMutation} from '../hooks/use-transfer-funds-mutation';
 import {useValidateTransferFunds} from '../hooks/use-validate-transfer-funds';
 import {useGetHouseholdAccounts} from '../hooks/useGetHouseholdAccounts';
+import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import AccountSelect from './account-select';
 
 const TransferFundsDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const {data: accounts = []} = useGetHouseholdAccounts();
-  const mutation = useTransferFundsMutation();
+  const {data: household} = useGetHouseholdById();
+  const mutation = useTransferFundsMutation({
+    householdId: household?.id ?? '',
+  });
 
   const {
     register,
@@ -73,7 +77,7 @@ const TransferFundsDialog = () => {
         </DialogHeader>
         <form onSubmit={handleSubmit(handleTransferFunds)} className="space-y-6">
           <div className="space-y-3">
-            <Label className="text-sm font-medium">From account</Label>
+            <Label className="text-sm font-medium">Source account</Label>
             <AccountSelect
               accounts={accounts}
               value={fromAccountId}
@@ -86,7 +90,7 @@ const TransferFundsDialog = () => {
           </div>
 
           <div className="space-y-3">
-            <Label className="text-sm font-medium">To account</Label>
+            <Label className="text-sm font-medium">Destination account</Label>
             <AccountSelect
               accounts={accounts}
               value={toAccountId}
