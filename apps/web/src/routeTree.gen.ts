@@ -13,6 +13,7 @@ import { Route as SetupRouteImport } from './routes/setup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitesRouteImport } from './routes/invites'
 import { Route as _pathlessLayoutRouteRouteImport } from './routes/__pathlessLayout/route'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as _pathlessLayoutTransactionsRouteImport } from './routes/__pathlessLayout/transactions'
 import { Route as _pathlessLayoutPlanRouteImport } from './routes/__pathlessLayout/plan'
 import { Route as _pathlessLayoutMyFinancesRouteImport } from './routes/__pathlessLayout/my-finances'
@@ -41,6 +42,11 @@ const InvitesRoute = InvitesRouteImport.update({
 } as any)
 const _pathlessLayoutRouteRoute = _pathlessLayoutRouteRouteImport.update({
   id: '/__pathlessLayout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const _pathlessLayoutTransactionsRoute =
@@ -102,6 +108,7 @@ const _pathlessLayoutReportsNetWorthRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/reports/spending': typeof _pathlessLayoutReportsSpendingRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
@@ -133,6 +141,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/__pathlessLayout': typeof _pathlessLayoutRouteRouteWithChildren
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
@@ -151,6 +160,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/invites'
     | '/login'
     | '/setup'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/reports/spending'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/invites'
     | '/login'
     | '/setup'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/reports/spending'
   id:
     | '__root__'
+    | '/'
     | '/__pathlessLayout'
     | '/invites'
     | '/login'
@@ -198,6 +210,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   _pathlessLayoutRouteRoute: typeof _pathlessLayoutRouteRouteWithChildren
   InvitesRoute: typeof InvitesRoute
   LoginRoute: typeof LoginRoute
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof _pathlessLayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/__pathlessLayout/transactions': {
@@ -350,6 +370,7 @@ const _pathlessLayoutRouteRouteWithChildren =
   _pathlessLayoutRouteRoute._addFileChildren(_pathlessLayoutRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   _pathlessLayoutRouteRoute: _pathlessLayoutRouteRouteWithChildren,
   InvitesRoute: InvitesRoute,
   LoginRoute: LoginRoute,

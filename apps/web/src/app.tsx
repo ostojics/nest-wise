@@ -5,12 +5,12 @@ import {router} from './router';
 import {useGetMe} from './modules/auth/hooks/useGetMe';
 
 const App = () => {
-  const {data, isLoading} = useGetMe();
+  const {data, isLoading, isError} = useGetMe();
   if (isLoading) return <></>;
 
   return (
     <>
-      <RouterProvider router={router} context={{isAuthenticated: Boolean(data)}} />
+      <RouterProvider router={router} context={{isAuthenticated: Boolean(data && !isError)}} />
       <ReactQueryDevtools initialIsOpen={false} />
       <Toaster />
     </>
