@@ -18,18 +18,6 @@ export interface AccountContract {
   updatedAt: Date;
 }
 
-export const createAccountSchema = z
-  .object({
-    name: z.string().min(1, 'Account name is required').max(255, 'Account name must be 255 characters or less'),
-    type: accountTypeEnum,
-    initialBalance: z.coerce.number().min(0, 'Balance must be 0 or greater'),
-    ownerId: z.string().uuid('Owner ID must be a valid UUID'),
-    householdId: z.string().uuid('Household ID must be a valid UUID'),
-  })
-  .strict();
-
-export type CreateAccountDTO = z.infer<typeof createAccountSchema>;
-
 // Household-scoped version without householdId (comes from path)
 export const createAccountHouseholdScopedSchema = z
   .object({

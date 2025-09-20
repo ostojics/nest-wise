@@ -1,9 +1,4 @@
-import {
-  EditAccountDTO,
-  TransferFundsDTO,
-  CreateAccountDTO,
-  CreateAccountHouseholdScopedDTO,
-} from '@nest-wise/contracts';
+import {EditAccountDTO, CreateAccountHouseholdScopedDTO, TransferFundsDTO} from '@nest-wise/contracts';
 import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
 import {Account} from './account.entity';
 import {AccountsRepository} from './accounts.repository';
@@ -15,22 +10,6 @@ export class AccountsService {
     private readonly accountsRepository: AccountsRepository,
     private readonly dataSource: DataSource,
   ) {}
-
-  async createAccount(accountData: CreateAccountDTO): Promise<Account> {
-    const nameExists = await this.accountsRepository.nameExistsForHousehold(accountData.name, accountData.householdId);
-    if (nameExists) {
-      throw new ConflictException('Account name already exists for this household');
-    }
-
-    return await this.accountsRepository.create({
-      name: accountData.name,
-      type: accountData.type,
-      initialBalance: accountData.initialBalance,
-      currentBalance: accountData.initialBalance,
-      ownerId: accountData.ownerId,
-      householdId: accountData.householdId,
-    });
-  }
 
   // Household-scoped version where householdId comes from path parameter
   async createAccountForHousehold(householdId: string, accountData: CreateAccountHouseholdScopedDTO): Promise<Account> {
@@ -94,45 +73,6 @@ export class AccountsService {
     if (!deleted) {
       throw new NotFoundException('Account not found');
     }
-  }
-
-  async transferFunds(dto: TransferFundsDTO): Promise<{fromAccount: Account; toAccount: Account}> {
-    if (dto.fromAccountId === dto.toAccountId) {
-      throw new BadRequestException('fromAccountId and toAccountId must be different');
-    }
-
-    const fromAccount = await this.findAccountById(dto.fromAccountId);
-    const toAccount = await this.findAccountById(dto.toAccountId);
-
-    if (fromAccount.householdId !== toAccount.householdId) {
-      throw new BadRequestException('Accounts must belong to the same household');
-    }
-
-    const fromBalance = Number(fromAccount.currentBalance);
-    const toBalance = Number(toAccount.currentBalance);
-    const amount = Number(dto.amount);
-
-    if (fromBalance < amount) {
-      throw new BadRequestException('Insufficient funds for this transfer');
-    }
-
-    return await this.dataSource.transaction(async () => {
-      const updatedFrom = await this.accountsRepository.update(dto.fromAccountId, {
-        currentBalance: fromBalance - amount,
-      });
-      if (!updatedFrom) {
-        throw new NotFoundException('Source account not found');
-      }
-
-      const updatedTo = await this.accountsRepository.update(dto.toAccountId, {
-        currentBalance: toBalance + amount,
-      });
-      if (!updatedTo) {
-        throw new NotFoundException('Destination account not found');
-      }
-
-      return {fromAccount: updatedFrom, toAccount: updatedTo};
-    });
   }
 
   // Household-scoped version that validates accounts belong to the specified household
