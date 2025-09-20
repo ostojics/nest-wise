@@ -17,6 +17,8 @@ export const useCreateCategory = (householdId?: string) => {
     },
     onSuccess: () => {
       void client.invalidateQueries({queryKey: queryKeys.categories.all()});
+      void client.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
+
       toast.success('Category created successfully');
     },
     onError: async (error) => {

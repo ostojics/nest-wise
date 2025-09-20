@@ -23,9 +23,16 @@ export class CategoryBudgetsService {
 
   async getCategoryBudgetsForMonth(userId: string, month: string): Promise<CategoryBudgetWithCurrentAmountContract[]> {
     const me = await this.usersService.findUserById(userId);
+    return this.getCategoryBudgetsForHousehold(me.householdId, month);
+  }
+
+  async getCategoryBudgetsForHousehold(
+    householdId: string,
+    month: string,
+  ): Promise<CategoryBudgetWithCurrentAmountContract[]> {
     const [categories, budgets] = await Promise.all([
-      this.categoriesService.findCategoriesByHouseholdId(me.householdId),
-      this.categoryBudgetsRepository.findByHouseholdAndMonth(me.householdId, month),
+      this.categoriesService.findCategoriesByHouseholdId(householdId),
+      this.categoryBudgetsRepository.findByHouseholdAndMonth(householdId, month),
     ]);
 
     const existingCategoryIds = new Set(budgets.map((b) => b.categoryId));
@@ -34,7 +41,7 @@ export class CategoryBudgetsService {
     if (missing.length > 0) {
       await this.categoryBudgetsRepository.createMany(
         missing.map((c) => ({
-          householdId: me.householdId,
+          householdId,
           categoryId: c.id,
           month,
           plannedAmount: 0,
@@ -42,11 +49,11 @@ export class CategoryBudgetsService {
       );
     }
 
-    const all = await this.categoryBudgetsRepository.findByHouseholdAndMonth(me.householdId, month);
+    const all = await this.categoryBudgetsRepository.findByHouseholdAndMonth(householdId, month);
 
     const {start: dateFrom, end: dateTo} = this.getCurrentMonthRange(month);
     const transactions = await this.transactionsService.findAllTransactions({
-      householdId: me.householdId,
+      householdId,
       transactionDate_from: dateFrom,
       transactionDate_to: dateTo,
       type: TransactionType.EXPENSE,
