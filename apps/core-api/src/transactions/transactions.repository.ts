@@ -5,12 +5,14 @@ import {Transaction} from './transaction.entity';
 import {
   CreateTransactionDTO,
   GetTransactionsQueryDTO,
+  GetTransactionsQueryHouseholdDTO,
   UpdateTransactionDTO,
   GetTransactionsResponseContract,
   TransactionContract,
   SortOrder,
   AccountSpendingPointContract,
   GetAccountsSpendingQueryDTO,
+  GetAccountsSpendingQueryHouseholdDTO,
   NetWorthTrendPointContract,
 } from '@nest-wise/contracts';
 import {TransactionType} from '../common/enums/transaction.type.enum';
@@ -169,6 +171,43 @@ export class TransactionsRepository {
     };
   }
 
+  async findTransactionsWithFiltersForHousehold(
+    householdId: string,
+    query: GetTransactionsQueryHouseholdDTO,
+  ): Promise<GetTransactionsResponseContract> {
+    const queryBuilder = this.transactionRepository
+      .createQueryBuilder('transaction')
+      .leftJoin('transaction.account', 'account')
+      .leftJoin('transaction.category', 'category')
+      .addSelect(['account.id', 'account.name'])
+      .addSelect(['category.id', 'category.name']);
+
+    // Always filter by householdId
+    queryBuilder.andWhere('transaction.householdId = :householdId', {householdId});
+
+    this.applyFiltersForHousehold(queryBuilder, query);
+    this.applySorting(queryBuilder, query.sort);
+
+    const totalCount = await queryBuilder.getCount();
+    const pageSize = query.pageSize;
+    const currentPage = query.page;
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
+
+    const data = (await queryBuilder.getMany()) as TransactionContract[];
+
+    return {
+      data,
+      meta: {
+        totalCount,
+        pageSize,
+        currentPage,
+        totalPages,
+      },
+    };
+  }
+
   private applyFilters(queryBuilder: SelectQueryBuilder<Transaction>, query: GetTransactionsQueryDTO): void {
     if (query.householdId) {
       queryBuilder.andWhere('transaction.householdId = :householdId', {householdId: query.householdId});
@@ -196,6 +235,38 @@ export class TransactionsRepository {
       queryBuilder.andWhere('transaction.transactionDate <= :dateTo', {
         dateTo: query.transactionDate_to,
       });
+    }
+
+    if (query.q) {
+      queryBuilder.andWhere('transaction.description ILIKE :q', {
+        q: `%${query.q}%`,
+      });
+    }
+  }
+
+  private applyFiltersForHousehold(
+    queryBuilder: SelectQueryBuilder<Transaction>,
+    query: GetTransactionsQueryHouseholdDTO,
+  ): void {
+    if (query.accountId) {
+      queryBuilder.andWhere('transaction.accountId = :accountId', {accountId: query.accountId});
+    }
+
+    if (query.categoryId) {
+      queryBuilder.andWhere('transaction.categoryId = :categoryId', {categoryId: query.categoryId});
+    }
+
+    // Use simplified date parameters
+    if (query.from) {
+      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom', {dateFrom: query.from});
+    }
+
+    if (query.to) {
+      queryBuilder.andWhere('transaction.transactionDate <= :dateTo', {dateTo: query.to});
+    }
+
+    if (query.type) {
+      queryBuilder.andWhere('transaction.type = :type', {type: query.type as TransactionType});
     }
 
     if (query.q) {
@@ -265,6 +336,56 @@ export class TransactionsRepository {
 
     const dateFrom = query.transactionDate_from;
     const dateTo = query.transactionDate_to;
+
+    const rows: Row[] = await this.transactionRepository.query(
+      `
+      WITH params AS (
+        SELECT
+          $2::date AS date_from,
+          $3::date AS date_to
+      ),
+      filtered_tx AS (
+        SELECT t.account_id, t.amount
+        FROM transactions t, params p
+        WHERE t.household_id = $1
+          AND t.type = 'expense'
+          AND (p.date_from IS NULL OR t.transaction_date >= p.date_from)
+          AND (p.date_to IS NULL OR t.transaction_date <= p.date_to)
+      ),
+      sums AS (
+        SELECT account_id, SUM(amount)::numeric AS amount
+        FROM filtered_tx
+        GROUP BY account_id
+      )
+      SELECT a.id AS account_id, a.name, COALESCE(s.amount, 0)::numeric AS amount
+      FROM accounts a
+      LEFT JOIN sums s ON s.account_id = a.id
+      WHERE a.household_id = $1
+      ORDER BY a.name ASC;
+      `,
+      [householdId, dateFrom, dateTo],
+    );
+
+    return rows.map((r) => ({
+      accountId: r.account_id,
+      name: r.name,
+      amount: r.amount === null ? 0 : Number(r.amount),
+    }));
+  }
+
+  async getAccountsSpendingForHouseholdNew(
+    householdId: string,
+    query: GetAccountsSpendingQueryHouseholdDTO,
+  ): Promise<AccountSpendingPointContract[]> {
+    interface Row {
+      account_id: string;
+      name: string;
+      amount: string | number | null;
+    }
+
+    // Use simplified date parameters
+    const dateFrom = query.from;
+    const dateTo = query.to;
 
     const rows: Row[] = await this.transactionRepository.query(
       `
