@@ -37,6 +37,7 @@ export const queryKeys = {
   },
   savings: {
     trend: () => ['savings-trend'],
+    trendByHousehold: (householdId: string) => ['savings-trend', householdId],
   },
   privateTransactions: {
     key: () => ['private-transactions'],
