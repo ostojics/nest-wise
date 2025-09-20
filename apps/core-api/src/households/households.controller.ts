@@ -1,4 +1,15 @@
-import {Controller, Get, Param, UseGuards, Put, Body} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  UseGuards,
+  Put,
+  Body,
+  Post,
+  HttpCode,
+  UsePipes,
+  ForbiddenException,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -9,16 +20,23 @@ import {
   ApiUnauthorizedResponse,
   ApiBody,
   ApiBadRequestResponse,
+  ApiNoContentResponse,
 } from '@nestjs/swagger';
 import {HouseholdsService} from './households.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {AccountResponseSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
 import {HouseholdResponseSwaggerDTO, UpdateHouseholdSwaggerDTO} from 'src/tools/swagger/households.swagger.dto';
-import {AccountContract, HouseholdContract} from '@nest-wise/contracts';
+import {AccountContract, HouseholdContract, UserContract, InviteUserDTO, inviteUserSchema} from '@nest-wise/contracts';
 import {Category} from 'src/categories/categories.entity';
 import {CategoryResponseSwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
 import {UpdateHouseholdDTO, updateHouseholdSchema} from '@nest-wise/contracts';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
+import {UsersService} from 'src/users/users.service';
+import {UserResponseSwaggerDTO, InviteUserSwaggerDTO} from 'src/tools/swagger/users.swagger.dto';
+import {CurrentUser} from 'src/common/decorators/current-user.decorator';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
+import {Logger} from 'pino-nestjs';
+import {PoliciesService} from 'src/policies/policies.service';
 
 @ApiTags('Households')
 @Controller({
@@ -26,7 +44,12 @@ import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
   path: 'households',
 })
 export class HouseholdsController {
-  constructor(private readonly householdsService: HouseholdsService) {}
+  constructor(
+    private readonly householdsService: HouseholdsService,
+    private readonly usersService: UsersService,
+    private readonly logger: Logger,
+    private readonly policiesService: PoliciesService,
+  ) {}
 
   @ApiOperation({
     summary: 'Get household by ID',
@@ -145,5 +168,97 @@ export class HouseholdsController {
     @Body(new ZodValidationPipe(updateHouseholdSchema)) updateData: UpdateHouseholdDTO,
   ): Promise<HouseholdContract> {
     return (await this.householdsService.updateHousehold(id, updateData)) as HouseholdContract;
+  }
+
+  @ApiOperation({
+    summary: 'Get users in household',
+    description: 'Retrieves all users that belong to the specified household',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+  })
+  @ApiOkResponse({
+    type: [UserResponseSwaggerDTO],
+    description: 'Users retrieved successfully',
+  })
+  @ApiNotFoundResponse({
+    description: 'Household not found',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get(':id/users')
+  async getUsersByHouseholdId(
+    @Param('id') householdId: string,
+    @CurrentUser() user: JwtPayload,
+  ): Promise<UserContract[]> {
+    // Check if user can access this household
+    const canAccess = await this.policiesService.canUserAccessHousehold(user.sub, householdId);
+    if (!canAccess) {
+      throw new ForbiddenException('Cannot access users from different household');
+    }
+
+    return (await this.usersService.findUsersByHouseholdId(householdId)) as UserContract[];
+  }
+
+  @ApiOperation({
+    summary: 'Invite user to household',
+    description: 'Invites a user to the specified household',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+  })
+  @ApiBody({
+    type: InviteUserSwaggerDTO,
+    description: 'Email address of the user to invite',
+  })
+  @ApiNoContentResponse({
+    description: 'Invite sent successfully',
+  })
+  @ApiNotFoundResponse({
+    description: 'Household not found',
+  })
+  @ApiBadRequestResponse({
+    description: 'Validation failed',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @UsePipes(new ZodValidationPipe(inviteUserSchema))
+  @HttpCode(204)
+  @Post(':id/invites')
+  async inviteUserToHousehold(
+    @Param('id') householdId: string,
+    @CurrentUser() user: JwtPayload,
+    @Body() body: InviteUserDTO,
+  ): Promise<void> {
+    try {
+      // Check if user can invite to this household
+      const canInvite = await this.policiesService.canUserInviteToHousehold(user.sub, householdId);
+      if (!canInvite) {
+        throw new ForbiddenException('Cannot invite users to different household');
+      }
+
+      await this.usersService.inviteUser(householdId, body.email);
+
+      // Get current user for logging
+      const currentUser = await this.usersService.findUserById(user.sub);
+      this.logger.log(`User invitation sent to ${body.email} for household ${householdId} by ${currentUser.email}`);
+    } catch (error) {
+      this.logger.error('Failed to invite user to household', error);
+      throw error;
+    }
   }
 }

@@ -1,11 +1,11 @@
 import {queryKeys} from '@/modules/api/query-keys';
-import {getTransactions} from '@/modules/api/transactions-api';
+import {getTransactionsForHousehold} from '@/modules/api/transactions-api';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {GetTransactionsQueryDTO, TransactionContract} from '@nest-wise/contracts';
+import {GetTransactionsQueryHouseholdDTO, TransactionContract} from '@nest-wise/contracts';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 
 interface UseGetAllTransactionsArgs {
-  search: Omit<GetTransactionsQueryDTO, 'page' | 'pageSize'>;
+  search: Omit<GetTransactionsQueryHouseholdDTO, 'page' | 'pageSize'>;
 }
 
 // TODO: Move this logic to backend endpoints that use the service method
@@ -13,7 +13,7 @@ export const useGetAllTransactions = ({search}: UseGetAllTransactionsArgs) => {
   const {data: me} = useGetMe();
 
   return useQuery({
-    queryKey: queryKeys.transactions.allPages({...search, householdId: me?.householdId}),
+    queryKey: queryKeys.transactions.allPages(search),
     queryFn: async (): Promise<TransactionContract[]> => {
       const results: TransactionContract[] = [];
       let currentPage = 1;
@@ -21,12 +21,13 @@ export const useGetAllTransactions = ({search}: UseGetAllTransactionsArgs) => {
       let hasMore = true;
 
       while (hasMore) {
-        const {data, meta} = await getTransactions({
+        if (!me?.householdId) throw new Error('No household ID available');
+
+        const {data, meta} = await getTransactionsForHousehold(me.householdId, {
           ...search,
-          householdId: me?.householdId,
           page: currentPage,
           pageSize,
-        } as GetTransactionsQueryDTO);
+        });
 
         results.push(...data);
         hasMore = currentPage < meta.totalPages;

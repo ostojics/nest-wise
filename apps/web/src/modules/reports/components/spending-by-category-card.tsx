@@ -25,8 +25,8 @@ const SpendingByCategoryCard = () => {
   const search = useSearch({from: '/__pathlessLayout/reports/spending'});
   const {data, isLoading, isError, refetch} = useGetAllTransactions({
     search: {
-      transactionDate_from: search.transactionDate_from,
-      transactionDate_to: search.transactionDate_to,
+      from: search.from,
+      to: search.to,
       type: 'expense',
     },
   });

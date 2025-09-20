@@ -1,5 +1,6 @@
 import {
   GetAccountsSpendingQueryDTO,
+  GetAccountsSpendingQueryHouseholdDTO,
   GetCategoryBudgetsQueryParams,
   GetPrivateTransactionsQueryDTO,
   GetTransactionsQueryDTO,
@@ -22,10 +23,13 @@ export const queryKeys = {
     allPagesKey: () => ['transactions-all-pages'],
     allPages: (search: Partial<GetTransactionsQueryDTO>) => ['transactions-all-pages', search],
     netWorthTrend: () => ['net-worth-trend'],
-    spendingByAccounts: (search: GetAccountsSpendingQueryDTO) => ['spending-by-accounts', search],
+    spendingByAccounts: (search: GetAccountsSpendingQueryHouseholdDTO | GetAccountsSpendingQueryDTO) => [
+      'spending-by-accounts',
+      search,
+    ],
   },
   users: {
-    all: () => ['users'],
+    byHousehold: (householdId: string) => ['users', 'household', householdId],
   },
   categoryBudgets: {
     key: () => ['category-budgets'],

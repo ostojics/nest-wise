@@ -10,7 +10,6 @@ import {
 import {AccountsService} from 'src/accounts/accounts.service';
 import {PoliciesService} from 'src/policies/policies.service';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
-import {UTCDate} from '@date-fns/utc';
 import {PrivateTransactionsRepository} from './private-transactions.repository';
 
 @Injectable()
@@ -47,7 +46,7 @@ export class PrivateTransactionsService {
         amount: dto.amount,
         type: dto.type as TransactionType,
         description: dto.description,
-        transactionDate: new UTCDate(dto.transactionDate),
+        transactionDate: dto.transactionDate,
       });
 
       const current = Number(account.currentBalance);
