@@ -34,4 +34,9 @@ export class PoliciesService {
     const categoryBudget = await this.categoryBudgetsService.findCategoryBudgetById(categoryBudgetId);
     return user.householdId === categoryBudget.householdId;
   }
+
+  async canUserAccessHousehold(userId: string, householdId: string): Promise<boolean> {
+    const user = await this.usersService.findUserById(userId);
+    return user.householdId === householdId;
+  }
 }

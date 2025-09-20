@@ -1,9 +1,9 @@
 import {CategoryBudgetContract, EditCategoryBudgetDTO, GetCategoryBudgetsQueryParams} from '@nest-wise/contracts';
 import httpClient from './http-client';
 
-export const getCategoryBudgets = (dto: GetCategoryBudgetsQueryParams) => {
+export const getCategoryBudgets = (householdId: string, dto: GetCategoryBudgetsQueryParams) => {
   return httpClient
-    .get('v1/category-budgets', {
+    .get(`v1/households/${householdId}/category-budgets`, {
       searchParams: dto,
     })
     .json<CategoryBudgetContract[]>();
