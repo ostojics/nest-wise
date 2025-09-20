@@ -19,17 +19,17 @@ const PrivateTransactionDateFromPicker: React.FC<PrivateTransactionDateFromPicke
   const search = useSearch({from: '/__pathlessLayout/my-finances'});
   const navigate = useNavigate();
 
-  const selectedDate = search.transactionDate_from ? new Date(search.transactionDate_from) : undefined;
+  const selectedDate = search.from ? new Date(search.from) : undefined;
 
   const dateDisableReference = useMemo(() => {
-    if (!search.transactionDate_to) return;
-    return getDateDisableReference(new Date(search.transactionDate_to), true);
-  }, [search.transactionDate_to]);
+    if (!search.to) return;
+    return getDateDisableReference(new Date(search.to), true);
+  }, [search.to]);
 
   const handleSelectDate = (value: Date | undefined) => {
     if (!value) return;
     void navigate({
-      search: (prev) => ({...prev, transactionDate_from: formatSelectedDate(value), page: 1}),
+      search: (prev) => ({...prev, from: formatSelectedDate(value), page: 1}),
       to: '/my-finances',
     });
     setOpen(false);

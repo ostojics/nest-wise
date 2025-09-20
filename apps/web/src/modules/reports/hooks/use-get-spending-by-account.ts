@@ -10,12 +10,12 @@ export const useGetSpendingByAccount = () => {
 
   // Use the simplified date parameters
   const queryParams = {
-    from: search.transactionDate_from,
-    to: search.transactionDate_to,
+    from: search.from,
+    to: search.to,
   };
 
   return useQuery({
-    queryKey: queryKeys.transactions.spendingByAccounts(search),
+    queryKey: queryKeys.transactions.spendingByAccounts(queryParams),
     queryFn: () => {
       if (!me?.householdId) throw new Error('No household ID available');
       return spendingByAccountsForHousehold(me.householdId, queryParams);
