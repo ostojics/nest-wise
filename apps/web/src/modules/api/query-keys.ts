@@ -29,7 +29,7 @@ export const queryKeys = {
     ],
   },
   users: {
-    all: () => ['users'],
+    byHousehold: (householdId: string) => ['users', 'household', householdId],
   },
   categoryBudgets: {
     key: () => ['category-budgets'],

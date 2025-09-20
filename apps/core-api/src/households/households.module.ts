@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {Module, forwardRef} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {HouseholdsService} from './households.service';
 import {HouseholdsController} from './households.controller';
@@ -10,9 +10,15 @@ import {CategoriesModule} from 'src/categories/categories.module';
 import {TransactionsService} from 'src/transactions/transactions.service';
 import {TransactionsRepository} from 'src/transactions/transactions.repository';
 import {Transaction} from 'src/transactions/transaction.entity';
+import {UsersModule} from 'src/users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Household, Transaction]), AccountsModule, CategoriesModule],
+  imports: [
+    TypeOrmModule.forFeature([Household, Transaction]),
+    AccountsModule,
+    CategoriesModule,
+    forwardRef(() => UsersModule),
+  ],
   controllers: [HouseholdsController, HouseholdTransactionsController],
   providers: [HouseholdsService, HouseholdsRepository, TransactionsService, TransactionsRepository],
   exports: [HouseholdsService, HouseholdsRepository],
