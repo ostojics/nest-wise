@@ -59,7 +59,7 @@ export class AccountResponseSwaggerDTO {
   updatedAt: Date;
 }
 
-export class CreateAccountSwaggerDTO {
+export class CreateAccountHouseholdScopedSwaggerDTO {
   @ApiProperty({
     description: 'Account name',
     example: 'Main Checking',
@@ -87,13 +87,6 @@ export class CreateAccountSwaggerDTO {
     example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   })
   ownerId: string;
-
-  @ApiProperty({
-    description: 'Household ID (UUID)',
-    format: 'uuid',
-    example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
-  })
-  householdId: string;
 }
 
 export class UpdateAccountSwaggerDTO {

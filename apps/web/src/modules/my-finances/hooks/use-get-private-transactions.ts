@@ -9,9 +9,9 @@ export const useGetPrivateTransactions = () => {
   const {data: me} = useGetMe();
 
   return useQuery({
-    queryKey: queryKeys.privateTransactions.all({...search, householdId: me?.householdId ?? ''}),
-    queryFn: () => getPrivateTransactions({...search, householdId: me?.householdId ?? ''}),
-    enabled: Boolean(me?.householdId),
+    queryKey: queryKeys.privateTransactions.all(search),
+    queryFn: () => getPrivateTransactions(search),
+    enabled: Boolean(me?.id),
     placeholderData: keepPreviousData,
   });
 };

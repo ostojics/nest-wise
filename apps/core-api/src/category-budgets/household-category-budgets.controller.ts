@@ -54,7 +54,6 @@ export class HouseholdCategoryBudgetsController {
     @Param('householdId', ParseUUIDPipe) householdId: string,
     @Query(new ZodValidationPipe(getCategoryBudgetsQueryParamsSchema)) query: GetCategoryBudgetsQueryParams,
   ): Promise<CategoryBudgetWithCurrentAmountContract[]> {
-    // Check if user has access to this household
     const canAccess = await this.policiesService.canUserAccessHousehold(user.sub, householdId);
     if (!canAccess) {
       throw new ForbiddenException('You do not have access to this household');

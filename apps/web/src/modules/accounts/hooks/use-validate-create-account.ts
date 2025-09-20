@@ -1,19 +1,17 @@
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {CreateAccountDTO, createAccountSchema} from '@nest-wise/contracts';
+import {CreateAccountHouseholdScopedDTO, createAccountHouseholdScopedSchema} from '@nest-wise/contracts';
 
 interface UseValidateCreateAccountProps {
-  householdId: string;
   ownerId: string;
 }
 
-export const useValidateCreateAccount = ({householdId, ownerId}: UseValidateCreateAccountProps) => {
-  return useForm<CreateAccountDTO>({
-    resolver: zodResolver(createAccountSchema),
+export const useValidateCreateAccount = ({ownerId}: UseValidateCreateAccountProps) => {
+  return useForm<CreateAccountHouseholdScopedDTO>({
+    resolver: zodResolver(createAccountHouseholdScopedSchema),
     defaultValues: {
       name: '',
       type: 'checking',
-      householdId,
       ownerId,
       initialBalance: 0,
     },

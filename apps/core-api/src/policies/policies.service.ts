@@ -39,4 +39,9 @@ export class PoliciesService {
     const user = await this.usersService.findUserById(userId);
     return user.householdId === householdId;
   }
+
+  async canUserInviteToHousehold(userId: string, householdId: string): Promise<boolean> {
+    const user = await this.usersService.findUserById(userId);
+    return user.householdId === householdId;
+  }
 }

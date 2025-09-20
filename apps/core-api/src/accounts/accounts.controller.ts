@@ -1,29 +1,9 @@
-import {
-  EditAccountDTO,
-  TransferFundsDTO,
-  editAccountSchema,
-  transferFundsSchema,
-  CreateAccountDTO,
-  createAccountSchema,
-} from '@nest-wise/contracts';
-import {
-  Body,
-  Controller,
-  ForbiddenException,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Post,
-  Put,
-  UseGuards,
-  UsePipes,
-} from '@nestjs/common';
+import {EditAccountDTO, editAccountSchema} from '@nest-wise/contracts';
+import {Body, Controller, ForbiddenException, Get, Param, Put, UseGuards, UsePipes} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
-  ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -36,13 +16,7 @@ import {AuthGuard} from 'src/common/guards/auth.guard';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {PoliciesService} from 'src/policies/policies.service';
-import {
-  AccountResponseSwaggerDTO,
-  CreateAccountSwaggerDTO,
-  UpdateAccountSwaggerDTO,
-  TransferFundsSwaggerDTO,
-  TransferFundsResponseSwaggerDTO,
-} from 'src/tools/swagger/accounts.swagger.dto';
+import {AccountResponseSwaggerDTO, UpdateAccountSwaggerDTO} from 'src/tools/swagger/accounts.swagger.dto';
 import {AccountsService} from './accounts.service';
 
 @ApiTags('Accounts')
@@ -55,54 +29,6 @@ export class AccountsController {
     private readonly accountsService: AccountsService,
     private readonly policiesService: PoliciesService,
   ) {}
-
-  @ApiOperation({
-    summary: 'Create a new account',
-    description: 'Creates a new financial account for a specific household and owner',
-  })
-  @ApiBody({
-    type: CreateAccountSwaggerDTO,
-    description: 'Account creation data',
-    examples: {
-      checking: {
-        summary: 'Checking Account',
-        value: {
-          name: 'Main Checking',
-          type: 'checking',
-          initialBalance: 1000.0,
-          ownerId: 'uuid-here',
-          householdId: 'uuid-here',
-        },
-      },
-      savings: {
-        summary: 'Savings Account',
-        value: {
-          name: 'Emergency Fund',
-          type: 'savings',
-          initialBalance: 5000.0,
-          ownerId: 'uuid-here',
-          householdId: 'uuid-here',
-        },
-      },
-    },
-  })
-  @ApiCreatedResponse({
-    type: AccountResponseSwaggerDTO,
-    description: 'Account created successfully',
-  })
-  @ApiBadRequestResponse({
-    description: 'Invalid input data',
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Authentication required',
-  })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @UsePipes(new ZodValidationPipe(createAccountSchema))
-  @Post('')
-  async createAccount(@Body() dto: CreateAccountDTO) {
-    return await this.accountsService.createAccount(dto);
-  }
 
   @ApiOperation({
     summary: 'Get account by ID',
@@ -164,39 +90,5 @@ export class AccountsController {
     }
 
     return await this.accountsService.updateAccount(id, dto);
-  }
-
-  @ApiOperation({
-    summary: 'Transfer funds between two accounts',
-    description:
-      "Transfers funds from one account to another. Requires authentication and membership in the accounts' household.",
-  })
-  @ApiBody({
-    type: TransferFundsSwaggerDTO,
-    description: 'Transfer details',
-  })
-  @ApiOkResponse({
-    type: TransferFundsResponseSwaggerDTO,
-    description: 'Transfer completed successfully',
-  })
-  @ApiBadRequestResponse({description: 'Invalid input data or insufficient funds'})
-  @ApiUnauthorizedResponse({description: 'Authentication required'})
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @UsePipes(new ZodValidationPipe(transferFundsSchema))
-  @HttpCode(HttpStatus.OK)
-  @Post('transfer')
-  async transferFunds(@Body() dto: TransferFundsDTO, @CurrentUser() user: JwtPayload) {
-    const allowed = await this.policiesService.canUserTransferBetweenAccounts(
-      user.sub,
-      dto.fromAccountId,
-      dto.toAccountId,
-    );
-    if (!allowed) {
-      throw new ForbiddenException('You cannot transfer between these accounts');
-    }
-
-    await this.accountsService.transferFunds(dto);
-    return {message: 'Transfer completed successfully'};
   }
 }

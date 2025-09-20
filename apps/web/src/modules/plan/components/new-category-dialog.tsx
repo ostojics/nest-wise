@@ -30,7 +30,7 @@ const NewCategoryDialog = () => {
     reset,
     formState: {errors},
   } = useValidateCreateCategory({householdId: me?.householdId ?? ''});
-  const mutation = useCreateCategory();
+  const mutation = useCreateCategory(me?.householdId);
   const client = useQueryClient();
   const search = useSearch({from: '/__pathlessLayout/plan'});
 

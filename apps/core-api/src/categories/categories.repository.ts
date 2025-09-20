@@ -2,7 +2,12 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Category} from './categories.entity';
-import {CreateCategoryDTO, UpdateCategoryDTO} from '@nest-wise/contracts';
+import {UpdateCategoryDTO} from '@nest-wise/contracts';
+
+interface CreateCategoryData {
+  name: string;
+  householdId: string;
+}
 
 @Injectable()
 export class CategoriesRepository {
@@ -11,7 +16,7 @@ export class CategoriesRepository {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async create(categoryData: CreateCategoryDTO): Promise<Category> {
+  async create(categoryData: CreateCategoryData): Promise<Category> {
     const category = this.categoryRepository.create(categoryData);
     return await this.categoryRepository.save(category);
   }

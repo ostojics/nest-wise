@@ -37,14 +37,14 @@ const AcceptInviteForm = ({className, ...props}: React.ComponentProps<'div'>) =>
                 Username <span className="text-red-500">*</span>
               </Label>
               <Input {...register('username', {required: true})} placeholder="e.g. john_smith" />
-              <FormError error={errors.username?.message ?? ''} />
+              {errors.username?.message && <FormError error={errors.username.message} />}
             </div>
             <div className="flex flex-col gap-3 text-left">
               <Label htmlFor="email">
                 Email <span className="text-red-500">*</span>
               </Label>
               <Input {...register('email', {required: true})} type="email" placeholder="m@example.com" />
-              <FormError error={errors.email?.message ?? ''} />
+              {errors.email?.message && <FormError error={errors.email.message} />}
             </div>
 
             <div className="flex flex-col gap-3 text-left">
@@ -54,7 +54,7 @@ const AcceptInviteForm = ({className, ...props}: React.ComponentProps<'div'>) =>
                 </Label>
               </div>
               <Input {...register('password', {required: true})} type="password" placeholder="••••••••" />
-              <FormError error={errors.password?.message ?? ''} />
+              {errors.password?.message && <FormError error={errors.password.message} />}
             </div>
 
             <div className="flex flex-col gap-3 text-left">
@@ -62,7 +62,7 @@ const AcceptInviteForm = ({className, ...props}: React.ComponentProps<'div'>) =>
                 Confirm password <span className="text-red-500">*</span>
               </Label>
               <Input {...register('confirm_password', {required: true})} type="password" placeholder="••••••••" />
-              <FormError error={errors.confirm_password?.message ?? ''} />
+              {errors.confirm_password?.message && <FormError error={errors.confirm_password.message} />}
             </div>
 
             <input type="hidden" {...register('token')} />
