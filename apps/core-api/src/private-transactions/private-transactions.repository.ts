@@ -68,8 +68,6 @@ export class PrivateTransactionsRepository {
   }
 
   private applyFilters(qb: SelectQueryBuilder<PrivateTransaction>, query: GetPrivateTransactionsQueryDTO): void {
-    qb.andWhere('pt.householdId = :householdId', {householdId: query.householdId});
-
     if (query.accountId) {
       qb.andWhere('pt.accountId = :accountId', {accountId: query.accountId});
     }
