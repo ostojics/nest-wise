@@ -1,160 +1,190 @@
-# Turborepo Starter
+# NestWise
 
-A template for building software using Turborepo, pnpm, and modern tooling. Designed to get you up and running quickly with a solid, scalable, and well-structured monorepo.
+A comprehensive budgeting application designed for couples and shared households to coordinate their finances effectively while maintaining privacy controls for individual transactions.
 
-## Main principle - bring your own tools
+## 📚 Documentation
 
-This template is configured with minimal amount of packages and tooling to get started.
-This provides a structured and scalable starting point and you can add new tools or remove existing ones.
+This repository contains complete product and technical documentation split across multiple focused documents:
 
-## Features
+- **[Product Overview](docs/product.md)** - Product vision, features, user flows, and value proposition
+- **[Technical Architecture](docs/architecture.md)** - System design, technology stack, and data models
+- **[API Design Guide](docs/api.md)** - Complete API reference with examples and conventions
+- **[Local Development Setup](docs/setup.md)** - Step-by-step development environment setup
+- **[Self-Hosting Guide](docs/self-hosting.md)** - Production deployment guide (coming soon)
 
-- **Turborepo**: High-performance build system for monorepos.
+## 🚀 Quick Start
 
-- **pnpm**: Fast, disk space-efficient package manager.
+### Prerequisites
 
-- **TypeScript**: End-to-end type safety.
+- **Node.js**: v22.12.0+ (or v20.19.5 with warnings)
+- **pnpm**: v10.11.1
+- **Docker**: For PostgreSQL, Redis, and management tools
 
-- **Shared Tooling**: Centralized ESLint and TypeScript configurations.
-
-- **Shared Packages**: Share packages across multiple apps.
-
-- **Pre-configured CI**: GitHub Actions workflow for building and linting on every push.
-
-- **Pre-commit Hooks**: Automated code formatting with Husky and pretty-quick.
-
-- **Custom Generators**: Automate repetitive tasks.
-
-## Monorepo Structure
-
-This repository uses a standard monorepo structure to organize applications and shared packages:
-
-- `apps/`: Contains the individual applications.
-
-- `packages/`: Contains shared packages that can be used across applications.
-
-- `tooling/`: Contains shared tooling configurations.
-
-## What's Inside?
-
-This Turborepo starter includes the following apps and packages:
-
-### Apps
-
-- `apps/web`:
-
-- A [Vite](https://vitejs.dev/)-powered React application.
-
-- Uses shared `tsconfig.json` and ESLint configurations from the `tooling` directory.
-
-- `apps/expo-app`:
-
-- An [Expo](https://expo.dev/) managed React Native application.
-
-- Can share code and types with the `web` application.
-
-### Packages
-
-- `packages/validation`:
-
-- A placeholder for your shared validation logic.
-
-### Tooling
-
-- `tooling/eslint`:
-
-- `base.js`: The base ESLint configuration for all packages.
-
-- `react.js`: A specialized ESLint configuration for React-based applications.
-
-- `tooling/typescript`:
-
-- `base.json`: The base `tsconfig.json` for all packages.
-
-- `internal-package.json`: A specialized `tsconfig.json` for internal packages.
-
-## Getting Started
-
-Make sure to have required versions of software specified in https://github.com/OpenSolve/turborepo-starter/blob/main/package.json#L23
-
-To get started with this template, follow these steps:
-
-1.  **Clone the repository:**
+### Install and Run
 
 ```bash
+# Install pnpm globally
+npm install -g pnpm@10.11.1
 
-git clone git@github.com:OpenSolve/turborepo-starter.git
-
-cd turborepo-starter
-
-```
-
-2.  **Install dependencies:**
-
-This project uses `pnpm` as its package manager.
-
-```bash
-
+# Install dependencies (allow 3+ minutes)
 pnpm install
 
+# Start external services
+docker compose up -d
+
+# Copy environment files
+cp apps/core-api/.env.example apps/core-api/.env
+cp apps/web/.env.example apps/web/.env
+
+# IMPORTANT: Set dummy API key in apps/core-api/.env
+echo "RESEND_API_KEY=dummy-key-for-dev" >> apps/core-api/.env
+
+# Start backend API (localhost:8080)
+pnpm --filter @nest-wise/core-api start:debug
+
+# Start frontend (localhost:5173) - in another terminal
+pnpm --filter @nest-wise/web dev
 ```
 
-3.  **Run the development servers:**
+### Verify Setup
 
-This will start the development servers for all applications in the monorepo.
+- **API Health**: `curl http://localhost:8080/` → "Hello World!"
+- **Web App**: `curl http://localhost:5173/` → HTML with "NestWise"
+- **API Docs**: http://localhost:8080/swagger
+
+## 🏗️ Project Structure
+
+```
+nest-wise/
+├── apps/
+│   ├── core-api/          # NestJS backend API (port 8080)
+│   └── web/               # React + Vite frontend (port 5173)
+├── packages/
+│   └── contracts/         # Shared TypeScript types and DTOs
+├── tooling/
+│   ├── eslint/           # Shared ESLint configuration
+│   └── typescript/       # Shared TypeScript configuration
+└── docs/                 # Comprehensive documentation
+```
+
+## 🛠️ Technology Stack
+
+### Backend
+
+- **NestJS 11** with TypeScript 5.8
+- **PostgreSQL** with TypeORM
+- **Redis** with BullMQ for queues
+- **JWT** authentication with cookies
+- **Zod** validation via custom pipe
+- **Swagger** auto-generated documentation
+
+### Frontend
+
+- **React 19** with TypeScript 5.8
+- **Vite 6** for development and builds
+- **TailwindCSS 4** for styling
+- **React Query** for data fetching
+- **React Router** with generated route tree
+
+### Shared
+
+- **Turborepo 2.5** for monorepo orchestration
+- **pnpm workspaces** for dependency management
+- **ESLint 9** and **Prettier** for code quality
+
+## 💡 Key Features
+
+### Financial Management
+
+- **Households**: Shared financial context for couples/families
+- **Accounts**: Multiple account tracking with real-time balances
+- **Transactions**: Full CRUD with advanced filtering and search
+- **Categories**: Organize spending for budgets and analytics
+- **Private Transactions**: User-scoped transactions for privacy
+
+### Planning & Insights
+
+- **Category Budgets**: Monthly budget limits with progress tracking
+- **Savings Tracking**: Automated savings calculations and trends
+- **Reports**: Net worth trends, spending analysis, account summaries
+- **AI Assistance**: Transaction categorization suggestions
+
+### Collaboration
+
+- **Multi-User**: Invite partners/roommates to shared household
+- **Privacy Controls**: Balance transparency with personal privacy
+- **Role-Based Access**: Policy-driven authorization for sensitive operations
+
+## 🎯 Target Users & Use Cases
+
+**Primary Users**: Couples managing shared finances
+**Secondary Users**: Roommates, family members coordinating expenses
+
+**Core User Flows**:
+
+1. **Onboarding**: Setup household, accounts, categories, budgets
+2. **Daily Management**: Add transactions, categorize, review balances
+3. **Planning**: Set budgets, track progress, analyze spending
+4. **Collaboration**: Invite partners, coordinate shared expenses
+
+## 📋 Development Commands
 
 ```bash
+# Build all packages (~50s)
+pnpm build
 
-pnpm dev
+# Lint all code (~32s)
+pnpm lint
 
+# Format code
+pnpm format
+
+# Individual package commands
+pnpm --filter @nest-wise/core-api <command>
+pnpm --filter @nest-wise/web <command>
+pnpm --filter @nest-wise/contracts <command>
 ```
 
-## Key Scripts
+## 🌐 Development Services
 
-Here are some of the most important scripts available at the root of the project:
+| Service      | URL                           | Credentials           |
+| ------------ | ----------------------------- | --------------------- |
+| Backend API  | http://localhost:8080         | -                     |
+| Frontend     | http://localhost:5173         | -                     |
+| Swagger Docs | http://localhost:8080/swagger | -                     |
+| PostgreSQL   | localhost:5432                | root/root             |
+| PgAdmin      | http://localhost:5050         | admin@admin.com/admin |
+| Redis        | localhost:6379                | -                     |
+| RedisInsight | http://localhost:5540         | -                     |
 
-| Script | Description |
 
-| ------------------ | ------------------------------------------------ |
 
-| `pnpm dev` | Starts the development servers for all apps. |
+## 🔐 API Design Principles
 
-| `pnpm build` | Builds all apps and packages for production. |
+- **RESTful**: Standard HTTP methods and status codes
+- **Filtered**: Query parameters with advanced operators (`_gt`, `_gte`, `_like`, etc.)
+- **Paginated**: Consistent pagination with `page`/`pageSize` and metadata
+- **Versioned**: URI versioning (`/v1/...`)
+- **Documented**: Interactive Swagger documentation
+- **Secure**: JWT cookies, CORS, rate limiting, input validation
 
-| `pnpm lint` | Lints all code in the monorepo. |
+## 🤝 Contributing
 
-| `pnpm format` | Formats all code using Prettier. |
+1. **Setup**: Follow the [Local Development Setup](docs/setup.md) guide
+2. **Architecture**: Review [Technical Architecture](docs/architecture.md)
+3. **API**: Understand patterns in [API Design Guide](docs/api.md)
+4. **Changes**: Make focused, well-tested changes
+5. **Validation**: Run `pnpm lint && pnpm build` before commits
 
-| `pnpm analyze:web` | Analyzes the bundle size of the web application. |
+## 📖 Key Files Reference
 
-| `pnpm create:package` | Scaffold a new shared package. |
+- **Backend Entry**: [`apps/core-api/src/main.ts`](apps/core-api/src/main.ts)
+- **Backend Modules**: [`apps/core-api/src/app.module.ts`](apps/core-api/src/app.module.ts)
+- **Frontend Entry**: [`apps/web/src/main.tsx`](apps/web/src/main.tsx)
+- **Shared Types**: [`packages/contracts/src/index.ts`](packages/contracts/src/index.ts)
+- **Build Config**: [`turbo.json`](turbo.json)
+- **Environment**: [`docker-compose.yml`](docker-compose.yml)
 
-## Shared Tooling
+---
 
-This starter is configured with shared ESLint and TypeScript configurations to ensure consistency across the entire codebase.
-
-- **ESLint**: The configurations in `tooling/eslint` are extended by each app and package. For example, `apps/web/eslint.config.js` extends the shared configuration.
-
-- **TypeScript**: The `tsconfig.json` files in each app and package extend the base configurations from `tooling/typescript` to reduce boilerplate.
-
-## Dependency Management
-
-This project uses [pnpm workspaces](https://pnpm.io/workspaces) to manage dependencies within the monorepo. The `pnpm-workspace.yaml` file at the root defines the locations of the packages.
-
-The `catalog` feature of pnpm is used in `pnpm-workspace.yaml` to ensure that all packages use the same versions of common dependencies like React and TypeScript.
-
-## CI/CD
-
-The `.github/workflows/ci.yml` file contains a GitHub Actions workflow that is triggered on every pull request to the `main` branch. This workflow performs the following checks:
-
-- Installs dependencies.
-
-- Builds all applications and packages.
-
-- Lints the entire codebase.
-
-This helps to ensure that the code is always in a good state before it gets merged.
-
-## Git Hooks
-
-This project uses [Husky](https://typicode.github.io/husky/) to manage Git hooks. A `pre-commit` hook is configured in `.husky/pre-commit` to run `pretty-quick --staged`, which formats the staged files using Prettier before each commit. This ensures that all committed code adheres to the defined code style.
+**Need Help?** Check the detailed documentation in the [`docs/`](docs/) directory or review the interactive API documentation at http://localhost:8080/swagger when running locally.
