@@ -25,7 +25,7 @@ export class AuthService {
     const license = await this.licensesService.validateLicenseKey(dto.licenseKey);
 
     // Use transaction to ensure atomicity
-    return await this.dataSource.transaction(async (manager) => {
+    return await this.dataSource.transaction(async (_manager) => {
       // Create household with license reference
       const household = await this.householdsService.createHousehold({
         ...dto.household,

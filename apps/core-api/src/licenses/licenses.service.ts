@@ -18,7 +18,7 @@ export class LicensesService {
     }
 
     const now = new Date();
-    if (license.expiresAt && now > license.expiresAt) {
+    if (now > license.expiresAt) {
       throw new ForbiddenException('License key has expired');
     }
 
@@ -37,7 +37,7 @@ export class LicensesService {
     }
 
     const now = new Date();
-    if (license.expiresAt && now > license.expiresAt) {
+    if (now > license.expiresAt) {
       throw new ForbiddenException('License has expired');
     }
   }

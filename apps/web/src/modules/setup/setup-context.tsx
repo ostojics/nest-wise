@@ -22,7 +22,7 @@ interface SetupProviderProps {
 export const SetupProvider: React.FC<SetupProviderProps> = ({children, licenseKey: initialLicenseKey}) => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [userData, setUserData] = useState<UserRegistrationDTO | null>(null);
-  const [licenseKey, setLicenseKey] = useState<string | null>(initialLicenseKey || null);
+  const [licenseKey, setLicenseKey] = useState<string | null>(initialLicenseKey ?? null);
 
   const nextStep = () => {
     setCurrentStep((prev) => prev + 1);

@@ -34,25 +34,25 @@ export class LicenseGuard implements CanActivate {
       // For routes without direct household ID, try to get it from the user's household
       try {
         const user = request.user;
-        if (user?.householdId) {
+        if (user.householdId) {
           const household = await this.householdsService.findHouseholdById(user.householdId);
-          if (household?.licenseId) {
+          if (household.licenseId) {
             await this.licensesService.validateLicenseById(household.licenseId);
             return true;
           }
         }
-      } catch (error) {
+      } catch {
         throw new ForbiddenException('Invalid license or household access');
       }
     } else {
       // Validate the household's license
       try {
         const household = await this.householdsService.findHouseholdById(householdId);
-        if (household?.licenseId) {
+        if (household.licenseId) {
           await this.licensesService.validateLicenseById(household.licenseId);
           return true;
         }
-      } catch (error) {
+      } catch {
         throw new ForbiddenException('Invalid license or household access');
       }
     }

@@ -40,7 +40,7 @@ export class UsersService {
       username: userData.username,
       passwordHash,
       householdId: userData.householdId,
-      isHouseholdAuthor: userData.isHouseholdAuthor || false,
+      isHouseholdAuthor: userData.isHouseholdAuthor ?? false,
     });
   }
 
