@@ -6,12 +6,11 @@ interface UseValidateCreateCategoryArgs {
   householdId: string;
 }
 
-export const useValidateCreateCategory = ({householdId}: UseValidateCreateCategoryArgs) => {
+export const useValidateCreateCategory = ({householdId: _householdId}: UseValidateCreateCategoryArgs) => {
   return useForm<CreateCategoryDTO>({
     resolver: zodResolver(createCategorySchema),
     defaultValues: {
       name: '',
-      householdId,
     },
   });
 };

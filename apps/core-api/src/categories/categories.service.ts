@@ -7,16 +7,16 @@ import {CreateCategoryDTO, UpdateCategoryDTO} from '@nest-wise/contracts';
 export class CategoriesService {
   constructor(private readonly categoriesRepository: CategoriesRepository) {}
 
-  async createCategory(categoryData: CreateCategoryDTO): Promise<Category> {
-    const nameExists = await this.categoriesRepository.nameExistsForHousehold(
-      categoryData.name,
-      categoryData.householdId,
-    );
+  async createCategoryForHousehold(householdId: string, categoryData: CreateCategoryDTO): Promise<Category> {
+    const nameExists = await this.categoriesRepository.nameExistsForHousehold(categoryData.name, householdId);
     if (nameExists) {
       throw new ConflictException('Category name already exists for this household');
     }
 
-    return await this.categoriesRepository.create(categoryData);
+    return await this.categoriesRepository.create({
+      name: categoryData.name,
+      householdId,
+    });
   }
 
   async findCategoryById(id: string): Promise<Category> {

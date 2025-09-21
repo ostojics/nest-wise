@@ -41,7 +41,7 @@ import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 @ApiTags('Private Transactions')
 @Controller({
   version: '1',
-  path: 'private-transactions',
+  path: 'users/me/private-transactions',
 })
 export class PrivateTransactionsController {
   constructor(private readonly privateTransactionsService: PrivateTransactionsService) {}
@@ -53,7 +53,6 @@ export class PrivateTransactionsController {
   @ApiBody({
     schema: {
       example: {
-        householdId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
         accountId: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
         amount: 50.75,
         type: 'expense',
@@ -82,11 +81,11 @@ export class PrivateTransactionsController {
   @ApiQuery({name: 'page', required: false, type: Number, example: 1})
   @ApiQuery({name: 'pageSize', required: false, type: Number, example: 15})
   @ApiQuery({name: 'sort', required: false, type: String, example: '-transactionDate'})
-  @ApiQuery({name: 'householdId', required: false, type: String, format: 'uuid'})
   @ApiQuery({name: 'type', required: false, type: String, example: 'expense'})
   @ApiQuery({name: 'accountId', required: false, type: String, format: 'uuid'})
-  @ApiQuery({name: 'transactionDate_from', required: false, type: String, format: 'date'})
-  @ApiQuery({name: 'transactionDate_to', required: false, type: String, format: 'date'})
+  @ApiQuery({name: 'q', required: false, type: String, description: 'Search in description'})
+  @ApiQuery({name: 'from', required: false, type: String, format: 'date'})
+  @ApiQuery({name: 'to', required: false, type: String, format: 'date'})
   @ApiOkResponse({description: 'Private transactions retrieved successfully'})
   @ApiBadRequestResponse({description: 'Invalid query parameters'})
   @ApiUnauthorizedResponse({description: 'Authentication required'})

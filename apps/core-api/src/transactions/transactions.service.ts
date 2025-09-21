@@ -1,11 +1,15 @@
 import {openai} from '@ai-sdk/openai';
 import {
   CreateTransactionAiDTO,
+  CreateTransactionAiHouseholdDTO,
   CreateTransactionDTO,
+  CreateTransactionHouseholdDTO,
   GetTransactionsQueryDTO,
+  GetTransactionsQueryHouseholdDTO,
   UpdateTransactionDTO,
   AccountSpendingPointContract,
   GetAccountsSpendingQueryDTO,
+  GetAccountsSpendingQueryHouseholdDTO,
   GetTransactionsResponseContract,
   NetWorthTrendPointContract,
   TransactionContract,
@@ -60,6 +64,41 @@ export class TransactionsService {
     });
   }
 
+  async createTransactionForHousehold(
+    householdId: string,
+    transactionData: CreateTransactionHouseholdDTO,
+  ): Promise<Transaction> {
+    return await this.dataSource.transaction(async () => {
+      const account = await this.accountsService.findAccountById(transactionData.accountId);
+
+      // Verify account belongs to the household
+      if (account.householdId !== householdId) {
+        throw new BadRequestException('Account does not belong to the specified household');
+      }
+
+      if (transactionData.type === 'expense' && Number(account.currentBalance) < transactionData.amount) {
+        throw new BadRequestException('Insufficient funds for this expense');
+      }
+
+      if (transactionData.type === 'income') {
+        transactionData.categoryId = null;
+      }
+
+      const transaction = await this.transactionsRepository.create({
+        ...transactionData,
+        householdId,
+      });
+
+      await this.updateBalance(
+        transactionData.accountId,
+        transactionData.amount,
+        transactionData.type as TransactionType,
+      );
+
+      return transaction;
+    });
+  }
+
   async getNetWorthTrend(householdId: string): Promise<NetWorthTrendPointContract[]> {
     return await this.transactionsRepository.getNetWorthTrendForHousehold(householdId);
   }
@@ -69,6 +108,13 @@ export class TransactionsService {
     query: GetAccountsSpendingQueryDTO,
   ): Promise<AccountSpendingPointContract[]> {
     return await this.transactionsRepository.getAccountsSpendingForHousehold(householdId, query);
+  }
+
+  async getAccountsSpendingForHousehold(
+    householdId: string,
+    query: GetAccountsSpendingQueryHouseholdDTO,
+  ): Promise<AccountSpendingPointContract[]> {
+    return await this.transactionsRepository.getAccountsSpendingForHouseholdNew(householdId, query);
   }
 
   async createTransactionAi(transactionData: CreateTransactionAiDTO): Promise<Transaction> {
@@ -96,9 +142,8 @@ export class TransactionsService {
       let categoryId: string | null = null;
 
       if (isNewCategorySuggested) {
-        const newCategory = await this.categoriesService.createCategory({
+        const newCategory = await this.categoriesService.createCategoryForHousehold(household.id, {
           name: object.suggestedCategory.newCategoryName,
-          householdId: household.id,
         });
 
         categoryId = newCategory.id;
@@ -114,6 +159,66 @@ export class TransactionsService {
         householdId: account.householdId,
         accountId: account.id,
         transactionDate: new Date(object.transactionDate),
+        isReconciled: true,
+      });
+
+      await this.updateBalance(transaction.accountId, transaction.amount, transaction.type);
+
+      return transaction;
+    });
+  }
+
+  async createTransactionAiForHousehold(
+    householdId: string,
+    transactionData: CreateTransactionAiHouseholdDTO,
+  ): Promise<Transaction> {
+    const account = await this.accountsService.findAccountById(transactionData.accountId);
+
+    // Verify account belongs to the household
+    if (account.householdId !== householdId) {
+      throw new BadRequestException('Account does not belong to the specified household');
+    }
+
+    const household = await this.householdsService.findHouseholdById(householdId);
+    const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
+
+    const {object} = await generateObject({
+      model: openai('gpt-4.1-mini-2025-04-14'),
+      prompt: categoryPromptFactory({
+        categories,
+        transactionDescription: transactionData.description,
+        currentDate: new Date().toISOString(),
+      }),
+      temperature: 0.1,
+      schema: transactionCategoryOutputSchema,
+    });
+
+    if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
+      throw new BadRequestException('Insufficient funds for this expense');
+    }
+
+    return await this.dataSource.transaction(async () => {
+      const isNewCategorySuggested = object.newCategorySuggested;
+      let categoryId: string | null = null;
+
+      if (isNewCategorySuggested) {
+        const newCategory = await this.categoriesService.createCategoryForHousehold(householdId, {
+          name: object.suggestedCategory.newCategoryName,
+        });
+
+        categoryId = newCategory.id;
+      } else {
+        categoryId = object.suggestedCategory.existingCategoryId;
+      }
+
+      const transaction = await this.transactionsRepository.create({
+        description: transactionData.description,
+        amount: object.transactionAmount,
+        type: object.transactionType as TransactionType,
+        categoryId: object.transactionType === 'income' ? null : categoryId,
+        householdId: household.id,
+        accountId: account.id,
+        transactionDate: transactionData.transactionDate ?? new Date(object.transactionDate),
         isReconciled: true,
       });
 
@@ -143,6 +248,13 @@ export class TransactionsService {
 
   async findTransactions(query: GetTransactionsQueryDTO): Promise<GetTransactionsResponseContract> {
     return await this.transactionsRepository.findTransactionsWithFilters(query);
+  }
+
+  async findTransactionsForHousehold(
+    householdId: string,
+    query: GetTransactionsQueryHouseholdDTO,
+  ): Promise<GetTransactionsResponseContract> {
+    return await this.transactionsRepository.findTransactionsWithFiltersForHousehold(householdId, query);
   }
 
   async findAllTransactions(query: Omit<GetTransactionsQueryDTO, 'page' | 'pageSize'>): Promise<TransactionContract[]> {

@@ -9,8 +9,8 @@ const querySchema = z.object({
   sort: TransactionSortFieldEnum.default('-transactionDate'),
   accountId: z.string().uuid().optional(),
   categoryId: z.string().uuid().optional(),
-  transactionDate_from: z.string().date().optional(),
-  transactionDate_to: z.string().date().optional(),
+  from: z.string().date().optional(),
+  to: z.string().date().optional(),
   q: z.string().optional(),
 });
 
