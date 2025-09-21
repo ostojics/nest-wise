@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SetupRouteImport } from './routes/setup'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitesRouteImport } from './routes/invites'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as _pathlessLayoutRouteRouteImport } from './routes/__pathlessLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as _pathlessLayoutTransactionsRouteImport } from './routes/__pathlessLayout/transactions'
@@ -30,6 +32,11 @@ const SetupRoute = SetupRouteImport.update({
   path: '/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -38,6 +45,11 @@ const LoginRoute = LoginRouteImport.update({
 const InvitesRoute = InvitesRouteImport.update({
   id: '/invites',
   path: '/invites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const _pathlessLayoutRouteRoute = _pathlessLayoutRouteRouteImport.update({
@@ -109,8 +121,10 @@ const _pathlessLayoutReportsNetWorthRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
   '/accounts': typeof _pathlessLayoutAccountsRoute
@@ -125,8 +139,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
   '/accounts': typeof _pathlessLayoutAccountsRoute
@@ -143,8 +159,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/__pathlessLayout': typeof _pathlessLayoutRouteRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/__pathlessLayout/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
   '/__pathlessLayout/accounts': typeof _pathlessLayoutAccountsRoute
@@ -161,8 +179,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/forgot-password'
     | '/invites'
     | '/login'
+    | '/reset-password'
     | '/setup'
     | '/reports'
     | '/accounts'
@@ -177,8 +197,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/forgot-password'
     | '/invites'
     | '/login'
+    | '/reset-password'
     | '/setup'
     | '/reports'
     | '/accounts'
@@ -194,8 +216,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/__pathlessLayout'
+    | '/forgot-password'
     | '/invites'
     | '/login'
+    | '/reset-password'
     | '/setup'
     | '/__pathlessLayout/reports'
     | '/__pathlessLayout/accounts'
@@ -212,8 +236,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   _pathlessLayoutRouteRoute: typeof _pathlessLayoutRouteRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvitesRoute: typeof InvitesRoute
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SetupRoute: typeof SetupRoute
 }
 
@@ -224,6 +250,13 @@ declare module '@tanstack/react-router' {
       path: '/setup'
       fullPath: '/setup'
       preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -238,6 +271,13 @@ declare module '@tanstack/react-router' {
       path: '/invites'
       fullPath: '/invites'
       preLoaderRoute: typeof InvitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/__pathlessLayout': {
@@ -372,8 +412,10 @@ const _pathlessLayoutRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   _pathlessLayoutRouteRoute: _pathlessLayoutRouteRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   InvitesRoute: InvitesRoute,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SetupRoute: SetupRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import {Processor, WorkerHost} from '@nestjs/bullmq';
 import {Job} from 'bullmq';
 import {EmailJobs} from 'src/common/enums/jobs.enum';

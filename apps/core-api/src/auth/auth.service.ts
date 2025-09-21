@@ -97,14 +97,14 @@ export class AuthService {
       }
 
       const user = await this.usersService.findUserById(payload.sub);
-      if (!user || user.email !== payload.email) {
+      if (user.email !== payload.email) {
         throw new UnauthorizedException('Invalid token');
       }
 
       await this.usersService.setPassword(user.id, dto.password);
 
       return;
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }
   }
