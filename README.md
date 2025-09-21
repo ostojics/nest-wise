@@ -157,22 +157,7 @@ pnpm --filter @nest-wise/contracts <command>
 | Redis        | localhost:6379                | -                     |
 | RedisInsight | http://localhost:5540         | -                     |
 
-## 🏛️ Data Model Overview
 
-```mermaid
-erDiagram
-    Household ||--o{ User : "1:N"
-    Household ||--o{ Account : "1:N"
-    Household ||--o{ Transaction : "1:N"
-    Household ||--o{ Category : "1:N"
-    Household ||--o{ CategoryBudget : "1:N"
-
-    User ||--o{ Account : "owns"
-    User ||--o{ PrivateTransaction : "owns"
-
-    Account ||--o{ Transaction : "1:N"
-    Category ||--o{ Transaction : "1:N"
-```
 
 ## 🔐 API Design Principles
 
