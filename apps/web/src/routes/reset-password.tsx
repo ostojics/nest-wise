@@ -28,7 +28,7 @@ function ResetPasswordPage() {
 
   return (
     <section className="flex items-center justify-center h-screen w-screen">
-      <ResetPasswordForm token={search.token} />
+      <ResetPasswordForm />
     </section>
   );
 }

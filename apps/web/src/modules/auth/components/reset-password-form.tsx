@@ -8,28 +8,16 @@ import {useValidateResetPassword} from '../hooks/useValidateResetPassword';
 import FormError from '@/components/form-error';
 import {useResetPassword} from '../hooks/useResetPassword';
 import {Loader2} from 'lucide-react';
-import {Link} from '@tanstack/react-router';
-import {useEffect} from 'react';
+import {Link, useSearch} from '@tanstack/react-router';
 
-interface ResetPasswordFormProps extends React.ComponentProps<'div'> {
-  token?: string;
-}
-
-const ResetPasswordForm = ({className, token, ...props}: ResetPasswordFormProps) => {
+const ResetPasswordForm = ({className, ...props}: React.ComponentProps<'div'>) => {
+  const search = useSearch({from: '/reset-password'});
   const {
     register,
     handleSubmit,
-    setValue,
     formState: {errors},
-  } = useValidateResetPassword();
+  } = useValidateResetPassword(search.token || '');
   const mutation = useResetPassword();
-
-  // Set the token from URL params
-  useEffect(() => {
-    if (token) {
-      setValue('token', token);
-    }
-  }, [token, setValue]);
 
   const handleResetPassword = (data: ResetPasswordDTO) => {
     mutation.mutate(data);
