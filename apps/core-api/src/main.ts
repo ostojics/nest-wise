@@ -13,6 +13,7 @@ import cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {bufferLogs: true});
   const configService = app.get(ConfigService<GlobalConfig>);
+  const {webAppUrl} = configService.getOrThrow<AppConfig>(AppConfigName);
 
   app.useLogger(app.get(Logger));
   app.enableVersioning({
@@ -24,7 +25,7 @@ async function bootstrap() {
   app.use(cookieParser());
   setupSwagger(app);
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: webAppUrl,
     credentials: true,
   });
 

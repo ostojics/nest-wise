@@ -13,7 +13,7 @@ export interface AppConfig {
 export const AppConfigName = 'app';
 
 export function getConfig(): AppConfig {
-  const port = parseInt(process.env.APP_PORT ?? '8080', 10);
+  const port = parseInt(process.env.PORT ?? '8080', 10);
 
   return {
     url: process.env.APP_URL || `http://localhost:${port}`,

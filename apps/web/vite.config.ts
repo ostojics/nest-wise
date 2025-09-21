@@ -1,7 +1,7 @@
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import eslintPlugin from '@nabla/vite-plugin-eslint';
-import {analyzer} from 'vite-bundle-analyzer';
+// import {analyzer} from 'vite-bundle-analyzer';
 import {tanstackRouter} from '@tanstack/router-plugin/vite';
 import tailwindcss from '@tailwindcss/vite';
 import {VitePWA} from 'vite-plugin-pwa';
@@ -15,7 +15,7 @@ export default defineConfig((env) => ({
     }),
     react(),
     env.mode !== 'test' && eslintPlugin(),
-    analyzer(),
+    // analyzer(),
     tailwindcss(),
     VitePWA({
       registerType: 'prompt',
