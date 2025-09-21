@@ -13,6 +13,7 @@ import {
 } from '@nestjs/swagger';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {AuthGuard} from 'src/common/guards/auth.guard';
+import {LicenseGuard} from 'src/common/guards/license.guard';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {PoliciesService} from 'src/policies/policies.service';
@@ -52,7 +53,7 @@ export class AccountsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @Get(':id')
   async getAccountById(@Param('id') id: string) {
     return await this.accountsService.findAccountById(id);
@@ -80,7 +81,7 @@ export class AccountsController {
   @ApiNotFoundResponse({description: 'Account not found'})
   @ApiUnauthorizedResponse({description: 'Authentication required'})
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(editAccountSchema))
   @Put(':id')
   async updateAccount(@Param('id') id: string, @Body() dto: EditAccountDTO, @CurrentUser() user: JwtPayload) {

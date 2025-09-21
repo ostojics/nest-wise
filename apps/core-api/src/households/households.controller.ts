@@ -47,6 +47,7 @@ import {Category} from 'src/categories/categories.entity';
 import {CategoriesService} from 'src/categories/categories.service';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {AuthGuard} from 'src/common/guards/auth.guard';
+import {LicenseGuard} from 'src/common/guards/license.guard';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {PoliciesService} from 'src/policies/policies.service';
@@ -100,7 +101,7 @@ export class HouseholdsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @Get(':id')
   async getHouseholdById(@Param('id') id: string): Promise<HouseholdContract> {
     return (await this.householdsService.findHouseholdById(id)) as HouseholdContract;
@@ -128,7 +129,7 @@ export class HouseholdsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @Get(':id/accounts')
   async getAccountsByHouseholdId(@Param('id') id: string): Promise<AccountContract[]> {
     return (await this.householdsService.findAccountsByHouseholdId(id)) as AccountContract[];
@@ -153,7 +154,7 @@ export class HouseholdsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @Get(':id/categories')
   async getCategoriesByHouseholdId(@Param('id') id: string): Promise<Category[]> {
     return await this.householdsService.findCategoriesByHouseholdId(id);
@@ -202,7 +203,7 @@ export class HouseholdsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(createCategorySchema))
   @Post(':id/categories')
   async createCategoryForHousehold(@Param('id') id: string, @Body() dto: CreateCategoryDTO): Promise<CategoryContract> {
@@ -238,7 +239,7 @@ export class HouseholdsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @Put(':id')
   async updateHousehold(
     @Param('id') id: string,
@@ -293,7 +294,7 @@ export class HouseholdsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(createAccountHouseholdScopedSchema))
   @Post(':id/accounts')
   async createAccountForHousehold(
@@ -326,7 +327,7 @@ export class HouseholdsController {
   @ApiBadRequestResponse({description: 'Invalid input data or insufficient funds'})
   @ApiUnauthorizedResponse({description: 'Authentication required'})
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(transferFundsSchema))
   @HttpCode(HttpStatus.OK)
   @Post(':id/accounts/transfer')
@@ -370,7 +371,7 @@ export class HouseholdsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @Get(':id/users')
   async getUsersByHouseholdId(
     @Param('id') householdId: string,
@@ -412,7 +413,7 @@ export class HouseholdsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(inviteUserSchema))
   @HttpCode(204)
   @Post(':id/invites')
