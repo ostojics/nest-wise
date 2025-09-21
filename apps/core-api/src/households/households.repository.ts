@@ -11,7 +11,7 @@ export class HouseholdsRepository {
     private readonly householdRepository: Repository<Household>,
   ) {}
 
-  async create(householdData: CreateHouseholdDTO): Promise<Household> {
+  async create(householdData: CreateHouseholdDTO & {licenseId?: string}): Promise<Household> {
     const household = this.householdRepository.create(householdData);
     return await this.householdRepository.save(household);
   }

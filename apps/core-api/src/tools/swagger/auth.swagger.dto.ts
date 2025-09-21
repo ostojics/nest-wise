@@ -50,6 +50,13 @@ class CreateHouseholdSwaggerDTO {
 
 export class SetupSwaggerDTO {
   @ApiProperty({
+    description: 'License key for household setup',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+    format: 'uuid',
+  })
+  licenseKey: string;
+
+  @ApiProperty({
     description: 'User registration data',
     type: UserRegistrationSwaggerDTO,
   })

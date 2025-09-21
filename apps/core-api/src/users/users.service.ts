@@ -23,7 +23,7 @@ export class UsersService {
     private readonly configService: ConfigService,
   ) {}
 
-  async createUser(userData: CreateUserDTO): Promise<User> {
+  async createUser(userData: CreateUserDTO & {isHouseholdAuthor?: boolean}): Promise<User> {
     const emailExists = await this.usersRepository.emailExists(userData.email);
     if (emailExists) {
       throw new ConflictException('Cannot create user');
@@ -40,6 +40,7 @@ export class UsersService {
       username: userData.username,
       passwordHash,
       householdId: userData.householdId,
+      isHouseholdAuthor: userData.isHouseholdAuthor || false,
     });
   }
 
@@ -129,18 +130,19 @@ export class UsersService {
       householdId: payload.sub,
     });
 
-    const jwt = await this.craftJwt(user.id, user.email);
+    const jwt = await this.craftJwt(user.id, user.email, user.householdId);
     this.logger.log(`User ${dto.email} accepted invite to household ${payload.sub}`);
 
     return jwt;
   }
 
-  async craftJwt(userId: string, userEmail: string) {
+  async craftJwt(userId: string, userEmail: string, householdId?: string) {
     const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
     const payload = {
       sub: userId,
       email: userEmail,
       iss: appConfig.url,
+      ...(householdId && {householdId}),
     };
 
     const token = await this.jwtService.signAsync(payload);
