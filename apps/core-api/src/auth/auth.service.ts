@@ -1,6 +1,6 @@
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {UsersService} from 'src/users/users.service';
-import {LoginDTO, SetupDTO} from '@nest-wise/contracts';
+import {LoginDTO, SetupDTO, ForgotPasswordDTO, ResetPasswordDTO} from '@nest-wise/contracts';
 import {verifyPassword} from 'src/lib/hashing/hashing';
 import {JwtService} from '@nestjs/jwt';
 import {ConfigService} from '@nestjs/config';
@@ -8,6 +8,7 @@ import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {HouseholdsService} from 'src/households/households.service';
 import {LicensesService} from 'src/licenses/licenses.service';
 import {DataSource} from 'typeorm';
+import {EmailsService} from 'src/emails/emails.service';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly dataSource: DataSource,
+    private readonly emailsService: EmailsService,
   ) {}
 
   async setup(dto: SetupDTO) {
@@ -80,5 +82,47 @@ export class AuthService {
 
     const token = await this.jwtService.signAsync(payload);
     return token;
+  }
+
+  async forgotPassword(dto: ForgotPasswordDTO) {
+    const user = await this.usersService.findUserByEmail(dto.email);
+
+    if (user) {
+      await this.emailsService.sendPasswordResetEmail({
+        email: user.email,
+        userId: user.id,
+      });
+    }
+
+    // Always resolve without throwing to avoid enumeration
+    return;
+  }
+
+  async resetPassword(dto: ResetPasswordDTO) {
+    try {
+      const payload = await this.jwtService.verifyAsync<{
+        sub: string;
+        email: string;
+        iss: string;
+        purpose: string;
+        iat: number;
+        exp: number;
+      }>(dto.token);
+
+      if (payload.purpose !== 'password-reset') {
+        throw new UnauthorizedException('Invalid token');
+      }
+
+      const user = await this.usersService.findUserById(payload.sub);
+      if (user.email !== payload.email) {
+        throw new UnauthorizedException('Invalid token');
+      }
+
+      await this.usersService.setPassword(user.id, dto.password);
+
+      return;
+    } catch {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 }

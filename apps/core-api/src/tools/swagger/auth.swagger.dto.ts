@@ -123,3 +123,35 @@ export class UserResponseSwaggerDTO {
   })
   updatedAt: Date;
 }
+
+export class ForgotPasswordSwaggerDTO {
+  @ApiProperty({
+    description: 'Email address',
+    example: 'john@example.com',
+    maxLength: 255,
+    format: 'email',
+  })
+  email: string;
+}
+
+export class ResetPasswordSwaggerDTO {
+  @ApiProperty({
+    description: 'Password reset token',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  token: string;
+
+  @ApiProperty({
+    description: 'New password',
+    example: 'MyNewSecurePassword123',
+    minLength: 8,
+    maxLength: 25,
+  })
+  password: string;
+
+  @ApiProperty({
+    description: 'Password confirmation',
+    example: 'MyNewSecurePassword123',
+  })
+  confirm_password: string;
+}

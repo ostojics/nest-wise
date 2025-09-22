@@ -8,6 +8,7 @@ import {useValidateLogin} from '../hooks/useValidateLogin';
 import FormError from '@/components/form-error';
 import {useLoginMutation} from '../hooks/useLoginMutation';
 import {Loader2} from 'lucide-react';
+import {Link} from '@tanstack/react-router';
 
 const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
   const {
@@ -39,9 +40,12 @@ const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a href="#" className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
+                  <Link
+                    to="/forgot-password"
+                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                  >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
                 <Input {...register('password', {required: true})} type="password" />
                 {errors.password && <FormError error={errors.password.message ?? ''} />}
