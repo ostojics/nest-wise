@@ -7,9 +7,7 @@ import {Transaction} from './transaction.entity';
 import {AccountsModule} from '../accounts/accounts.module';
 import {HouseholdsModule} from 'src/households/households.module';
 import {CategoriesModule} from 'src/categories/categories.module';
-import {UsersModule} from 'src/users/users.module';
 import {LicensesModule} from 'src/licenses/licenses.module';
-import {LicenseGuard} from 'src/common/guards/license.guard';
 
 @Module({
   imports: [
@@ -17,11 +15,10 @@ import {LicenseGuard} from 'src/common/guards/license.guard';
     AccountsModule,
     HouseholdsModule,
     CategoriesModule,
-    UsersModule,
     LicensesModule,
   ],
   controllers: [TransactionsController],
-  providers: [TransactionsService, TransactionsRepository, LicenseGuard],
+  providers: [TransactionsService, TransactionsRepository],
   exports: [TransactionsService],
 })
 export class TransactionsModule {}

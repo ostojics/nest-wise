@@ -8,7 +8,6 @@ import {Household} from './household.entity';
 import {AccountsModule} from 'src/accounts/accounts.module';
 import {CategoriesModule} from 'src/categories/categories.module';
 import {LicensesModule} from 'src/licenses/licenses.module';
-import {LicenseGuard} from 'src/common/guards/license.guard';
 import {TransactionsService} from 'src/transactions/transactions.service';
 import {TransactionsRepository} from 'src/transactions/transactions.repository';
 import {Transaction} from 'src/transactions/transaction.entity';
@@ -23,7 +22,7 @@ import {UsersModule} from 'src/users/users.module';
     forwardRef(() => UsersModule),
   ],
   controllers: [HouseholdsController, HouseholdTransactionsController],
-  providers: [HouseholdsService, HouseholdsRepository, TransactionsService, TransactionsRepository, LicenseGuard],
+  providers: [HouseholdsService, HouseholdsRepository, TransactionsService, TransactionsRepository],
   exports: [HouseholdsService, HouseholdsRepository],
 })
 export class HouseholdsModule {}
