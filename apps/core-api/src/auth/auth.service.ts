@@ -44,7 +44,7 @@ export class AuthService {
       // Mark license as used
       await this.licensesService.markLicenseAsUsed(license.id);
 
-      const token = await this.craftJwt(user.id, user.email, household.id);
+      const token = await this.craftJwt(user.id, user.email);
 
       return {
         accessToken: token,
@@ -66,20 +66,19 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token = await this.craftJwt(user.id, user.email, user.householdId);
+    const token = await this.craftJwt(user.id, user.email);
 
     return {
       accessToken: token,
     };
   }
 
-  async craftJwt(userId: string, userEmail: string, householdId?: string) {
+  async craftJwt(userId: string, userEmail: string) {
     const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
     const payload = {
       sub: userId,
       email: userEmail,
       iss: appConfig.url,
-      ...(householdId && {householdId}),
     };
 
     const token = await this.jwtService.signAsync(payload);

@@ -7,9 +7,10 @@ import {Category} from './categories.entity';
 import {LicensesModule} from 'src/licenses/licenses.module';
 import {LicenseGuard} from 'src/common/guards/license.guard';
 import {HouseholdsModule} from 'src/households/households.module';
+import {UsersModule} from 'src/users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Category]), LicensesModule, forwardRef(() => HouseholdsModule)],
+  imports: [TypeOrmModule.forFeature([Category]), LicensesModule, UsersModule, forwardRef(() => HouseholdsModule)],
   controllers: [CategoriesController],
   providers: [CategoriesService, CategoriesRepository, LicenseGuard],
   exports: [CategoriesService],

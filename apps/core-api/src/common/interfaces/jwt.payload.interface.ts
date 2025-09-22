@@ -4,5 +4,4 @@ export interface JwtPayload {
   iss: string;
   iat: number;
   exp: number;
-  householdId?: string;
 }

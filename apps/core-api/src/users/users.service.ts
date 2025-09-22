@@ -130,19 +130,18 @@ export class UsersService {
       householdId: payload.sub,
     });
 
-    const jwt = await this.craftJwt(user.id, user.email, user.householdId);
+    const jwt = await this.craftJwt(user.id, user.email);
     this.logger.log(`User ${dto.email} accepted invite to household ${payload.sub}`);
 
     return jwt;
   }
 
-  async craftJwt(userId: string, userEmail: string, householdId?: string) {
+  async craftJwt(userId: string, userEmail: string) {
     const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
     const payload = {
       sub: userId,
       email: userEmail,
       iss: appConfig.url,
-      ...(householdId && {householdId}),
     };
 
     const token = await this.jwtService.signAsync(payload);

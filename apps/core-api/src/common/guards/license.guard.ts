@@ -1,48 +1,30 @@
 import {Injectable, CanActivate, ExecutionContext, ForbiddenException} from '@nestjs/common';
 import {LicensesService} from 'src/licenses/licenses.service';
-import {HouseholdsService} from 'src/households/households.service';
+import {UsersService} from 'src/users/users.service';
 import {AuthenticatedRequest} from './auth.guard';
 
 @Injectable()
 export class LicenseGuard implements CanActivate {
   constructor(
     private readonly licensesService: LicensesService,
-    private readonly householdsService: HouseholdsService,
+    private readonly usersService: UsersService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
-    // Extract household ID from route parameters
-    const householdId = request.params.id || request.params.householdId;
+    try {
+      // Get user from JWT payload which includes household information
+      const user = await this.usersService.findUserById(request.user.sub);
 
-    if (!householdId) {
-      // For routes without direct household ID, try to get it from the user's household
-      try {
-        const user = request.user;
-        if (user.householdId) {
-          const household = await this.householdsService.findHouseholdById(user.householdId);
-          if (household.licenseId) {
-            await this.licensesService.validateLicenseById(household.licenseId);
-            return true;
-          }
-        }
-      } catch {
-        throw new ForbiddenException('Invalid license or household access');
-      }
-    } else {
       // Validate the household's license
-      try {
-        const household = await this.householdsService.findHouseholdById(householdId);
-        if (household.licenseId) {
-          await this.licensesService.validateLicenseById(household.licenseId);
-          return true;
-        }
-      } catch {
-        throw new ForbiddenException('Invalid license or household access');
+      await this.licensesService.validateLicenseById(user.household.licenseId);
+      return true;
+    } catch (error) {
+      if (error instanceof ForbiddenException) {
+        throw error;
       }
+      throw new ForbiddenException('Invalid license or household access');
     }
-
-    throw new ForbiddenException('No valid license found for household access');
   }
 }
