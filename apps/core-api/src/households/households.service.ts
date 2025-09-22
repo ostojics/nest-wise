@@ -15,11 +15,11 @@ export class HouseholdsService {
     private readonly categoriesService: CategoriesService,
   ) {}
 
-  async createHousehold(householdData: CreateHouseholdDTO & {licenseId?: string}): Promise<Household> {
+  async createHousehold(householdData: CreateHouseholdDTO & {licenseId: string}): Promise<Household> {
     return await this.householdsRepository.create({
       name: householdData.name,
       currencyCode: householdData.currencyCode,
-      ...(householdData.licenseId && {licenseId: householdData.licenseId}),
+      licenseId: householdData.licenseId,
     });
   }
 

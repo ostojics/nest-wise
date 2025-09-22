@@ -18,8 +18,7 @@ export class LicensesService {
       throw new ForbiddenException('License key has already been used');
     }
 
-    const now = new Date();
-    if (isAfter(now, license.expiresAt)) {
+    if (this.hasLicenseExpired(license.expiresAt)) {
       throw new ForbiddenException('License key has expired');
     }
 
@@ -37,8 +36,7 @@ export class LicensesService {
       throw new ForbiddenException('License not yet redeemed');
     }
 
-    const now = new Date();
-    if (isAfter(now, license.expiresAt)) {
+    if (this.hasLicenseExpired(license.expiresAt)) {
       throw new ForbiddenException('License has expired');
     }
   }
@@ -49,5 +47,10 @@ export class LicensesService {
 
   async createLicense(licenseData: {expiresAt: Date; note?: string}): Promise<License> {
     return await this.licensesRepository.create(licenseData);
+  }
+
+  private hasLicenseExpired(expiryDate: Date): boolean {
+    const now = new Date();
+    return isAfter(now, expiryDate);
   }
 }

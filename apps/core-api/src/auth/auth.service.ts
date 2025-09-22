@@ -21,12 +21,10 @@ export class AuthService {
   ) {}
 
   async setup(dto: SetupDTO) {
-    // Validate the license key first
     const license = await this.licensesService.validateLicenseKey(dto.licenseKey);
 
     // Use transaction to ensure atomicity
     return await this.dataSource.transaction(async (_manager) => {
-      // Create household with license reference
       const household = await this.householdsService.createHousehold({
         ...dto.household,
         licenseId: license.id,
@@ -41,7 +39,6 @@ export class AuthService {
         isHouseholdAuthor: true,
       });
 
-      // Mark license as used
       await this.licensesService.markLicenseAsUsed(license.id);
 
       const token = await this.craftJwt(user.id, user.email);
