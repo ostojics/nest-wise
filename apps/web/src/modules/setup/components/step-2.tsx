@@ -18,13 +18,14 @@ const Step2 = () => {
     setValue,
     formState: {errors, isSubmitting},
   } = useValidateStep2();
-  const {userData} = useSetupContext();
+  const {userData, licenseKey} = useSetupContext();
   const mutation = useSetupMutation();
 
   const handleHouseholdSetup = (data: CreateHouseholdDTO) => {
-    if (!userData) return;
+    if (!userData || !licenseKey) return;
 
     const dto: SetupDTO = {
+      licenseKey,
       user: userData,
       household: data,
     };
@@ -38,6 +39,14 @@ const Step2 = () => {
 
   return (
     <div className="flex flex-col w-full max-w-lg mx-auto p-4">
+      {!licenseKey && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-800 text-sm">
+            <strong>License key required:</strong> Please ensure you have a valid license key to complete setup. The
+            license key should be provided in the URL.
+          </p>
+        </div>
+      )}
       <Card>
         <CardHeader>
           <CardTitle className="text-md">Tailor NestWise to Your Life (and Loved Ones!)</CardTitle>
@@ -90,7 +99,7 @@ const Step2 = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                <Button type="submit" className="w-full" disabled={isSubmitting || !licenseKey}>
                   {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Household'}
                 </Button>
               </div>

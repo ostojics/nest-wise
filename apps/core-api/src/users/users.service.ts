@@ -23,7 +23,7 @@ export class UsersService {
     private readonly configService: ConfigService,
   ) {}
 
-  async createUser(userData: CreateUserDTO): Promise<User> {
+  async createUser(userData: CreateUserDTO & {isHouseholdAuthor?: boolean}): Promise<User> {
     const emailExists = await this.usersRepository.emailExists(userData.email);
     if (emailExists) {
       throw new ConflictException('Cannot create user');
@@ -40,6 +40,7 @@ export class UsersService {
       username: userData.username,
       passwordHash,
       householdId: userData.householdId,
+      isHouseholdAuthor: userData.isHouseholdAuthor ?? false,
     });
   }
 

@@ -1,9 +1,19 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany} from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 import {User} from 'src/users/user.entity';
 import {Account} from 'src/accounts/account.entity';
 import {Category} from 'src/categories/categories.entity';
 import {Transaction} from 'src/transactions/transaction.entity';
 import {Savings} from 'src/savings/savings.entity';
+import {License} from 'src/licenses/license.entity';
 
 @Entity('households')
 export class Household {
@@ -36,6 +46,14 @@ export class Household {
   })
   monthlyBudget: number;
 
+  @Column({
+    type: 'uuid',
+    nullable: false,
+    unique: true,
+    name: 'license_id',
+  })
+  licenseId: string;
+
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at',
@@ -62,4 +80,8 @@ export class Household {
 
   @OneToMany(() => Savings, (savings) => savings.household)
   savings: Savings[];
+
+  @OneToOne(() => License, (license) => license.household)
+  @JoinColumn({name: 'license_id'})
+  license: License;
 }

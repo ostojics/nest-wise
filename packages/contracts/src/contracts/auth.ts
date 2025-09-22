@@ -13,6 +13,7 @@ export type LoginDTO = z.infer<typeof loginSchema>;
 
 export const setupSchema = z
   .object({
+    licenseKey: z.string().min(1, 'License key is required'),
     user: userRegistrationSchema,
     household: createHouseholdSchema,
   })

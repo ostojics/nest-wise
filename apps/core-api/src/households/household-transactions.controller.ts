@@ -23,6 +23,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {AuthGuard} from 'src/common/guards/auth.guard';
+import {LicenseGuard} from 'src/common/guards/license.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {
   CreateTransactionAiSwaggerDTO,
@@ -36,6 +37,7 @@ import {TransactionsService} from '../transactions/transactions.service';
 import {AccountSpendingPointContract, NetWorthTrendPointContract} from '@nest-wise/contracts';
 
 @ApiTags('Household Transactions')
+@UseGuards(AuthGuard, LicenseGuard)
 @Controller({
   version: '1',
   path: 'households/:householdId/transactions',
@@ -134,7 +136,6 @@ export class HouseholdTransactionsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get('')
   async getTransactions(
     @Param('householdId') householdId: string,
@@ -198,7 +199,6 @@ export class HouseholdTransactionsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @UsePipes(new ZodValidationPipe(createTransactionHouseholdSchema))
   @Post('')
   async createTransaction(@Param('householdId') householdId: string, @Body() dto: CreateTransactionHouseholdDTO) {
@@ -261,7 +261,6 @@ export class HouseholdTransactionsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @UsePipes(new ZodValidationPipe(createTransactionAiHouseholdSchema))
   @Post('/ai')
   async createTransactionAi(@Param('householdId') householdId: string, @Body() dto: CreateTransactionAiHouseholdDTO) {
@@ -285,7 +284,6 @@ export class HouseholdTransactionsController {
   })
   @ApiUnauthorizedResponse({description: 'Authentication required'})
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get('net-worth-trend')
   async getNetWorthTrend(@Param('householdId') householdId: string): Promise<NetWorthTrendPointContract[]> {
     return await this.transactionsService.getNetWorthTrend(householdId);
@@ -323,7 +321,6 @@ export class HouseholdTransactionsController {
   })
   @ApiUnauthorizedResponse({description: 'Authentication required'})
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get('accounts-spending')
   async getAccountsSpending(
     @Param('householdId') householdId: string,
