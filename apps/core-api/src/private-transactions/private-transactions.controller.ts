@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import {PrivateTransactionsService} from './private-transactions.service';
 import {AuthGuard} from 'src/common/guards/auth.guard';
+import {LicenseGuard} from 'src/common/guards/license.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {
   ApiBadRequestResponse,
@@ -67,7 +68,7 @@ export class PrivateTransactionsController {
   @ApiBadRequestResponse({description: 'Invalid input data'})
   @ApiUnauthorizedResponse({description: 'Authentication required'})
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(createPrivateTransactionSchema))
   @Post('')
   async create(@CurrentUser() user: JwtPayload, @Body() dto: CreatePrivateTransactionDTO) {
@@ -90,7 +91,7 @@ export class PrivateTransactionsController {
   @ApiBadRequestResponse({description: 'Invalid query parameters'})
   @ApiUnauthorizedResponse({description: 'Authentication required'})
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(getPrivateTransactionsQuerySchema))
   @Get('')
   async getMine(
@@ -115,7 +116,7 @@ export class PrivateTransactionsController {
   @ApiBadRequestResponse({description: 'Not allowed to delete this private transaction'})
   @ApiUnauthorizedResponse({description: 'Authentication required'})
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @Delete(':id')
   async delete(@CurrentUser() user: JwtPayload, @Param('id', ParseUUIDPipe) id: string) {
     await this.privateTransactionsService.delete(user.sub, id);

@@ -8,6 +8,7 @@ import {Transaction} from 'src/transactions/transaction.entity';
 import {Savings} from 'src/savings/savings.entity';
 import {CategoryBudget} from 'src/category-budgets/category-budgets.entity';
 import {PrivateTransaction} from 'src/private-transactions/private-transactions.entity';
+import {License} from 'src/licenses/license.entity';
 
 export const DatabaseConfigName = 'database';
 
@@ -25,7 +26,7 @@ export function getConfig(): DatabaseConfig {
     database: process.env.DB_DATABASE ?? 'nestwise_dev',
     synchronize: isDevelopment,
     ssl: !isDevelopment,
-    entities: [User, Household, Account, Category, Transaction, Savings, CategoryBudget, PrivateTransaction],
+    entities: [User, Household, Account, Category, Transaction, Savings, CategoryBudget, PrivateTransaction, License],
     useUTC: true,
   };
 }

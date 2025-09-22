@@ -14,6 +14,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {AuthGuard} from 'src/common/guards/auth.guard';
+import {LicenseGuard} from 'src/common/guards/license.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {CategoryResponseSwaggerDTO, UpdateCategorySwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
 import {CategoriesService} from './categories.service';
@@ -66,7 +67,7 @@ export class CategoriesController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(updateCategorySchema))
   @Put(':id')
   async updateCategory(@Param('id') id: string, @Body() dto: UpdateCategoryDTO) {
@@ -94,7 +95,7 @@ export class CategoriesController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @Delete(':id')
   async deleteCategory(@Param('id') id: string) {
     return await this.categoriesService.deleteCategory(id);

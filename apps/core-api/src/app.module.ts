@@ -25,6 +25,7 @@ import {SavingsModule} from './savings/savings.module';
 import {CategoryBudgetsModule} from './category-budgets/category-budgets.module';
 import {PrivateTransactionsModule} from './private-transactions/private-transactions.module';
 import {InvitesModule} from './invites/invites.module';
+import {LicensesModule} from './licenses/licenses.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import {InvitesModule} from './invites/invites.module';
     CategoryBudgetsModule,
     PrivateTransactionsModule,
     InvitesModule,
+    LicensesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

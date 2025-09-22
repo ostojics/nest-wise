@@ -13,6 +13,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {AuthGuard} from 'src/common/guards/auth.guard';
+import {LicenseGuard} from 'src/common/guards/license.guard';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {TransactionResponseSwaggerDTO, UpdateTransactionSwaggerDTO} from 'src/tools/swagger/transactions.swagger.dto';
 import {TransactionsService} from './transactions.service';
@@ -47,7 +48,7 @@ export class TransactionsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @Get(':id')
   async getTransaction(@Param('id') id: string) {
     return await this.transactionsService.findTransactionById(id);
@@ -97,7 +98,7 @@ export class TransactionsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(updateTransactionSchema))
   @Put(':id')
   async updateTransaction(@Param('id') id: string, @Body() dto: UpdateTransactionDTO) {
@@ -125,7 +126,7 @@ export class TransactionsController {
     description: 'Authentication required',
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, LicenseGuard)
   @Delete(':id')
   async deleteTransaction(@Param('id') id: string) {
     return await this.transactionsService.deleteTransaction(id);

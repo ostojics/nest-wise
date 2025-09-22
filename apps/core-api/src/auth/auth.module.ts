@@ -7,6 +7,7 @@ import {ConfigModule, ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {HouseholdsModule} from 'src/households/households.module';
 import {AccountsModule} from 'src/accounts/accounts.module';
+import {LicensesModule} from 'src/licenses/licenses.module';
 import {EmailsModule} from 'src/emails/emails.module';
 
 @Module({
@@ -14,6 +15,7 @@ import {EmailsModule} from 'src/emails/emails.module';
     UsersModule,
     HouseholdsModule,
     AccountsModule,
+    LicensesModule,
     EmailsModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {

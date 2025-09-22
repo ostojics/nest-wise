@@ -157,8 +157,6 @@ pnpm --filter @nest-wise/contracts <command>
 | Redis        | localhost:6379                | -                     |
 | RedisInsight | http://localhost:5540         | -                     |
 
-
-
 ## 🔐 API Design Principles
 
 - **RESTful**: Standard HTTP methods and status codes

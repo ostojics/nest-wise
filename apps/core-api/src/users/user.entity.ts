@@ -51,6 +51,14 @@ export class User {
   })
   passwordHash: string;
 
+  @Column({
+    type: 'boolean',
+    nullable: false,
+    default: false,
+    name: 'is_household_author',
+  })
+  isHouseholdAuthor: boolean;
+
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at',

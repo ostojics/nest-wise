@@ -6,6 +6,8 @@ interface SetupContextType {
   setCurrentStep: (step: number) => void;
   userData: UserRegistrationDTO | null;
   setUserData: (data: UserRegistrationDTO | null) => void;
+  licenseKey: string | null;
+  setLicenseKey: (key: string | null) => void;
   nextStep: () => void;
   previousStep: () => void;
 }
@@ -14,11 +16,13 @@ export const SetupContext = createContext<SetupContextType | undefined>(undefine
 
 interface SetupProviderProps {
   children: ReactNode;
+  licenseKey?: string;
 }
 
-export const SetupProvider: React.FC<SetupProviderProps> = ({children}) => {
+export const SetupProvider: React.FC<SetupProviderProps> = ({children, licenseKey: initialLicenseKey}) => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [userData, setUserData] = useState<UserRegistrationDTO | null>(null);
+  const [licenseKey, setLicenseKey] = useState<string | null>(initialLicenseKey ?? null);
 
   const nextStep = () => {
     setCurrentStep((prev) => prev + 1);
@@ -33,6 +37,8 @@ export const SetupProvider: React.FC<SetupProviderProps> = ({children}) => {
     setCurrentStep,
     userData,
     setUserData,
+    licenseKey,
+    setLicenseKey,
     nextStep,
     previousStep,
   };

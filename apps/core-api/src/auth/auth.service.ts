@@ -6,6 +6,8 @@ import {JwtService} from '@nestjs/jwt';
 import {ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {HouseholdsService} from 'src/households/households.service';
+import {LicensesService} from 'src/licenses/licenses.service';
+import {DataSource} from 'typeorm';
 import {EmailsService} from 'src/emails/emails.service';
 
 @Injectable()
@@ -13,25 +15,40 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly householdsService: HouseholdsService,
+    private readonly licensesService: LicensesService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly dataSource: DataSource,
     private readonly emailsService: EmailsService,
   ) {}
 
   async setup(dto: SetupDTO) {
-    const household = await this.householdsService.createHousehold(dto.household);
-    const user = await this.usersService.createUser({
-      email: dto.user.email,
-      username: dto.user.username,
-      password: dto.user.password,
-      householdId: household.id,
+    const license = await this.licensesService.validateLicenseKey(dto.licenseKey);
+
+    // Use transaction to ensure atomicity
+    return await this.dataSource.transaction(async (_manager) => {
+      const household = await this.householdsService.createHousehold({
+        ...dto.household,
+        licenseId: license.id,
+      });
+
+      // Create initial user as household author
+      const user = await this.usersService.createUser({
+        email: dto.user.email,
+        username: dto.user.username,
+        password: dto.user.password,
+        householdId: household.id,
+        isHouseholdAuthor: true,
+      });
+
+      await this.licensesService.markLicenseAsUsed(license.id);
+
+      const token = await this.craftJwt(user.id, user.email);
+
+      return {
+        accessToken: token,
+      };
     });
-
-    const token = await this.craftJwt(user.id, user.email);
-
-    return {
-      accessToken: token,
-    };
   }
 
   async getUserById(userId: string) {
