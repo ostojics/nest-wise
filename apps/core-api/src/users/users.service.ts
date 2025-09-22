@@ -146,4 +146,15 @@ export class UsersService {
     const token = await this.jwtService.signAsync(payload);
     return token;
   }
+
+  async setPassword(userId: string, newPlainPassword: string): Promise<User> {
+    const hashedPassword = await hashPassword(newPlainPassword);
+    const updatedUser = await this.usersRepository.update(userId, {passwordHash: hashedPassword});
+
+    if (!updatedUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    return updatedUser;
+  }
 }

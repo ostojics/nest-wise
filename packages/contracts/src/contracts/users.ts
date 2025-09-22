@@ -11,7 +11,7 @@ export interface UserContract {
   updatedAt: Date;
 }
 
-const passwordSchema = z
+export const passwordSchema = z
   .string()
   .min(8, 'Password must be at least 8 characters')
   .max(25, 'Password must be 25 characters or less')
