@@ -3,3 +3,8 @@ export interface SendInviteEmailPayload {
   householdName: string;
   householdId: string;
 }
+
+export interface SendPasswordResetEmailPayload {
+  email: string;
+  userId: string;
+}

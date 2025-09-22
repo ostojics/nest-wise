@@ -11,7 +11,17 @@ import {
   ApiNoContentResponse,
 } from '@nestjs/swagger';
 import {AuthService} from './auth.service';
-import {loginSchema, LoginDTO, SetupDTO, setupSchema, UserContract} from '@nest-wise/contracts';
+import {
+  loginSchema,
+  LoginDTO,
+  SetupDTO,
+  setupSchema,
+  UserContract,
+  forgotPasswordSchema,
+  ForgotPasswordDTO,
+  resetPasswordSchema,
+  ResetPasswordDTO,
+} from '@nest-wise/contracts';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {ZodSchema} from 'zod';
 import {Response} from 'express';
@@ -19,13 +29,15 @@ import {ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {
   AuthSuccessResponseSwaggerDTO,
   LoginSwaggerDTO,
   SetupSwaggerDTO,
   UserResponseSwaggerDTO,
+  ForgotPasswordSwaggerDTO,
+  ResetPasswordSwaggerDTO,
 } from 'src/tools/swagger/auth.swagger.dto';
-import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 
 @ApiTags('Authentication')
 @Controller({
@@ -171,5 +183,76 @@ export class AuthController {
   @UseGuards(AuthGuard)
   async me(@CurrentUser() user: JwtPayload): Promise<UserContract> {
     return (await this.authService.getUserById(user.sub)) as UserContract;
+  }
+
+  @ApiOperation({
+    summary: 'Forgot password',
+    description: 'Sends a password reset email if an account exists. Always returns success.',
+  })
+  @ApiBody({
+    type: ForgotPasswordSwaggerDTO,
+    description: 'Email address for password reset',
+    examples: {
+      forgotPassword: {
+        summary: 'Forgot Password Request',
+        value: {
+          email: 'john@example.com',
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    type: AuthSuccessResponseSwaggerDTO,
+    description: 'Password reset request processed successfully.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data',
+  })
+  @Post('forgot-password')
+  @UsePipes(new ZodValidationPipe(forgotPasswordSchema as ZodSchema))
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(@Body() dto: ForgotPasswordDTO) {
+    await this.authService.forgotPassword(dto);
+    return {
+      message: 'If an account exists, an email has been sent',
+    };
+  }
+
+  @ApiOperation({
+    summary: 'Reset password',
+    description: 'Resets the user password using a time-limited token.',
+  })
+  @ApiBody({
+    type: ResetPasswordSwaggerDTO,
+    description: 'Password reset data with token',
+    examples: {
+      resetPassword: {
+        summary: 'Reset Password Request',
+        value: {
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+          password: 'MyNewSecurePassword123',
+          confirm_password: 'MyNewSecurePassword123',
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    type: AuthSuccessResponseSwaggerDTO,
+    description: 'Password reset successful.',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Invalid or expired token',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data',
+  })
+  @Post('reset-password')
+  @UsePipes(new ZodValidationPipe(resetPasswordSchema as ZodSchema))
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(@Body() dto: ResetPasswordDTO) {
+    await this.authService.resetPassword(dto);
+    return {
+      message: 'Password reset successful',
+    };
   }
 }
