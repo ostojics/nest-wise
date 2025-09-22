@@ -1,6 +1,7 @@
 import {Injectable, NotFoundException, ForbiddenException} from '@nestjs/common';
 import {LicensesRepository} from './licenses.repository';
 import {License} from './license.entity';
+import {isAfter} from 'date-fns';
 
 @Injectable()
 export class LicensesService {
@@ -18,7 +19,7 @@ export class LicensesService {
     }
 
     const now = new Date();
-    if (now > license.expiresAt) {
+    if (isAfter(now, license.expiresAt)) {
       throw new ForbiddenException('License key has expired');
     }
 
@@ -37,7 +38,7 @@ export class LicensesService {
     }
 
     const now = new Date();
-    if (now > license.expiresAt) {
+    if (isAfter(now, license.expiresAt)) {
       throw new ForbiddenException('License has expired');
     }
   }

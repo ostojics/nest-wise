@@ -4,7 +4,7 @@ import {createFileRoute} from '@tanstack/react-router';
 import {z} from 'zod';
 
 const setupSearchSchema = z.object({
-  key: z.string().optional(),
+  license: z.string().optional(),
 });
 
 export const Route = createFileRoute('/setup')({
@@ -13,10 +13,10 @@ export const Route = createFileRoute('/setup')({
 });
 
 function SetupComponent() {
-  const {key} = Route.useSearch();
+  const {license} = Route.useSearch();
 
   return (
-    <SetupProvider licenseKey={key}>
+    <SetupProvider licenseKey={license}>
       <SetupPage />
     </SetupProvider>
   );
