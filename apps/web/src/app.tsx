@@ -3,10 +3,16 @@ import {RouterProvider} from '@tanstack/react-router';
 import {Toaster} from './components/ui/sonner';
 import {router} from './router';
 import {useGetMe} from './modules/auth/hooks/useGetMe';
+import {Loader2} from 'lucide-react';
 
 const App = () => {
   const {data, isLoading, isError} = useGetMe();
-  if (isLoading) return <></>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin size-4" />
+      </div>
+    );
 
   return (
     <>
