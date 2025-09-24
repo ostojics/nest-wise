@@ -1,24 +1,37 @@
-FROM node:22 AS builder
+FROM node:22-alpine AS base
+
+FROM base AS builder
+RUN apk update
+
 WORKDIR /app
-RUN corepack enable && corepack prepare pnpm@10.11.1 --activate
 
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml turbo.json ./
-COPY packages packages
-COPY apps/core-api apps/core-api
+RUN npm i pnpm@10.11.1 -g
+COPY . .
 
+RUN pnpm dlx turbo@^2.5.3 prune @nest-wise/core-api --docker
+
+FROM base AS installer
+
+WORKDIR /app
+
+RUN npm i pnpm@10.11.1 -g
+
+# First install the dependencies (as they change less often)
+COPY --from=builder /app/out/json/ .
 RUN pnpm install --frozen-lockfile
-RUN pnpm --filter @nest-wise/core-api build
 
-FROM node:22-bookworm-slim AS runner
+COPY --from=builder /app/out/full/ .
+RUN pnpm turbo run build
+
+FROM base AS runner
+
 WORKDIR /app
-ENV NODE_ENV=production
 
-COPY --from=builder /app/pnpm-workspace.yaml ./
-COPY --from=builder /app/pnpm-lock.yaml ./
-COPY --from=builder /app/apps/core-api ./apps/core-api
-COPY --from=builder /app/packages ./packages
-COPY --from=builder /app/node_modules ./node_modules
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nestwise
 
-WORKDIR /app/apps/core-api
+USER nestwise
 
-CMD ["node", "dist/main.js"]
+COPY --from=installer --chown=nestwise:nodejs /app .
+
+CMD ["node", "apps/core-api/dist/main.js"]
