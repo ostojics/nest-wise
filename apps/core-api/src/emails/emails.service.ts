@@ -14,6 +14,7 @@ import {AppConfig, AppConfigName} from 'src/config/app.config';
 @Injectable()
 export class EmailsService {
   private readonly resendClient: Resend;
+  private readonly fromEmail: string;
 
   constructor(
     @InjectQueue(Queues.EMAILS) private emailsQueue: Queue,
@@ -23,6 +24,7 @@ export class EmailsService {
   ) {
     const config = this.configService.getOrThrow<AppConfig>(AppConfigName);
     this.resendClient = new Resend(config.resendApiKey);
+    this.fromEmail = 'info@no-reply.nestwise.finance';
   }
 
   async sendInviteEmail(payload: SendInviteEmailPayload) {
@@ -59,7 +61,7 @@ export class EmailsService {
 
     const {error} = await this.resendClient.emails.send({
       to: payload.email,
-      from: 'no-reply@resend.dev',
+      from: this.fromEmail,
       subject: `[NestWise] Invitation to join household`,
       html: `
       <p>You have been invited to join household <b>${payload.householdName}</b> on NestWise. Please click the link below to accept the invitation:</p>
@@ -93,7 +95,7 @@ export class EmailsService {
 
     const {error} = await this.resendClient.emails.send({
       to: payload.email,
-      from: 'no-reply@resend.dev',
+      from: this.fromEmail,
       subject: `[NestWise] Password Reset`,
       html: `
       <p>You have requested to reset your password for your NestWise account.</p>
