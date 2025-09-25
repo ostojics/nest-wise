@@ -9,6 +9,7 @@ import {Response} from 'express';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {ConfigService} from '@nestjs/config';
 import {AuthSuccessResponseSwaggerDTO} from 'src/tools/swagger/auth.swagger.dto';
+import {setAuthCookie} from 'src/lib/cookies/setAuthCookie';
 
 @ApiTags('Invites')
 @Controller({
@@ -45,12 +46,7 @@ export class InvitesController {
       const jwt = await this.usersService.acceptInvite(body);
       const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
 
-      res.cookie('auth', jwt, {
-        httpOnly: true,
-        secure: appConfig.environment === 'production',
-        sameSite: 'strict',
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      });
+      setAuthCookie(res, jwt, appConfig);
 
       return {
         message: 'Invite accepted successfully',
