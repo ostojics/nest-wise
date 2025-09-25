@@ -32,7 +32,7 @@ export function getConfig(): DatabaseConfig {
     username: process.env.DB_USERNAME ?? 'root',
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE ?? 'nestwise_dev',
-    ssl: !isDevelopment,
+    ssl: process.env.DB_USE_SSL === 'true',
     entities: [User, Household, Account, Category, Transaction, Savings, CategoryBudget, PrivateTransaction, License],
     useUTC: true,
     migrations: [

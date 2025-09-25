@@ -57,6 +57,7 @@ import {LicensesModule} from './licenses/licenses.module';
           connection: {
             host: config.redisHost,
             port: config.redisPort,
+            password: config.redisPassword,
           },
         };
       },
