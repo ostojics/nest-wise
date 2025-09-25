@@ -38,6 +38,8 @@ import {
   ForgotPasswordSwaggerDTO,
   ResetPasswordSwaggerDTO,
 } from 'src/tools/swagger/auth.swagger.dto';
+import {setAuthCookie} from 'src/lib/cookies/setAuthCookie';
+import {clearAuthCookie} from 'src/lib/cookies/clearAuthCookie';
 
 @ApiTags('Authentication')
 @Controller({
@@ -89,12 +91,7 @@ export class AuthController {
     const result = await this.authService.setup(dto);
     const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
 
-    res.cookie('auth', result.accessToken, {
-      httpOnly: true,
-      secure: appConfig.environment === 'production',
-      sameSite: 'strict',
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    });
+    setAuthCookie(res, result.accessToken, appConfig);
 
     return {
       message: 'Setup completed successfully',
@@ -135,12 +132,7 @@ export class AuthController {
     const result = await this.authService.loginUser(dto);
     const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
 
-    res.cookie('auth', result.accessToken, {
-      httpOnly: true,
-      secure: appConfig.environment === 'production',
-      sameSite: 'strict',
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    });
+    setAuthCookie(res, result.accessToken, appConfig);
 
     return {
       message: 'Logged in successfully',
@@ -159,12 +151,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   logout(@Res({passthrough: true}) res: Response): void {
     const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
-    res.clearCookie('auth', {
-      httpOnly: true,
-      secure: appConfig.environment === 'production',
-      sameSite: 'strict',
-      path: '/',
-    });
+    clearAuthCookie(res, appConfig);
   }
 
   @ApiOperation({

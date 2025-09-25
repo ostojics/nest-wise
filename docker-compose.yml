@@ -36,12 +36,13 @@ services:
     image: redis:latest
     container_name: nestwise-redis-dev
     restart: always
+    command: redis-server --requirepass pass
     ports:
       - '6379:6379'
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test: ['CMD', 'redis-cli', '-a', 'pass', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,6 +55,7 @@ services:
       - RI_REDIS_HOST=redis
       - RI_REDIS_PORT=6379
       - RI_REDIS_ALIAS=Local Redis
+      - RI_REDIS_PASSWORD=pass
     ports:
       - '5540:5540'
     depends_on:

@@ -8,6 +8,7 @@ export interface AppConfig {
   openaiApiKey: string;
   resendApiKey: string;
   webAppUrl: string;
+  cookieDomain: string | null;
 }
 
 export const AppConfigName = 'app';
@@ -23,6 +24,7 @@ export function getConfig(): AppConfig {
     openaiApiKey: process.env.OPENAI_API_KEY || '',
     resendApiKey: process.env.RESEND_API_KEY || '',
     webAppUrl: process.env.WEB_APP_URL || '',
+    cookieDomain: process.env.COOKIE_DOMAIN || null,
   };
 }
 
