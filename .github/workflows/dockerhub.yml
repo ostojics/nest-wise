@@ -62,6 +62,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
+          build-args: |
+            VITE_API_URL=https://api.nestwise.finance
 
       - name: Show published tags
         run: |
