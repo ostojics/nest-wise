@@ -1,8 +1,6 @@
-import {IconHelp, IconSettings} from '@tabler/icons-react';
 import * as React from 'react';
 
 import {NavMain} from '@/components/nav-main';
-import {NavSecondary} from '@/components/nav-secondary';
 import {NavUser} from '@/components/nav-user';
 import {
   Sidebar,
@@ -15,6 +13,8 @@ import {
 } from '@/components/ui/sidebar';
 import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
 import {HouseIcon} from 'lucide-react';
+import {IconHelp, IconSettings} from '@tabler/icons-react';
+import {NavSecondary} from './nav-secondary';
 
 const data = {
   user: {
@@ -59,6 +59,10 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
+        {/* TODO: Add version */}
+        {/* <SidebarMenuItem>
+          <p className="text-xs text-muted-foreground">v 0.0.1</p>
+        </SidebarMenuItem> */}
       </SidebarFooter>
     </Sidebar>
   );

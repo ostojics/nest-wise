@@ -1,4 +1,4 @@
-import {IconCreditCard, IconDotsVertical, IconLogout, IconNotification, IconUserCircle} from '@tabler/icons-react';
+import {IconCreditCard, IconDotsVertical, IconLogout, IconUserCircle} from '@tabler/icons-react';
 
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {
@@ -64,17 +64,13 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem disabled>
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem disabled>
                 <IconCreditCard />
                 Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
