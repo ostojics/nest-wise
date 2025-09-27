@@ -2,7 +2,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/c
 import {TransactionContract} from '@nest-wise/contracts';
 import {flexRender} from '@tanstack/react-table';
 import {ArrowUpDown} from 'lucide-react';
-import {useTransactionsTable} from '../hooks/useTransactionsTable';
+import {useTransactionsTable} from '../hooks/use-transactions-table';
 import {cn} from '@/lib/utils';
 
 interface TransactionsTableProps {

@@ -1,4 +1,4 @@
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
+import {useGetHouseholdById} from '@/modules/households/hooks/use-get-household-by-id';
 
 export const useFormatBalance = () => {
   const {data: household, isLoading} = useGetHouseholdById();

@@ -1,5 +1,5 @@
 import {Skeleton} from '@/components/ui/skeleton';
-import {useGetHouseholdAccounts} from '../hooks/useGetHouseholdAccounts';
+import {useGetHouseholdAccounts} from '../hooks/use-get-household-accounts';
 import Account from './account';
 
 const AccountsList = () => {

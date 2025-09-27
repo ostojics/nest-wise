@@ -1,6 +1,6 @@
 import {getPrivateTransactions} from '@/modules/api/private-transactions';
 import {queryKeys} from '@/modules/api/query-keys';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {useSearch} from '@tanstack/react-router';
 
