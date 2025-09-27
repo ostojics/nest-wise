@@ -59,10 +59,9 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
-        {/* TODO: Add version */}
-        {/* <SidebarMenuItem>
-          <p className="text-xs text-muted-foreground">v 0.0.1</p>
-        </SidebarMenuItem> */}
+        <div className="px-4 py-2">
+          <p className="text-xs text-muted-foreground">v {__APP_VERSION__}</p>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

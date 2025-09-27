@@ -1,12 +1,11 @@
 import type {INestApplication} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {DocumentBuilder, OpenAPIObject, SwaggerModule} from '@nestjs/swagger';
-import {AppConfigName} from 'src/config/app.config';
+import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {GlobalConfig} from '../../config/config.interface';
 
 const SWAGGER_PATH = 'swagger';
 const APP_NAME = 'NestWise Core API';
-const APP_VERSION = '1.0.0';
 const APP_DESCRIPTION = 'NestWise Core API description';
 
 function setupSwagger(app: INestApplication): OpenAPIObject {
@@ -16,10 +15,12 @@ function setupSwagger(app: INestApplication): OpenAPIObject {
     infer: true,
   });
 
+  const appConfig = configService.getOrThrow<AppConfig>(AppConfigName);
+
   const config = new DocumentBuilder()
     .setTitle(APP_NAME)
     .setDescription(APP_DESCRIPTION)
-    .setVersion(APP_VERSION)
+    .setVersion(appConfig.appVersion)
     .addBearerAuth()
     .addApiKey({type: 'apiKey', name: 'Api-Key', in: 'header'}, 'Api-Key')
     .addServer(url)
