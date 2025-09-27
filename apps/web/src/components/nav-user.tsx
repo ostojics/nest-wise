@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar} from '@/components/ui/sidebar';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {useMemo} from 'react';
 import {useLogOut} from '@/modules/auth/hooks/use-log-out';
 

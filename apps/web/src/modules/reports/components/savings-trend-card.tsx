@@ -1,6 +1,6 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {SavingsTrendPointContract} from '@nest-wise/contracts';
 import {IconPigMoney} from '@tabler/icons-react';
 import React, {useMemo} from 'react';

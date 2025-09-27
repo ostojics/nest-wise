@@ -1,5 +1,5 @@
 import React from 'react';
-import {useSetupContext} from '../hooks/useSetup';
+import {useSetupContext} from '../hooks/use-setup';
 import {CheckIcon} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {Button} from '@/components/ui/button';

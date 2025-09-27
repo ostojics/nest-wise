@@ -1,7 +1,7 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader} from '@/components/ui/card';
 import {ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
 import {generateRandomHsl} from '@/lib/utils';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {IconChartPie} from '@tabler/icons-react';
 import {useMemo} from 'react';
 import {Cell, Pie, PieChart} from 'recharts';
@@ -13,7 +13,7 @@ import CategoryAmountLegend from './category-amount-legend';
 import SpendingByCategoryCardEmpty from './spending-by-category-card.empty';
 import SpendingByCategoryCardError from './spending-by-category-card.error';
 import SpendingByCategoryCardSkeleton from './spending-by-category-card.skeleton';
-import {useGetAllTransactions} from '@/modules/transactions/hooks/useGetAllTransactions';
+import {useGetAllTransactions} from '@/modules/transactions/hooks/use-get-all-transactions';
 
 const renderCustomizedLabel = (entry: ChartDataEntry) => {
   const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);

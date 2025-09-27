@@ -2,7 +2,7 @@ import {queryKeys} from '@/modules/api/query-keys';
 import {useQuery} from '@tanstack/react-query';
 import {useSearch} from '@tanstack/react-router';
 import {getCategoryBudgets} from '../../api/category-budgets';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 export const useGetCategoryBudgets = () => {
   const search = useSearch({from: '/__pathlessLayout/plan'});

@@ -1,6 +1,6 @@
 import {queryKeys} from '@/modules/api/query-keys';
 import {spendingByAccountsForHousehold} from '@/modules/api/transactions-api';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {useQuery} from '@tanstack/react-query';
 import {useSearch} from '@tanstack/react-router';
 

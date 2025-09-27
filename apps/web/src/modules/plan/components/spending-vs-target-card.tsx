@@ -2,14 +2,14 @@ import {Button} from '@/components/ui/button';
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Progress} from '@/components/ui/progress';
 import {cn, getStartAndEndOfMonth} from '@/lib/utils';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
+import {useGetHouseholdById} from '@/modules/households/hooks/use-get-household-by-id';
 import {IconEdit, IconTarget} from '@tabler/icons-react';
 import {useMemo, useState} from 'react';
 import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
 import SpendingVsTargetCardSkeleton from './spending-vs-target-card.skeleton';
 import SpendingVsTargetCardError from './spending-vs-target-card.error';
-import {useGetAllTransactions} from '@/modules/transactions/hooks/useGetAllTransactions';
+import {useGetAllTransactions} from '@/modules/transactions/hooks/use-get-all-transactions';
 
 const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

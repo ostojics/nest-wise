@@ -16,8 +16,8 @@ import {ArrowLeftRight, Loader2, Wallet} from 'lucide-react';
 import {useState} from 'react';
 import {useTransferFundsMutation} from '../hooks/use-transfer-funds-mutation';
 import {useValidateTransferFunds} from '../hooks/use-validate-transfer-funds';
-import {useGetHouseholdAccounts} from '../hooks/useGetHouseholdAccounts';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
+import {useGetHouseholdAccounts} from '../hooks/use-get-household-accounts';
+import {useGetHouseholdById} from '@/modules/households/hooks/use-get-household-by-id';
 import AccountSelect from './account-select';
 
 const TransferFundsDialog = () => {

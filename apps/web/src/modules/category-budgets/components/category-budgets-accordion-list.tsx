@@ -2,7 +2,7 @@ import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/co
 import {Badge} from '@/components/ui/badge';
 import {Progress} from '@/components/ui/progress';
 import {cn} from '@/lib/utils';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {CategoryBudgetWithCurrentAmountContract} from '@nest-wise/contracts';
 import EditCategoryBudgetDialog from './edit-category-budget-dialog';
 import CategoryBudgetsAccordionListSkeleton from './category-budgets-accordion-list.skeleton';

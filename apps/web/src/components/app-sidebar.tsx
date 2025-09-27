@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
+import {useGetHouseholdById} from '@/modules/households/hooks/use-get-household-by-id';
 import {HouseIcon} from 'lucide-react';
 import {IconHelp, IconSettings} from '@tabler/icons-react';
 import {NavSecondary} from './nav-secondary';

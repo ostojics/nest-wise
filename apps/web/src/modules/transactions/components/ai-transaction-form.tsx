@@ -3,10 +3,10 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
-import {useCreateTransactionAI} from '@/modules/transactions/hooks/useCreateTransactionAI';
+import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useCreateTransactionAI} from '@/modules/transactions/hooks/use-create-transaction-ai';
 import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
-import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/useValidateCreateAiTransaction';
+import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/use-validate-create-ai-transaction';
 import AiBanner from './ai-banner';
 import {AiDescriptionTooltip} from './ai-description-tooltip';
 

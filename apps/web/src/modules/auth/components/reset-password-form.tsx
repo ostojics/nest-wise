@@ -4,9 +4,9 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {ResetPasswordDTO} from '@nest-wise/contracts';
-import {useValidateResetPassword} from '../hooks/useValidateResetPassword';
+import {useValidateResetPassword} from '../hooks/use-validate-reset-password';
 import FormError from '@/components/form-error';
-import {useResetPassword} from '../hooks/useResetPassword';
+import {useResetPassword} from '../hooks/use-reset-password';
 import {Loader2} from 'lucide-react';
 import {Link, useSearch} from '@tanstack/react-router';
 
