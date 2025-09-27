@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import clsx from 'clsx';
 
 export function NavSecondary({
   items,
@@ -22,7 +23,7 @@ export function NavSecondary({
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
-    <SidebarGroup {...props}>
+    <SidebarGroup {...props} className={clsx(props.className, 'opacity-[0.3] pointer-events-none')}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
