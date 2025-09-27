@@ -7,6 +7,8 @@ import {
   getTransactionsQueryHouseholdSchema,
   GetAccountsSpendingQueryHouseholdDTO,
   getAccountsSpendingQueryHouseholdSchema,
+  GetSpendingSummaryQueryHouseholdDTO,
+  getSpendingSummaryQueryHouseholdSchema,
 } from '@nest-wise/contracts';
 import {Body, Controller, Get, Param, Post, Query, UseGuards, UsePipes} from '@nestjs/common';
 import {
@@ -34,7 +36,12 @@ import {
   AccountSpendingPointSwaggerDTO,
 } from 'src/tools/swagger/transactions.swagger.dto';
 import {TransactionsService} from '../transactions/transactions.service';
-import {AccountSpendingPointContract, NetWorthTrendPointContract} from '@nest-wise/contracts';
+import {
+  AccountSpendingPointContract,
+  NetWorthTrendPointContract,
+  SpendingTotalContract,
+  CategorySpendingPointContract,
+} from '@nest-wise/contracts';
 
 @ApiTags('Household Transactions')
 @UseGuards(AuthGuard, LicenseGuard)
@@ -327,5 +334,123 @@ export class HouseholdTransactionsController {
     @Query(new ZodValidationPipe(getAccountsSpendingQueryHouseholdSchema)) query: GetAccountsSpendingQueryHouseholdDTO,
   ): Promise<AccountSpendingPointContract[]> {
     return await this.transactionsService.getAccountsSpendingForHousehold(householdId, query);
+  }
+
+  @ApiOperation({
+    summary: 'Get household spending total',
+    description:
+      'Returns the total EXPENSE spending amount and count for the specified household, within an optional date range.',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    format: 'date',
+    description: 'Start date inclusive (YYYY-MM-DD)',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    format: 'date',
+    description: 'End date inclusive (YYYY-MM-DD)',
+  })
+  @ApiOkResponse({
+    description: 'Spending total computed successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        total: {
+          type: 'number',
+          description: 'Total spending amount',
+          example: 1250.75,
+        },
+        count: {
+          type: 'number',
+          description: 'Number of expense transactions',
+          example: 42,
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @Get('spending-total')
+  async getSpendingTotal(
+    @Param('householdId') householdId: string,
+    @Query(new ZodValidationPipe(getSpendingSummaryQueryHouseholdSchema)) query: GetSpendingSummaryQueryHouseholdDTO,
+  ): Promise<SpendingTotalContract> {
+    return await this.transactionsService.getSpendingTotalForHousehold(householdId, query);
+  }
+
+  @ApiOperation({
+    summary: 'Get household spending aggregated by category',
+    description:
+      'Returns EXPENSE spending aggregated by category for the specified household, within an optional date range.',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    format: 'date',
+    description: 'Start date inclusive (YYYY-MM-DD)',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    format: 'date',
+    description: 'End date inclusive (YYYY-MM-DD)',
+  })
+  @ApiOkResponse({
+    description: 'Categories spending computed successfully',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          categoryId: {
+            type: 'string',
+            format: 'uuid',
+            nullable: true,
+            description: 'Category ID (null for uncategorized)',
+            example: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
+          },
+          categoryName: {
+            type: 'string',
+            description: 'Category name',
+            example: 'Groceries',
+          },
+          amount: {
+            type: 'number',
+            description: 'Total spending amount for this category',
+            example: 350.25,
+          },
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @Get('categories-spending')
+  async getCategoriesSpending(
+    @Param('householdId') householdId: string,
+    @Query(new ZodValidationPipe(getSpendingSummaryQueryHouseholdSchema)) query: GetSpendingSummaryQueryHouseholdDTO,
+  ): Promise<CategorySpendingPointContract[]> {
+    return await this.transactionsService.getCategoriesSpendingForHousehold(householdId, query);
   }
 }
