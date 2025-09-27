@@ -24,7 +24,7 @@ const TransactionsPagination = () => {
   };
 
   return (
-    <section>
+    <section className="mt-4">
       <Pagination>
         <PaginationContent>
           {canGoPrev && (
