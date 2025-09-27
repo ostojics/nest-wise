@@ -1,4 +1,4 @@
-import {IconCreditCard, IconDotsVertical, IconLogout, IconUserCircle} from '@tabler/icons-react';
+import {IconCreditCard, IconDotsVertical, IconLogout, IconUserCircle, IconLanguage} from '@tabler/icons-react';
 
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {
@@ -9,20 +9,30 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import {SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar} from '@/components/ui/sidebar';
 import {useGetMe} from '@/modules/auth/hooks/useGetMe';
 import {useMemo} from 'react';
 import {useLogOut} from '@/modules/auth/hooks/use-log-out';
+import {useTranslation} from 'react-i18next';
+import {supportedLanguages} from '@nest-wise/locales';
 
 export function NavUser() {
   const {isMobile} = useSidebar();
   const {data: user} = useGetMe();
+  const {t, i18n} = useTranslation();
   const userInitials = useMemo(() => {
     return `${user?.username.charAt(0).toUpperCase()}${user?.username.charAt(user.username.length - 1).toUpperCase()}`;
   }, [user]);
 
   const mutation = useLogOut();
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
 
   return (
     <SidebarMenu>
@@ -66,17 +76,34 @@ export function NavUser() {
             <DropdownMenuGroup>
               <DropdownMenuItem disabled>
                 <IconUserCircle />
-                Account
+                {t('common:labels.account')}
               </DropdownMenuItem>
               <DropdownMenuItem disabled>
                 <IconCreditCard />
-                Billing
+                {t('common:navigation.billing')}
               </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <IconLanguage />
+                  {t('common:labels.language')}
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  {supportedLanguages.map((lng) => (
+                    <DropdownMenuItem
+                      key={lng}
+                      onClick={() => changeLanguage(lng)}
+                      className={i18n.language === lng ? 'bg-accent' : ''}
+                    >
+                      {t(`common:languages.${lng}`)}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => mutation.mutate()} disabled={mutation.isPending}>
               <IconLogout />
-              Log out
+              {t('common:buttons.logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
