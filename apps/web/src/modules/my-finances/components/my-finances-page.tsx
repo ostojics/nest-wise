@@ -8,6 +8,7 @@ import PrivateTransactionsTableActions from './private-transactions-table-action
 import PrivateTransactionsPagination from './private-transactions-pagination';
 import PrivateTransactionsAccordionListSkeleton from './private-transactions-accordion-list.skeleton';
 import PrivateTransactionsAccordionListError from './private-transactions-accordion-list.error';
+import TextBanner from '@/components/text-banner';
 
 const PrivateTransactionsTable = lazy(() =>
   import('./private-transactions-table').then((m) => ({default: m.PrivateTransactionsTable})),
@@ -45,16 +46,14 @@ const MyFinancesPage = () => {
 
   return (
     <section className="p-4 flex flex-col h-full @container/transactions">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">My Finances</h1>
-        <p className="text-muted-foreground mt-1 text-balance">
-          This page shows only your private finances. Use it to review and log your personal expenses and income.
-        </p>
-      </div>
+      <TextBanner
+        aria-label="My finances overview"
+        text="This page shows only your private finances. Use it to review and log your personal expenses and income."
+      />
       <div className="mt-4">
         <CreatePrivateTransactionDialog />
       </div>
-      <div className="flex-1 mt-8">
+      <div className="flex-1 mt-4">
         <PrivateTransactionsTableActions />
         {renderContent()}
       </div>
