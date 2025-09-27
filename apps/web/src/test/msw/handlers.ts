@@ -1,9 +1,11 @@
 import {http, HttpResponse} from 'msw';
+import {TransactionType} from '@nest-wise/contracts';
 import type {
   UserContract,
   HouseholdContract,
-  GetTransactionsResponseContract,
   TransactionContract,
+  AccountContract,
+  CategoryContract,
 } from '@nest-wise/contracts';
 
 // Mock data that satisfies contracts used by the Plan page
@@ -33,6 +35,34 @@ const mockHousehold: HouseholdContract = {
   updatedAt: new Date('2024-01-01'),
 };
 
+const mockAccount: AccountContract = {
+  id: 'a-1',
+  householdId: 'h-1',
+  name: 'Checking Account',
+  type: 'checking',
+  initialBalance: 150000,
+  currentBalance: 150000, // $1500.00
+  ownerId: 'u-1',
+  createdAt: new Date('2024-01-01'),
+  updatedAt: new Date('2024-01-01'),
+};
+
+const mockCategory1: CategoryContract = {
+  id: 'c-1',
+  householdId: 'h-1',
+  name: 'Groceries',
+  createdAt: new Date('2024-01-01'),
+  updatedAt: new Date('2024-01-01'),
+};
+
+const mockCategory2: CategoryContract = {
+  id: 'c-2',
+  householdId: 'h-1',
+  name: 'Utilities',
+  createdAt: new Date('2024-01-01'),
+  updatedAt: new Date('2024-01-01'),
+};
+
 const mockTransactions: TransactionContract[] = [
   {
     id: 't-1',
@@ -40,30 +70,14 @@ const mockTransactions: TransactionContract[] = [
     accountId: 'a-1',
     categoryId: 'c-1',
     amount: 25000, // $250.00
-    type: 'expense' as const,
+    type: TransactionType.EXPENSE,
     description: 'Grocery shopping',
     transactionDate: new Date('2024-01-15'),
     isReconciled: true,
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-01-15'),
-    account: {
-      id: 'a-1',
-      householdId: 'h-1',
-      name: 'Checking Account',
-      type: 'checking' as const,
-      balance: 150000,
-      userId: 'u-1',
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
-    category: {
-      id: 'c-1',
-      householdId: 'h-1',
-      name: 'Groceries',
-      icon: '🛒',
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
+    account: mockAccount,
+    category: mockCategory1,
   },
   {
     id: 't-2',
@@ -71,42 +85,16 @@ const mockTransactions: TransactionContract[] = [
     accountId: 'a-1',
     categoryId: 'c-2',
     amount: 15000, // $150.00
-    type: 'expense' as const,
+    type: TransactionType.EXPENSE,
     description: 'Utility bill',
     transactionDate: new Date('2024-01-10'),
     isReconciled: true,
     createdAt: new Date('2024-01-10'),
     updatedAt: new Date('2024-01-10'),
-    account: {
-      id: 'a-1',
-      householdId: 'h-1',
-      name: 'Checking Account',
-      type: 'checking' as const,
-      balance: 150000,
-      userId: 'u-1',
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
-    category: {
-      id: 'c-2',
-      householdId: 'h-1',
-      name: 'Utilities',
-      icon: '💡',
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date('2024-01-01'),
-    },
+    account: mockAccount,
+    category: mockCategory2,
   },
 ];
-
-const mockTransactionsResponse: GetTransactionsResponseContract = {
-  data: mockTransactions,
-  meta: {
-    totalCount: 2,
-    pageSize: 15,
-    currentPage: 1,
-    totalPages: 1,
-  },
-};
 
 export const handlers = [
   // GET /v1/users/me
@@ -127,9 +115,9 @@ export const handlers = [
     // Filter transactions by type if specified
     let filteredTransactions = mockTransactions;
     if (type === 'expense') {
-      filteredTransactions = mockTransactions.filter((t) => t.type === 'expense');
+      filteredTransactions = mockTransactions.filter((t) => t.type === TransactionType.EXPENSE);
     } else if (type === 'income') {
-      filteredTransactions = mockTransactions.filter((t) => t.type === 'income');
+      filteredTransactions = mockTransactions.filter((t) => t.type === TransactionType.INCOME);
     }
 
     return HttpResponse.json({
@@ -145,40 +133,12 @@ export const handlers = [
 
   // GET /v1/households/:id/categories
   http.get('*/v1/households/:id/categories', () => {
-    return HttpResponse.json([
-      {
-        id: 'c-1',
-        householdId: 'h-1',
-        name: 'Groceries',
-        icon: '🛒',
-        createdAt: new Date('2024-01-01'),
-        updatedAt: new Date('2024-01-01'),
-      },
-      {
-        id: 'c-2',
-        householdId: 'h-1',
-        name: 'Utilities',
-        icon: '💡',
-        createdAt: new Date('2024-01-01'),
-        updatedAt: new Date('2024-01-01'),
-      },
-    ]);
+    return HttpResponse.json([mockCategory1, mockCategory2]);
   }),
 
   // GET /v1/households/:id/accounts
   http.get('*/v1/households/:id/accounts', () => {
-    return HttpResponse.json([
-      {
-        id: 'a-1',
-        householdId: 'h-1',
-        name: 'Checking Account',
-        type: 'checking' as const,
-        balance: 150000, // $1500.00
-        userId: 'u-1',
-        createdAt: new Date('2024-01-01'),
-        updatedAt: new Date('2024-01-01'),
-      },
-    ]);
+    return HttpResponse.json([mockAccount]);
   }),
 
   // GET /v1/households/:id/category-budgets (for category budgets list)
@@ -191,14 +151,7 @@ export const handlers = [
           categoryId: 'c-1',
           budgetAmount: 30000, // $300.00
           month: '2024-01',
-          category: {
-            id: 'c-1',
-            householdId: 'h-1',
-            name: 'Groceries',
-            icon: '🛒',
-            createdAt: new Date('2024-01-01'),
-            updatedAt: new Date('2024-01-01'),
-          },
+          category: mockCategory1,
           createdAt: new Date('2024-01-01'),
           updatedAt: new Date('2024-01-01'),
         },
@@ -208,14 +161,7 @@ export const handlers = [
           categoryId: 'c-2',
           budgetAmount: 20000, // $200.00
           month: '2024-01',
-          category: {
-            id: 'c-2',
-            householdId: 'h-1',
-            name: 'Utilities',
-            icon: '💡',
-            createdAt: new Date('2024-01-01'),
-            updatedAt: new Date('2024-01-01'),
-          },
+          category: mockCategory2,
           createdAt: new Date('2024-01-01'),
           updatedAt: new Date('2024-01-01'),
         },

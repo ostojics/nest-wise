@@ -4,7 +4,7 @@ import baseConfig from '@nest-wise/linting/base';
 /** @type {import("eslint").Linter.Config} */
 export default [
   {
-    ignores: ['dist/**/*'],
+    ignores: ['dist/**/*', 'e2e/**/*', 'public/mockServiceWorker.js'],
   },
   ...baseConfig,
   ...reactConfig,

@@ -40,12 +40,25 @@ async function enableMocking() {
   });
 }
 
-enableMocking().then(() => {
-  createRoot(rootElement).render(
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </StrictMode>,
-  );
-});
+enableMocking()
+  .then(() => {
+    createRoot(rootElement).render(
+      <StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </StrictMode>,
+    );
+  })
+  .catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error('Failed to start MSW:', error);
+    // Still render the app even if MSW fails to start
+    createRoot(rootElement).render(
+      <StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </StrictMode>,
+    );
+  });
