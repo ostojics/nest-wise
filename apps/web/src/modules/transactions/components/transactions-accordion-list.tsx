@@ -1,7 +1,7 @@
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '@/components/ui/accordion';
 import {Badge} from '@/components/ui/badge';
 import {cn} from '@/lib/utils';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {TransactionContract, TransactionType} from '@nest-wise/contracts';
 import {format} from 'date-fns';
 import TransactionRowActions from './transaction-row-actions';

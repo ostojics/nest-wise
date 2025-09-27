@@ -11,7 +11,7 @@ import {
 import {TransactionContract} from '@nest-wise/contracts';
 import {Loader2, Trash2} from 'lucide-react';
 import React from 'react';
-import {useDeleteTransaction} from '../hooks/useDeleteTransaction';
+import {useDeleteTransaction} from '../hooks/use-delete-transaction';
 
 interface TransactionActionsProps {
   transaction: TransactionContract;

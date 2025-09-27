@@ -1,6 +1,6 @@
 import {queryKeys} from '@/modules/api/query-keys';
 import {createAiTransactionForHousehold} from '@/modules/api/transactions-api';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {toast} from 'sonner';

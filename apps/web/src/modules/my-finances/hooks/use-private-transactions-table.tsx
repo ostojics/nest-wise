@@ -1,6 +1,6 @@
 import {Badge} from '@/components/ui/badge';
 import {cn, deserializeSortOption, serializeSortOption} from '@/lib/utils';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {PrivateTransactionContract, TPrivateTransactionSortField, TransactionType} from '@nest-wise/contracts';
 import {useNavigate, useSearch} from '@tanstack/react-router';
 import {ColumnDef, getCoreRowModel, SortingState, useReactTable} from '@tanstack/react-table';

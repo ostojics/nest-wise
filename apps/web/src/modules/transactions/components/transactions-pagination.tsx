@@ -7,7 +7,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import {useNavigate, useSearch} from '@tanstack/react-router';
-import {useGetTransactions} from '../hooks/useGetTransactions';
+import {useGetTransactions} from '../hooks/use-get-transactions';
 
 const TransactionsPagination = () => {
   const search = useSearch({from: '/__pathlessLayout/transactions'});
@@ -24,7 +24,7 @@ const TransactionsPagination = () => {
   };
 
   return (
-    <section>
+    <section className="mt-4">
       <Pagination>
         <PaginationContent>
           {canGoPrev && (

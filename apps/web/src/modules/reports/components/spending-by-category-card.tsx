@@ -1,7 +1,7 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader} from '@/components/ui/card';
 import {ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
 import {generateRandomHsl} from '@/lib/utils';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {IconChartPie} from '@tabler/icons-react';
 import {useMemo} from 'react';
 import {Cell, Pie, PieChart} from 'recharts';

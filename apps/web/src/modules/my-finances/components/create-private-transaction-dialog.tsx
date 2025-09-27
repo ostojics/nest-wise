@@ -4,7 +4,7 @@ import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} fro
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
+import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
 import {useCreatePrivateTransaction} from '@/modules/my-finances/hooks/use-create-private-transaction';
 import {useValidateCreatePrivateTransaction} from '@/modules/my-finances/hooks/use-validate-create-private-transaction';
 import {CreatePrivateTransactionDTO} from '@nest-wise/contracts';

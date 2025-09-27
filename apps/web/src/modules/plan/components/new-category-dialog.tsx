@@ -13,9 +13,9 @@ import {
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {queryKeys} from '@/modules/api/query-keys';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {useValidateCreateCategory} from '@/modules/categories/hooks/use-validate-create-category';
-import {useCreateCategory} from '@/modules/categories/hooks/useCreateCategory';
+import {useCreateCategory} from '@/modules/categories/hooks/use-create-category';
 import {CreateCategoryDTO} from '@nest-wise/contracts';
 import {useQueryClient} from '@tanstack/react-query';
 import {useSearch} from '@tanstack/react-router';

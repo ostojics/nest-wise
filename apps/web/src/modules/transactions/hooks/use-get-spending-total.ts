@@ -1,6 +1,6 @@
 import {queryKeys} from '@/modules/api/query-keys';
 import {getSpendingTotal} from '@/modules/api/transactions-api';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {GetSpendingSummaryQueryHouseholdDTO} from '@nest-wise/contracts';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 
