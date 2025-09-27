@@ -25,9 +25,9 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-// Enable MSW in E2E testing environment
+// Enable MSW when MSW_ENABLED is set
 async function enableMocking() {
-  if (import.meta.env.VITE_E2E !== '1') {
+  if (import.meta.env.MSW_ENABLED !== '1') {
     return;
   }
 
