@@ -10,7 +10,7 @@ const AccountsPage = () => {
       <TextBanner
         className="mb-6"
         aria-label="Accounts overview"
-        text="Accounts are the places your money lives, like checking, savings, credit cards, or cash. Add the ones you use, keep balances up to date by recording transactions, and move money between them with Transfer Funds."
+        text="Accounts are the places your money lives. Add the ones you use, keep balances up to date by recording transactions, and move money between them with Transfer Funds."
       />
       <div className="flex items-center gap-2">
         <CreateAccount />
