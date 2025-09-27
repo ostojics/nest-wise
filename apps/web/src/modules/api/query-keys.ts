@@ -4,6 +4,7 @@ import {
   GetCategoryBudgetsQueryParams,
   GetPrivateTransactionsQueryDTO,
   GetTransactionsQueryDTO,
+  GetSpendingSummaryQueryHouseholdDTO,
 } from '@nest-wise/contracts';
 
 export const queryKeys = {
@@ -27,6 +28,8 @@ export const queryKeys = {
       'spending-by-accounts',
       search,
     ],
+    spendingTotal: (search: GetSpendingSummaryQueryHouseholdDTO) => ['spending-total', search],
+    categoriesSpending: (search: GetSpendingSummaryQueryHouseholdDTO) => ['categories-spending', search],
   },
   users: {
     byHousehold: (householdId: string) => ['users', 'household', householdId],

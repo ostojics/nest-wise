@@ -3,12 +3,15 @@ import {
   CreateTransactionAiHouseholdDTO,
   GetTransactionsQueryHouseholdDTO,
   GetAccountsSpendingQueryHouseholdDTO,
+  GetSpendingSummaryQueryHouseholdDTO,
 } from '@nest-wise/contracts';
 import httpClient from './http-client';
 import {
   AccountSpendingPointContract,
   GetTransactionsResponseContract,
   NetWorthTrendPointContract,
+  SpendingTotalContract,
+  CategorySpendingPointContract,
 } from '@nest-wise/contracts';
 
 // Household-scoped endpoints
@@ -57,6 +60,22 @@ export const spendingByAccountsForHousehold = async (
       searchParams: dto,
     })
     .json<AccountSpendingPointContract[]>();
+};
+
+export const getSpendingTotal = async (householdId: string, dto: GetSpendingSummaryQueryHouseholdDTO) => {
+  return httpClient
+    .get(`v1/households/${householdId}/transactions/spending-total`, {
+      searchParams: dto,
+    })
+    .json<SpendingTotalContract>();
+};
+
+export const getCategoriesSpending = async (householdId: string, dto: GetSpendingSummaryQueryHouseholdDTO) => {
+  return httpClient
+    .get(`v1/households/${householdId}/transactions/categories-spending`, {
+      searchParams: dto,
+    })
+    .json<CategorySpendingPointContract[]>();
 };
 
 // Item-level endpoints (keep these since they operate on individual transactions)
