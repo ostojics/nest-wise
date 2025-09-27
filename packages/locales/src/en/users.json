@@ -1,0 +1,33 @@
+{
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password"
+  },
+  "invite": {
+    "title": "Invite User",
+    "emailPlaceholder": "Enter email address",
+    "sendInvite": "Send Invite",
+    "inviteSent": "Invite sent successfully"
+  },
+  "acceptInvite": {
+    "title": "Accept Invitation",
+    "welcomeTo": "Welcome to {{householdName}}",
+    "createAccount": "Create your account"
+  },
+  "validation": {
+    "usernameRequired": "Username is required",
+    "usernameTooLong": "Username must be 50 characters or less",
+    "usernameInvalid": "Username can only contain letters, numbers, underscores, and hyphens",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email format",
+    "emailTooLong": "Email must be 255 characters or less",
+    "passwordRequired": "Password is required",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordTooLong": "Password must be 25 characters or less",
+    "passwordWeak": "Password must contain at least one lowercase letter, one uppercase letter, and one number",
+    "confirmPasswordRequired": "Password confirmation is required",
+    "passwordsNotMatch": "Passwords don't match",
+    "currentPasswordRequired": "Current password is required"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "errors": {
+    "validationFailed": "Validacija neuspešna",
+    "unauthorized": "Neovlašćen",
+    "forbidden": "Zabranjeno",
+    "notFound": "Nije pronađeno",
+    "internalServerError": "Interna greška servera",
+    "badRequest": "Neispravan zahtev"
+  },
+  "messages": {
+    "created": "Uspešno kreirano",
+    "updated": "Uspešno ažurirano",
+    "deleted": "Uspešno obrisano",
+    "operationCompleted": "Operacija je uspešno završena"
+  }
+}

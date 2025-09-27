@@ -1,0 +1,32 @@
+{
+  "errors": {
+    "invalid_type": "Neispravan tip. Očekivan {{expected}}, primljen {{received}}",
+    "invalid_literal": "Neispravna literalna vrednost, očekivana {{expected}}",
+    "unrecognized_keys": "Neprepoznati ključ(evi) u objektu: {{keys}}",
+    "invalid_union": "Neispravan unos",
+    "invalid_union_discriminator": "Neispravna diskriminatorska vrednost. Očekivana {{options}}",
+    "invalid_enum_value": "Neispravna enum vrednost. Očekivana {{options}}, primljena '{{received}}'",
+    "invalid_arguments": "Neispravni argumenti funkcije",
+    "invalid_return_type": "Neispravan tip povratne vrednosti funkcije",
+    "invalid_date": "Neispravan datum",
+    "invalid_string": "Neispravan tekst",
+    "too_small": "Tekst mora sadržavati najmanje {{minimum}} karakter(a)",
+    "too_big": "Tekst mora sadržavati najviše {{maximum}} karakter(a)",
+    "invalid_intersection_types": "Rezultati preseka ne mogu biti spojeni",
+    "not_multiple_of": "Broj mora biti umnožak od {{multipleOf}}",
+    "not_finite": "Broj mora biti konačan",
+    "invalid_url": "Neispravan url",
+    "invalid_email": "Neispravna e-pošta",
+    "invalid_uuid": "Neispravan UUID",
+    "invalid_regex": "Neispravan regularni izraz",
+    "custom": "Neispravan unos",
+    "min": "Mora biti najmanje {{minimum}}",
+    "max": "Mora biti najviše {{maximum}}",
+    "length": "Mora imati tačno {{length}} karaktera",
+    "email": "Neispravan format e-pošte",
+    "url": "Neispravan URL format",
+    "uuid": "Neispravan UUID format",
+    "regex": "Neispravan format",
+    "date": "Neispravan format datuma"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "buttons": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "create": "Create",
+    "update": "Update",
+    "login": "Log in",
+    "logout": "Log out",
+    "signup": "Sign up",
+    "submit": "Submit",
+    "continue": "Continue",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "tryAgain": "Try again"
+  },
+  "labels": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "description": "Description",
+    "amount": "Amount",
+    "date": "Date",
+    "type": "Type",
+    "category": "Category",
+    "account": "Account",
+    "accounts": "Accounts",
+    "status": "Status",
+    "actions": "Actions",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "language": "Language"
+  },
+  "messages": {
+    "welcomeBack": "Welcome back",
+    "loading": "Loading...",
+    "noData": "No data available",
+    "error": "An error occurred",
+    "success": "Success",
+    "confirmDelete": "Are you sure you want to delete this item?",
+    "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "transactions": "Transactions",
+    "accounts": "Accounts",
+    "categories": "Categories",
+    "budgets": "Budgets",
+    "settings": "Settings",
+    "profile": "Profile",
+    "help": "Help"
+  },
+  "languages": {
+    "en": "English",
+    "sr": "Serbian"
+  }
+}

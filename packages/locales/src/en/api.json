@@ -1,0 +1,16 @@
+{
+  "errors": {
+    "validationFailed": "Validation failed",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "notFound": "Not found",
+    "internalServerError": "Internal server error",
+    "badRequest": "Bad request"
+  },
+  "messages": {
+    "created": "Successfully created",
+    "updated": "Successfully updated",
+    "deleted": "Successfully deleted",
+    "operationCompleted": "Operation completed successfully"
+  }
+}

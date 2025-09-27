@@ -1,0 +1,22 @@
+{
+  "title": "Domaćinstvo",
+  "create": {
+    "title": "Kreiraj domaćinstvo",
+    "name": "Naziv domaćinstva",
+    "currency": "Valuta",
+    "namePlaceholder": "Unesite naziv domaćinstva",
+    "selectCurrency": "Izaberite valutu"
+  },
+  "members": {
+    "title": "Članovi",
+    "inviteUser": "Pozovi korisnika",
+    "owner": "Vlasnik",
+    "member": "Član"
+  },
+  "validation": {
+    "nameRequired": "Naziv domaćinstva je obavezan",
+    "nameTooLong": "Naziv domaćinstva mora imati 100 karaktera ili manje",
+    "currencyRequired": "Valuta je obavezna",
+    "currencyInvalid": "Neispravan kod valute"
+  }
+}

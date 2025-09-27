@@ -1,0 +1,33 @@
+{
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Izmeni profil",
+    "changePassword": "Promeni lozinku"
+  },
+  "invite": {
+    "title": "Pozovi korisnika",
+    "emailPlaceholder": "Unesite e-poštu",
+    "sendInvite": "Pošalji poziv",
+    "inviteSent": "Poziv je uspešno poslat"
+  },
+  "acceptInvite": {
+    "title": "Prihvati poziv",
+    "welcomeTo": "Dobrodošli u {{householdName}}",
+    "createAccount": "Kreirajte svoj nalog"
+  },
+  "validation": {
+    "usernameRequired": "Korisničko ime je obavezno",
+    "usernameTooLong": "Korisničko ime mora imati 50 karaktera ili manje",
+    "usernameInvalid": "Korisničko ime može sadržavati samo slova, brojeve, podvlake i crtice",
+    "emailRequired": "E-pošta je obavezna",
+    "emailInvalid": "Neispravan format e-pošte",
+    "emailTooLong": "E-pošta mora imati 255 karaktera ili manje",
+    "passwordRequired": "Lozinka je obavezna",
+    "passwordTooShort": "Lozinka mora imati najmanje 8 karaktera",
+    "passwordTooLong": "Lozinka mora imati 25 karaktera ili manje",
+    "passwordWeak": "Lozinka mora sadržavati najmanje jedno malo slovo, jedno veliko slovo i jedan broj",
+    "confirmPasswordRequired": "Potvrda lozinke je obavezna",
+    "passwordsNotMatch": "Lozinke se ne slažu",
+    "currentPasswordRequired": "Trenutna lozinka je obavezna"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "buttons": {
+    "cancel": "Otkaži",
+    "save": "Sačuvaj",
+    "edit": "Izmeni",
+    "delete": "Obriši",
+    "add": "Dodaj",
+    "create": "Kreiraj",
+    "update": "Ažuriraj",
+    "login": "Prijaviť se",
+    "logout": "Odjaviť se",
+    "signup": "Registruj se",
+    "submit": "Potvrdi",
+    "continue": "Nastavi",
+    "back": "Nazad",
+    "next": "Sledeće",
+    "close": "Zatvori",
+    "confirm": "Potvrdi",
+    "loading": "Učitava...",
+    "tryAgain": "Pokušaj ponovo"
+  },
+  "labels": {
+    "name": "Naziv",
+    "email": "E-pošta",
+    "password": "Lozinka",
+    "username": "Korisničko ime",
+    "description": "Opis",
+    "amount": "Iznos",
+    "date": "Datum",
+    "type": "Tip",
+    "category": "Kategorija",
+    "account": "Račun",
+    "accounts": "Računi",
+    "status": "Status",
+    "actions": "Akcije",
+    "search": "Pretraži",
+    "filter": "Filtriraj",
+    "sort": "Sortiraj",
+    "language": "Jezik"
+  },
+  "messages": {
+    "welcomeBack": "Dobrodošli nazad",
+    "loading": "Učitava...",
+    "noData": "Nema dostupnih podataka",
+    "error": "Dogodila se greška",
+    "success": "Uspešno",
+    "confirmDelete": "Da li ste sigurni da želite da obrišete ovu stavku?",
+    "unsavedChanges": "Imate nesačuvane izmene. Da li ste sigurni da želite da odete?"
+  },
+  "navigation": {
+    "dashboard": "Kontrolna tabla",
+    "transactions": "Transakcije",
+    "accounts": "Računi",
+    "categories": "Kategorije",
+    "budgets": "Budžeti",
+    "settings": "Podešavanja",
+    "profile": "Profil",
+    "help": "Pomoć"
+  },
+  "languages": {
+    "en": "Engleski",
+    "sr": "Srpski"
+  }
+}

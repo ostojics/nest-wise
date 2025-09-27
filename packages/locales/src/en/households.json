@@ -1,0 +1,22 @@
+{
+  "title": "Household",
+  "create": {
+    "title": "Create Household",
+    "name": "Household Name",
+    "currency": "Currency",
+    "namePlaceholder": "Enter household name",
+    "selectCurrency": "Select currency"
+  },
+  "members": {
+    "title": "Members",
+    "inviteUser": "Invite User",
+    "owner": "Owner",
+    "member": "Member"
+  },
+  "validation": {
+    "nameRequired": "Household name is required",
+    "nameTooLong": "Household name must be 100 characters or less",
+    "currencyRequired": "Currency is required",
+    "currencyInvalid": "Invalid currency code"
+  }
+}

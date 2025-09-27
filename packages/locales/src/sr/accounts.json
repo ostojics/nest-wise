@@ -1,0 +1,35 @@
+{
+  "title": "Računi",
+  "create": {
+    "title": "Kreiraj račun",
+    "name": "Naziv računa",
+    "type": "Tip računa",
+    "balance": "Početni balans",
+    "namePlaceholder": "Unesite naziv računa",
+    "selectType": "Izaberite tip računa"
+  },
+  "types": {
+    "checking": "Tekući",
+    "saving": "Štedni",
+    "cash": "Gotovina",
+    "creditCard": "Kreditna kartica",
+    "investment": "Investicijski",
+    "loan": "Kredit"
+  },
+  "details": {
+    "balance": "Balans",
+    "type": "Tip",
+    "createdAt": "Kreiran",
+    "transactions": "Transakcije"
+  },
+  "validation": {
+    "nameRequired": "Naziv računa je obavezan",
+    "nameTooLong": "Naziv računa mora imati 100 karaktera ili manje",
+    "typeRequired": "Tip računa je obavezan",
+    "typeInvalid": "Neispravan tip računa",
+    "balanceInvalid": "Neispravan iznos balansa",
+    "balanceTooBig": "Balans mora biti manji od 10.000.000",
+    "accountIdRequired": "Račun mora biti izabran",
+    "accountIdInvalid": "Neispravan izbor računa"
+  }
+}

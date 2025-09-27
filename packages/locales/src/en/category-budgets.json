@@ -1,0 +1,28 @@
+{
+  "title": "Category Budgets",
+  "create": {
+    "title": "Set Budget",
+    "month": "Month",
+    "category": "Category",
+    "plannedAmount": "Planned Amount",
+    "selectMonth": "Select month",
+    "selectCategory": "Select category",
+    "amountPlaceholder": "Enter planned amount"
+  },
+  "details": {
+    "month": "Month",
+    "category": "Category",
+    "plannedAmount": "Planned Amount",
+    "actualAmount": "Actual Amount",
+    "remaining": "Remaining",
+    "overBudget": "Over Budget"
+  },
+  "validation": {
+    "monthRequired": "Month is required",
+    "monthInvalid": "Month must be in the format YYYY-MM",
+    "categoryIdRequired": "Category must be selected",
+    "categoryIdInvalid": "Invalid category selection",
+    "plannedAmountRequired": "Planned amount is required",
+    "plannedAmountTooSmall": "Planned amount must be 0 or greater"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "title": "Budžeti kategorija",
+  "create": {
+    "title": "Postavi budžet",
+    "month": "Mesec",
+    "category": "Kategorija",
+    "plannedAmount": "Planirani iznos",
+    "selectMonth": "Izaberite mesec",
+    "selectCategory": "Izaberite kategoriju",
+    "amountPlaceholder": "Unesite planirani iznos"
+  },
+  "details": {
+    "month": "Mesec",
+    "category": "Kategorija",
+    "plannedAmount": "Planirani iznos",
+    "actualAmount": "Stvarni iznos",
+    "remaining": "Preostalo",
+    "overBudget": "Preko budžeta"
+  },
+  "validation": {
+    "monthRequired": "Mesec je obavezan",
+    "monthInvalid": "Mesec mora biti u formatu YYYY-MM",
+    "categoryIdRequired": "Kategorija mora biti izabrana",
+    "categoryIdInvalid": "Neispravan izbor kategorije",
+    "plannedAmountRequired": "Planirani iznos je obavezan",
+    "plannedAmountTooSmall": "Planirani iznos mora biti 0 ili veći"
+  }
+}

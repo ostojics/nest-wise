@@ -1,0 +1,49 @@
+{
+  "title": "Transakcije",
+  "create": {
+    "title": "Kreiraj transakciju",
+    "amount": "Iznos",
+    "type": "Tip",
+    "description": "Opis",
+    "account": "Račun",
+    "category": "Kategorija",
+    "date": "Datum",
+    "amountPlaceholder": "Unesite iznos",
+    "descriptionPlaceholder": "Unesite opis",
+    "selectAccount": "Izaberite račun",
+    "selectCategory": "Izaberite kategoriju"
+  },
+  "types": {
+    "income": "Prihod",
+    "expense": "Rashod"
+  },
+  "details": {
+    "amount": "Iznos",
+    "type": "Tip",
+    "description": "Opis",
+    "account": "Račun",
+    "category": "Kategorija",
+    "date": "Datum",
+    "reconciled": "Usklađeno"
+  },
+  "validation": {
+    "householdIdRequired": "ID domaćinstva mora biti ispravan",
+    "householdIdInvalid": "Neispravan ID domaćinstva",
+    "accountIdRequired": "Račun mora biti izabran",
+    "accountIdInvalid": "Neispravan izbor računa",
+    "categoryIdRequired": "Kategorija mora biti izabrana",
+    "categoryIdInvalid": "Neispravan izbor kategorije",
+    "amountRequired": "Iznos je obavezan",
+    "amountTooSmall": "Iznos mora biti veći od 0",
+    "amountTooBig": "Iznos mora biti manji od 10.000.000",
+    "typeRequired": "Tip transakcije je obavezan",
+    "descriptionRequired": "Opis je obavezan",
+    "descriptionTooLong": "Opis mora imati 1000 karaktera ili manje",
+    "dateRequired": "Datum je obavezan",
+    "dateInvalid": "Neispravan datum",
+    "category": {
+      "notAllowedForIncome": "Transakcije prihoda ne smeju imati kategoriju",
+      "requiredForExpense": "Transakcije rashoda moraju imati kategoriju"
+    }
+  }
+}

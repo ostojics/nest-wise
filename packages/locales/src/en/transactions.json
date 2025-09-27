@@ -1,0 +1,49 @@
+{
+  "title": "Transactions",
+  "create": {
+    "title": "Create Transaction",
+    "amount": "Amount",
+    "type": "Type",
+    "description": "Description",
+    "account": "Account",
+    "category": "Category",
+    "date": "Date",
+    "amountPlaceholder": "Enter amount",
+    "descriptionPlaceholder": "Enter description",
+    "selectAccount": "Select account",
+    "selectCategory": "Select category"
+  },
+  "types": {
+    "income": "Income",
+    "expense": "Expense"
+  },
+  "details": {
+    "amount": "Amount",
+    "type": "Type",
+    "description": "Description",
+    "account": "Account",
+    "category": "Category",
+    "date": "Date",
+    "reconciled": "Reconciled"
+  },
+  "validation": {
+    "householdIdRequired": "Household ID must be valid",
+    "householdIdInvalid": "Invalid household ID",
+    "accountIdRequired": "Account must be selected",
+    "accountIdInvalid": "Invalid account selection",
+    "categoryIdRequired": "Category must be selected",
+    "categoryIdInvalid": "Invalid category selection",
+    "amountRequired": "Amount is required",
+    "amountTooSmall": "Amount must be greater than 0",
+    "amountTooBig": "Amount must be less than 10,000,000",
+    "typeRequired": "Transaction type is required",
+    "descriptionRequired": "Description is required",
+    "descriptionTooLong": "Description must be 1000 characters or less",
+    "dateRequired": "Date is required",
+    "dateInvalid": "Invalid date",
+    "category": {
+      "notAllowedForIncome": "Income transactions must not have a category",
+      "requiredForExpense": "Expense transactions must have a category"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "title": "Accounts",
+  "create": {
+    "title": "Create Account",
+    "name": "Account Name",
+    "type": "Account Type",
+    "balance": "Initial Balance",
+    "namePlaceholder": "Enter account name",
+    "selectType": "Select account type"
+  },
+  "types": {
+    "checking": "Checking",
+    "saving": "Savings",
+    "cash": "Cash",
+    "creditCard": "Credit Card",
+    "investment": "Investment",
+    "loan": "Loan"
+  },
+  "details": {
+    "balance": "Balance",
+    "type": "Type",
+    "createdAt": "Created",
+    "transactions": "Transactions"
+  },
+  "validation": {
+    "nameRequired": "Account name is required",
+    "nameTooLong": "Account name must be 100 characters or less",
+    "typeRequired": "Account type is required",
+    "typeInvalid": "Invalid account type",
+    "balanceInvalid": "Invalid balance amount",
+    "balanceTooBig": "Balance must be less than 10,000,000",
+    "accountIdRequired": "Account must be selected",
+    "accountIdInvalid": "Invalid account selection"
+  }
+}

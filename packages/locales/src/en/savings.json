@@ -1,0 +1,31 @@
+{
+  "title": "Savings",
+  "create": {
+    "title": "Create Savings Goal",
+    "name": "Goal Name",
+    "targetAmount": "Target Amount",
+    "currentAmount": "Current Amount",
+    "targetDate": "Target Date",
+    "namePlaceholder": "Enter savings goal name",
+    "targetAmountPlaceholder": "Enter target amount",
+    "currentAmountPlaceholder": "Enter current amount"
+  },
+  "details": {
+    "name": "Name",
+    "targetAmount": "Target Amount",
+    "currentAmount": "Current Amount",
+    "targetDate": "Target Date",
+    "progress": "Progress",
+    "remaining": "Remaining"
+  },
+  "validation": {
+    "nameRequired": "Savings goal name is required",
+    "nameTooLong": "Name must be 100 characters or less",
+    "targetAmountRequired": "Target amount is required",
+    "targetAmountTooSmall": "Target amount must be greater than 0",
+    "targetAmountTooBig": "Target amount must be less than 10,000,000",
+    "currentAmountInvalid": "Invalid current amount",
+    "currentAmountTooBig": "Current amount must be less than 10,000,000",
+    "targetDateInvalid": "Invalid target date"
+  }
+}
