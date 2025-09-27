@@ -30,6 +30,7 @@
     "balanceInvalid": "Invalid balance amount",
     "balanceTooBig": "Balance must be less than 10,000,000",
     "accountIdRequired": "Account must be selected",
-    "accountIdInvalid": "Invalid account selection"
+    "accountIdInvalid": "Invalid account selection",
+    "transferToSameAccount": "Source and destination accounts must be different"
   }
 }

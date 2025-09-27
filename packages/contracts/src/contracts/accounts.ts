@@ -1,10 +1,6 @@
 import {z} from 'zod';
 
-export const accountTypeEnum = z.enum(['checking', 'savings', 'credit_card', 'investment', 'cash', 'other'], {
-  errorMap: () => ({
-    message: 'Account type must be one of: checking, savings, credit_card, investment, cash, other',
-  }),
-});
+export const accountTypeEnum = z.enum(['checking', 'savings', 'credit_card', 'investment', 'cash', 'other']);
 
 export interface AccountContract {
   id: string;
@@ -21,10 +17,10 @@ export interface AccountContract {
 // Household-scoped version without householdId (comes from path)
 export const createAccountHouseholdScopedSchema = z
   .object({
-    name: z.string().min(1, 'Account name is required').max(255, 'Account name must be 255 characters or less'),
+    name: z.string().min(1).max(255),
     type: accountTypeEnum,
-    initialBalance: z.coerce.number().min(0, 'Balance must be 0 or greater'),
-    ownerId: z.string().uuid('Owner ID must be a valid UUID'),
+    initialBalance: z.coerce.number().min(0),
+    ownerId: z.string().uuid(),
   })
   .strict();
 
@@ -32,13 +28,9 @@ export type CreateAccountHouseholdScopedDTO = z.infer<typeof createAccountHouseh
 
 export const editAccountSchema = z
   .object({
-    name: z
-      .string()
-      .min(1, 'Account name is required')
-      .max(255, 'Account name must be 255 characters or less')
-      .optional(),
+    name: z.string().min(1).max(255).optional(),
     type: accountTypeEnum.optional(),
-    currentBalance: z.coerce.number().min(0, 'Balance must be 0 or greater').optional(),
+    currentBalance: z.coerce.number().min(0).optional(),
   })
   .strict();
 
@@ -46,13 +38,13 @@ export type EditAccountDTO = z.infer<typeof editAccountSchema>;
 
 export const transferFundsSchema = z
   .object({
-    fromAccountId: z.string().uuid('Source account must be selected'),
-    toAccountId: z.string().uuid('Destination account must be selected'),
-    amount: z.coerce.number().min(1, 'Transfer amount must be at least 1'),
+    fromAccountId: z.string().uuid(),
+    toAccountId: z.string().uuid(),
+    amount: z.coerce.number().min(1),
   })
   .strict()
   .refine((data) => data.fromAccountId !== data.toAccountId, {
-    message: 'fromAccountId and toAccountId must be different',
+    message: 'accounts.validation.transferToSameAccount',
     path: ['toAccountId'],
   });
 

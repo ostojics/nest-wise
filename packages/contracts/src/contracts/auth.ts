@@ -4,8 +4,8 @@ import {createHouseholdSchema} from './households';
 
 export const loginSchema = z
   .object({
-    email: z.string().min(1, 'Email is required').email('Invalid email format'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
+    email: z.string().min(1).email(),
+    password: z.string().min(8),
   })
   .strict();
 
@@ -13,7 +13,7 @@ export type LoginDTO = z.infer<typeof loginSchema>;
 
 export const setupSchema = z
   .object({
-    licenseKey: z.string().min(1, 'License key is required'),
+    licenseKey: z.string().min(1),
     user: userRegistrationSchema,
     household: createHouseholdSchema,
   })
@@ -23,11 +23,7 @@ export type SetupDTO = z.infer<typeof setupSchema>;
 
 export const forgotPasswordSchema = z
   .object({
-    email: z
-      .string()
-      .min(1, 'Email is required')
-      .email('Invalid email format')
-      .max(255, 'Email must be 255 characters or less'),
+    email: z.string().min(1).email().max(255),
   })
   .strict();
 
@@ -35,13 +31,13 @@ export type ForgotPasswordDTO = z.infer<typeof forgotPasswordSchema>;
 
 export const resetPasswordSchema = z
   .object({
-    token: z.string().min(1, 'Token is required'),
+    token: z.string().min(1),
     password: passwordSchema,
-    confirm_password: z.string().min(1, 'Password confirmation is required'),
+    confirm_password: z.string().min(1),
   })
   .strict()
   .refine((data) => data.password === data.confirm_password, {
-    message: "Passwords don't match",
+    message: 'auth.validation.passwordsNotMatch',
     path: ['confirm_password'],
   });
 

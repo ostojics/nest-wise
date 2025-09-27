@@ -18,7 +18,7 @@ export interface CategoryBudgetWithCurrentAmountContract extends CategoryBudgetC
 
 export const getCategoryBudgetsQueryParamsSchema = z
   .object({
-    month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Month must be in the format YYYY-MM'),
+    month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
   })
   .strict();
 
@@ -26,13 +26,13 @@ export type GetCategoryBudgetsQueryParams = z.infer<typeof getCategoryBudgetsQue
 
 export const upsertCategoryBudgetSchema = z
   .object({
-    month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Month must be in the format YYYY-MM'),
+    month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
     items: z
       .array(
         z
           .object({
-            categoryId: z.string().uuid('categoryId must be a valid UUID'),
-            plannedAmount: z.coerce.number().min(0, 'Planned amount must be 0 or greater'),
+            categoryId: z.string().uuid(),
+            plannedAmount: z.coerce.number().min(0),
           })
           .strict(),
       )

@@ -30,6 +30,7 @@
     "balanceInvalid": "Neispravan iznos balansa",
     "balanceTooBig": "Balans mora biti manji od 10.000.000",
     "accountIdRequired": "Račun mora biti izabran",
-    "accountIdInvalid": "Neispravan izbor računa"
+    "accountIdInvalid": "Neispravan izbor računa",
+    "transferToSameAccount": "Izvorni i odredišni račun moraju biti različiti"
   }
 }

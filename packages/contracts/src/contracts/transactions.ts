@@ -75,15 +75,12 @@ export const TransactionSortFieldEnum = z.enum([
 
 export const createTransactionSchema = z
   .object({
-    householdId: z.string().uuid('Household ID must be valid'),
-    accountId: z.string().uuid('Account must be selected'),
-    categoryId: z.string().uuid('Category must be selected').nullable(),
-    amount: z.coerce
-      .number()
-      .min(0.01, 'Amount must be greater than 0')
-      .max(10000000, 'Amount must be less than 10,000,000'),
+    householdId: z.string().uuid(),
+    accountId: z.string().uuid(),
+    categoryId: z.string().uuid().nullable(),
+    amount: z.coerce.number().min(0.01).max(10000000),
     type: TransactionTypeEnum,
-    description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
+    description: z.string().min(1).max(1000),
     transactionDate: z.coerce.date(),
     isReconciled: z.boolean().default(true),
   })
@@ -93,14 +90,14 @@ export const createTransactionSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['categoryId'],
-        message: 'Income transactions must not have a category',
+        message: 'transactions.validation.category.notAllowedForIncome',
       });
     }
     if (val.type === 'expense' && val.categoryId === null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['categoryId'],
-        message: 'Expense transactions must have a category',
+        message: 'transactions.validation.category.requiredForExpense',
       });
     }
   });
@@ -108,14 +105,11 @@ export const createTransactionSchema = z
 // New household-scoped schema without householdId (provided in path)
 export const createTransactionHouseholdSchema = z
   .object({
-    accountId: z.string().uuid('Account must be selected'),
-    categoryId: z.string().uuid('Category must be selected').nullable(),
-    amount: z.coerce
-      .number()
-      .min(0.01, 'Amount must be greater than 0')
-      .max(10000000, 'Amount must be less than 10,000,000'),
+    accountId: z.string().uuid(),
+    categoryId: z.string().uuid().nullable(),
+    amount: z.coerce.number().min(0.01).max(10000000),
     type: TransactionTypeEnum,
-    description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
+    description: z.string().min(1).max(1000),
     transactionDate: z.coerce.date(),
     isReconciled: z.boolean().default(true),
   })
@@ -125,41 +119,41 @@ export const createTransactionHouseholdSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['categoryId'],
-        message: 'Income transactions must not have a category',
+        message: 'transactions.validation.category.notAllowedForIncome',
       });
     }
     if (val.type === 'expense' && val.categoryId === null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['categoryId'],
-        message: 'Expense transactions must have a category',
+        message: 'transactions.validation.category.requiredForExpense',
       });
     }
   });
 
 export const createTransactionAiSchema = z
   .object({
-    householdId: z.string().uuid('Household ID must be valid'),
-    accountId: z.string().uuid('Account must be selected'),
-    description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
+    householdId: z.string().uuid(),
+    accountId: z.string().uuid(),
+    description: z.string().min(1).max(1000),
   })
   .strict();
 
 // New household-scoped schema without householdId (provided in path)
 export const createTransactionAiHouseholdSchema = z
   .object({
-    accountId: z.string().uuid('Account must be selected'),
-    description: z.string().min(1, 'Description is required').max(1000, 'Description must be 1000 characters or less'),
+    accountId: z.string().uuid(),
+    description: z.string().min(1).max(1000),
     transactionDate: z.coerce.date().optional(),
   })
   .strict();
 
 export const updateTransactionSchema = z
   .object({
-    categoryId: z.string().uuid('Category must be selected').nullable().optional(),
-    amount: z.coerce.number().min(0.01, 'Amount must be greater than 0').optional(),
+    categoryId: z.string().uuid().nullable().optional(),
+    amount: z.coerce.number().min(0.01).optional(),
     type: TransactionTypeEnum.optional(),
-    description: z.string().max(1000, 'Description must be 1000 characters or less').nullable().optional(),
+    description: z.string().max(1000).nullable().optional(),
     transactionDate: z.coerce.date().optional(),
     isReconciled: z.boolean().optional(),
   })
