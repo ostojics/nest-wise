@@ -31,7 +31,7 @@ async function enableMocking() {
     return;
   }
 
-  const {worker} = await import('./test/msw/browser');
+  const {worker} = await import('./msw/worker');
   return worker.start({
     serviceWorker: {
       url: '/mockServiceWorker.js',
