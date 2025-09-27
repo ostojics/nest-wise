@@ -5,7 +5,7 @@ import unicorn from 'eslint-plugin-unicorn';
 /** @type {import("eslint").Linter.Config} */
 export default [
   {
-    ignores: ['dist/**/*', 'src/routeTree.gen.ts'],
+    ignores: ['dist/**/*', 'dev-dist/**/*', 'src/routeTree.gen.ts'],
   },
   ...baseConfig,
   ...reactConfig,
