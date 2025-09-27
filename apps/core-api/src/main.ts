@@ -30,7 +30,6 @@ async function bootstrap() {
   });
 
   const {port} = configService.getOrThrow<AppConfig>(AppConfigName);
-  console.log(`Starting API server on port ${port}...`);
   await app.listen(port);
 }
 
