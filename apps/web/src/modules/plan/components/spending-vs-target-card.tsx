@@ -9,7 +9,7 @@ import {useMemo, useState} from 'react';
 import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
 import SpendingVsTargetCardSkeleton from './spending-vs-target-card.skeleton';
 import SpendingVsTargetCardError from './spending-vs-target-card.error';
-import {useGetSpendingTotal} from '@/modules/transactions/hooks/useGetSpendingTotal';
+import {useGetSpendingTotal} from '@/modules/transactions/hooks/use-get-spending-total';
 
 const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

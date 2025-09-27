@@ -13,7 +13,7 @@ import CategoryAmountLegend from './category-amount-legend';
 import SpendingByCategoryCardEmpty from './spending-by-category-card.empty';
 import SpendingByCategoryCardError from './spending-by-category-card.error';
 import SpendingByCategoryCardSkeleton from './spending-by-category-card.skeleton';
-import {useGetCategoriesSpending} from '@/modules/transactions/hooks/useGetCategoriesSpending';
+import {useGetCategoriesSpending} from '@/modules/transactions/hooks/use-get-categories-spending';
 
 const renderCustomizedLabel = (entry: ChartDataEntry) => {
   const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);
