@@ -7,7 +7,7 @@ interface RouterContext {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
-    <section className="bg-primary-foreground h-screen w-screen">
+    <section className="bg-primary-foreground w-full min-h-screen">
       <Outlet />
       <TanStackRouterDevtools position="bottom-left" />
     </section>
