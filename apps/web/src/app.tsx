@@ -2,7 +2,7 @@ import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 import {RouterProvider} from '@tanstack/react-router';
 import {Toaster} from './components/ui/sonner';
 import {router} from './router';
-import {useGetMe} from './modules/auth/hooks/useGetMe';
+import {useGetMe} from './modules/auth/hooks/use-get-me';
 import {Loader2} from 'lucide-react';
 
 const App = () => {

@@ -3,7 +3,7 @@ import {useSearch} from '@tanstack/react-router';
 import {format, isAfter, parse} from 'date-fns';
 
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {useGetCategoryBudgets} from '../hooks/use-get-category-budgets';
 import {lazy, Suspense, useMemo} from 'react';
 import CategoryBudgetsTableSkeleton from './category-budgets-table.skeleton';

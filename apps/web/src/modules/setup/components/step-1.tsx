@@ -4,8 +4,8 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {UserRegistrationDTO} from '@nest-wise/contracts';
 import FormError from '@/components/form-error';
-import {useValidateStep1} from '../hooks/useValidateStep1';
-import {useSetupContext} from '../hooks/useSetup';
+import {useValidateStep1} from '../hooks/use-validate-step1';
+import {useSetupContext} from '../hooks/use-setup';
 import {Loader2} from 'lucide-react';
 
 const Step1 = () => {

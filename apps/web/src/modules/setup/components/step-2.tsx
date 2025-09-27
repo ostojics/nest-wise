@@ -5,9 +5,9 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {Brain, Loader2} from 'lucide-react';
-import {useValidateStep2} from '../hooks/useValidateStep2';
-import {useSetupContext} from '../hooks/useSetup';
-import {useSetupMutation} from '../hooks/useSetupMutation';
+import {useValidateStep2} from '../hooks/use-validate-step2';
+import {useSetupContext} from '../hooks/use-setup';
+import {useSetupMutation} from '../hooks/use-setup-mutation';
 import {CreateHouseholdDTO, SetupDTO} from '@nest-wise/contracts';
 import {CURRENCIES} from '../currencies';
 

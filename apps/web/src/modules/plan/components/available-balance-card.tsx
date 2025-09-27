@@ -1,6 +1,6 @@
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {IconWallet} from '@tabler/icons-react';
 import {useMemo} from 'react';
 import AvailableBalanceCardSkeleton from './available-balance-card.skeleton';

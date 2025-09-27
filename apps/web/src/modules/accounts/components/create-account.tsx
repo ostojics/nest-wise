@@ -13,12 +13,12 @@ import {
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
+import {useGetHouseholdById} from '@/modules/households/hooks/use-get-household-by-id';
 import {CreateAccountHouseholdScopedDTO} from '@nest-wise/contracts';
 import {useValidateCreateAccount} from '@/modules/accounts/hooks/use-validate-create-account';
 import {Loader2, PlusIcon, Wallet} from 'lucide-react';
-import {useCreateAccountMutation} from '../hooks/useCreateAccountMutation';
+import {useCreateAccountMutation} from '../hooks/use-create-account-mutation';
 import {useState} from 'react';
 import SelectedAccountType from './selected-account-type';
 

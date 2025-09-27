@@ -1,6 +1,6 @@
 import {getHouseholdAccounts} from '@/modules/api/households-api';
 import {queryKeys} from '@/modules/api/query-keys';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {useQuery} from '@tanstack/react-query';
 
 export const useGetHouseholdAccounts = () => {
