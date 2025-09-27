@@ -24,11 +24,6 @@ const config: Config = {
   },
   setupFilesAfterEnv: ['<rootDir>/test/integration/setup/test-setup.ts'],
   preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      isolatedModules: true,
-    },
-  },
 };
 
 export default config;
