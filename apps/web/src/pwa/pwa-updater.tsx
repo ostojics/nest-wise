@@ -7,24 +7,7 @@ export const PwaUpdater = () => {
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
-  } = useRegisterSW({
-    onRegistered(r) {
-      // eslint-disable-next-line no-console
-      console.log('SW Registered:', r);
-    },
-    onRegisterError(error) {
-      // eslint-disable-next-line no-console
-      console.log('SW registration error', error);
-    },
-    onNeedRefresh() {
-      // eslint-disable-next-line no-console
-      console.log('SW needs refresh');
-    },
-    onOfflineReady() {
-      // eslint-disable-next-line no-console
-      console.log('SW offline ready');
-    },
-  });
+  } = useRegisterSW();
 
   useEffect(() => {
     if (needRefresh) {
