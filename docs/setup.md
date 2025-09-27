@@ -71,6 +71,11 @@ APP_URL=http://localhost:8080
 WEB_APP_URL=http://localhost:5173
 JWT_SECRET=dev-secret
 
+# Application versioning (optional - auto-detected in dev)
+APP_VERSION=
+GIT_SHA=
+BUILD_DATE=
+
 # External APIs (set dummy key for dev)
 OPENAI_API_KEY=
 RESEND_API_KEY=dummy-key-for-dev
