@@ -187,6 +187,9 @@ importers:
       zod:
         specifier: 'catalog:'
         version: 3.25.76
+      zod-i18n-map:
+        specifier: ^2.27.0
+        version: 2.27.0(i18next@25.5.2(typescript@5.9.2))(zod@3.25.76)
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.2.0
