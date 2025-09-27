@@ -7,6 +7,10 @@
     "namePlaceholder": "Unesite naziv domaćinstva",
     "selectCurrency": "Izaberite valutu"
   },
+  "setup": {
+    "title": "Podešavanje domaćinstva",
+    "description": "Podešavanje domaćinstva"
+  },
   "members": {
     "title": "Članovi",
     "inviteUser": "Pozovi korisnika",

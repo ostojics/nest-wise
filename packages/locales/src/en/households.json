@@ -7,6 +7,10 @@
     "namePlaceholder": "Enter household name",
     "selectCurrency": "Select currency"
   },
+  "setup": {
+    "title": "Set up your household",
+    "description": "Set up your household"
+  },
   "members": {
     "title": "Members",
     "inviteUser": "Invite User",

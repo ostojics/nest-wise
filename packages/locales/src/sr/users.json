@@ -2,7 +2,12 @@
   "profile": {
     "title": "Profil",
     "editProfile": "Izmeni profil",
-    "changePassword": "Promeni lozinku"
+    "changePassword": "Promeni lozinku",
+    "usernamePlaceholder": "Unesite korisničko ime",
+    "emailPlaceholder": "Unesite e-poštu",
+    "passwordPlaceholder": "Napravite lozinku",
+    "confirmPassword": "Potvrdite lozinku",
+    "confirmPasswordPlaceholder": "Potvrdite vašu lozinku"
   },
   "invite": {
     "title": "Pozovi korisnika",
@@ -27,7 +32,7 @@
     "passwordTooLong": "Lozinka mora imati 25 karaktera ili manje",
     "passwordWeak": "Lozinka mora sadržavati najmanje jedno malo slovo, jedno veliko slovo i jedan broj",
     "confirmPasswordRequired": "Potvrda lozinke je obavezna",
-    "passwordsNotMatch": "Lozinke se ne slažu",
+    "passwordsNotMatch": "Lozinke se ne poklapaju",
     "currentPasswordRequired": "Trenutna lozinka je obavezna"
   }
 }

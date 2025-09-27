@@ -3,23 +3,25 @@ import {useSetupContext} from '../hooks/useSetup';
 import {CheckIcon} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {Button} from '@/components/ui/button';
-
-const steps = [
-  {
-    id: 1,
-    title: 'User Profile',
-    description: 'Create your account',
-  },
-  {
-    id: 2,
-    title: 'Household Setup',
-    description: 'Set up your household',
-  },
-];
+import {useTranslation} from 'react-i18next';
 
 const Stepper = () => {
+  const {t} = useTranslation();
   const {currentStep, setCurrentStep, userData} = useSetupContext();
   const hasCompletedStep1 = Boolean(userData);
+
+  const steps = [
+    {
+      id: 1,
+      title: t('auth:setup.userInfo'),
+      description: t('users:acceptInvite.createAccount'),
+    },
+    {
+      id: 2,
+      title: t('auth:setup.householdInfo'),
+      description: t('households:setup.description'),
+    },
+  ];
 
   const handleStepClick = (stepId: number) => {
     setCurrentStep(stepId);

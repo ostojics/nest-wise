@@ -26,31 +26,38 @@ i18n
   });
 
 // Set up Zod error mapping after i18n is initialized
-const zodI18nMap = makeZodI18nMap({
-  t: i18n.t,
-  ns: 'zod',
-  handlePath: {
-    keyPrefix: 'zod:errors',
-  },
-});
+const setupZodErrorMap = () => {
+  const zodI18nMap = makeZodI18nMap({
+    t: i18n.t,
+    ns: 'zod',
+  });
 
-// Extended error map to handle domain-specific keys
-const extendedZodErrorMap: z.ZodErrorMap = (issue, ctx) => {
-  // Check if the message is a translation key (starts with a letter, contains dots)
-  const isTranslationKey = /^[a-z][\w.-]+(\.[\w-]+)*$/.test(issue.message || '');
+  // Extended error map to handle domain-specific keys
+  const extendedZodErrorMap: z.ZodErrorMap = (issue, ctx) => {
+    // Check if the message is a translation key (starts with a letter, contains dots)
+    const isTranslationKey = /^[a-z][\w.-]+(\.[\w-]+)*$/.test(issue.message || '');
 
-  if (isTranslationKey && issue.message) {
-    // Try to translate the domain-specific key
-    const translatedMessage = i18n.t(issue.message, {defaultValue: issue.message});
-    if (translatedMessage !== issue.message) {
-      return {message: translatedMessage};
+    if (isTranslationKey && issue.message) {
+      // Try to translate the domain-specific key
+      const translatedMessage = i18n.t(issue.message, {defaultValue: issue.message});
+      if (translatedMessage !== issue.message) {
+        return {message: translatedMessage};
+      }
     }
-  }
 
-  // Fall back to the default zod-i18n-map
-  return zodI18nMap(issue, ctx);
+    // Fall back to the default zod-i18n-map
+    return zodI18nMap(issue, ctx);
+  };
+
+  z.setErrorMap(extendedZodErrorMap);
 };
 
-z.setErrorMap(extendedZodErrorMap);
+// Set up error map initially
+setupZodErrorMap();
+
+// Re-setup error map when language changes
+i18n.on('languageChanged', () => {
+  setupZodErrorMap();
+});
 
 export default i18n;
