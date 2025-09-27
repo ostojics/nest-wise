@@ -25,10 +25,27 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-createRoot(rootElement).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </StrictMode>,
-);
+// Enable MSW in E2E testing environment
+async function enableMocking() {
+  if (import.meta.env.VITE_E2E !== '1') {
+    return;
+  }
+
+  const {worker} = await import('./test/msw/browser');
+  return worker.start({
+    serviceWorker: {
+      url: '/mockServiceWorker.js',
+    },
+    onUnhandledRequest: 'warn',
+  });
+}
+
+enableMocking().then(() => {
+  createRoot(rootElement).render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </StrictMode>,
+  );
+});
