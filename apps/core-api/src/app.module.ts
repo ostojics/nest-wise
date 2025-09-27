@@ -57,7 +57,7 @@ import {LicensesModule} from './licenses/licenses.module';
           connection: {
             host: config.redisHost,
             port: config.redisPort,
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
             password: config.redisPassword ?? undefined,
           },
         };
