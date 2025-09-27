@@ -52,6 +52,25 @@ pnpm --filter @nest-wise/web dev
 - **Web App**: `curl http://localhost:5173/` → HTML with "NestWise"
 - **API Docs**: http://localhost:8080/swagger
 
+### PWA Update Prompt Testing
+
+The web app includes a PWA update prompt that notifies users when a new version is available:
+
+1. **Start Development**: Run `pnpm --filter @nest-wise/web dev` to enable PWA in dev mode
+2. **Verify Service Worker**: Check browser console for "SW Registered" and "SW offline ready" messages
+3. **Test Update Flow**:
+   - Make a change to any source file in `apps/web/src/`
+   - Wait for Vite to rebuild (hot reload)
+   - The update prompt should appear as a toast notification
+   - Click "Update" to reload with the latest version
+4. **Manual Testing**: Build and serve static files to simulate production updates:
+   ```bash
+   pnpm --filter @nest-wise/web build
+   pnpm --filter @nest-wise/web preview
+   ```
+
+The update prompt uses Sonner toast notifications and appears automatically when a new service worker is available.
+
 ## 🏗️ Project Structure
 
 ```
