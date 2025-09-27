@@ -63,9 +63,14 @@ The global setup automatically configures:
 ## Development Notes
 
 - Tests run with a 60-second timeout to accommodate container startup
+- Tests execute sequentially (`maxWorkers: 1`) to prevent database migration race conditions
 - Containers are automatically cleaned up even if tests fail
 - TypeScript path mapping is configured for `src/` imports
 - Test coverage excludes spec files and focuses on source code
+
+### Database Race Condition Prevention
+
+The integration tests are configured to run sequentially to avoid PostgreSQL constraint violations that can occur when multiple test suites attempt to run database migrations simultaneously. This ensures clean test execution without spurious database errors.
 
 ## CI/CD Integration
 

@@ -51,7 +51,7 @@ export default async function globalSetup(): Promise<void> {
     console.log('✅ Integration test containers started successfully');
     console.log(`PostgreSQL: ${process.env.DB_HOST}:${process.env.DB_PORT}`);
     console.log(`Redis: ${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`);
-    console.log('Note: Database migrations will be run when the NestJS app initializes during tests');
+    console.log('Note: Database migrations will be handled during NestJS app initialization');
   } catch (error) {
     console.error('❌ Failed to start integration test containers:', error);
     throw error;

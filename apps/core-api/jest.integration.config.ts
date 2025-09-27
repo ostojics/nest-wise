@@ -19,6 +19,7 @@ const config: Config = {
   globalSetup: './test/integration/setup/global-setup-simple.ts',
   globalTeardown: './test/integration/setup/global-teardown.ts',
   testTimeout: 60000, // 60 seconds for container startup
+  maxWorkers: 1, // Run tests sequentially to avoid database race conditions
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
   },
