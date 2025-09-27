@@ -9,7 +9,7 @@ import {useMemo, useState} from 'react';
 import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
 import SpendingVsTargetCardSkeleton from './spending-vs-target-card.skeleton';
 import SpendingVsTargetCardError from './spending-vs-target-card.error';
-import {useGetAllTransactions} from '@/modules/transactions/hooks/use-get-all-transactions';
+import {useGetSpendingTotal} from '@/modules/transactions/hooks/use-get-spending-total';
 
 const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -17,21 +17,18 @@ const SpendingVsTargetCard = () => {
   const {data: household} = useGetHouseholdById();
   const {start, end} = getStartAndEndOfMonth();
   const {
-    data: transactions,
+    data: spendingSummary,
     isLoading,
     isError,
     refetch,
-  } = useGetAllTransactions({
+  } = useGetSpendingTotal({
     search: {
-      type: 'expense',
       from: start,
       to: end,
     },
   });
 
-  const currentSpending = useMemo(() => {
-    return transactions?.reduce((acc, transaction) => acc + Number(transaction.amount), 0) ?? 0;
-  }, [transactions]);
+  const currentSpending = spendingSummary?.total ?? 0;
 
   const budget = household?.monthlyBudget ?? 0;
 

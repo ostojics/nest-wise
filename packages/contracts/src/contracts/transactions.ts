@@ -42,6 +42,17 @@ export interface AccountSpendingPointContract {
   amount: number;
 }
 
+export interface SpendingTotalContract {
+  total: number;
+  count: number;
+}
+
+export interface CategorySpendingPointContract {
+  categoryId: string | null;
+  categoryName: string;
+  amount: number;
+}
+
 export const getAccountsSpendingQuerySchema = z
   .object({
     transactionDate_from: z.string().date().min(1),
@@ -59,6 +70,16 @@ export const getAccountsSpendingQueryHouseholdSchema = z
 
 export type GetAccountsSpendingQueryDTO = z.infer<typeof getAccountsSpendingQuerySchema>;
 export type GetAccountsSpendingQueryHouseholdDTO = z.infer<typeof getAccountsSpendingQueryHouseholdSchema>;
+
+// New household-scoped schema for spending aggregations - reusing existing query pattern
+export const getSpendingSummaryQueryHouseholdSchema = z
+  .object({
+    from: z.string().date().optional(),
+    to: z.string().date().optional(),
+  })
+  .strict();
+
+export type GetSpendingSummaryQueryHouseholdDTO = z.infer<typeof getSpendingSummaryQueryHouseholdSchema>;
 
 export const TransactionTypeEnum = z.enum(['income', 'expense']);
 

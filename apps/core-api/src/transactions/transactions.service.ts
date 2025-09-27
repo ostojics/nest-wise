@@ -13,6 +13,9 @@ import {
   GetTransactionsResponseContract,
   NetWorthTrendPointContract,
   TransactionContract,
+  SpendingTotalContract,
+  CategorySpendingPointContract,
+  GetSpendingSummaryQueryHouseholdDTO,
 } from '@nest-wise/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {generateObject} from 'ai';
@@ -115,6 +118,20 @@ export class TransactionsService {
     query: GetAccountsSpendingQueryHouseholdDTO,
   ): Promise<AccountSpendingPointContract[]> {
     return await this.transactionsRepository.getAccountsSpendingForHouseholdNew(householdId, query);
+  }
+
+  async getSpendingTotalForHousehold(
+    householdId: string,
+    query: GetSpendingSummaryQueryHouseholdDTO,
+  ): Promise<SpendingTotalContract> {
+    return await this.transactionsRepository.getSpendingTotalForHousehold(householdId, query);
+  }
+
+  async getCategoriesSpendingForHousehold(
+    householdId: string,
+    query: GetSpendingSummaryQueryHouseholdDTO,
+  ): Promise<CategorySpendingPointContract[]> {
+    return await this.transactionsRepository.getCategoriesSpendingForHousehold(householdId, query);
   }
 
   async createTransactionAi(transactionData: CreateTransactionAiDTO): Promise<Transaction> {
