@@ -1,0 +1,19 @@
+{
+  "title": "Kategorije",
+  "create": {
+    "title": "Kreiraj kategoriju",
+    "name": "Naziv kategorije",
+    "namePlaceholder": "Unesite naziv kategorije"
+  },
+  "details": {
+    "name": "Naziv",
+    "transactions": "Transakcije",
+    "totalSpent": "Ukupno potrošeno"
+  },
+  "validation": {
+    "nameRequired": "Naziv kategorije je obavezan",
+    "nameTooLong": "Naziv kategorije mora imati 100 karaktera ili manje",
+    "categoryIdRequired": "Kategorija mora biti izabrana",
+    "categoryIdInvalid": "Neispravan izbor kategorije"
+  }
+}

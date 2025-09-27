@@ -3,6 +3,7 @@ import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {LoggerModule} from 'pino-nestjs';
 import {ConfigModule, ConfigService} from '@nestjs/config';
+import {APP_FILTER} from '@nestjs/core';
 
 import {ThrottlerModule} from '@nestjs/throttler';
 import {throttlerConfig, throttlerFactory} from './config/throttler.config';
@@ -26,6 +27,7 @@ import {CategoryBudgetsModule} from './category-budgets/category-budgets.module'
 import {PrivateTransactionsModule} from './private-transactions/private-transactions.module';
 import {InvitesModule} from './invites/invites.module';
 import {LicensesModule} from './licenses/licenses.module';
+import {I18nExceptionFilter} from './lib/filters/i18n-exception.filter';
 
 @Module({
   imports: [
@@ -79,6 +81,12 @@ import {LicensesModule} from './licenses/licenses.module';
     LicensesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: I18nExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

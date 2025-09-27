@@ -1,0 +1,5 @@
+{
+  "extends": "@nest-wise/tsconfig/internal-package.json",
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", "node_modules"]
+}

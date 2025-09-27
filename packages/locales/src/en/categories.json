@@ -1,0 +1,19 @@
+{
+  "title": "Categories",
+  "create": {
+    "title": "Create Category",
+    "name": "Category Name",
+    "namePlaceholder": "Enter category name"
+  },
+  "details": {
+    "name": "Name",
+    "transactions": "Transactions",
+    "totalSpent": "Total Spent"
+  },
+  "validation": {
+    "nameRequired": "Category name is required",
+    "nameTooLong": "Category name must be 100 characters or less",
+    "categoryIdRequired": "Category must be selected",
+    "categoryIdInvalid": "Invalid category selection"
+  }
+}

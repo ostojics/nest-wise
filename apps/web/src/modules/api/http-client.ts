@@ -1,9 +1,18 @@
 import {isPublicRoute} from '@/lib/utils';
 import ky from 'ky';
+import i18n from '@/i18n';
 
 const httpClient = ky.create({
   prefixUrl: import.meta.env.VITE_API_URL as string,
   credentials: 'include',
+  hooks: {
+    beforeRequest: [
+      (request) => {
+        // Add Accept-Language header
+        request.headers.set('Accept-Language', i18n.language || 'en');
+      },
+    ],
+  },
 });
 
 const extended = httpClient.extend({

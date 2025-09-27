@@ -11,27 +11,23 @@ export interface HouseholdContract {
 
 export const createHouseholdSchema = z
   .object({
-    name: z.string().min(1, 'Household name is required').max(255, 'Household name must be 255 characters or less'),
+    name: z.string().min(1).max(255),
     currencyCode: z
       .string()
-      .length(3, 'Valid currency code must be selected')
-      .regex(/^[A-Z]{3}$/, 'Currency code must be 3 uppercase letters (e.g., USD, EUR, GBP)'),
+      .length(3)
+      .regex(/^[A-Z]{3}$/),
   })
   .strict();
 
 export const updateHouseholdSchema = z
   .object({
-    name: z
-      .string()
-      .min(1, 'Household name is required')
-      .max(255, 'Household name must be 255 characters or less')
-      .optional(),
+    name: z.string().min(1).max(255).optional(),
     currencyCode: z
       .string()
-      .length(3, 'Currency code must be exactly 3 characters')
-      .regex(/^[A-Z]{3}$/, 'Currency code must be 3 uppercase letters (e.g., USD, EUR, GBP)')
+      .length(3)
+      .regex(/^[A-Z]{3}$/)
       .optional(),
-    monthlyBudget: z.coerce.number().min(0, 'Monthly budget must be 0 or greater').optional(),
+    monthlyBudget: z.coerce.number().min(0).optional(),
   })
   .strict();
 
