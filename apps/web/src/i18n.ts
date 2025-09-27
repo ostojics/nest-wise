@@ -3,7 +3,6 @@ import {initReactI18next} from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import {resources, defaultNamespaces, supportedLanguages} from '@nest-wise/locales';
 import {z} from 'zod';
-import {makeZodI18nMap} from 'zod-i18n-map';
 
 i18n
   .use(LanguageDetector)
@@ -25,54 +24,100 @@ i18n
     },
   });
 
-// Set up Zod error mapping after i18n is initialized
-const setupZodErrorMap = () => {
-  // Create a fresh zodI18nMap that uses the current language
-  const zodI18nMap = makeZodI18nMap({
-    t: i18n.t.bind(i18n),
-    ns: 'zod',
-  });
+// Custom Zod error map that dynamically uses current i18n language
+const dynamicZodErrorMap: z.ZodErrorMap = (issue, ctx) => {
+  // Check if the message is a translation key (starts with a letter, contains dots)
+  const isTranslationKey = /^[a-z][\w.-]+(\.[\w-]+)*$/.test(issue.message || '');
 
-  // Extended error map to handle domain-specific keys
-  const extendedZodErrorMap: z.ZodErrorMap = (issue, ctx) => {
-    // Check if the message is a translation key (starts with a letter, contains dots)
-    const isTranslationKey = /^[a-z][\w.-]+(\.[\w-]+)*$/.test(issue.message || '');
+  if (isTranslationKey && issue.message) {
+    // Convert namespace.key.subkey format to namespace:key.subkey format for i18next
+    // e.g., "users.validation.passwordsNotMatch" -> "users:validation.passwordsNotMatch"
+    const parts = issue.message.split('.');
+    if (parts.length >= 2) {
+      const namespace = parts[0];
+      const key = parts.slice(1).join('.');
+      const i18nKey = `${namespace}:${key}`;
 
-    if (isTranslationKey && issue.message) {
-      // Convert namespace.key.subkey format to namespace:key.subkey format for i18next
-      // e.g., "users.validation.passwordsNotMatch" -> "users:validation.passwordsNotMatch"
-      const parts = issue.message.split('.');
-      if (parts.length >= 2) {
-        const namespace = parts[0];
-        const key = parts.slice(1).join('.');
-        const i18nKey = `${namespace}:${key}`;
-
-        try {
-          const translatedMessage = i18n.t(i18nKey);
-          // If translation is successful and different from the key, use it
-          if (translatedMessage && translatedMessage !== i18nKey && translatedMessage !== issue.message) {
-            return {message: translatedMessage};
-          }
-        } catch (error) {
-          console.warn('Translation failed for key:', i18nKey, error);
+      try {
+        const translatedMessage = i18n.t(i18nKey);
+        // If translation is successful and different from the key, use it
+        if (translatedMessage && translatedMessage !== i18nKey && translatedMessage !== issue.message) {
+          return {message: translatedMessage};
         }
+      } catch (error) {
+        console.warn('Translation failed for key:', i18nKey, error);
       }
     }
+  }
 
-    // Fall back to the default zod-i18n-map
-    return zodI18nMap(issue, ctx);
+  // Handle standard Zod validation errors with dynamic translation
+  // Map Zod issue codes to our translation keys
+  const zodErrorKeyMap: Record<string, string> = {
+    invalid_type: 'invalid_type',
+    invalid_literal: 'invalid_literal',
+    unrecognized_keys: 'unrecognized_keys',
+    invalid_union: 'invalid_union',
+    invalid_union_discriminator: 'invalid_union_discriminator',
+    invalid_enum_value: 'invalid_enum_value',
+    invalid_arguments: 'invalid_arguments',
+    invalid_return_type: 'invalid_return_type',
+    invalid_date: 'invalid_date',
+    invalid_string: 'invalid_string',
+    too_small: 'too_small',
+    too_big: 'too_big',
+    invalid_intersection_types: 'invalid_intersection_types',
+    not_multiple_of: 'not_multiple_of',
+    not_finite: 'not_finite',
+    invalid_url: 'invalid_url',
+    invalid_email: 'invalid_email',
+    invalid_uuid: 'invalid_uuid',
+    invalid_regex: 'invalid_regex',
+    custom: 'custom',
   };
 
-  z.setErrorMap(extendedZodErrorMap);
+  const translationKey = zodErrorKeyMap[issue.code];
+  if (translationKey) {
+    try {
+      // Prepare interpolation data for the translation
+      const interpolationData: Record<string, any> = {};
+
+      if (issue.code === 'invalid_type') {
+        interpolationData.expected = issue.expected;
+        interpolationData.received = issue.received;
+      } else if (issue.code === 'invalid_literal') {
+        interpolationData.expected = JSON.stringify(issue.expected);
+      } else if (issue.code === 'unrecognized_keys') {
+        interpolationData.keys = issue.keys.map((k) => `'${k}'`).join(', ');
+      } else if (issue.code === 'invalid_union_discriminator') {
+        interpolationData.options = issue.options.map((o) => `'${o}'`).join(', ');
+      } else if (issue.code === 'invalid_enum_value') {
+        interpolationData.options = issue.options.map((o) => `'${o}'`).join(', ');
+        interpolationData.received = issue.received;
+      } else if (issue.code === 'too_small') {
+        interpolationData.minimum = issue.minimum;
+        interpolationData.count = issue.minimum;
+      } else if (issue.code === 'too_big') {
+        interpolationData.maximum = issue.maximum;
+        interpolationData.count = issue.maximum;
+      } else if (issue.code === 'not_multiple_of') {
+        interpolationData.multipleOf = issue.multipleOf;
+      }
+
+      const translatedMessage = i18n.t(`zod:${translationKey}`, interpolationData);
+      if (translatedMessage && translatedMessage !== `zod:${translationKey}`) {
+        return {message: translatedMessage};
+      }
+    } catch (error) {
+      console.warn('Translation failed for Zod error:', issue.code, error);
+    }
+  }
+
+  // Fallback to default English messages if translation fails
+  return {message: ctx.defaultError};
 };
 
-// Set up error map initially
-setupZodErrorMap();
-
-// Re-setup error map when language changes
-i18n.on('languageChanged', () => {
-  setupZodErrorMap();
-});
+// Set up error map once - it will dynamically use current language
+z.setErrorMap(dynamicZodErrorMap);
 
 // Expose i18n to window for debugging
 if (typeof window !== 'undefined') {
