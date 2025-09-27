@@ -35,14 +35,8 @@ export const usePrivateTransactionsTable = (data: PrivateTransactionContract[]) 
         header: 'Amount',
         cell: ({row}) => {
           const isIncome = row.original.type === TransactionType.INCOME;
-          const sign = isIncome ? '+' : '-';
           const formatted = formatBalance(row.original.amount);
-          return (
-            <span className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>
-              {sign}
-              {formatted}
-            </span>
-          );
+          return <span className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>{formatted}</span>;
         },
       },
       {
