@@ -38,10 +38,23 @@ const setupZodErrorMap = () => {
     const isTranslationKey = /^[a-z][\w.-]+(\.[\w-]+)*$/.test(issue.message || '');
 
     if (isTranslationKey && issue.message) {
-      // Try to translate the domain-specific key
-      const translatedMessage = i18n.t(issue.message, {defaultValue: issue.message});
-      if (translatedMessage !== issue.message) {
-        return {message: translatedMessage};
+      // Convert namespace.key.subkey format to namespace:key.subkey format for i18next
+      // e.g., "users.validation.passwordsNotMatch" -> "users:validation.passwordsNotMatch"
+      const parts = issue.message.split('.');
+      if (parts.length >= 2) {
+        const namespace = parts[0];
+        const key = parts.slice(1).join('.');
+        const i18nKey = `${namespace}:${key}`;
+
+        try {
+          const translatedMessage = i18n.t(i18nKey);
+          // If translation is successful and different from the key, use it
+          if (translatedMessage && translatedMessage !== i18nKey && translatedMessage !== issue.message) {
+            return {message: translatedMessage};
+          }
+        } catch (error) {
+          console.warn('Translation failed for key:', i18nKey, error);
+        }
       }
     }
 
@@ -59,5 +72,10 @@ setupZodErrorMap();
 i18n.on('languageChanged', () => {
   setupZodErrorMap();
 });
+
+// Expose i18n to window for debugging
+if (typeof window !== 'undefined') {
+  (window as any).i18n = i18n;
+}
 
 export default i18n;
