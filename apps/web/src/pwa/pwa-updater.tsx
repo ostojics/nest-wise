@@ -30,7 +30,7 @@ export const PwaUpdater = () => {
     if (needRefresh) {
       toast('New version available!', {
         description: 'A new version of NestWise is available. Click to update now.',
-        duration: 0, // Don't auto-dismiss
+        duration: Infinity, // Don't auto-dismiss
         action: {
           label: (
             <div className="flex items-center gap-2">
