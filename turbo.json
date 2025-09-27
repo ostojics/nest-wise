@@ -9,7 +9,7 @@
     },
     "lint": {
       "dependsOn": ["^lint"],
-      "env": ["PORT"]
+      "env": ["PORT", "MSW_ENABLED"]
     },
     "check-types": {
       "dependsOn": ["^check-types"]

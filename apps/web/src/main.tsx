@@ -25,10 +25,40 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-createRoot(rootElement).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </StrictMode>,
-);
+// Enable MSW when MSW_ENABLED is set
+async function enableMocking() {
+  if (import.meta.env.MSW_ENABLED !== '1') {
+    return;
+  }
+
+  const {worker} = await import('./msw/worker');
+  return worker.start({
+    serviceWorker: {
+      url: '/mockServiceWorker.js',
+    },
+    onUnhandledRequest: 'warn',
+  });
+}
+
+enableMocking()
+  .then(() => {
+    createRoot(rootElement).render(
+      <StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </StrictMode>,
+    );
+  })
+  .catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error('Failed to start MSW:', error);
+    // Still render the app even if MSW fails to start
+    createRoot(rootElement).render(
+      <StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </StrictMode>,
+    );
+  });
