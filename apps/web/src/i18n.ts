@@ -11,7 +11,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
-    lng: 'en', // Will be overridden by detector
+    // Remove hardcoded lng to allow proper language detection
     defaultNS: defaultNamespaces[0],
     ns: defaultNamespaces,
     supportedLngs: supportedLanguages,
@@ -27,8 +27,9 @@ i18n
 
 // Set up Zod error mapping after i18n is initialized
 const setupZodErrorMap = () => {
+  // Create a fresh zodI18nMap that uses the current language
   const zodI18nMap = makeZodI18nMap({
-    t: i18n.t,
+    t: i18n.t.bind(i18n),
     ns: 'zod',
   });
 
