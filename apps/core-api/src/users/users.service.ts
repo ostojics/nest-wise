@@ -26,12 +26,12 @@ export class UsersService {
   async createUser(userData: CreateUserDTO & {isHouseholdAuthor?: boolean}): Promise<User> {
     const emailExists = await this.usersRepository.emailExists(userData.email);
     if (emailExists) {
-      throw new ConflictException('Cannot create user');
+      throw new ConflictException('Nije moguće kreirati korisnika');
     }
 
     const usernameExists = await this.usersRepository.usernameExists(userData.username);
     if (usernameExists) {
-      throw new ConflictException('Cannot create user');
+      throw new ConflictException('Nije moguće kreirati korisnika');
     }
 
     const passwordHash = await hashPassword(userData.password);
@@ -47,7 +47,7 @@ export class UsersService {
   async findUserById(id: string): Promise<User> {
     const user = await this.usersRepository.findById(id);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Korisnik nije pronađen');
     }
     return user;
   }
@@ -72,26 +72,26 @@ export class UsersService {
   async updateUser(id: string, userData: Partial<User>): Promise<User> {
     const existingUser = await this.usersRepository.findById(id);
     if (!existingUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Korisnik nije pronađen');
     }
 
     if (userData.email && userData.email !== existingUser.email) {
       const emailExists = await this.usersRepository.emailExists(userData.email);
       if (emailExists) {
-        throw new ConflictException('Cannot update user');
+        throw new ConflictException('Nije moguće izmeniti korisnika');
       }
     }
 
     if (userData.username && userData.username !== existingUser.username) {
       const usernameExists = await this.usersRepository.usernameExists(userData.username);
       if (usernameExists) {
-        throw new ConflictException('Cannot update user');
+        throw new ConflictException('Nije moguće izmeniti korisnika');
       }
     }
 
     const updatedUser = await this.usersRepository.update(id, userData);
     if (!updatedUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Korisnik nije pronađen');
     }
 
     return updatedUser;
@@ -100,14 +100,14 @@ export class UsersService {
   async deleteUser(id: string): Promise<void> {
     const deleted = await this.usersRepository.delete(id);
     if (!deleted) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Korisnik nije pronađen');
     }
   }
 
   async inviteUser(householdId: string, email: string) {
     const user = await this.usersRepository.findByEmail(email);
     if (user) {
-      throw new ConflictException('User with this email already exists');
+      throw new ConflictException('Korisnik sa ovom e‑poštom već postoji');
     }
 
     const household = await this.householdsService.findHouseholdById(householdId);
@@ -153,7 +153,7 @@ export class UsersService {
     const updatedUser = await this.usersRepository.update(userId, {passwordHash: hashedPassword});
 
     if (!updatedUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Korisnik nije pronađen');
     }
 
     return updatedUser;

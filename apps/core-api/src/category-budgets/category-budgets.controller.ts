@@ -87,7 +87,7 @@ export class CategoryBudgetsController {
   ): Promise<CategoryBudgetContract> {
     const canUpdate = await this.policiesService.canUserUpdateCategoryBudget(user.sub, id);
     if (!canUpdate) {
-      throw new ForbiddenException('You do not have access to this resource');
+      throw new ForbiddenException('Nemate pristup ovom resursu');
     }
 
     return await this.categoryBudgetsService.updateCategoryBudget(id, dto);
