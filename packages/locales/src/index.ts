@@ -11,6 +11,7 @@ import enPrivateTransactions from './en/private-transactions.json';
 import enCategoryBudgets from './en/category-budgets.json';
 import enSavings from './en/savings.json';
 import enApi from './en/api.json';
+import enPolicy from './en/policy.json';
 
 // Serbian resources
 import srCommon from './sr/common.json';
@@ -25,6 +26,7 @@ import srPrivateTransactions from './sr/private-transactions.json';
 import srCategoryBudgets from './sr/category-budgets.json';
 import srSavings from './sr/savings.json';
 import srApi from './sr/api.json';
+import srPolicy from './sr/policy.json';
 
 export const resources = {
   en: {
@@ -40,6 +42,7 @@ export const resources = {
     'category-budgets': enCategoryBudgets,
     savings: enSavings,
     api: enApi,
+    policy: enPolicy,
   },
   sr: {
     common: srCommon,
@@ -54,6 +57,7 @@ export const resources = {
     'category-budgets': srCategoryBudgets,
     savings: srSavings,
     api: srApi,
+    policy: srPolicy,
   },
 } as const;
 
@@ -70,6 +74,7 @@ export const defaultNamespaces = [
   'category-budgets',
   'savings',
   'api',
+  'policy',
 ] as const;
 
 export const supportedLanguages = ['en', 'sr'] as const;

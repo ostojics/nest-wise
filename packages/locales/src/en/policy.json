@@ -1,0 +1,7 @@
+{
+  "cannotUpdateAccount": "You cannot update this account",
+  "cannotTransferBetweenAccounts": "You cannot transfer between these accounts",
+  "cannotUpdateCategoryBudget": "You do not have access to this category budget",
+  "cannotAccessHousehold": "You do not have access to this household",
+  "cannotInviteToHousehold": "You cannot invite users to this household"
+}

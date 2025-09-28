@@ -12,7 +12,21 @@ i18n
     fallbackLng: 'en',
     // Remove hardcoded lng to allow proper language detection
     defaultNS: defaultNamespaces[0],
-    ns: defaultNamespaces,
+    ns: [
+      'common',
+      'zod',
+      'auth',
+      'users',
+      'households',
+      'accounts',
+      'categories',
+      'transactions',
+      'private-transactions',
+      'category-budgets',
+      'savings',
+      'api',
+      'policy',
+    ],
     supportedLngs: supportedLanguages,
     interpolation: {
       escapeValue: false, // React already escapes values

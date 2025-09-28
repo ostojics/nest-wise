@@ -1,0 +1,7 @@
+{
+  "cannotUpdateAccount": "Ne možete ažurirati ovaj račun",
+  "cannotTransferBetweenAccounts": "Ne možete prebaciti sredstva između ovih računa",
+  "cannotUpdateCategoryBudget": "Nemate pristup ovom budžetu kategorije",
+  "cannotAccessHousehold": "Nemate pristup ovom domaćinstvu",
+  "cannotInviteToHousehold": "Ne možete pozvati korisnike u ovo domaćinstvo"
+}

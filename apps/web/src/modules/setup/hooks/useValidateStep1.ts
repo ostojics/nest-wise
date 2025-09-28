@@ -1,6 +1,6 @@
 import {UserRegistrationDTO, userRegistrationSchema} from '@nest-wise/contracts';
 import {useForm} from 'react-hook-form';
-import {zodResolver} from '@hookform/resolvers/zod';
+import {useLocalizedZodResolver} from '@/hooks/useLocalizedZodResolver';
 
 interface UseValidateStep1Props {
   initialUsername?: string;
@@ -10,8 +10,10 @@ interface UseValidateStep1Props {
 export const useValidateStep1 = (
   {initialUsername, initialEmail}: UseValidateStep1Props = {initialUsername: '', initialEmail: ''},
 ) => {
+  const resolver = useLocalizedZodResolver(userRegistrationSchema);
+
   return useForm<UserRegistrationDTO>({
-    resolver: zodResolver(userRegistrationSchema),
+    resolver,
     defaultValues: {
       username: initialUsername ?? '',
       email: initialEmail ?? '',
