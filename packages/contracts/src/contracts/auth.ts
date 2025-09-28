@@ -4,8 +4,19 @@ import {createHouseholdSchema} from './households';
 
 export const loginSchema = z
   .object({
-    email: z.string().min(1, 'Email is required').email('Invalid email format'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
+    email: z
+      .string({
+        required_error: 'E‑pošta je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'E‑pošta je obavezna')
+      .email('Neispravan format e‑pošte'),
+    password: z
+      .string({
+        required_error: 'Lozinka je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(8, 'Lozinka mora imati najmanje 8 karaktera'),
   })
   .strict();
 
@@ -13,7 +24,12 @@ export type LoginDTO = z.infer<typeof loginSchema>;
 
 export const setupSchema = z
   .object({
-    licenseKey: z.string().min(1, 'License key is required'),
+    licenseKey: z
+      .string({
+        required_error: 'Licencni ključ je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Licencni ključ je obavezan'),
     user: userRegistrationSchema,
     household: createHouseholdSchema,
   })
@@ -24,10 +40,13 @@ export type SetupDTO = z.infer<typeof setupSchema>;
 export const forgotPasswordSchema = z
   .object({
     email: z
-      .string()
-      .min(1, 'Email is required')
-      .email('Invalid email format')
-      .max(255, 'Email must be 255 characters or less'),
+      .string({
+        required_error: 'E‑pošta je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'E‑pošta je obavezna')
+      .email('Neispravan format e‑pošte')
+      .max(255, 'E‑pošta može imati najviše 255 karaktera'),
   })
   .strict();
 
@@ -35,13 +54,23 @@ export type ForgotPasswordDTO = z.infer<typeof forgotPasswordSchema>;
 
 export const resetPasswordSchema = z
   .object({
-    token: z.string().min(1, 'Token is required'),
+    token: z
+      .string({
+        required_error: 'Token je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Token je obavezan'),
     password: passwordSchema,
-    confirm_password: z.string().min(1, 'Password confirmation is required'),
+    confirm_password: z
+      .string({
+        required_error: 'Potvrda lozinke je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Potvrda lozinke je obavezna'),
   })
   .strict()
   .refine((data) => data.password === data.confirm_password, {
-    message: "Passwords don't match",
+    message: 'Lozinke se ne podudaraju',
     path: ['confirm_password'],
   });
 

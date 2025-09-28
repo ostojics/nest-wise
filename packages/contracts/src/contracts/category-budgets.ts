@@ -18,7 +18,12 @@ export interface CategoryBudgetWithCurrentAmountContract extends CategoryBudgetC
 
 export const getCategoryBudgetsQueryParamsSchema = z
   .object({
-    month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Month must be in the format YYYY-MM'),
+    month: z
+      .string({
+        required_error: 'Mesec je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Mesec mora biti u formatu YYYY-MM'),
   })
   .strict();
 
@@ -26,17 +31,31 @@ export type GetCategoryBudgetsQueryParams = z.infer<typeof getCategoryBudgetsQue
 
 export const upsertCategoryBudgetSchema = z
   .object({
-    month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Month must be in the format YYYY-MM'),
+    month: z
+      .string({
+        required_error: 'Mesec je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Mesec mora biti u formatu YYYY-MM'),
     items: z
       .array(
         z
           .object({
-            categoryId: z.string().uuid('categoryId must be a valid UUID'),
-            plannedAmount: z.coerce.number().min(0, 'Planned amount must be 0 or greater'),
+            categoryId: z
+              .string({
+                required_error: 'ID kategorije je obavezan',
+                invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+              })
+              .uuid('ID kategorije mora biti važeći UUID'),
+            plannedAmount: z.coerce
+              .number({
+                invalid_type_error: 'Neispravna vrednost (mora biti broj)',
+              })
+              .min(0, 'Planirani iznos mora biti 0 ili veći'),
           })
           .strict(),
       )
-      .min(1, 'At least one item is required'),
+      .min(1, 'Potrebna je najmanje jedna stavka'),
   })
   .strict();
 
@@ -44,7 +63,11 @@ export type UpsertCategoryBudgetDTO = z.infer<typeof upsertCategoryBudgetSchema>
 
 export const editCategoryBudgetSchema = z
   .object({
-    plannedAmount: z.coerce.number().min(0, 'Planned amount must be 0 or greater'),
+    plannedAmount: z.coerce
+      .number({
+        invalid_type_error: 'Neispravna vrednost (mora biti broj)',
+      })
+      .min(0, 'Planirani iznos mora biti 0 ili veći'),
   })
   .strict();
 

@@ -12,37 +12,59 @@ export interface UserContract {
 }
 
 export const passwordSchema = z
-  .string()
-  .min(8, 'Password must be at least 8 characters')
-  .max(25, 'Password must be 25 characters or less')
+  .string({
+    required_error: 'Lozinka je obavezna',
+    invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+  })
+  .min(8, 'Lozinka mora imati najmanje 8 karaktera')
+  .max(25, 'Lozinka može imati najviše 25 karaktera')
   .regex(
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-    'Password must contain at least one lowercase letter, one uppercase letter, and one number',
+    'Lozinka mora sadržavati najmanje jedno malo slovo, jedno veliko slovo i jedan broj',
   );
 
 export const inviteUserSchema = z.object({
-  email: z.string({message: 'Email is required'}).email({message: 'Email must be valid'}),
+  email: z
+    .string({
+      required_error: 'E‑pošta je obavezna',
+      invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+    })
+    .email('Neispravan format e‑pošte'),
 });
 
 export const acceptInviteSchema = z
   .object({
     username: z
-      .string()
-      .min(1, 'Username is required')
-      .max(50, 'Username must be 50 characters or less')
-      .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens'),
+      .string({
+        required_error: 'Korisničko ime je obavezno',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Korisničko ime je obavezno')
+      .max(50, 'Korisničko ime može imati najviše 50 karaktera')
+      .regex(/^[a-zA-Z0-9_-]+$/, 'Korisničko ime može sadržavati samo slova, brojeve, donje crte i crtice'),
     email: z
-      .string()
-      .min(1, 'Email is required')
-      .email('Invalid email format')
-      .max(255, 'Email must be 255 characters or less'),
+      .string({
+        required_error: 'E‑pošta je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'E‑pošta je obavezna')
+      .email('Neispravan format e‑pošte')
+      .max(255, 'E‑pošta može imati najviše 255 karaktera'),
     password: passwordSchema,
-    confirm_password: z.string().min(1, 'Password confirmation is required'),
-    token: z.string(),
+    confirm_password: z
+      .string({
+        required_error: 'Potvrda lozinke je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Potvrda lozinke je obavezna'),
+    token: z.string({
+      required_error: 'Token je obavezan',
+      invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+    }),
   })
   .strict()
   .refine((data) => data.password === data.confirm_password, {
-    message: "Passwords don't match",
+    message: 'Lozinke se ne podudaraju',
     path: ['confirm_password'],
   });
 
@@ -59,45 +81,75 @@ export type AcceptInviteQueryParams = z.infer<typeof acceptInviteQueryParamsSche
 export const userRegistrationSchema = z
   .object({
     username: z
-      .string()
-      .min(1, 'Username is required')
-      .max(50, 'Username must be 50 characters or less')
-      .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens'),
+      .string({
+        required_error: 'Korisničko ime je obavezno',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Korisničko ime je obavezno')
+      .max(50, 'Korisničko ime može imati najviše 50 karaktera')
+      .regex(/^[a-zA-Z0-9_-]+$/, 'Korisničko ime može sadržavati samo slova, brojeve, donje crte i crtice'),
     email: z
-      .string()
-      .min(1, 'Email is required')
-      .email('Invalid email format')
-      .max(255, 'Email must be 255 characters or less'),
+      .string({
+        required_error: 'E‑pošta je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'E‑pošta je obavezna')
+      .email('Neispravan format e‑pošte')
+      .max(255, 'E‑pošta može imati najviše 255 karaktera'),
     password: passwordSchema,
-    confirm_password: z.string().min(1, 'Password confirmation is required'),
+    confirm_password: z
+      .string({
+        required_error: 'Potvrda lozinke je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Potvrda lozinke je obavezna'),
   })
   .strict()
   .refine((data) => data.password === data.confirm_password, {
-    message: "Passwords don't match",
+    message: 'Lozinke se ne podudaraju',
     path: ['confirm_password'],
   });
 
 export const userUpdateSchema = z
   .object({
     username: z
-      .string()
-      .min(1, 'Username is required')
-      .max(50, 'Username must be 50 characters or less')
-      .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens')
+      .string({
+        required_error: 'Korisničko ime je obavezno',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Korisničko ime je obavezno')
+      .max(50, 'Korisničko ime može imati najviše 50 karaktera')
+      .regex(/^[a-zA-Z0-9_-]+$/, 'Korisničko ime može sadržavati samo slova, brojeve, donje crte i crtice')
       .optional(),
-    email: z.string().email('Invalid email format').max(255, 'Email must be 255 characters or less').optional(),
+    email: z
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .email('Neispravan format e‑pošte')
+      .max(255, 'E‑pošta može imati najviše 255 karaktera')
+      .optional(),
   })
   .strict();
 
 export const passwordChangeSchema = z
   .object({
-    currentPassword: z.string().min(1, 'Current password is required'),
+    currentPassword: z
+      .string({
+        required_error: 'Trenutna lozinka je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Trenutna lozinka je obavezna'),
     newPassword: passwordSchema,
-    confirm_password: z.string().min(1, 'Password confirmation is required'),
+    confirm_password: z
+      .string({
+        required_error: 'Potvrda lozinke je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Potvrda lozinke je obavezna'),
   })
   .strict()
   .refine((data) => data.newPassword === data.confirm_password, {
-    message: "Passwords don't match",
+    message: 'Lozinke se ne podudaraju',
     path: ['confirm_password'],
   });
 
