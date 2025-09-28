@@ -1,6 +1,6 @@
 import {queryKeys} from '@/modules/api/query-keys';
 import {getSavingsTrendByHousehold} from '@/modules/api/savings-api';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {useQuery} from '@tanstack/react-query';
 
 export const useGetSavingsTrend = () => {

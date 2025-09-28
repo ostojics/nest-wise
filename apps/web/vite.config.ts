@@ -19,7 +19,7 @@ export default defineConfig((env) => ({
     tailwindcss(),
     VitePWA({
       registerType: 'prompt',
-      injectRegister: 'auto',
+      injectRegister: false, // Avoid double registration since we use virtual module explicitly
       includeAssets: [
         'favicon.ico',
         'apple-touch-icon.png',

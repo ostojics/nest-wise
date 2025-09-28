@@ -5,7 +5,7 @@ import {Badge} from '@/components/ui/badge';
 import {accountTypes} from '@/common/constants/account-types';
 import {format} from 'date-fns';
 import {cn} from '@/lib/utils';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import EditAccountDialog from './edit-account-dialog';
 
 interface AccountProps {

@@ -14,6 +14,9 @@ export const useCreatePrivateTransaction = () => {
       await client.invalidateQueries({
         queryKey: queryKeys.privateTransactions.key(),
       });
+      await client.invalidateQueries({
+        queryKey: queryKeys.accounts.all(),
+      });
       toast.success('Private transaction created successfully');
     },
     onError: async (error) => {

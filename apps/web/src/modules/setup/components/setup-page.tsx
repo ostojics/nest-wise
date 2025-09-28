@@ -1,4 +1,4 @@
-import {useSetupContext} from '../hooks/useSetup';
+import {useSetupContext} from '../hooks/use-setup';
 import Step1 from './step-1';
 import Step2 from './step-2';
 import Stepper from './stepper';

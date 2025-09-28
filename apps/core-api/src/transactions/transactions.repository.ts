@@ -14,6 +14,9 @@ import {
   GetAccountsSpendingQueryDTO,
   GetAccountsSpendingQueryHouseholdDTO,
   NetWorthTrendPointContract,
+  SpendingTotalContract,
+  CategorySpendingPointContract,
+  GetSpendingSummaryQueryHouseholdDTO,
 } from '@nest-wise/contracts';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 
@@ -419,6 +422,102 @@ export class TransactionsRepository {
     return rows.map((r) => ({
       accountId: r.account_id,
       name: r.name,
+      amount: r.amount === null ? 0 : Number(r.amount),
+    }));
+  }
+
+  async getSpendingTotalForHousehold(
+    householdId: string,
+    query: GetSpendingSummaryQueryHouseholdDTO,
+  ): Promise<SpendingTotalContract> {
+    interface Row {
+      total: string | number | null;
+      count: string | number | null;
+    }
+
+    // Use simplified date parameters
+    const dateFrom = query.from;
+    const dateTo = query.to;
+
+    const rows: Row[] = await this.transactionRepository.query(
+      `
+      WITH params AS (
+        SELECT
+          $2::date AS date_from,
+          $3::date AS date_to
+      ),
+      filtered_tx AS (
+        SELECT t.amount
+        FROM transactions t, params p
+        WHERE t.household_id = $1
+          AND t.type = 'expense'
+          AND (p.date_from IS NULL OR t.transaction_date >= p.date_from)
+          AND (p.date_to IS NULL OR t.transaction_date <= p.date_to)
+      )
+      SELECT 
+        COALESCE(SUM(amount), 0)::numeric AS total,
+        COUNT(*)::int AS count
+      FROM filtered_tx;
+      `,
+      [householdId, dateFrom, dateTo],
+    );
+
+    const row = rows[0];
+    return {
+      total: row.total === null ? 0 : Number(row.total),
+      count: row.count === null ? 0 : Number(row.count),
+    };
+  }
+
+  async getCategoriesSpendingForHousehold(
+    householdId: string,
+    query: GetSpendingSummaryQueryHouseholdDTO,
+  ): Promise<CategorySpendingPointContract[]> {
+    interface Row {
+      category_id: string | null;
+      category_name: string;
+      amount: string | number | null;
+    }
+
+    // Use simplified date parameters
+    const dateFrom = query.from;
+    const dateTo = query.to;
+
+    const rows: Row[] = await this.transactionRepository.query(
+      `
+      WITH params AS (
+        SELECT
+          $2::date AS date_from,
+          $3::date AS date_to
+      ),
+      filtered_tx AS (
+        SELECT t.category_id, t.amount
+        FROM transactions t, params p
+        WHERE t.household_id = $1
+          AND t.type = 'expense'
+          AND (p.date_from IS NULL OR t.transaction_date >= p.date_from)
+          AND (p.date_to IS NULL OR t.transaction_date <= p.date_to)
+      ),
+      sums AS (
+        SELECT category_id, SUM(amount)::numeric AS amount
+        FROM filtered_tx
+        GROUP BY category_id
+      )
+      SELECT 
+        s.category_id,
+        COALESCE(c.name, 'Other') AS category_name,
+        COALESCE(s.amount, 0)::numeric AS amount
+      FROM sums s
+      LEFT JOIN categories c ON c.id = s.category_id
+      WHERE s.amount > 0
+      ORDER BY s.amount DESC;
+      `,
+      [householdId, dateFrom, dateTo],
+    );
+
+    return rows.map((r) => ({
+      categoryId: r.category_id,
+      categoryName: r.category_name,
       amount: r.amount === null ? 0 : Number(r.amount),
     }));
   }

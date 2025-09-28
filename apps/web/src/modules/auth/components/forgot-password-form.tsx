@@ -4,9 +4,9 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {ForgotPasswordDTO} from '@nest-wise/contracts';
-import {useValidateForgotPassword} from '../hooks/useValidateForgotPassword';
+import {useValidateForgotPassword} from '../hooks/use-validate-forgot-password';
 import FormError from '@/components/form-error';
-import {useForgotPassword} from '../hooks/useForgotPassword';
+import {useForgotPassword} from '../hooks/use-forgot-password';
 import {Loader2} from 'lucide-react';
 import {Link} from '@tanstack/react-router';
 
