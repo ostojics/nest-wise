@@ -12,10 +12,10 @@ const SpendingVsTargetCardError = ({onRetry}: SpendingVsTargetCardErrorProps) =>
       <CardHeader>
         <CardDescription className="flex items-center gap-2">
           <IconTarget className="h-4 w-4" />
-          Monthly Budget
+          Mesečni budžet
         </CardDescription>
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl transition-colors text-red-600 dark:text-red-400">
-          Error
+          Greška
         </CardTitle>
       </CardHeader>
       <CardFooter className="flex items-center justify-between text-sm">
@@ -24,7 +24,7 @@ const SpendingVsTargetCardError = ({onRetry}: SpendingVsTargetCardErrorProps) =>
           <span>Nije moguće učitati potrošnju.</span>
         </div>
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Retry
+          Pokušaj ponovo
         </Button>
       </CardFooter>
     </Card>

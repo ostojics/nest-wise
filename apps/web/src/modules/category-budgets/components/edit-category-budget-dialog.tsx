@@ -61,7 +61,7 @@ const EditCategoryBudgetDialog = ({
     >
       <DialogTrigger asChild>
         <Button size="sm" variant="outline" disabled={!enableTrigger}>
-          Assign
+          Dodeli
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -88,11 +88,11 @@ const EditCategoryBudgetDialog = ({
           <DialogFooter className="mt-10">
             <DialogClose asChild>
               <Button type="button" variant="outline" disabled={mutation.isPending}>
-                Cancel
+                Otkaži
               </Button>
             </DialogClose>
             <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Save'}
+              {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Sačuvaj'}
             </Button>
           </DialogFooter>
         </form>

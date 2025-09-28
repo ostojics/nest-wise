@@ -20,8 +20,8 @@ const PlanPage = () => {
         <div className="space-y-1.5">
           <h3 className="text-xl font-semibold">Planirajte troškove domaćinstva po kategorijama</h3>
           <p className="text-muted-foreground text-sm">
-            Set a planned amount for each category. As you log transactions, your spending is tracked automatically for
-            the selected month.
+            Postavite planirani iznos za svaku kategoriju. Kako unosite transakcije, vaša potrošnja se automatski prati
+            za izabrani mesec.
           </p>
         </div>
         <NewCategoryDialog />

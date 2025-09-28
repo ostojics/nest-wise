@@ -74,14 +74,14 @@ const SpendingVsTargetCard = () => {
         <CardDescription className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <IconTarget className="h-4 w-4" />
-            Monthly Budget
+            Mesečni budžet
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsEditModalOpen(true)}
             className="h-8 w-8 p-0 hover:bg-muted/50 transition-colors"
-            title="Edit monthly budget"
+            title="Izmeni mesečni budžet"
           >
             <IconEdit className="h-4 w-4" />
           </Button>

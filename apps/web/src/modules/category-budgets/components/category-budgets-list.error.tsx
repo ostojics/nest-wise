@@ -14,7 +14,7 @@ const CategoryBudgetsListError = ({onRetry, disabled}: CategoryBudgetsListErrorP
         <CardHeader className="border-b">
           <CardDescription className="flex items-center gap-2">
             <IconListDetails className="h-4 w-4" />
-            Category Budgets
+            Budžeti kategorija
           </CardDescription>
           <CardTitle className="text-base text-red-600 dark:text-red-400">Greška</CardTitle>
         </CardHeader>
@@ -24,7 +24,7 @@ const CategoryBudgetsListError = ({onRetry, disabled}: CategoryBudgetsListErrorP
             <span>Nije moguće učitati budžete kategorija.</span>
           </div>
           <Button variant="outline" size="sm" onClick={onRetry} disabled={disabled}>
-            Retry
+            Pokušaj ponovo
           </Button>
         </CardFooter>
       </Card>

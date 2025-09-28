@@ -43,7 +43,7 @@ const CategoryBudgetsList = () => {
     <div className="space-y-4">
       <Card className="@container/card overflow-hidden">
         <CardHeader className="border-b">
-          <CardTitle className="text-base">Total planned</CardTitle>
+          <CardTitle className="text-base">Ukupno planirano</CardTitle>
           <CardDescription>{format(new Date(search.month), 'LLLL yyyy')}</CardDescription>
         </CardHeader>
         <CardContent className="py-1">

@@ -36,7 +36,7 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
           const available = planned - spent;
           const negative = available < 0;
           const progressValue = planned <= 0 ? 0 : Math.min(100, Math.max(0, (spent / planned) * 100));
-          const status = negative ? 'Overspent' : planned > 0 ? 'On Track' : '—';
+          const status = negative ? 'Prekoračeno' : planned > 0 ? 'U skladu sa planom' : '—';
 
           return (
             <AccordionItem key={item.id} value={String(item.id)}>

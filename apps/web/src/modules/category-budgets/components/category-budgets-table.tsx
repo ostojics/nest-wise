@@ -34,7 +34,7 @@ const CategoryBudgetsTable = ({data, isEditable}: CategoryBudgetsTableProps) => 
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         <ArrowUpDown className="size-4" />
-                        {sorted && <span className="sr-only">{sorted === 'asc' ? 'ascending' : 'descending'}</span>}
+                        {sorted && <span className="sr-only">{sorted === 'asc' ? 'rastuće' : 'opadajuće'}</span>}
                       </button>
                     ) : (
                       flexRender(header.column.columnDef.header, header.getContext())
@@ -57,7 +57,7 @@ const CategoryBudgetsTable = ({data, isEditable}: CategoryBudgetsTableProps) => 
           ) : (
             <TableRow>
               <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center text-muted-foreground">
-                No category budgets found
+                Nema podataka za prikaz
               </TableCell>
             </TableRow>
           )}

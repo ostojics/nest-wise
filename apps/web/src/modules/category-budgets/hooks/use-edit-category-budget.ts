@@ -13,7 +13,7 @@ export const useEditCategoryBudget = () => {
   return useMutation({
     mutationFn: ({id, dto}: {id: string; dto: EditCategoryBudgetDTO}) => editCategoryBudget(id, dto),
     onSuccess: () => {
-      toast.success('Category budget updated successfully');
+      toast.success('Budžet kategorije je uspešno ažuriran');
       void queryClient.invalidateQueries({queryKey: queryKeys.categoryBudgets.all(search)});
     },
     onError: async (error) => {
@@ -25,7 +25,7 @@ export const useEditCategoryBudget = () => {
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Došlo je do neočekivane greške');
     },
   });
 };
