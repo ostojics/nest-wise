@@ -48,7 +48,7 @@ const Account: React.FC<AccountProps> = ({account}) => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col items-start @lg/account-card:flex-row  @lg/account-card:items-center justify-between">
-          <div className="text-sm text-muted-foreground">Current Balance</div>
+          <div className="text-sm text-muted-foreground">Trenutno stanje</div>
           <div
             className={cn(
               'text-right font-semibold tabular-nums',

@@ -70,18 +70,18 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Account</DialogTitle>
-            <DialogDescription className="sr-only">Edit the account details</DialogDescription>
+            <DialogTitle>Izmeni račun</DialogTitle>
+            <DialogDescription className="sr-only">Izmenite detalje računa</DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(handleEditAccount)}>
             <div className="flex flex-col gap-6 py-2">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-account-name">Name</Label>
+                <Label htmlFor="edit-account-name">Naziv</Label>
                 <Input id="edit-account-name" {...register('name', {required: true})} />
                 {errors.name?.message && <FormError error={errors.name.message} />}
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-account-type">Type</Label>
+                <Label htmlFor="edit-account-type">Tip</Label>
                 <Select
                   value={selectedType}
                   onValueChange={(value) => setValue('type', value as EditAccountDTO['type'])}
@@ -101,7 +101,7 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
               </div>
               <SelectedAccountType type={selectedType} />
               <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-account-balance">Current Balance</Label>
+                <Label htmlFor="edit-account-balance">Trenutno stanje</Label>
                 <Input
                   id="edit-account-balance"
                   type="number"

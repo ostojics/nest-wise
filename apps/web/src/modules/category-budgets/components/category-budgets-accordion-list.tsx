@@ -23,7 +23,7 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
 
   if (!data.length) {
     return (
-      <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">No category budgets found</div>
+      <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">Nema budžeta kategorija</div>
     );
   }
 
@@ -64,7 +64,7 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
               <AccordionContent className="px-4 pb-4">
                 <div className="grid grid-cols-1 gap-3 text-sm @sm:grid-cols-2">
                   <div>
-                    <div className="text-muted-foreground">Category</div>
+                    <div className="text-muted-foreground">Kategorija</div>
                     <div className="text-foreground/90">{item.category.name}</div>
                   </div>
                   <div>
@@ -72,15 +72,15 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
                     <div className="text-foreground/80">{status}</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Assigned</div>
+                    <div className="text-muted-foreground">Dodeljeno</div>
                     <div className="text-foreground/80 tabular-nums">{formatBalance(planned)}</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Spent</div>
+                    <div className="text-muted-foreground">Potrošeno</div>
                     <div className="text-foreground/80 tabular-nums">{formatBalance(spent)}</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Available</div>
+                    <div className="text-muted-foreground">Raspoloživo</div>
                     <div className="mt-1">
                       <Badge
                         className={cn(
@@ -96,7 +96,7 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
                     </div>
                   </div>
                   <div className="@sm:col-span-2">
-                    <div className="text-muted-foreground">Progress</div>
+                    <div className="text-muted-foreground">Napredak</div>
                     <div className="mt-2 flex items-center gap-2">
                       <Progress className="h-[6px]" value={progressValue} />
                     </div>

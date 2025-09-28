@@ -55,7 +55,7 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
         <Command>
           <CommandInput placeholder="Search accounts" />
           <CommandList>
-            <CommandEmpty>No accounts found.</CommandEmpty>
+            <CommandEmpty>Nema pronađenih računa.</CommandEmpty>
             <CommandGroup>
               {filtered.map((account) => {
                 return (

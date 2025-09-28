@@ -96,7 +96,7 @@ const CreateAccount = () => {
           </div>
 
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Account Type</Label>
+            <Label className="text-sm font-medium">Tip računa</Label>
             <Select value={selectedType} onValueChange={handleTypeChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select account type" />
@@ -151,7 +151,7 @@ const CreateAccount = () => {
                   Creating Account...
                 </>
               ) : (
-                <>Create Account</>
+                <>Kreiraj račun</>
               )}
             </Button>
           </div>

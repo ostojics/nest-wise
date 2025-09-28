@@ -66,13 +66,15 @@ const EditCategoryBudgetDialog = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="mb-3">
-          <DialogTitle>Assign planned amount</DialogTitle>
-          <DialogDescription>Set how much you plan to spend for this category in the selected month.</DialogDescription>
+          <DialogTitle>Dodeli planirani iznos</DialogTitle>
+          <DialogDescription>
+            Unesite koliko planirate da potrošite za ovu kategoriju u izabranom mesecu.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleEditCategoryBudget)}>
           <div className="flex items-center gap-3">
             <div className="flex flex-col gap-2">
-              <Label htmlFor="edit-account-name">Planned amount</Label>
+              <Label htmlFor="edit-account-name">Planirani iznos</Label>
               <Input
                 id="edit-planned-amount"
                 type="number"

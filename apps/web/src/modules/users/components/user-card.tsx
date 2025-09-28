@@ -22,7 +22,7 @@ const UserCard: React.FC<UserCardProps> = ({user}) => {
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Joined at</span>
+            <span className="text-xs text-muted-foreground">Pridružio/la se</span>
             <Badge variant="outline" className="text-xs whitespace-nowrap">
               {joinedOn}
             </Badge>
