@@ -1,4 +1,4 @@
-name: CI
+name: CI - Backend
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-lint:
     runs-on: ubuntu-latest
-    name: Lint and build
+    name: Lint, build and test
     timeout-minutes: 10
 
     steps:
@@ -38,7 +38,11 @@ jobs:
         run: pnpm install
 
       - name: Build
-        run: pnpm build
+        run: pnpm build -F @nest-wise/core-api
 
       - name: Lint
-        run: pnpm lint
+        run: pnpm lint -F @nest-wise/core-api
+
+      - name: Run integration tests
+        working-directory: apps/core-api
+        run: pnpm run test:integration:ci
