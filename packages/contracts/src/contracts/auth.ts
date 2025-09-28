@@ -77,7 +77,10 @@ export const resetPasswordSchema = z
 export type ResetPasswordDTO = z.infer<typeof resetPasswordSchema>;
 
 export const resetPasswordQueryParamsSchema = z.object({
-  token: z.string(),
+  token: z.string({
+    required_error: 'Token je obavezan',
+    invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+  }),
 });
 
 export type ResetPasswordQueryParams = z.infer<typeof resetPasswordQueryParamsSchema>;

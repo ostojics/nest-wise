@@ -48,7 +48,7 @@ const CategoryCombobox: React.FC<CategoryComboboxProps> = ({categories, classNam
         <Command>
           <CommandInput placeholder="Search categories" />
           <CommandList>
-            <CommandEmpty>No categories found.</CommandEmpty>
+            <CommandEmpty>Nema pronađenih kategorija.</CommandEmpty>
             <CommandGroup>
               {categories.map((category) => (
                 <CommandItem key={category.id} value={category.id} keywords={[category.name]} onSelect={handleSelect}>

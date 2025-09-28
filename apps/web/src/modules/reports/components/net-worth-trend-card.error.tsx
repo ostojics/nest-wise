@@ -14,12 +14,12 @@ const NetWorthTrendCardError = ({onRetry}: NetWorthTrendCardErrorProps) => {
           <IconTrendingUp className="h-4 w-4" />
           Net Worth Trend
         </CardDescription>
-        <CardTitle className="text-lg font-semibold transition-colors text-red-600 dark:text-red-400">Error</CardTitle>
+        <CardTitle className="text-lg font-semibold transition-colors text-red-600 dark:text-red-400">Greška</CardTitle>
       </CardHeader>
       <CardFooter className="flex items-center justify-between text-sm w-full pt-4">
         <div className="flex items-center gap-2 text-muted-foreground">
           <IconAlertTriangle className="h-4 w-4 text-yellow-500" />
-          <span>Failed to load chart.</span>
+          <span>Nije moguće učitati grafikon.</span>
         </div>
         <Button variant="outline" size="sm" onClick={onRetry}>
           Retry

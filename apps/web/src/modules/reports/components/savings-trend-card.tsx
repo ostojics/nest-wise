@@ -11,7 +11,7 @@ import SavingsTrendCardSkeleton from './savings-trend-card.skeleton';
 
 const chartConfig = {
   amount: {
-    label: 'Savings',
+    label: 'Štednja',
     color: 'hsl(142, 76%, 36%)',
   },
 } satisfies ChartConfig;
@@ -45,7 +45,7 @@ const SavingsTrendCard = () => {
           <IconPigMoney className="h-4 w-4" />
           Money Saved Trend
         </CardDescription>
-        <CardTitle className="text-lg font-semibold">Last 12 Months</CardTitle>
+        <CardTitle className="text-lg font-semibold">Poslednjih 12 meseci</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <div className="w-full overflow-x-auto pb-2">
@@ -88,16 +88,16 @@ const SavingsTrendCard = () => {
                         if (!payload.hasData) {
                           return (
                             <div className="flex w-full justify-between items-center gap-4">
-                              <span>Savings</span>
+                              <span>Štednja</span>
                               <div className="text-right">
-                                <div className="text-muted-foreground">No data available</div>
+                                <div className="text-muted-foreground">Nema podataka</div>
                               </div>
                             </div>
                           );
                         }
                         return (
                           <div className="flex w-full justify-between items-center gap-4">
-                            <span>Savings</span>
+                            <span>Štednja</span>
                             <div className="text-right">
                               <div className="font-mono font-medium tabular-nums">
                                 {formatBalance(payload.amount ?? 0)}

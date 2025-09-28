@@ -69,9 +69,20 @@ export const acceptInviteSchema = z
   });
 
 export const acceptInviteQueryParamsSchema = z.object({
-  householdName: z.string(),
-  token: z.string(),
-  email: z.string().email(),
+  householdName: z.string({
+    required_error: 'Naziv domaćinstva je obavezan',
+    invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+  }),
+  token: z.string({
+    required_error: 'Token je obavezan',
+    invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+  }),
+  email: z
+    .string({
+      required_error: 'E‑pošta je obavezna',
+      invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+    })
+    .email('Neispravan format e‑pošte'),
 });
 
 export type InviteUserDTO = z.infer<typeof inviteUserSchema>;

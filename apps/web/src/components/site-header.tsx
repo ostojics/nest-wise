@@ -30,7 +30,7 @@ export function SiteHeader() {
             onClick={() => setIsTransactionDialogOpen(true)}
           >
             <IconInvoice className="w-4 h-4" />
-            <span>Log transaction</span>
+            <span>Zabeleži transakciju</span>
           </Button>
         </div>
       </div>

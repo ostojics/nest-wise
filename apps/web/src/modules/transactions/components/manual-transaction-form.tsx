@@ -74,7 +74,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
             <SelectValue placeholder="Select account" />
           </SelectTrigger>
           <SelectContent>
-            {!hasAccounts && <span className="text-sm text-muted-foreground">No accounts available.</span>}
+            {!hasAccounts && <span className="text-sm text-muted-foreground">Nema dostupnih računa.</span>}
             {hasAccounts &&
               accounts?.map((account) => (
                 <SelectItem key={account.id} value={account.id}>
@@ -105,7 +105,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
                   ))
                 ) : (
                   <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                    <span>No categories available. Create one on the plan page.</span>
+                    <span>Nema dostupnih kategorija. Kreirajte novu na stranici plana.</span>
                   </div>
                 )}
               </SelectContent>
@@ -124,8 +124,8 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="expense">Expense</SelectItem>
-            <SelectItem value="income">Income</SelectItem>
+            <SelectItem value="expense">Rashod</SelectItem>
+            <SelectItem value="income">Prihod</SelectItem>
           </SelectContent>
         </Select>
         {errors.type && <p className="text-sm text-red-500">{errors.type.message}</p>}

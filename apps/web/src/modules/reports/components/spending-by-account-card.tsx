@@ -65,7 +65,7 @@ const SpendingByAccountCard = () => {
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {isEmpty ? (
-          <div className="text-sm text-muted-foreground text-center py-16">No spending in the selected range.</div>
+          <div className="text-sm text-muted-foreground text-center py-16">Nema troškova u izabranom periodu.</div>
         ) : (
           <ChartContainer config={{}} className="mx-auto aspect-square max-h-[23.75rem] @2xs/card:max-h-[34.375rem]">
             <PieChart>

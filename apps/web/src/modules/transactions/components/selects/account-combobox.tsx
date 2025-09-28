@@ -48,7 +48,7 @@ const AccountCombobox: React.FC<AccountComboboxProps> = ({accounts, className}) 
         <Command>
           <CommandInput placeholder="Search accounts" />
           <CommandList>
-            <CommandEmpty>No accounts found.</CommandEmpty>
+            <CommandEmpty>Nema pronađenih računa.</CommandEmpty>
             <CommandGroup>
               {accounts.map((account) => {
                 return (

@@ -57,7 +57,7 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
               <SelectValue placeholder="Select account" />
             </SelectTrigger>
             <SelectContent>
-              {!hasAccounts && <span className="text-sm text-muted-foreground">No accounts available.</span>}
+              {!hasAccounts && <span className="text-sm text-muted-foreground">Nema dostupnih računa.</span>}
               {hasAccounts &&
                 accounts?.map((account) => (
                   <SelectItem key={account.id} value={account.id}>

@@ -61,7 +61,7 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, on
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Monthly Budget</DialogTitle>
+          <DialogTitle>Izmeni mesečni budžet</DialogTitle>
           <DialogDescription>
             Update your monthly budget target. <br /> Current: {formatBalance(household?.monthlyBudget ?? 0)}
           </DialogDescription>

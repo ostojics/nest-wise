@@ -21,7 +21,7 @@ const SpendingVsTargetCardError = ({onRetry}: SpendingVsTargetCardErrorProps) =>
       <CardFooter className="flex items-center justify-between text-sm">
         <div className="flex items-center gap-2 text-muted-foreground">
           <IconAlertTriangle className="h-4 w-4 text-yellow-500" />
-          <span>Failed to load spending.</span>
+          <span>Nije moguće učitati potrošnju.</span>
         </div>
         <Button variant="outline" size="sm" onClick={onRetry}>
           Retry

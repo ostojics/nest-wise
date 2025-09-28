@@ -94,13 +94,13 @@ const SpendingVsTargetCard = () => {
         >
           {formatBalance(currentSpending)}
         </CardTitle>
-        <div className="text-sm text-muted-foreground">of {formatBalance(budget)} target</div>
+        <div className="text-sm text-muted-foreground">od cilja {formatBalance(budget)}</div>
       </CardHeader>
 
       <CardFooter className="flex-col items-start gap-4 text-sm">
         <div className="w-full space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Progress</span>
+            <span className="text-muted-foreground">Napredak</span>
             <span className={cn('font-medium', getStatusColor())}>{spendingPercentage.toFixed(1)}%</span>
           </div>
           <Progress value={spendingPercentage} className={getProgressBarClassName(spendingPercentage)} />
@@ -108,7 +108,7 @@ const SpendingVsTargetCard = () => {
 
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-col">
-            <span className="text-muted-foreground">Remaining</span>
+            <span className="text-muted-foreground">Preostalo</span>
             <span
               className={cn(
                 'font-medium',

@@ -80,10 +80,10 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
         disabled={isLoading}
         className="h-9 w-9"
         onClick={handlePrev}
-        aria-label="Previous month"
+        aria-label="Prethodni mesec"
       >
         <ChevronLeft className="size-4" />
-        <span className="sr-only">Previous month</span>
+        <span className="sr-only">Prethodni mesec</span>
       </Button>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -141,10 +141,10 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
         size="icon"
         className="h-9 w-9"
         onClick={handleNext}
-        aria-label="Next month"
+        aria-label="Sledeći mesec"
       >
         <ChevronRight className="size-4" />
-        <span className="sr-only">Next month</span>
+        <span className="sr-only">Sledeći mesec</span>
       </Button>
     </div>
   );

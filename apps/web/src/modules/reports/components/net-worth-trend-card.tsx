@@ -12,7 +12,7 @@ import NetWorthTrendCardSkeleton from './net-worth-trend-card.skeleton';
 
 const chartConfig = {
   amount: {
-    label: 'Net Worth',
+    label: 'Neto vrednost',
     color: 'hsl(142, 76%, 36%)',
   },
 } satisfies ChartConfig;
@@ -73,7 +73,7 @@ const NetWorthTrendCard = () => {
           <IconTrendingUp className="h-4 w-4" />
           Net Worth Trend
         </CardDescription>
-        <CardTitle className="text-lg font-semibold">Last 12 Months</CardTitle>
+        <CardTitle className="text-lg font-semibold">Poslednjih 12 meseci</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <div className="w-full overflow-x-auto pb-2">
@@ -115,16 +115,16 @@ const NetWorthTrendCard = () => {
                       if (!payload.hasData) {
                         return (
                           <div className="flex w-full justify-between items-center gap-4">
-                            <span>Net Worth</span>
+                            <span>Neto vrednost</span>
                             <div className="text-right">
-                              <div className="text-muted-foreground">No data available</div>
+                              <div className="text-muted-foreground">Nema podataka</div>
                             </div>
                           </div>
                         );
                       }
                       return (
                         <div className="flex w-full justify-between items-center gap-4">
-                          <span>Net Worth</span>
+                          <span>Neto vrednost</span>
                           <div className="text-right">
                             <div className="font-mono font-medium tabular-nums">
                               {formatBalance(payload.amount ?? 0)}

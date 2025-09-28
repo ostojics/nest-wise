@@ -58,11 +58,11 @@ const NewCategoryDialog = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button size="sm">New Category</Button>
+        <Button size="sm">Nova kategorija</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="mb-3">
-          <DialogTitle>Create category</DialogTitle>
+          <DialogTitle>Kreiraj kategoriju</DialogTitle>
           <DialogDescription className="text-balance">
             Add a category to plan and track your spending.
           </DialogDescription>
@@ -70,7 +70,7 @@ const NewCategoryDialog = () => {
         <form onSubmit={handleSubmit(handleCreateCategory)}>
           <div className="flex items-center gap-3">
             <div className="flex flex-col gap-2 w-full">
-              <Label htmlFor="new-category-name">Name</Label>
+              <Label htmlFor="new-category-name">Naziv</Label>
               <Input id="new-category-name" placeholder="e.g. Groceries" {...register('name')} />
               {errors.name?.message && <FormError error={errors.name.message} />}
             </div>
@@ -81,7 +81,7 @@ const NewCategoryDialog = () => {
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit">Create</Button>
+            <Button type="submit">Kreiraj</Button>
           </DialogFooter>
         </form>
       </DialogContent>
