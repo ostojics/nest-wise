@@ -14,7 +14,7 @@ export const useInviteUserToHousehold = () => {
       return inviteUserToHousehold(me.householdId, {email});
     },
     onSuccess: () => {
-      toast.success('Invitation sent successfully');
+      toast.success('Poziv je uspešno poslat');
     },
   });
 };

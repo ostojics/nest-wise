@@ -20,10 +20,10 @@ export const useCreateTransaction = () => {
       void client.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
       void client.invalidateQueries({queryKey: queryKeys.transactions.allPagesKey()});
 
-      toast.success('Transaction created successfully');
+      toast.success('Transakcija je uspešno kreirana');
     },
     onError: () => {
-      toast.error('Failed to create transaction');
+      toast.error('Kreiranje transakcije nije uspelo');
     },
   });
 };

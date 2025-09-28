@@ -19,7 +19,7 @@ export const useCreateCategory = (householdId?: string) => {
       void client.invalidateQueries({queryKey: queryKeys.categories.all()});
       void client.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
 
-      toast.success('Category created successfully');
+      toast.success('Kategorija je uspešno kreirana');
     },
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
@@ -30,7 +30,7 @@ export const useCreateCategory = (householdId?: string) => {
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Došlo je do neočekivane greške');
     },
   });
 };

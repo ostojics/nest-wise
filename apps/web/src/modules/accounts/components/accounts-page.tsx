@@ -9,8 +9,8 @@ const AccountsPage = () => {
     <section className="p-4">
       <TextBanner
         className="mb-6"
-        aria-label="Accounts overview"
-        text="Accounts are the places your money lives. Add the ones you use, keep balances up to date by recording transactions, and move money between them with Transfer Funds."
+        aria-label="Pregled računa"
+        text="Računi su mesta gde se nalazi vaš novac. Dodajte one koje koristite, održavajte stanje ažurnim beleženjem transakcija, i prebacujte novac između njih pomoću opcije Prebaci sredstva."
       />
       <div className="flex items-center gap-2">
         <CreateAccount />

@@ -20,10 +20,10 @@ export const useCreateTransactionAI = () => {
       void client.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
       void client.invalidateQueries({queryKey: queryKeys.transactions.allPagesKey()});
 
-      toast.success('Transaction processed successfully');
+      toast.success('Transakcija je uspešno obrađena');
     },
     onError: () => {
-      toast.error('Failed to process transaction');
+      toast.error('Obrada transakcije nije uspela');
     },
   });
 };

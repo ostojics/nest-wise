@@ -19,10 +19,10 @@ export const useDeleteTransaction = () => {
       ];
 
       await Promise.all(promises);
-      toast.success('Transaction deleted');
+      toast.success('Transakcija je obrisana');
     },
     onError: () => {
-      toast.error('Failed to delete transaction');
+      toast.error('Brisanje transakcije nije uspelo');
     },
   });
 };

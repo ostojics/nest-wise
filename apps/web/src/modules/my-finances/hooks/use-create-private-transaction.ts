@@ -17,7 +17,7 @@ export const useCreatePrivateTransaction = () => {
       await client.invalidateQueries({
         queryKey: queryKeys.accounts.all(),
       });
-      toast.success('Private transaction created successfully');
+      toast.success('Privatna transakcija je uspešno kreirana');
     },
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
@@ -28,7 +28,7 @@ export const useCreatePrivateTransaction = () => {
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Došlo je do neočekivane greške');
     },
   });
 };

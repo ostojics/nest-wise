@@ -11,7 +11,7 @@ export const useEditAccountMutation = () => {
   return useMutation({
     mutationFn: ({id, dto}: {id: string; dto: EditAccountDTO}) => editAccount(id, dto),
     onSuccess: () => {
-      toast.success('Account updated successfully');
+      toast.success('Račun je uspešno ažuriran');
       void queryClient.invalidateQueries({queryKey: queryKeys.accounts.all()});
     },
     onError: async (error) => {
@@ -23,7 +23,7 @@ export const useEditAccountMutation = () => {
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Došlo je do neočekivane greške');
     },
   });
 };
