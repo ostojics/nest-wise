@@ -8,18 +8,6 @@ export class VersionResponse {
   appVersion: string;
 
   @ApiProperty({
-    description: 'Core API version',
-    example: '0.0.1',
-  })
-  apiVersion: string;
-
-  @ApiProperty({
-    description: 'Contracts package version',
-    example: '0.0.1',
-  })
-  contractsVersion: string;
-
-  @ApiProperty({
     description: 'Git commit SHA (short)',
     example: 'a1b2c3d',
   })
