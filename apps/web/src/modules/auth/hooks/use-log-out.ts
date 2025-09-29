@@ -25,7 +25,7 @@ export const useLogOut = () => {
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Neočekivana greška, pokušajte ponovo.');
     },
   });
 };

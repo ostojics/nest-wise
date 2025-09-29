@@ -39,37 +39,29 @@ const Step2 = () => {
 
   return (
     <div className="flex flex-col w-full max-w-lg mx-auto p-4">
-      {!licenseKey && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-800 text-sm">
-            <strong>License key required:</strong> Please ensure you have a valid license key to complete setup. The
-            license key should be provided in the URL.
-          </p>
-        </div>
-      )}
       <Card>
         <CardHeader>
-          <CardTitle className="text-md">Tailor NestWise to Your Life (and Loved Ones!)</CardTitle>
-          <CardDescription>Define your financial home for smart, shared insights powered by AI</CardDescription>
+          <CardTitle className="text-md">Prilagodite NestWise svom domaćinstvu</CardTitle>
+          <CardDescription>Definišite svoje domaćinstvo za pametne i zajedničke uvide uz pomoć AI</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(handleHouseholdSetup)}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="name">Household Name</Label>
+                <Label htmlFor="name">Naziv domaćinstva</Label>
                 <Input
                   {...register('name', {required: true})}
                   id="name"
-                  placeholder="e.g., My Family Budget, Shared Expenses"
+                  placeholder="npr. Porodični budžet, Zajednički troškovi"
                   autoComplete="organization"
                 />
                 {errors.name && <FormError error={errors.name.message ?? ''} />}
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="currency">Primary Currency</Label>
+                <Label htmlFor="currency">Glavna valuta</Label>
                 <Select onValueChange={handleCurrencyChange}>
                   <SelectTrigger id="currency" className="w-full">
-                    <SelectValue placeholder="Select a currency" />
+                    <SelectValue placeholder="Izaberi valutu" />
                   </SelectTrigger>
                   <SelectContent>
                     {CURRENCIES.map((currency) => (
@@ -81,26 +73,26 @@ const Step2 = () => {
                 </Select>
                 {errors.currencyCode && <FormError error={errors.currencyCode.message ?? ''} />}
               </div>
-              <div className="mt-6 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg">
+              <div className="mt-4 p-4 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-full hidden sm:flex items-center justify-center">
                     <Brain className="w-4 h-4 text-primary" />
                   </div>
                   <div className="flex-1">
                     <h4 className="text-sm font-semibold text-white-900 mb-1 flex items-center gap-2">
-                      Intelligent Finance Management
+                      Inteligentno upravljanje finansijama
                     </h4>
                     <p className="text-xs text-gray-400">
-                      Once set up, our AI assistant will help you effortlessly categorize expenses and provide
-                      personalized insights. Get ready for smarter spending and saving, tailored to your unique
-                      financial flow.
+                      Kada završite podešavanje, naš AI asistent će vam pomoći da lako kategorizujete troškove i
+                      dobijete personalizovane uvide. Budite spremni za pametnije trošenje i štednju, prilagođene vašem
+                      finansijskom toku.
                     </p>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={isSubmitting || !licenseKey}>
-                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Household'}
+                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Kreiraj domaćinstvo'}
                 </Button>
               </div>
             </div>

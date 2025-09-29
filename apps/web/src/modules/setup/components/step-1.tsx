@@ -28,7 +28,7 @@ const Step1 = () => {
     <div className="flex flex-col w-full max-w-lg mx-auto p-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-md">Vaše putovanje ka finansijskoj jasnoći počinje ovde</CardTitle>
+          <CardTitle className="text-md">Vaše putovanje ka finansijskoj sigurnosti počinje ovde</CardTitle>
           <CardDescription>
             Postavite siguran pristup NestWise aplikaciji i otključajte pametno upravljanje novcem
           </CardDescription>
