@@ -66,7 +66,6 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
       },
       {
         id: 'actions',
-        header: 'Radnje',
         cell: ({row}) => <TransactionRowActions transaction={row.original} />,
         enableSorting: false,
       },

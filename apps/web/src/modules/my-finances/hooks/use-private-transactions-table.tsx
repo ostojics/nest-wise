@@ -47,7 +47,7 @@ export const usePrivateTransactionsTable = (data: PrivateTransactionContract[]) 
             className={cn(row.original.type === TransactionType.INCOME && 'bg-emerald-100 text-emerald-700')}
             variant={row.original.type === TransactionType.EXPENSE ? 'destructive' : 'secondary'}
           >
-            {row.original.type}
+            {row.original.type === TransactionType.EXPENSE ? 'Rashod' : 'Prihod'}
           </Badge>
         ),
       },
@@ -60,7 +60,6 @@ export const usePrivateTransactionsTable = (data: PrivateTransactionContract[]) 
       },
       {
         id: 'actions',
-        header: 'Radnje',
         cell: ({row}) => <PrivateTransactionRowActions transactionId={row.original.id} />,
         enableSorting: false,
       },

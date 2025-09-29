@@ -46,22 +46,22 @@ export function CreatePrivateTransactionDialog() {
       }}
     >
       <DialogTrigger asChild>
-        <Button>Log private transaction</Button>
+        <Button>Zabeleži privatnu transakciju</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Log Private Transaction</DialogTitle>
+          <DialogTitle>Zabeleži privatnu transakciju</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="hidden">Create private transaction</DialogDescription>
+        <DialogDescription className="hidden">Kreiraj privatnu transakciju</DialogDescription>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="accountId">
-              Account <span className="text-red-500">*</span>
+              Račun <span className="text-red-500">*</span>
             </Label>
             <Select value={watch('accountId')} onValueChange={(value) => setValue('accountId', value)}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select account" />
+                <SelectValue placeholder="Izaberi račun" />
               </SelectTrigger>
               <SelectContent>
                 {accounts?.map((account) => (
@@ -76,15 +76,15 @@ export function CreatePrivateTransactionDialog() {
 
           <div className="space-y-2">
             <Label htmlFor="type">
-              Type <span className="text-red-500">*</span>
+              Tip <span className="text-red-500">*</span>
             </Label>
             <Select value={watch('type')} onValueChange={(value) => setValue('type', value as 'income' | 'expense')}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="expense">Expense</SelectItem>
-                <SelectItem value="income">Income</SelectItem>
+                <SelectItem value="expense">Rashod</SelectItem>
+                <SelectItem value="income">Prihod</SelectItem>
               </SelectContent>
             </Select>
             {errors.type && <p className="text-sm text-red-500">{errors.type.message}</p>}
@@ -92,7 +92,7 @@ export function CreatePrivateTransactionDialog() {
 
           <div className="space-y-2">
             <Label htmlFor="amount">
-              Amount <span className="text-red-500">*</span>
+              Iznos <span className="text-red-500">*</span>
             </Label>
             <Input type="number" step="0.01" placeholder="0.00" {...register('amount')} />
             {errors.amount && <p className="text-sm text-red-500">{errors.amount.message}</p>}
@@ -100,20 +100,20 @@ export function CreatePrivateTransactionDialog() {
 
           <div className="space-y-2">
             <Label htmlFor="description">
-              Description <span className="text-red-500">*</span>
+              Opis <span className="text-red-500">*</span>
             </Label>
-            <Input placeholder="Transaction description" {...register('description')} />
+            <Input placeholder="Opis transakcije" {...register('description')} />
             {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="transactionDate">
-              Transaction Date <span className="text-red-500">*</span>
+              Datum transakcije <span className="text-red-500">*</span>
             </Label>
             <DatePicker
               value={watch('transactionDate')}
               onChange={(date) => setValue('transactionDate', date ?? new Date())}
-              placeholder="Select transaction date"
+              placeholder="Izaberi datum transakcije"
             />
             {errors.transactionDate && <p className="text-sm text-red-500">{errors.transactionDate.message}</p>}
           </div>
@@ -121,11 +121,11 @@ export function CreatePrivateTransactionDialog() {
           <div className="flex justify-end gap-2 pt-4">
             <DialogClose asChild>
               <Button type="button" variant="outline">
-                Cancel
+                Otkaži
               </Button>
             </DialogClose>
             <Button type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Log Transaction'}
+              {createMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Zabeleži transakciju'}
             </Button>
           </div>
         </form>

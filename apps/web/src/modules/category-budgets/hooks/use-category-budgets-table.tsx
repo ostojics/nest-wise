@@ -81,7 +81,6 @@ export const useCategoryBudgetsTable = (
       },
       {
         id: 'actions',
-        header: 'Radnje',
         cell: ({row}) => (
           <EditCategoryBudgetDialog
             categoryBudgetId={row.original.id}

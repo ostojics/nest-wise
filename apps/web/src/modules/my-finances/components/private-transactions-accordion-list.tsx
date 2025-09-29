@@ -14,7 +14,9 @@ export default function PrivateTransactionsAccordionList({data}: PrivateTransact
   const {formatBalance} = useFormatBalance();
 
   if (!data.length) {
-    return <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">No transactions found</div>;
+    return (
+      <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">Nema pronađenih transakcija</div>
+    );
   }
 
   return (
@@ -48,30 +50,30 @@ export default function PrivateTransactionsAccordionList({data}: PrivateTransact
               <AccordionContent className="px-4 pb-4">
                 <div className="grid grid-cols-1 gap-3 text-sm @sm:grid-cols-2">
                   <div>
-                    <div className="text-muted-foreground">Description</div>
+                    <div className="text-muted-foreground">Opis</div>
                     <div className="text-foreground/90">{tx.description}</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Account</div>
+                    <div className="text-muted-foreground">Račun</div>
                     <div className="text-foreground/80">{tx.account?.name ?? '-'}</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Type</div>
+                    <div className="text-muted-foreground">Tip</div>
                     <div className="mt-1">
                       <Badge
                         className={cn(isIncome && 'bg-emerald-100 text-emerald-700')}
                         variant={tx.type === TransactionType.EXPENSE ? 'destructive' : 'secondary'}
                       >
-                        {tx.type}
+                        {tx.type === TransactionType.EXPENSE ? 'Rashod' : 'Prihod'}
                       </Badge>
                     </div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Date</div>
+                    <div className="text-muted-foreground">Datum</div>
                     <div className="text-foreground/80">{dateLabel}</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Amount</div>
+                    <div className="text-muted-foreground">Iznos</div>
                     <div className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>
                       {sign}
                       {amount}

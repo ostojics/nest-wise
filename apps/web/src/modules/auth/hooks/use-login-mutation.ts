@@ -15,7 +15,7 @@ export const useLoginMutation = () => {
       await navigate({to: '/plan', reloadDocument: true});
     },
     onError: () => {
-      toast.error('Invalid credentials');
+      toast.error('Kredencijali nisu ispravni');
     },
   });
 };
