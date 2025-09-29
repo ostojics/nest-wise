@@ -61,7 +61,7 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
         accessorKey: 'transactionDate',
         header: 'Datum',
         cell: ({row}) => (
-          <span className="text-foreground/80">{format(new Date(row.original.transactionDate), 'PP')}</span>
+          <span className="text-foreground/80">{format(new Date(row.original.transactionDate), 'dd.MM.yyyy.')}</span>
         ),
       },
       {

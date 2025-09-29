@@ -9,7 +9,7 @@ export const useInviteUserToHousehold = () => {
   return useMutation({
     mutationFn: (email: string) => {
       if (!me?.householdId) {
-        throw new Error('No household found for current user');
+        throw new Error('Nije pronađeno domaćinstvo za trenutnog korisnika');
       }
       return inviteUserToHousehold(me.householdId, {email});
     },

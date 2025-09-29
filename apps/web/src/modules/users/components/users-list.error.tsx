@@ -13,7 +13,7 @@ const UsersListError = ({onRetry, disabled}: UsersListErrorProps) => {
       <CardHeader className="items-center pb-0">
         <CardDescription className="flex items-center gap-2">
           <IconUsers className="h-4 w-4" />
-          Members
+          Članovi
         </CardDescription>
         <CardTitle className="text-lg font-semibold transition-colors text-red-600 dark:text-red-400">Greška</CardTitle>
       </CardHeader>
@@ -23,7 +23,7 @@ const UsersListError = ({onRetry, disabled}: UsersListErrorProps) => {
           <span>Nije moguće učitati članove.</span>
         </div>
         <Button variant="outline" size="sm" onClick={onRetry} disabled={disabled}>
-          Retry
+          Pokušaj ponovo
         </Button>
       </CardFooter>
     </Card>

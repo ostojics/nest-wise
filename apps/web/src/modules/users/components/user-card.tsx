@@ -9,7 +9,7 @@ interface UserCardProps {
 }
 
 const UserCard: React.FC<UserCardProps> = ({user}) => {
-  const joinedOn = format(new Date(user.createdAt), 'MMM dd, yyyy');
+  const joinedOn = format(new Date(user.createdAt), 'dd.MM.yyyy.');
 
   return (
     <Card className="@container/user-card hover:shadow-md transition-shadow duration-200">
