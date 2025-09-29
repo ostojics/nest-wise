@@ -9,6 +9,7 @@ import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell} from 'recharts';
 import {useGetNetWorthTrendData} from '../../plan/hooks/use-get-net-worth-trend-data';
 import NetWorthTrendCardError from './net-worth-trend-card.error';
 import NetWorthTrendCardSkeleton from './net-worth-trend-card.skeleton';
+import {englishToSerbianMonthMap} from '@/common/constants/month-map';
 
 const chartConfig = {
   amount: {
@@ -27,6 +28,7 @@ const NetWorthTrendCard = () => {
         ...dataPoint,
         displayAmount: dataPoint.hasData ? dataPoint.amount : 0, // Use 0 for chart rendering
         fill: dataPoint.hasData ? 'var(--color-amount)' : 'var(--color-no-data)',
+        monthShort: englishToSerbianMonthMap[dataPoint.monthShort],
       })) ?? []
     );
   }, [data]);
@@ -52,7 +54,7 @@ const NetWorthTrendCard = () => {
 
   const customLabelFormatter = (value: number, _name?: string) => {
     if (value === 0) {
-      return 'No Data';
+      return 'Nema podataka';
     }
 
     return value;
@@ -71,7 +73,7 @@ const NetWorthTrendCard = () => {
       <CardHeader className="items-center pb-0">
         <CardDescription className="flex items-center gap-2">
           <IconTrendingUp className="h-4 w-4" />
-          Net Worth Trend
+          Trend ukupnog kapitala
         </CardDescription>
         <CardTitle className="text-lg font-semibold">Poslednjih 12 meseci</CardTitle>
       </CardHeader>
@@ -81,7 +83,7 @@ const NetWorthTrendCard = () => {
             config={{
               ...chartConfig,
               'no-data': {
-                label: 'No Data',
+                label: 'Nema podataka',
                 color: 'hsl(var(--muted))',
               },
             }}
@@ -115,7 +117,7 @@ const NetWorthTrendCard = () => {
                       if (!payload.hasData) {
                         return (
                           <div className="flex w-full justify-between items-center gap-4">
-                            <span>Neto vrednost</span>
+                            <span>Ukupan kapital</span>
                             <div className="text-right">
                               <div className="text-muted-foreground">Nema podataka</div>
                             </div>
@@ -124,12 +126,11 @@ const NetWorthTrendCard = () => {
                       }
                       return (
                         <div className="flex w-full justify-between items-center gap-4">
-                          <span>Neto vrednost</span>
+                          <span>Ukupan kapital</span>
                           <div className="text-right">
                             <div className="font-mono font-medium tabular-nums">
                               {formatBalance(payload.amount ?? 0)}
                             </div>
-                            <div className="text-sm text-muted-foreground">{payload.month}</div>
                           </div>
                         </div>
                       );
@@ -162,8 +163,8 @@ const NetWorthTrendCard = () => {
             )}
           >
             <IconTrendingUp className={cn('h-4 w-4', growth.isPositive ? 'rotate-0' : 'rotate-180')} />
-            {growth.isPositive ? 'Up' : 'Down'} by {formatBalance(Math.abs(growth.amount))} (
-            {Math.abs(growth.percentage).toFixed(1)}%) from last data point
+            {growth.isPositive ? 'Porast' : 'Pad'} za {formatBalance(Math.abs(growth.amount))} (
+            {Math.abs(growth.percentage).toFixed(1)}%) u odnosu na prethodnu tačku
           </div>
         )}
       </CardFooter>

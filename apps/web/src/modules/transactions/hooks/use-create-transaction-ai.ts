@@ -11,7 +11,7 @@ export const useCreateTransactionAI = () => {
 
   return useMutation({
     mutationFn: (transaction: CreateTransactionAiHouseholdDTO) => {
-      if (!me?.householdId) throw new Error('No household ID available');
+      if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
       return createAiTransactionForHousehold(me.householdId, transaction);
     },
     onSuccess: () => {

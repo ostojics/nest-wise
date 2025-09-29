@@ -17,7 +17,7 @@ export const useGetSpendingByAccount = () => {
   return useQuery({
     queryKey: queryKeys.transactions.spendingByAccounts(queryParams),
     queryFn: () => {
-      if (!me?.householdId) throw new Error('No household ID available');
+      if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
       return spendingByAccountsForHousehold(me.householdId, queryParams);
     },
     enabled: Boolean(me?.householdId),

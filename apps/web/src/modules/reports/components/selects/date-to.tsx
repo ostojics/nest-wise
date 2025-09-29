@@ -38,12 +38,12 @@ const DateToPicker: React.FC<DateToPickerProps> = ({className}) => {
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <Label htmlFor="dashboard-date-to" className="px-1 sr-only">
-        Date to
+        Datum do
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" id="dashboard-date-to" className="h-9 justify-between font-normal">
-            {selectedDate ? format(selectedDate, 'PPP') : 'Select date to'}
+            {selectedDate ? format(selectedDate, 'PPP') : 'Izaberi datum do'}
             <ChevronsUpDown className="ml-2 size-4 opacity-50" />
           </Button>
         </PopoverTrigger>

@@ -12,7 +12,7 @@ const SavingsTrendCardError = ({onRetry}: SavingsTrendCardErrorProps) => {
       <CardHeader className="items-center pb-0">
         <CardDescription className="flex items-center gap-2">
           <IconPigMoney className="h-4 w-4" />
-          Savings Trend
+          Trend štednje
         </CardDescription>
         <CardTitle className="text-lg font-semibold transition-colors text-red-600 dark:text-red-400">Greška</CardTitle>
       </CardHeader>
@@ -22,7 +22,7 @@ const SavingsTrendCardError = ({onRetry}: SavingsTrendCardErrorProps) => {
           <span>Nije moguće učitati grafikon.</span>
         </div>
         <Button variant="outline" size="sm" onClick={onRetry}>
-          Retry
+          Pokušaj ponovo
         </Button>
       </CardFooter>
     </Card>

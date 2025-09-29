@@ -5,6 +5,7 @@ import {DayButton, DayPicker, getDefaultClassNames} from 'react-day-picker';
 import {cn} from '@/lib/utils';
 import {Button, buttonVariants} from '@/components/ui/button';
 import {srLatn} from 'date-fns/locale';
+import {format} from 'date-fns';
 
 function Calendar({
   className,
@@ -32,7 +33,7 @@ function Calendar({
       locale={srLatn}
       captionLayout={captionLayout}
       formatters={{
-        formatMonthDropdown: (date) => date.toLocaleString('default', {month: 'short'}),
+        formatMonthDropdown: (date) => format(date, 'MMM'),
         ...formatters,
       }}
       classNames={{

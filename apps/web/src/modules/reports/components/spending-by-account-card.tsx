@@ -60,7 +60,7 @@ const SpendingByAccountCard = () => {
       <CardHeader className="flex flex-col gap-4 justify-start @2xl/card:flex-row @2xl/card:items-center">
         <CardDescription className="flex items-center gap-2 flex-2">
           <IconChartPie className="h-4 w-4" />
-          Spending by account
+          Troškovi po računu
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
@@ -110,7 +110,7 @@ const SpendingByAccountCard = () => {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm pt-4">
         <div className="text-muted-foreground leading-none text-center">
-          Total spending: {formatBalance(totalSpending)}
+          Ukupni troškovi: {formatBalance(totalSpending)}
         </div>
       </CardFooter>
     </Card>

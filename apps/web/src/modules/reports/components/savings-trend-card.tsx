@@ -8,6 +8,7 @@ import {Bar, BarChart, CartesianGrid, LabelList, XAxis, Cell, ResponsiveContaine
 import {useGetSavingsTrend} from '../hooks/use-get-savings-trend';
 import SavingsTrendCardError from './savings-trend-card.error';
 import SavingsTrendCardSkeleton from './savings-trend-card.skeleton';
+import {englishToSerbianMonthMap} from '@/common/constants/month-map';
 
 const chartConfig = {
   amount: {
@@ -26,6 +27,7 @@ const SavingsTrendCard = () => {
         ...dataPoint,
         displayAmount: dataPoint.hasData ? dataPoint.amount : 0,
         fill: dataPoint.hasData ? 'var(--color-amount)' : 'var(--color-no-data)',
+        monthShort: englishToSerbianMonthMap[dataPoint.monthShort],
       })) ?? []
     );
   }, [data]);
@@ -43,7 +45,7 @@ const SavingsTrendCard = () => {
       <CardHeader className="items-center pb-0">
         <CardDescription className="flex items-center gap-2">
           <IconPigMoney className="h-4 w-4" />
-          Money Saved Trend
+          Trend štednje
         </CardDescription>
         <CardTitle className="text-lg font-semibold">Poslednjih 12 meseci</CardTitle>
       </CardHeader>
@@ -53,7 +55,7 @@ const SavingsTrendCard = () => {
             config={{
               ...chartConfig,
               'no-data': {
-                label: 'No Data',
+                label: 'Nema podataka',
                 color: 'hsl(var(--muted))',
               },
             }}
@@ -102,7 +104,6 @@ const SavingsTrendCard = () => {
                               <div className="font-mono font-medium tabular-nums">
                                 {formatBalance(payload.amount ?? 0)}
                               </div>
-                              <div className="text-sm text-muted-foreground">{payload.month}</div>
                             </div>
                           </div>
                         );
@@ -116,7 +117,7 @@ const SavingsTrendCard = () => {
                     offset={8}
                     className="fill-foreground text-xs"
                     fontSize={10}
-                    formatter={(v: number) => (v === 0 ? 'No Data' : v)}
+                    formatter={(v: number) => (v === 0 ? 'Nema podataka' : v)}
                   />
                   {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.hasData ? 'var(--color-amount)' : 'hsl(var(--muted))'} />

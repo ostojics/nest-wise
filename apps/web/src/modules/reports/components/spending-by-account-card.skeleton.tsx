@@ -8,7 +8,7 @@ const SpendingByAccountCardSkeleton = () => {
       <CardHeader className="flex justify-between items-center">
         <CardDescription className="flex items-center gap-2">
           <IconChartPie className="h-4 w-4" />
-          Spending by account
+          Troškovi po računu
         </CardDescription>
         <div className="flex items-center gap-2">
           <Skeleton className="h-8 w-28" />
