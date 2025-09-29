@@ -68,7 +68,7 @@ export default function TransactionsAccordionList({data}: TransactionsAccordionL
                         className={cn(isIncome && 'bg-emerald-100 text-emerald-700')}
                         variant={tx.type === TransactionType.EXPENSE ? 'destructive' : 'secondary'}
                       >
-                        {tx.type}
+                        {tx.type === TransactionType.EXPENSE ? 'Rashod' : 'Prihod'}
                       </Badge>
                     </div>
                   </div>

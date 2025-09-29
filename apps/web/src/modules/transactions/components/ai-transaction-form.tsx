@@ -50,11 +50,11 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="accountId">
-            Account <span className="text-red-500">*</span>
+            Račun <span className="text-red-500">*</span>
           </Label>
           <Select value={watch('accountId')} onValueChange={(value) => setValue('accountId', value)}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select account" />
+              <SelectValue placeholder="Izaberi račun" />
             </SelectTrigger>
             <SelectContent>
               {!hasAccounts && <span className="text-sm text-muted-foreground">Nema dostupnih računa.</span>}
@@ -72,24 +72,24 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
             <Label htmlFor="description">
-              Description <span className="text-red-500">*</span>
+              Opis <span className="text-red-500">*</span>
             </Label>
             <AiDescriptionTooltip />
           </div>
-          <Input placeholder="e.g. Bought groceries for 120" {...register('description')} />
+          <Input placeholder="npr. Kupovina namirnica za 2000 RSD" {...register('description')} />
           {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
+            Otkaži
           </Button>
           <Button
             type="submit"
             disabled={createAiTransactionMutation.isPending}
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
           >
-            {createAiTransactionMutation.isPending ? 'Processing...' : 'Log Transaction'}
+            {createAiTransactionMutation.isPending ? 'Obrađujem...' : 'Zabeleži transakciju'}
           </Button>
         </div>
       </form>

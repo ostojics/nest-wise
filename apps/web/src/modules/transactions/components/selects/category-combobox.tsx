@@ -40,13 +40,13 @@ const CategoryCombobox: React.FC<CategoryComboboxProps> = ({categories, classNam
           aria-expanded={open}
           className={cn('h-9 min-w-50 justify-between', className)}
         >
-          {selectedLabel ?? 'Select category'}
+          {selectedLabel ?? 'Izaberi kategoriju'}
           <ChevronsUpDown className="ml-2 size-4 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-0" align="end" sideOffset={10}>
         <Command>
-          <CommandInput placeholder="Search categories" />
+          <CommandInput placeholder="Pretraži kategorije" />
           <CommandList>
             <CommandEmpty>Nema pronađenih kategorija.</CommandEmpty>
             <CommandGroup>

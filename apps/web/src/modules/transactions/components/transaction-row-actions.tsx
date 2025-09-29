@@ -49,10 +49,10 @@ const TransactionRowActions: React.FC<TransactionActionsProps> = ({transaction})
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => setIsOpen(false)} disabled={deleteMutation.isPending}>
-            Cancel
+            Otkaži
           </Button>
           <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Delete'}
+            {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Obriši'}
           </Button>
         </DialogFooter>
       </DialogContent>

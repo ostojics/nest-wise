@@ -40,13 +40,13 @@ const AccountCombobox: React.FC<AccountComboboxProps> = ({accounts, className}) 
           aria-expanded={open}
           className={cn('h-9 min-w-50 justify-between', className)}
         >
-          {selectedLabel ?? 'Select account'}
+          {selectedLabel ?? 'Izaberi račun'}
           <ChevronsUpDown className="ml-2 size-4 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-0" align="end" sideOffset={10}>
         <Command>
-          <CommandInput placeholder="Search accounts" />
+          <CommandInput placeholder="Pretraži račune" />
           <CommandList>
             <CommandEmpty>Nema pronađenih računa.</CommandEmpty>
             <CommandGroup>

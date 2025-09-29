@@ -27,14 +27,14 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Log Transaction</DialogTitle>
+          <DialogTitle>Zabeleži transakciju</DialogTitle>
           {!isManualMode && (
             <p className="text-sm text-muted-foreground text-balance">
-              Just describe the transaction - AI will handle the rest!
+              Samo opišite transakciju — AI će uraditi ostalo.
             </p>
           )}
         </DialogHeader>
-        <DialogDescription className="hidden">Create transaction</DialogDescription>
+        <DialogDescription className="hidden">Kreiraj transakciju</DialogDescription>
         <div className="flex items-center space-x-2 pb-4">
           <Checkbox
             id="manual-mode"
@@ -42,7 +42,7 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
             onCheckedChange={(checked) => setIsManualMode(checked === true)}
           />
           <Label htmlFor="manual-mode" className="text-sm text-muted-foreground">
-            Manual input
+            Ručni unos
           </Label>
         </div>
         {isManualMode ? (

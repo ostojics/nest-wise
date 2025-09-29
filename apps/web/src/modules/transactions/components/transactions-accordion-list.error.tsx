@@ -7,7 +7,7 @@ export default function TransactionsAccordionListError({onRetry}: {onRetry?: () 
       {onRetry && (
         <div className="mt-3">
           <Button variant="outline" onClick={onRetry}>
-            Retry
+            Pokušaj ponovo
           </Button>
         </div>
       )}
