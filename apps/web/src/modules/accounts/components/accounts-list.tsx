@@ -36,7 +36,7 @@ const AccountsList = () => {
         <div className="text-center">
           <h3 className="text-lg font-semibold text-foreground">Nema pronađenih računa</h3>
           <p className="text-sm text-muted-foreground mt-1">
-            Create your first financial account to get started with managing your finances.
+            Kreirajte prvi finansijski račun da biste započeli upravljanje finansijama.
           </p>
         </div>
       </div>

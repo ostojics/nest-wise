@@ -67,39 +67,39 @@ const CreateAccount = () => {
       <DialogTrigger asChild>
         <Button>
           <PlusIcon className="w-4 h-4" />
-          Add Account
+          Dodaj račun
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Wallet className="w-5 h-5" />
-            Create New Account
+            Kreiraj novi račun
           </DialogTitle>
           <DialogDescription className="text-left">
-            Add a new financial account to track your money across different sources and goals.
+            Dodajte novi finansijski račun da biste pratili novac iz različitih izvora i za različite ciljeve.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-3">
             <Label htmlFor="name" className="text-sm font-medium">
-              Account Name
+              Naziv računa
             </Label>
             <Input
               id="name"
               {...register('name')}
-              placeholder="e.g., Chase Checking, Emergency Fund"
+              placeholder="npr. Tekući račun, Fond za hitne slučajeve"
               className="w-full"
             />
-            {errors.name && <FormError error={errors.name.message ?? 'Invalid account name'} />}
+            {errors.name && <FormError error={errors.name.message ?? 'Neispravan naziv računa'} />}
           </div>
 
           <div className="space-y-3">
             <Label className="text-sm font-medium">Tip računa</Label>
             <Select value={selectedType} onValueChange={handleTypeChange}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select account type" />
+                <SelectValue placeholder="Izaberite tip računa" />
               </SelectTrigger>
               <SelectContent>
                 {accountTypes.map((type) => {
@@ -120,7 +120,7 @@ const CreateAccount = () => {
           <SelectedAccountType type={selectedType} />
           <div className="space-y-3">
             <Label htmlFor="initialBalance" className="text-sm font-medium">
-              Initial Balance
+              Početno stanje
             </Label>
             <div className="relative">
               <Input
@@ -129,30 +129,23 @@ const CreateAccount = () => {
                 inputMode="decimal"
                 step="0.01"
                 {...register('initialBalance')}
-                placeholder="0.00"
+                placeholder="0,00"
               />
             </div>
             {errors.initialBalance && <FormError error={errors.initialBalance.message ?? ''} />}
             <p className="text-xs text-muted-foreground">
-              Enter the current balance of this account. You can update this later.
+              Unesite trenutno stanje ovog računa. Ovo možete kasnije izmeniti.
             </p>
           </div>
 
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
             <DialogClose asChild>
               <Button type="button" variant="outline" disabled={mutation.isPending}>
-                Cancel
+                Otkaži
               </Button>
             </DialogClose>
             <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" />
-                  Creating Account...
-                </>
-              ) : (
-                <>Kreiraj račun</>
-              )}
+              {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Kreiraj račun'}
             </Button>
           </div>
         </form>

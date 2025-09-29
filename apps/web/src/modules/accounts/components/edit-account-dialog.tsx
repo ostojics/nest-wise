@@ -64,7 +64,7 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
         }}
       >
         <DialogTrigger asChild>
-          <Button variant="ghost" title="Edit account" size="icon" aria-label="Edit account">
+          <Button variant="ghost" title="Izmeni račun" size="icon" aria-label="Izmeni račun">
             <Pencil className="size-4" />
           </Button>
         </DialogTrigger>
@@ -87,7 +87,7 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
                   onValueChange={(value) => setValue('type', value as EditAccountDTO['type'])}
                 >
                   <SelectTrigger id="edit-account-type" className="w-full">
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue placeholder="Izaberite tip" />
                   </SelectTrigger>
                   <SelectContent>
                     {accountTypes.map((t) => (
@@ -115,11 +115,11 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
             <DialogFooter className="mt-4">
               <DialogClose asChild>
                 <Button variant="outline" type="button" disabled={mutation.isPending}>
-                  Cancel
+                  Otkaži
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Save'}
+                {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Sačuvaj'}
               </Button>
             </DialogFooter>
           </form>

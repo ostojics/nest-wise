@@ -73,13 +73,13 @@ export const transferFundsSchema = z
         required_error: 'Polazni račun je obavezan',
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Polazni račun mora biti važeći UUID'),
+      .uuid('Polazni račun mora biti izabran'),
     toAccountId: z
       .string({
         required_error: 'Odredišni račun je obavezan',
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Odredišni račun mora biti važeći UUID'),
+      .uuid('Odredišni račun mora biti izabran'),
     amount: z.coerce
       .number({
         invalid_type_error: 'Neispravna vrednost (mora biti broj)',

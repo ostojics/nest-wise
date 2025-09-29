@@ -18,7 +18,7 @@ const Account: React.FC<AccountProps> = ({account}) => {
   const IconComponent = accountType?.icon;
 
   const formatDate = (date: Date) => {
-    return format(new Date(date), 'MMM dd, yyyy');
+    return format(new Date(date), 'd. LLL yyyy');
   };
 
   return (
