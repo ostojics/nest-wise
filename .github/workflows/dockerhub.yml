@@ -63,7 +63,9 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: false
           build-args: |
-            VITE_API_URL=https://api.nestwise.finance
+            API_URL=https://api.nestwise.finance
+            POSTHOG_KEY=${{ secrets.POSTHOG_KEY }}
+            POSTHOG_HOST=${{ secrets.POSTHOG_HOST }}
 
       - name: Show published tags
         run: |
