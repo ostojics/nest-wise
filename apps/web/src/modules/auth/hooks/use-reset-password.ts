@@ -9,11 +9,11 @@ export const useResetPassword = () => {
   return useMutation({
     mutationFn: resetPassword,
     onSuccess: async () => {
-      toast.success('Password reset successful');
+      toast.success('Lozinka je uspešno resetovana.');
       await navigate({to: '/login'});
     },
     onError: () => {
-      toast.error('Invalid or expired token. Please try again.');
+      toast.error('Nevažeći ili istekao token. Pokušajte ponovo.');
     },
   });
 };

@@ -40,9 +40,7 @@ const AvailableBalanceCard = () => {
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
         <div className="line-clamp-1 flex gap-2 font-medium items-center">Ukupno raspoloživo stanje</div>
-        <div className="text-muted-foreground">
-          Na {accountCount} {accountCount === 1 ? 'računu' : 'računa'}
-        </div>
+        <div className="text-muted-foreground">Broj računa: {accountCount}</div>
       </CardFooter>
     </Card>
   );

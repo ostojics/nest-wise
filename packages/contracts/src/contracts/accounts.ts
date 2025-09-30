@@ -2,7 +2,7 @@ import {z} from 'zod';
 
 export const accountTypeEnum = z.enum(['checking', 'savings', 'credit_card', 'investment', 'cash', 'other'], {
   errorMap: () => ({
-    message: 'Tip računa mora biti jedan od: tekući, štedni, kreditni, investicioni, gotovina, ostalo',
+    message: 'Tip računa mora biti jedan od: tekući, štednja, kreditni, investicioni, gotovina, ostalo',
   }),
 });
 

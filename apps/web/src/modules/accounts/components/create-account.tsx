@@ -77,7 +77,7 @@ const CreateAccount = () => {
             Kreiraj novi račun
           </DialogTitle>
           <DialogDescription className="text-left">
-            Dodajte novi finansijski račun da biste pratili novac iz različitih izvora i za različite ciljeve.
+            Dodajte novi finansijski račun kako biste pratili novac iz različitih izvora i za različite ciljeve.
           </DialogDescription>
         </DialogHeader>
 

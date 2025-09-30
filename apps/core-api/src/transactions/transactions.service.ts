@@ -138,17 +138,22 @@ export class TransactionsService {
     const account = await this.accountsService.findAccountById(transactionData.accountId);
     const household = await this.householdsService.findHouseholdById(account.householdId);
     const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
+    const prompt = categoryPromptFactory({
+      categories,
+      transactionDescription: transactionData.description,
+      currentDate: new Date().toISOString(),
+    });
+
+    this.logger.debug('AI Transaction Categorization Prompt', {prompt});
 
     const {object} = await generateObject({
-      model: openai('gpt-4.1-mini-2025-04-14'),
-      prompt: categoryPromptFactory({
-        categories,
-        transactionDescription: transactionData.description,
-        currentDate: new Date().toISOString(),
-      }),
+      model: openai('gpt-5-mini-2025-08-07'),
+      prompt,
       temperature: 0.1,
       schema: transactionCategoryOutputSchema,
     });
+
+    this.logger.debug('AI Transaction Categorization Result', {object});
 
     if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
       throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');

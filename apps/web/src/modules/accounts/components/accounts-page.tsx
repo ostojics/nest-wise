@@ -10,7 +10,7 @@ const AccountsPage = () => {
       <TextBanner
         className="mb-6"
         aria-label="Pregled računa"
-        text="Računi su mesta gde se nalazi vaš novac. Dodajte one koje koristite i održavajte stanje ažurnim beleženjem transakcija. Prebacujte novac između računa pomoću opcije Prebaci sredstva."
+        text="Računi su mesta gde se nalazi vaš novac. Dodajte one koje koristite i održavajte stanje ažurnim beleženjem transakcija."
       />
       <div className="flex items-center gap-2">
         <CreateAccount />

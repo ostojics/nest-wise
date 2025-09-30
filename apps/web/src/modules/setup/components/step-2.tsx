@@ -42,7 +42,7 @@ const Step2 = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-md">Prilagodite NestWise svom domaćinstvu</CardTitle>
-          <CardDescription>Definišite svoje domaćinstvo za pametne i zajedničke uvide uz pomoć AI</CardDescription>
+          <CardDescription>Definišite svoje domaćinstvo za pametne i zajedničke uvide</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(handleHouseholdSetup)}>
@@ -84,8 +84,8 @@ const Step2 = () => {
                     </h4>
                     <p className="text-xs text-gray-400">
                       Kada završite podešavanje, naš AI asistent će vam pomoći da lako kategorizujete troškove i
-                      dobijete personalizovane uvide. Budite spremni za pametnije trošenje i štednju, prilagođene vašem
-                      finansijskom toku.
+                      dobijete personalizovane uvide. Očekujte pametnije trošenje i štednju, prilagođene vašim
+                      finansijama.
                     </p>
                   </div>
                 </div>

@@ -30,7 +30,7 @@ const Step1 = () => {
         <CardHeader>
           <CardTitle className="text-md">Vaše putovanje ka finansijskoj sigurnosti počinje ovde</CardTitle>
           <CardDescription>
-            Postavite siguran pristup NestWise aplikaciji i otključajte pametno upravljanje novcem
+            Podesite pristup NestWise aplikaciji i otključajte pametno upravljanje novcem
           </CardDescription>
         </CardHeader>
         <CardContent>

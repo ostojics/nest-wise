@@ -3,7 +3,7 @@ import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
 import {SidebarTrigger} from '@/components/ui/sidebar';
 import {CreateTransactionDialog} from '@/modules/transactions/components/create-transaction-dialog';
-import {IconInvoice} from '@tabler/icons-react';
+import {IconReceipt} from '@tabler/icons-react';
 import {useLocation} from '@tanstack/react-router';
 import {useMemo, useState} from 'react';
 
@@ -29,7 +29,7 @@ export function SiteHeader() {
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg border-0 font-medium px-4 py-2"
             onClick={() => setIsTransactionDialogOpen(true)}
           >
-            <IconInvoice className="w-4 h-4" />
+            <IconReceipt className="w-4 h-4" />
             <span>Zabeleži transakciju</span>
           </Button>
         </div>
