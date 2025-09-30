@@ -12,8 +12,8 @@ const mockAccount: AccountContract = {
   initialBalance: 150000,
   currentBalance: 150000, // $1500.00
   ownerId: 'u-1',
-  createdAt: new Date('2024-01-01'),
-  updatedAt: new Date('2024-01-01'),
+  createdAt: new Date('2024-01-01T00:00:00.000Z'),
+  updatedAt: new Date('2024-01-01T00:00:00.000Z'),
 };
 
 // Mock transaction data
@@ -26,10 +26,10 @@ const mockTransactions: TransactionContract[] = [
     amount: 25000, // $250.00
     type: TransactionType.EXPENSE,
     description: 'Grocery shopping',
-    transactionDate: new Date('2024-01-15'),
+    transactionDate: new Date('2024-01-15T00:00:00.000Z'),
     isReconciled: true,
-    createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-01-15'),
+    createdAt: new Date('2024-01-15T00:00:00.000Z'),
+    updatedAt: new Date('2024-01-15T00:00:00.000Z'),
     account: mockAccount,
     category: mockCategory1,
   },
@@ -41,10 +41,10 @@ const mockTransactions: TransactionContract[] = [
     amount: 15000, // $150.00
     type: TransactionType.EXPENSE,
     description: 'Utility bill',
-    transactionDate: new Date('2024-01-10'),
+    transactionDate: new Date('2024-01-10T00:00:00.000Z'),
     isReconciled: true,
-    createdAt: new Date('2024-01-10'),
-    updatedAt: new Date('2024-01-10'),
+    createdAt: new Date('2024-01-10T00:00:00.000Z'),
+    updatedAt: new Date('2024-01-10T00:00:00.000Z'),
     account: mockAccount,
     category: mockCategory2,
   },
@@ -64,14 +64,21 @@ export const transactionHandlers = [
       filteredTransactions = mockTransactions.filter((t) => t.type === TransactionType.INCOME);
     }
 
-    return HttpResponse.json({
-      data: filteredTransactions,
-      meta: {
-        totalCount: filteredTransactions.length,
-        pageSize: 15,
-        currentPage: 1,
-        totalPages: 1,
+    return HttpResponse.json(
+      {
+        data: filteredTransactions,
+        meta: {
+          totalCount: filteredTransactions.length,
+          pageSize: 15,
+          currentPage: 1,
+          totalPages: 1,
+        },
       },
-    });
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
   }),
 ];
