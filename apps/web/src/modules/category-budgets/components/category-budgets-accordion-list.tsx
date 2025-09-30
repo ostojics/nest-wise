@@ -5,6 +5,7 @@ import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {CategoryBudgetWithCurrentAmountContract} from '@nest-wise/contracts';
 import EditCategoryBudgetDialog from './edit-category-budget-dialog';
+import EditCategoryNameDialog from '@/modules/categories/components/edit-category-name-dialog';
 import CategoryBudgetsAccordionListSkeleton from './category-budgets-accordion-list.skeleton';
 import CategoryBudgetsAccordionListError from './category-budgets-accordion-list.error';
 import {useGetCategoryBudgets} from '../hooks/use-get-category-budgets';
@@ -102,11 +103,16 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
                     </div>
                   </div>
                 </div>
-                <div className="pt-3 flex justify-end">
+                <div className="pt-3 flex justify-end gap-2">
                   <EditCategoryBudgetDialog
                     categoryBudgetId={item.id}
                     enableTrigger={isEditable}
                     plannedAmount={item.plannedAmount}
+                  />
+                  <EditCategoryNameDialog
+                    categoryId={item.categoryId}
+                    currentName={item.category.name}
+                    enableTrigger={isEditable}
                   />
                 </div>
               </AccordionContent>
