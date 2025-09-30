@@ -26,27 +26,27 @@ const ForgotPasswordForm = ({className, ...props}: React.ComponentProps<'div'>) 
     <div className={cn('flex flex-col w-md p-4', className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Forgot your password?</CardTitle>
-          <CardDescription>Enter your email address and we'll send you a link to reset your password</CardDescription>
+          <CardTitle>Zaboravili ste lozinku?</CardTitle>
+          <CardDescription>Unesite vašu e‑poštu i poslaćemo vam link za resetovanje lozinke</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit((data) => handleForgotPassword(data))}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">E‑pošta</Label>
                 <Input {...register('email', {required: true})} placeholder="m@example.com" />
                 {errors.email && <FormError error={errors.email.message ?? ''} />}
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                  {mutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send Reset Link'}
+                  {mutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Pošaljite link za resetovanje'}
                 </Button>
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
-              Remember your password?{' '}
+              Sećate se lozinke?{' '}
               <Link to="/login" className="underline underline-offset-4">
-                Back to login
+                Nazad na prijavu
               </Link>
             </div>
           </form>

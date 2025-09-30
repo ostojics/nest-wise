@@ -48,7 +48,7 @@ export class TransactionsService {
       const account = await this.accountsService.findAccountById(transactionData.accountId);
 
       if (transactionData.type === 'expense' && Number(account.currentBalance) < transactionData.amount) {
-        throw new BadRequestException('Insufficient funds for this expense');
+        throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
       }
 
       if (transactionData.type === 'income') {
@@ -76,11 +76,11 @@ export class TransactionsService {
 
       // Verify account belongs to the household
       if (account.householdId !== householdId) {
-        throw new BadRequestException('Account does not belong to the specified household');
+        throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
       }
 
       if (transactionData.type === 'expense' && Number(account.currentBalance) < transactionData.amount) {
-        throw new BadRequestException('Insufficient funds for this expense');
+        throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
       }
 
       if (transactionData.type === 'income') {
@@ -138,20 +138,25 @@ export class TransactionsService {
     const account = await this.accountsService.findAccountById(transactionData.accountId);
     const household = await this.householdsService.findHouseholdById(account.householdId);
     const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
+    const prompt = categoryPromptFactory({
+      categories,
+      transactionDescription: transactionData.description,
+      currentDate: new Date().toISOString(),
+    });
+
+    this.logger.debug('AI Transaction Categorization Prompt', {prompt});
 
     const {object} = await generateObject({
-      model: openai('gpt-4.1-mini-2025-04-14'),
-      prompt: categoryPromptFactory({
-        categories,
-        transactionDescription: transactionData.description,
-        currentDate: new Date().toISOString(),
-      }),
+      model: openai('gpt-5-mini-2025-08-07'),
+      prompt,
       temperature: 0.1,
       schema: transactionCategoryOutputSchema,
     });
 
+    this.logger.debug('AI Transaction Categorization Result', {object});
+
     if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
-      throw new BadRequestException('Insufficient funds for this expense');
+      throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
     }
 
     return await this.dataSource.transaction(async () => {
@@ -193,7 +198,7 @@ export class TransactionsService {
 
     // Verify account belongs to the household
     if (account.householdId !== householdId) {
-      throw new BadRequestException('Account does not belong to the specified household');
+      throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
     }
 
     const household = await this.householdsService.findHouseholdById(householdId);
@@ -211,7 +216,7 @@ export class TransactionsService {
     });
 
     if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
-      throw new BadRequestException('Insufficient funds for this expense');
+      throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
     }
 
     return await this.dataSource.transaction(async () => {
@@ -248,7 +253,7 @@ export class TransactionsService {
   async findTransactionById(id: string): Promise<Transaction> {
     const transaction = await this.transactionsRepository.findById(id);
     if (!transaction) {
-      throw new NotFoundException('Transaction not found');
+      throw new NotFoundException('Transakcija nije pronađena');
     }
     return transaction;
   }
@@ -302,7 +307,7 @@ export class TransactionsService {
     return await this.dataSource.transaction(async () => {
       const existingTransaction = await this.transactionsRepository.findById(id);
       if (!existingTransaction) {
-        throw new NotFoundException('Transaction not found');
+        throw new NotFoundException('Transakcija nije pronađena');
       }
 
       if (transactionData.amount !== undefined || transactionData.type !== undefined) {
@@ -321,7 +326,7 @@ export class TransactionsService {
         }
 
         if (newType === TransactionType.EXPENSE && balanceAfterOldRemoval < newAmount) {
-          throw new BadRequestException('Insufficient funds for updated expense amount');
+          throw new BadRequestException('Nedovoljno sredstava za ažurirani iznos rashoda');
         }
 
         const netChange = this.calculateNetBalanceChange(oldAmount, oldType, newAmount, newType);
@@ -335,7 +340,7 @@ export class TransactionsService {
 
       const updatedTransaction = await this.transactionsRepository.update(id, transactionData);
       if (!updatedTransaction) {
-        throw new NotFoundException('Transaction not found');
+        throw new NotFoundException('Transakcija nije pronađena');
       }
 
       return updatedTransaction;
@@ -346,7 +351,7 @@ export class TransactionsService {
     return await this.dataSource.transaction(async () => {
       const existingTransaction = await this.transactionsRepository.findById(id);
       if (!existingTransaction) {
-        throw new NotFoundException('Transaction not found');
+        throw new NotFoundException('Transakcija nije pronađena');
       }
 
       const account = await this.accountsService.findAccountById(existingTransaction.accountId);
@@ -365,7 +370,7 @@ export class TransactionsService {
 
       const deleted = await this.transactionsRepository.delete(id);
       if (!deleted) {
-        throw new NotFoundException('Transaction not found');
+        throw new NotFoundException('Transakcija nije pronađena');
       }
     });
   }

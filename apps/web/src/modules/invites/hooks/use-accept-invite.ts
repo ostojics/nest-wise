@@ -14,7 +14,7 @@ export const useAcceptInvite = () => {
     mutationFn: acceptInvite,
     onSuccess: () => {
       void navigate({to: '/plan'});
-      toast.success('Invite accepted successfully');
+      toast.success('Poziv je uspešno prihvaćen');
       void queryClient.invalidateQueries({queryKey: queryKeys.me()});
     },
     onError: async (error) => {
@@ -26,7 +26,7 @@ export const useAcceptInvite = () => {
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Došlo je do neočekivane greške');
     },
   });
 };

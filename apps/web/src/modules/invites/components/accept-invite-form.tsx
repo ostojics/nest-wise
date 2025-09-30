@@ -27,21 +27,21 @@ const AcceptInviteForm = ({className, ...props}: React.ComponentProps<'div'>) =>
     <div className={cn('flex flex-col max-w-md w-full p-4', className)} {...props}>
       <Card>
         <CardHeader className="mb-2">
-          <CardTitle>Join {search.householdName || 'the household'}</CardTitle>
-          <CardDescription className="text-balance">Complete your account details to accept the invite</CardDescription>
+          <CardTitle>Pridružite se domaćinstvu {search.householdName || 'the household'}</CardTitle>
+          <CardDescription className="text-balance">Unesite svoje podatke kako biste prihvatili poziv</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
             <div className="flex flex-col gap-3 text-left">
               <Label htmlFor="username">
-                Username <span className="text-red-500">*</span>
+                Korisničko ime <span className="text-red-500">*</span>
               </Label>
-              <Input {...register('username', {required: true})} placeholder="e.g. john_smith" />
+              <Input {...register('username', {required: true})} placeholder="npr. marko_marković" />
               {errors.username?.message && <FormError error={errors.username.message} />}
             </div>
             <div className="flex flex-col gap-3 text-left">
               <Label htmlFor="email">
-                Email <span className="text-red-500">*</span>
+                E-pošta <span className="text-red-500">*</span>
               </Label>
               <Input {...register('email', {required: true})} type="email" placeholder="m@example.com" />
               {errors.email?.message && <FormError error={errors.email.message} />}
@@ -50,7 +50,7 @@ const AcceptInviteForm = ({className, ...props}: React.ComponentProps<'div'>) =>
             <div className="flex flex-col gap-3 text-left">
               <div className="flex items-center gap-2">
                 <Label htmlFor="password">
-                  Password <span className="text-red-500">*</span>
+                  Lozinka <span className="text-red-500">*</span>
                 </Label>
               </div>
               <Input {...register('password', {required: true})} type="password" placeholder="••••••••" />
@@ -59,7 +59,7 @@ const AcceptInviteForm = ({className, ...props}: React.ComponentProps<'div'>) =>
 
             <div className="flex flex-col gap-3 text-left">
               <Label htmlFor="confirm_password">
-                Confirm password <span className="text-red-500">*</span>
+                Potvrdite lozinku <span className="text-red-500">*</span>
               </Label>
               <Input {...register('confirm_password', {required: true})} type="password" placeholder="••••••••" />
               {errors.confirm_password?.message && <FormError error={errors.confirm_password.message} />}
@@ -68,7 +68,7 @@ const AcceptInviteForm = ({className, ...props}: React.ComponentProps<'div'>) =>
             <input type="hidden" {...register('token')} />
 
             <Button type="submit" className="w-full mt-4" disabled={isSubmitting}>
-              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Accept invite'}
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Prihvatite poziv'}
             </Button>
           </form>
         </CardContent>

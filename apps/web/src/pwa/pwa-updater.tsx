@@ -11,14 +11,14 @@ export const PwaUpdater = () => {
 
   useEffect(() => {
     if (needRefresh) {
-      toast('New version available!', {
-        description: 'A new version of NestWise is available. Click to update now.',
+      toast('Nova verzija je dostupna!', {
+        description: 'Dostupna je nova verzija NestWise aplikacije. Kliknite da biste ažurirali.',
         duration: Infinity, // Don't auto-dismiss
         action: {
           label: (
             <div className="flex items-center gap-2">
               <RefreshCw className="size-3" />
-              Update
+              Ažuriraj
             </div>
           ),
           onClick: () => {

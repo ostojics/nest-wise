@@ -5,6 +5,8 @@ import App from './app';
 import './index.css';
 import {router} from './router';
 import {PostHogProvider} from 'posthog-js/react';
+import {setDefaultOptions} from 'date-fns';
+import {srLatn} from 'date-fns/locale';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +27,8 @@ const rootElement = document.getElementById('root');
 if (!rootElement) {
   throw new Error('Root element not found');
 }
+
+setDefaultOptions({locale: srLatn});
 
 createRoot(rootElement).render(
   <StrictMode>

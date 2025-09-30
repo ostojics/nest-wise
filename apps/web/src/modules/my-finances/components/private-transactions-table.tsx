@@ -33,7 +33,7 @@ export function PrivateTransactionsTable({data}: PrivateTransactionsTableProps) 
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         <ArrowUpDown className="size-4" />
-                        {sorted && <span className="sr-only">{sorted === 'asc' ? 'ascending' : 'descending'}</span>}
+                        {sorted && <span className="sr-only">{sorted === 'asc' ? 'rastuće' : 'opadajuće'}</span>}
                       </button>
                     ) : (
                       flexRender(header.column.columnDef.header, header.getContext())
@@ -56,7 +56,7 @@ export function PrivateTransactionsTable({data}: PrivateTransactionsTableProps) 
           ) : (
             <TableRow>
               <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center text-muted-foreground">
-                No transactions found
+                Nema pronađenih transakcija
               </TableCell>
             </TableRow>
           )}

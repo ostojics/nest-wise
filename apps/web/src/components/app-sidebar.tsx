@@ -24,12 +24,12 @@ const data = {
   },
   navSecondary: [
     {
-      title: 'Settings',
+      title: 'Podešavanja',
       url: '#',
       icon: IconSettings,
     },
     {
-      title: 'Get Help',
+      title: 'Pomoć',
       url: '#',
       icon: IconHelp,
     },

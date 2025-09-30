@@ -9,11 +9,11 @@ export const useForgotPassword = () => {
   return useMutation({
     mutationFn: forgotPassword,
     onSuccess: async () => {
-      toast.success('If an account exists, an email has been sent');
+      toast.success('Ukoliko nalog postoji, poslat je email za resetovanje lozinke');
       await navigate({to: '/login'});
     },
     onError: () => {
-      toast.error('Failed to process request. Please try again.');
+      toast.error('Došlo je do greške prilikom obrade zahteva. Pokušajte ponovo.');
     },
   });
 };

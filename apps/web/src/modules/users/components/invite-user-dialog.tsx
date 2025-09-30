@@ -42,7 +42,7 @@ const InviteUserDialog = () => {
           return;
         }
 
-        toast.error('Unexpected error occurred');
+        toast.error('Došlo je do neočekivane greške');
       },
     });
 
@@ -64,18 +64,17 @@ const InviteUserDialog = () => {
       <DialogTrigger asChild>
         <Button>
           <UserPlus2 className="w-4 h-4" />
-          Invite Member
+          Pozovi člana
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Mail className="w-5 h-5" />
-            Invite a Member
+            Pozovi člana
           </DialogTitle>
           <DialogDescription className="text-left text-balance">
-            Send an invitation to add a new member to your household. They will receive an email with instructions to
-            join.
+            Pozovite novog člana u svoje domaćinstvo. Dobiće email sa instrukcijama za registraciju.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleInviteUser)} className="space-y-6">
@@ -83,17 +82,17 @@ const InviteUserDialog = () => {
             <Label htmlFor="email" className="text-sm font-medium">
               Email <span className="text-red-500">*</span>
             </Label>
-            <Input id="email" type="email" placeholder="name@example.com" className="w-full" {...register('email')} />
+            <Input id="email" type="email" placeholder="ime@primer.com" className="w-full" {...register('email')} />
             {errors.email?.message && <FormError error={errors.email.message} />}
           </div>
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
             <DialogClose asChild>
               <Button type="button" variant="outline">
-                Cancel
+                Otkaži
               </Button>
             </DialogClose>
             <Button type="submit" disabled={mutation.isPending}>
-              Send invitation
+              Pošalji pozivnicu
             </Button>
           </div>
         </form>

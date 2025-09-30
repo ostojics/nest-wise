@@ -28,18 +28,18 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
   }, [current]);
 
   const months = [
-    {value: '01', label: 'January'},
-    {value: '02', label: 'February'},
-    {value: '03', label: 'March'},
-    {value: '04', label: 'April'},
-    {value: '05', label: 'May'},
-    {value: '06', label: 'June'},
-    {value: '07', label: 'July'},
-    {value: '08', label: 'August'},
-    {value: '09', label: 'September'},
-    {value: '10', label: 'October'},
-    {value: '11', label: 'November'},
-    {value: '12', label: 'December'},
+    {value: '01', label: 'januar'},
+    {value: '02', label: 'februar'},
+    {value: '03', label: 'mart'},
+    {value: '04', label: 'april'},
+    {value: '05', label: 'maj'},
+    {value: '06', label: 'jun'},
+    {value: '07', label: 'jul'},
+    {value: '08', label: 'avgust'},
+    {value: '09', label: 'septembar'},
+    {value: '10', label: 'oktobar'},
+    {value: '11', label: 'novembar'},
+    {value: '12', label: 'decembar'},
   ];
 
   const formatDate = (date: Date) => format(date, 'yyyy-MM');
@@ -80,17 +80,17 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
         disabled={isLoading}
         className="h-9 w-9"
         onClick={handlePrev}
-        aria-label="Previous month"
+        aria-label="Prethodni mesec"
       >
         <ChevronLeft className="size-4" />
-        <span className="sr-only">Previous month</span>
+        <span className="sr-only">Prethodni mesec</span>
       </Button>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             disabled={isLoading}
             variant="outline"
-            title="Select month"
+            title="Izaberite mesec"
             className="h-9 min-w-50 justify-between font-normal"
           >
             {format(current, 'LLLL yyyy')}
@@ -100,11 +100,11 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
           <div className="flex items-center gap-3">
             <div className="flex flex-col gap-1">
               <Label htmlFor="month-select" className="px-1 sr-only">
-                Month
+                Mesec
               </Label>
               <Select value={format(current, 'MM')} onValueChange={handleMonthChange}>
                 <SelectTrigger id="month-select" className="h-9 min-w-40">
-                  <SelectValue placeholder="Month" />
+                  <SelectValue placeholder="Mesec" />
                 </SelectTrigger>
                 <SelectContent>
                   {months.map((m) => (
@@ -117,11 +117,11 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
             </div>
             <div className="flex flex-col gap-1">
               <Label htmlFor="year-select" className="px-1 sr-only">
-                Year
+                Godina
               </Label>
               <Select value={String(current.getFullYear())} onValueChange={handleYearChange}>
                 <SelectTrigger id="year-select" className="h-9 min-w-28">
-                  <SelectValue placeholder="Year" />
+                  <SelectValue placeholder="Godina" />
                 </SelectTrigger>
                 <SelectContent>
                   {years.map((y) => (
@@ -141,10 +141,10 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
         size="icon"
         className="h-9 w-9"
         onClick={handleNext}
-        aria-label="Next month"
+        aria-label="Sledeći mesec"
       >
         <ChevronRight className="size-4" />
-        <span className="sr-only">Next month</span>
+        <span className="sr-only">Sledeći mesec</span>
       </Button>
     </div>
   );

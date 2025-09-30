@@ -10,11 +10,10 @@ export function AiDescriptionTooltip() {
       <TooltipContent side="top" className="max-w-xs">
         <div className="space-y-1">
           <p className="text-xs leading-relaxed">
-            Describe your transaction in plain English. Our AI will automatically extract the amount, category, and
-            other details.
+            Opišite transakciju jednostavnim rečima. Naš AI će automatski prepoznati iznos, kategoriju i ostale detalje.
           </p>
           <p className="text-xs text-muted mt-2">
-            <strong>Example:</strong> "Paid $45 for lunch at McDonald's yesterday"
+            <strong>Primer:</strong> "Juče sam potrošio/la 3000 RSD u Lidlu"
           </p>
         </div>
       </TooltipContent>

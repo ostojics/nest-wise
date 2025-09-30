@@ -14,7 +14,7 @@ export const useGetCategoriesSpending = ({search}: UseGetCategoriesSpendingArgs)
   return useQuery({
     queryKey: queryKeys.transactions.categoriesSpending(search),
     queryFn: async () => {
-      if (!me?.householdId) throw new Error('No household ID available');
+      if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
       return await getCategoriesSpending(me.householdId, search);
     },
     enabled: Boolean(me?.householdId),

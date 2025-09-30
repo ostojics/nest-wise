@@ -62,27 +62,27 @@ const TransferFundsDialog = () => {
       <DialogTrigger asChild>
         <Button>
           <ArrowLeftRight className="w-4 h-4" />
-          Transfer funds
+          Prebaci sredstva
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Wallet className="w-5 h-5" />
-            Transfer Funds
+            Prebacivanje sredstava
           </DialogTitle>
           <DialogDescription className="text-left">
-            Move money between your accounts. Select the source and destination accounts and enter an amount.
+            Prebacite novac između svojih računa. Izaberite polazni i odredišni račun i unesite iznos.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleTransferFunds)} className="space-y-6">
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Source account</Label>
+            <Label className="text-sm font-medium">Polazni račun</Label>
             <AccountSelect
               accounts={accounts}
               value={fromAccountId}
               onChange={(id) => setValue('fromAccountId', id, {shouldValidate: true})}
-              placeholder="Select source account"
+              placeholder="Izaberite polazni račun"
               className="w-full"
               excludeId={toAccountId}
             />
@@ -90,12 +90,12 @@ const TransferFundsDialog = () => {
           </div>
 
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Destination account</Label>
+            <Label className="text-sm font-medium">Odredišni račun</Label>
             <AccountSelect
               accounts={accounts}
               value={toAccountId}
               onChange={(id) => setValue('toAccountId', id, {shouldValidate: true})}
-              placeholder="Select destination account"
+              placeholder="Izaberite odredišni račun"
               className="w-full"
               excludeId={fromAccountId}
             />
@@ -104,7 +104,7 @@ const TransferFundsDialog = () => {
 
           <div className="space-y-3">
             <Label htmlFor="amount" className="text-sm font-medium">
-              Amount
+              Iznos
             </Label>
             <div className="relative">
               <Input id="amount" type="number" step="0.01" placeholder="0.00" {...register('amount')} />
@@ -115,11 +115,11 @@ const TransferFundsDialog = () => {
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
             <DialogClose asChild>
               <Button type="button" variant="outline" disabled={mutation.isPending}>
-                Cancel
+                Otkaži
               </Button>
             </DialogClose>
             <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Transfer'}
+              {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Prebaci'}
             </Button>
           </div>
         </form>

@@ -66,17 +66,17 @@ export function NavUser() {
             <DropdownMenuGroup>
               <DropdownMenuItem disabled>
                 <IconUserCircle />
-                Account
+                Nalog
               </DropdownMenuItem>
               <DropdownMenuItem disabled>
                 <IconCreditCard />
-                Billing
+                Plaćanja
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => mutation.mutate()} disabled={mutation.isPending}>
               <IconLogout />
-              Log out
+              Odjavite se
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

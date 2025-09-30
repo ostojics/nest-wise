@@ -26,7 +26,7 @@ export class HouseholdsService {
   async findHouseholdById(id: string): Promise<Household> {
     const household = await this.householdsRepository.findById(id);
     if (!household) {
-      throw new NotFoundException('Household not found');
+      throw new NotFoundException('Domaćinstvo nije pronađeno');
     }
 
     return household;
@@ -35,7 +35,7 @@ export class HouseholdsService {
   async findHouseholdByIdWithUsers(id: string): Promise<Household> {
     const household = await this.householdsRepository.findByIdWithUsers(id);
     if (!household) {
-      throw new NotFoundException('Household not found');
+      throw new NotFoundException('Domaćinstvo nije pronađeno');
     }
     return household;
   }
@@ -47,7 +47,7 @@ export class HouseholdsService {
   async updateHousehold(id: string, householdData: UpdateHouseholdDTO): Promise<Household> {
     const existingHousehold = await this.householdsRepository.findById(id);
     if (!existingHousehold) {
-      throw new NotFoundException('Household not found');
+      throw new NotFoundException('Domaćinstvo nije pronađeno');
     }
 
     const updateData: Partial<Household> = {};
@@ -63,7 +63,7 @@ export class HouseholdsService {
 
     const updatedHousehold = await this.householdsRepository.update(id, updateData);
     if (!updatedHousehold) {
-      throw new NotFoundException('Household not found');
+      throw new NotFoundException('Domaćinstvo nije pronađeno');
     }
 
     return updatedHousehold;
