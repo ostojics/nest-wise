@@ -26,8 +26,8 @@ const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
     <div className={cn('flex flex-col w-md p-4', className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Prijavite se na svoj račun</CardTitle>
-          <CardDescription>Unesite vašu e‑poštu i lozinku da se prijavite na račun</CardDescription>
+          <CardTitle>Prijavite se</CardTitle>
+          <CardDescription>Unesite vašu e‑poštu i lozinku</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit((data) => handleLogin(data))}>
