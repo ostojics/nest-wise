@@ -23,13 +23,13 @@ const SpendingReportPage = () => {
       <section className="flex flex-col gap-5 flex-1 md:flex-row md:gap-2 md:mb-5 mb-8 max-w-[18.75rem] mt-4">
         <div className="flex flex-col gap-1 flex-1">
           <Label htmlFor="dashboard-date-from" className="px-1">
-            Date from
+            Datum od
           </Label>
           <DateFromPicker />
         </div>
         <div className="flex flex-col gap-1 flex-1">
           <Label htmlFor="dashboard-date-to" className="px-1">
-            Date to
+            Datum do
           </Label>
           <DateToPicker />
         </div>

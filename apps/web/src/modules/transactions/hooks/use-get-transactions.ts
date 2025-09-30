@@ -14,7 +14,7 @@ export const useGetTransactions = ({search}: UseGetTransactionsArgs) => {
   return useQuery({
     queryKey: queryKeys.transactions.all(search),
     queryFn: () => {
-      if (!me?.householdId) throw new Error('No household ID available');
+      if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
       return getTransactionsForHousehold(me.householdId, search);
     },
     enabled: Boolean(me?.householdId),

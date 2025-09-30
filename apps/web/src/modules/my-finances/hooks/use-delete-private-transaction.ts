@@ -14,7 +14,7 @@ export const useDeletePrivateTransaction = () => {
       await client.invalidateQueries({
         queryKey: queryKeys.privateTransactions.key(),
       });
-      toast.success('Private transaction deleted');
+      toast.success('Privatna transakcija je obrisana');
     },
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
@@ -25,7 +25,7 @@ export const useDeletePrivateTransaction = () => {
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Došlo je do neočekivane greške');
     },
   });
 };

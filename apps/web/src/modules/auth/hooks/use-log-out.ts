@@ -1,5 +1,4 @@
 import {logout} from '@/modules/api/auth-api';
-import {queryKeys} from '@/modules/api/query-keys';
 import {ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {useNavigate} from '@tanstack/react-router';
@@ -13,7 +12,7 @@ export const useLogOut = () => {
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      void client.invalidateQueries({queryKey: [queryKeys.me]});
+      void client.invalidateQueries({refetchType: 'none'});
       void navigate({to: '/login', reloadDocument: true});
     },
     onError: async (error) => {
@@ -25,7 +24,7 @@ export const useLogOut = () => {
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Neočekivana greška, pokušajte ponovo.');
     },
   });
 };

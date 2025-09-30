@@ -33,26 +33,26 @@ const TransactionRowActions: React.FC<TransactionActionsProps> = ({transaction})
         <Button
           variant="ghost"
           className="text-red-500 hover:text-red-500"
-          title="Delete transaction"
+          title="Obriši transakciju"
           size="icon"
-          aria-label="Delete transaction"
+          aria-label="Obriši transakciju"
         >
           {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
-          <span className="sr-only">Delete transaction</span>
+          <span className="sr-only">Obriši transakciju</span>
         </Button>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader className="mb-3">
-          <DialogTitle>Delete transaction</DialogTitle>
-          <DialogDescription>Are you sure you want to delete this transaction?</DialogDescription>
+          <DialogTitle>Obriši transakciju</DialogTitle>
+          <DialogDescription>Da li ste sigurni da želite da obrišete ovu transakciju?</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => setIsOpen(false)} disabled={deleteMutation.isPending}>
-            Cancel
+            Otkaži
           </Button>
           <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Delete'}
+            {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Obriši'}
           </Button>
         </DialogFooter>
       </DialogContent>

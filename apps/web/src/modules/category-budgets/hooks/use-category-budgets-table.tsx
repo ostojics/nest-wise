@@ -17,7 +17,7 @@ export const useCategoryBudgetsTable = (
     () => [
       {
         id: 'category',
-        header: 'Category',
+        header: 'Kategorija',
         cell: ({row}) => {
           const planned = row.original.plannedAmount;
           const spent = row.original.currentAmount;
@@ -41,26 +41,26 @@ export const useCategoryBudgetsTable = (
           const spent = row.original.currentAmount;
           const available = planned - spent;
           const isOverspent = available < 0;
-          const label = isOverspent ? 'Overspent' : planned > 0 ? 'On Track' : '—';
+          const label = isOverspent ? 'Prekoračeno' : planned > 0 ? 'U skladu sa planom' : '—';
           return <span>{label}</span>;
         },
         enableSorting: false,
       },
       {
         accessorKey: 'plannedAmount',
-        header: 'Assigned',
+        header: 'Planirano',
         enableSorting: false,
         cell: ({row}) => <span className="tabular-nums">{formatBalance(row.original.plannedAmount)}</span>,
       },
       {
         id: 'spent',
-        header: 'Spent',
+        header: 'Potrošeno',
         enableSorting: false,
         cell: ({row}) => <span className="tabular-nums">{formatBalance(row.original.currentAmount)}</span>,
       },
       {
         id: 'available',
-        header: 'Available',
+        header: 'Raspoloživo',
         cell: ({row}) => {
           const available = row.original.plannedAmount - row.original.currentAmount;
           const negative = available < 0;
@@ -81,7 +81,6 @@ export const useCategoryBudgetsTable = (
       },
       {
         id: 'actions',
-        header: 'Actions',
         cell: ({row}) => (
           <EditCategoryBudgetDialog
             categoryBudgetId={row.original.id}

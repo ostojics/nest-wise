@@ -34,7 +34,7 @@ const AiBanner = () => {
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              NestWise Assistant
+              NestWise Asistent
             </span>
             <div className="flex gap-1">
               <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse" />
@@ -42,7 +42,7 @@ const AiBanner = () => {
               <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse animation-delay-200" />
             </div>
           </div>
-          <p className="text-sm text-muted-foreground">I'm ready to help you log your transaction...</p>
+          <p className="text-sm text-muted-foreground">Spreman sam da vam pomognem da zabeležite transakciju...</p>
         </div>
       </div>
     </div>

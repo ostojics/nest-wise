@@ -38,7 +38,7 @@ const PrivateTransactionDateFromPicker: React.FC<PrivateTransactionDateFromPicke
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <Label htmlFor="private-transaction-date-from" className="px-1 sr-only">
-        Private transaction date from
+        Datum privatne transakcije od
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -47,7 +47,7 @@ const PrivateTransactionDateFromPicker: React.FC<PrivateTransactionDateFromPicke
             id="private-transaction-date-from"
             className="h-9 min-w-50 justify-between font-normal"
           >
-            {selectedDate ? format(selectedDate, 'PPP') : 'Select date from'}
+            {selectedDate ? format(selectedDate, 'PPP') : 'Izaberi datum od'}
             <ChevronsUpDown className="ml-2 size-4 opacity-50" />
           </Button>
         </PopoverTrigger>

@@ -10,7 +10,7 @@ interface AccountSelectProps {
   accounts: AccountContract[];
   value?: string;
   onChange: (accountId: string) => void;
-  placeholder?: string;
+  placeholder?: string; // pass Serbian from callers where needed
   className?: string;
   excludeId?: string;
 }
@@ -47,15 +47,15 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
           aria-expanded={open}
           className={cn('h-9 min-w-50 justify-between', className)}
         >
-          {selectedLabel ?? placeholder ?? 'Select account'}
+          {selectedLabel ?? placeholder ?? 'Izaberite račun'}
           <ChevronsUpDown className="ml-2 size-4 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end" sideOffset={10}>
         <Command>
-          <CommandInput placeholder="Search accounts" />
+          <CommandInput placeholder="Pretražite račune" />
           <CommandList>
-            <CommandEmpty>No accounts found.</CommandEmpty>
+            <CommandEmpty>Nema pronađenih računa.</CommandEmpty>
             <CommandGroup>
               {filtered.map((account) => {
                 return (

@@ -6,9 +6,9 @@ export function ReportsNav() {
   const navigate = useNavigate();
 
   const tabs = [
-    {value: '/reports/spending', label: 'Spending'},
-    {value: '/reports/savings', label: 'Money Saved'},
-    {value: '/reports/net-worth', label: 'Net Worth'},
+    {value: '/reports/spending', label: 'Troškovi'},
+    {value: '/reports/savings', label: 'Štednja'},
+    {value: '/reports/net-worth', label: 'Ukupni kapital'},
   ];
 
   const active = tabs.find((t) => pathname.startsWith(t.value))?.value ?? '/reports/spending';

@@ -56,7 +56,7 @@ export class HouseholdCategoryBudgetsController {
   ): Promise<CategoryBudgetWithCurrentAmountContract[]> {
     const canAccess = await this.policiesService.canUserAccessHousehold(user.sub, householdId);
     if (!canAccess) {
-      throw new ForbiddenException('You do not have access to this household');
+      throw new ForbiddenException('Nemate pristup ovom domaćinstvu');
     }
 
     return await this.categoryBudgetsService.getCategoryBudgetsForHousehold(householdId, query.month);

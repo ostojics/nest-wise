@@ -33,28 +33,28 @@ export default function PrivateTransactionRowActions({transactionId}: PrivateTra
         <Button
           variant="ghost"
           className="text-red-500 hover:text-red-500"
-          title="Delete private transaction"
+          title="Obriši privatnu transakciju"
           size="icon"
-          aria-label="Delete"
+          aria-label="Obriši"
         >
           {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
-          <span className="sr-only">Delete private transaction</span>
+          <span className="sr-only">Obriši privatnu transakciju</span>
         </Button>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader className="mb-3">
-          <DialogTitle>Delete private transaction</DialogTitle>
-          <DialogDescription>Are you sure you want to delete this private transaction?</DialogDescription>
+          <DialogTitle>Obriši privatnu transakciju</DialogTitle>
+          <DialogDescription>Da li ste sigurni da želite da obrišete ovu privatnu transakciju?</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline" disabled={deleteMutation.isPending}>
-              Cancel
+              Otkaži
             </Button>
           </DialogClose>
           <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Delete'}
+            {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Obriši'}
           </Button>
         </DialogFooter>
       </DialogContent>

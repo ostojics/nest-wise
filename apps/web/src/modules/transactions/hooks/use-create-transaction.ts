@@ -11,7 +11,7 @@ export const useCreateTransaction = () => {
 
   return useMutation({
     mutationFn: (transaction: CreateTransactionHouseholdDTO) => {
-      if (!me?.householdId) throw new Error('No household ID available');
+      if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
       return createTransactionForHousehold(me.householdId, transaction);
     },
     onSuccess: () => {
@@ -20,10 +20,10 @@ export const useCreateTransaction = () => {
       void client.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
       void client.invalidateQueries({queryKey: queryKeys.transactions.allPagesKey()});
 
-      toast.success('Transaction created successfully');
+      toast.success('Transakcija je uspešno kreirana');
     },
     onError: () => {
-      toast.error('Failed to create transaction');
+      toast.error('Kreiranje transakcije nije uspelo');
     },
   });
 };

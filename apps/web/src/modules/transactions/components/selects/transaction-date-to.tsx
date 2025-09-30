@@ -37,12 +37,12 @@ const TransactionDateToPicker: React.FC<TransactionDateToPickerProps> = ({classN
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <Label htmlFor="transaction-date-to" className="px-1 sr-only">
-        Transaction date to
+        Datum transakcije do
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" id="transaction-date-to" className="h-9 min-w-50 justify-between font-normal">
-            {selectedDate ? format(selectedDate, 'PPP') : 'Select date to'}
+            {selectedDate ? format(selectedDate, 'PPP') : 'Izaberi datum do'}
             <ChevronsUpDown className="ml-2 size-4 opacity-50" />
           </Button>
         </PopoverTrigger>

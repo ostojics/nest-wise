@@ -78,7 +78,7 @@ export class CategoryBudgetsService {
   async findCategoryBudgetById(id: string): Promise<CategoryBudgetContract> {
     const budget = await this.categoryBudgetsRepository.findById(id);
     if (!budget) {
-      throw new NotFoundException('Category budget not found');
+      throw new NotFoundException('Budžet kategorije nije pronađen');
     }
 
     return budget as CategoryBudgetContract;
@@ -92,12 +92,12 @@ export class CategoryBudgetsService {
     const startOfCurrentMonth = startOfMonth(currentDate);
 
     if (isBefore(startOfBudgetMonth, startOfCurrentMonth)) {
-      throw new BadRequestException('Cannot edit a category budget for a past month');
+      throw new BadRequestException('Nije moguće menjati budžet kategorije za prethodni mesec');
     }
 
     const updated = await this.categoryBudgetsRepository.updatePlannedAmount(id, dto.plannedAmount);
     if (!updated) {
-      throw new NotFoundException('Category budget not found');
+      throw new NotFoundException('Budžet kategorije nije pronađen');
     }
 
     return updated as CategoryBudgetContract;

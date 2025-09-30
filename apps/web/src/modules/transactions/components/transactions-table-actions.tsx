@@ -22,7 +22,7 @@ const TransactionsTableActions = () => {
           <CategoryCombobox categories={categories ?? []} />
           <TransactionDateFromPicker />
           <TransactionDateToPicker />
-          <Button onClick={() => navigate({to: '/transactions'})}>Reset filters</Button>
+          <Button onClick={() => navigate({to: '/transactions'})}>Poništi filtere</Button>
         </div>
       </div>
     </section>
