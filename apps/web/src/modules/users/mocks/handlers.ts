@@ -20,8 +20,8 @@ const mockUser: UserContract = {
 };
 
 export const userHandlers = [
-  // GET /v1/users/me
-  http.get('*/v1/users/me', () => {
+  // GET /v1/auth/me (authentication endpoint)
+  http.get('*/v1/auth/me', () => {
     return HttpResponse.json(mockUser);
   }),
 ];
