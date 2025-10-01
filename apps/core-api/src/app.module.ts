@@ -6,7 +6,7 @@ import {ConfigModule, ConfigService} from '@nestjs/config';
 
 import {ThrottlerModule} from '@nestjs/throttler';
 import {throttlerConfig, throttlerFactory} from './config/throttler.config';
-import {appConfig} from './config/app.config';
+import {AppConfig, appConfig, AppConfigName} from './config/app.config';
 import {DatabaseConfig, databaseConfig, DatabaseConfigName} from './config/database.config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {GlobalConfig} from './config/config.interface';
@@ -30,7 +30,19 @@ import {LicensesModule} from './licenses/licenses.module';
 @Module({
   imports: [
     ConfigModule.forRoot({cache: true, load: [appConfig, throttlerConfig, databaseConfig, queuesConfig]}),
-    LoggerModule.forRoot(),
+    LoggerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<GlobalConfig>) => {
+        const config = configService.getOrThrow<AppConfig>(AppConfigName);
+
+        return {
+          pinoHttp: {
+            level: config.logLevel,
+          },
+        };
+      },
+    }),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
