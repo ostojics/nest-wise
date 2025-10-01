@@ -205,7 +205,7 @@ export class TransactionsService {
     const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
 
     const {object} = await generateObject({
-      model: openai('gpt-4.1-mini-2025-04-14'),
+      model: openai('gpt-5-mini-2025-08-07'),
       prompt: categoryPromptFactory({
         categories,
         transactionDescription: transactionData.description,

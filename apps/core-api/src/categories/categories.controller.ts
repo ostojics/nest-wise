@@ -5,6 +5,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConflictResponse,
+  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -13,14 +14,14 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {LicenseGuard} from 'src/common/guards/license.guard';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
+import {PoliciesService} from 'src/policies/policies.service';
 import {CategoryResponseSwaggerDTO, UpdateCategorySwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
 import {CategoriesService} from './categories.service';
-import {CurrentUser} from 'src/common/decorators/current-user.decorator';
-import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
-import {PoliciesService} from 'src/policies/policies.service';
 
 @ApiTags('Categories')
 @Controller({
@@ -72,11 +73,19 @@ export class CategoriesController {
   @ApiUnauthorizedResponse({
     description: 'Authentication required',
   })
+  @ApiForbiddenResponse({
+    description: 'User does not have access to this category',
+  })
   @ApiBearerAuth()
   @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(updateCategorySchema))
   @Put(':id')
-  async updateCategory(@Param('id') id: string, @Body() dto: UpdateCategoryDTO) {
+  async updateCategory(@CurrentUser() user: JwtPayload, @Param('id') id: string, @Body() dto: UpdateCategoryDTO) {
+    const canUpdate = await this.policiesService.canUserModifyCategory(user.sub, id);
+    if (!canUpdate) {
+      throw new ForbiddenException('Nemate pristup ovom resursu');
+    }
+
     return await this.categoriesService.updateCategory(id, dto);
   }
 
