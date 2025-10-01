@@ -8,3 +8,7 @@ export const createCategoryForHousehold = async (householdId: string, category: 
     })
     .json<CategoryContract>();
 };
+
+export const deleteCategory = async (id: string) => {
+  return httpClient.delete(`v1/categories/${id}`).json();
+};
