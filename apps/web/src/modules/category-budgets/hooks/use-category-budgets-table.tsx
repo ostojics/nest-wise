@@ -6,7 +6,7 @@ import {CategoryBudgetWithCurrentAmountContract} from '@nest-wise/contracts';
 import {ColumnDef, getCoreRowModel, useReactTable} from '@tanstack/react-table';
 import {useMemo} from 'react';
 import EditCategoryBudgetDialog from '../components/edit-category-budget-dialog';
-import DeleteCategoryButton from '../components/delete-category-button';
+import DeleteCategoryDialog from '../components/delete-category-dialog';
 
 export const useCategoryBudgetsTable = (
   data: CategoryBudgetWithCurrentAmountContract[],
@@ -89,7 +89,7 @@ export const useCategoryBudgetsTable = (
               enableTrigger={opts?.isEditable}
               plannedAmount={row.original.plannedAmount}
             />
-            <DeleteCategoryButton
+            <DeleteCategoryDialog
               categoryId={row.original.categoryId}
               categoryName={row.original.category.name}
               enableTrigger={opts?.isEditable}

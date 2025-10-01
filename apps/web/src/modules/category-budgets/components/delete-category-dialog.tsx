@@ -12,13 +12,13 @@ import {useDeleteCategory} from '@/modules/categories/hooks/use-delete-category'
 import {Loader2, Trash2} from 'lucide-react';
 import React from 'react';
 
-interface DeleteCategoryButtonProps {
+interface DeleteCategoryDialogProps {
   categoryId: string;
   categoryName: string;
   enableTrigger?: boolean;
 }
 
-const DeleteCategoryButton: React.FC<DeleteCategoryButtonProps> = ({
+const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
   categoryId,
   categoryName,
   enableTrigger = true,
@@ -52,8 +52,9 @@ const DeleteCategoryButton: React.FC<DeleteCategoryButtonProps> = ({
         <DialogHeader className="mb-3">
           <DialogTitle>Obriši kategoriju</DialogTitle>
           <DialogDescription>
-            Da li ste sigurni da želite da obrišete kategoriju &quot;{categoryName}&quot;? Svi budžeti za ovu kategoriju
-            će biti uklonjeni i sve povezane transakcije će postati nekategorisane.
+            Da li ste sigurni da želite da obrišete kategoriju &quot;{categoryName}&quot;?
+            <br />
+            Svi budžeti za ovu kategoriju će biti uklonjeni i sve povezane transakcije će postati nekategorisane.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -69,4 +70,4 @@ const DeleteCategoryButton: React.FC<DeleteCategoryButtonProps> = ({
   );
 };
 
-export default DeleteCategoryButton;
+export default DeleteCategoryDialog;
