@@ -7,6 +7,7 @@ import {ColumnDef, getCoreRowModel, useReactTable} from '@tanstack/react-table';
 import {useMemo} from 'react';
 import EditCategoryBudgetDialog from '../components/edit-category-budget-dialog';
 import EditCategoryNameDialog from '@/modules/categories/components/edit-category-name-dialog';
+import DeleteCategoryDialog from '../components/delete-category-dialog';
 
 export const useCategoryBudgetsTable = (
   data: CategoryBudgetWithCurrentAmountContract[],
@@ -89,11 +90,8 @@ export const useCategoryBudgetsTable = (
               enableTrigger={opts?.isEditable}
               plannedAmount={row.original.plannedAmount}
             />
-            <EditCategoryNameDialog
-              categoryId={row.original.categoryId}
-              currentName={row.original.category.name}
-              enableTrigger={opts?.isEditable}
-            />
+            <EditCategoryNameDialog categoryId={row.original.categoryId} currentName={row.original.category.name} />
+            <DeleteCategoryDialog categoryId={row.original.categoryId} categoryName={row.original.category.name} />
           </div>
         ),
         enableSorting: false,

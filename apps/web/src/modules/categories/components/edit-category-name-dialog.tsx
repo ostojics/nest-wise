@@ -21,10 +21,9 @@ import {useValidateEditCategory} from '../hooks/use-validate-edit-category';
 interface EditCategoryNameDialogProps {
   categoryId: string;
   currentName: string;
-  enableTrigger?: boolean;
 }
 
-const EditCategoryNameDialog = ({categoryId, currentName, enableTrigger = true}: EditCategoryNameDialogProps) => {
+const EditCategoryNameDialog = ({categoryId, currentName}: EditCategoryNameDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
     register,
@@ -56,7 +55,7 @@ const EditCategoryNameDialog = ({categoryId, currentName, enableTrigger = true}:
       }}
     >
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" disabled={!enableTrigger}>
+        <Button size="sm" variant="outline">
           Preimenuj
         </Button>
       </DialogTrigger>

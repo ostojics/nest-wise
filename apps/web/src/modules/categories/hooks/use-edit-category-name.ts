@@ -14,6 +14,7 @@ export const useEditCategoryName = () => {
       toast.success('Naziv kategorije je uspešno promenjen');
       void queryClient.invalidateQueries({queryKey: queryKeys.categories.all()});
       void queryClient.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
+      void queryClient.invalidateQueries({queryKey: queryKeys.transactions.key()});
     },
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;

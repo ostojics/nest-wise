@@ -81,7 +81,7 @@ export class CategoriesController {
   @UsePipes(new ZodValidationPipe(updateCategorySchema))
   @Put(':id')
   async updateCategory(@CurrentUser() user: JwtPayload, @Param('id') id: string, @Body() dto: UpdateCategoryDTO) {
-    const canUpdate = await this.policiesService.canUserUpdateCategory(user.sub, id);
+    const canUpdate = await this.policiesService.canUserModifyCategory(user.sub, id);
     if (!canUpdate) {
       throw new ForbiddenException('Nemate pristup ovom resursu');
     }
@@ -112,7 +112,12 @@ export class CategoriesController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard, LicenseGuard)
   @Delete(':id')
-  async deleteCategory(@Param('id') id: string) {
+  async deleteCategory(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    const allowed = await this.policiesService.canUserModifyCategory(user.sub, id);
+    if (!allowed) {
+      throw new ForbiddenException('Nemate dozvolu za brisanje ove kategorije');
+    }
+
     return await this.categoriesService.deleteCategory(id);
   }
 }
