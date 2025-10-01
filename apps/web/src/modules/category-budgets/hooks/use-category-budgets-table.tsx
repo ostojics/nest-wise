@@ -89,11 +89,7 @@ export const useCategoryBudgetsTable = (
               enableTrigger={opts?.isEditable}
               plannedAmount={row.original.plannedAmount}
             />
-            <DeleteCategoryDialog
-              categoryId={row.original.categoryId}
-              categoryName={row.original.category.name}
-              enableTrigger={opts?.isEditable}
-            />
+            <DeleteCategoryDialog categoryId={row.original.categoryId} categoryName={row.original.category.name} />
           </div>
         ),
         enableSorting: false,

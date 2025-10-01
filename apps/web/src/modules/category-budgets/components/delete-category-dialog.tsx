@@ -15,14 +15,9 @@ import React from 'react';
 interface DeleteCategoryDialogProps {
   categoryId: string;
   categoryName: string;
-  enableTrigger?: boolean;
 }
 
-const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
-  categoryId,
-  categoryName,
-  enableTrigger = true,
-}) => {
+const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({categoryId, categoryName}) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const deleteMutation = useDeleteCategory();
 
@@ -41,7 +36,6 @@ const DeleteCategoryDialog: React.FC<DeleteCategoryDialogProps> = ({
           title="Obriši kategoriju"
           size="icon"
           aria-label="Obriši kategoriju"
-          disabled={!enableTrigger}
         >
           {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
           <span className="sr-only">Obriši kategoriju</span>
