@@ -9,6 +9,7 @@ import EditCategoryNameDialog from '@/modules/categories/components/edit-categor
 import CategoryBudgetsAccordionListSkeleton from './category-budgets-accordion-list.skeleton';
 import CategoryBudgetsAccordionListError from './category-budgets-accordion-list.error';
 import {useGetCategoryBudgets} from '../hooks/use-get-category-budgets';
+import DeleteCategoryDialog from './delete-category-dialog';
 
 interface CategoryBudgetsAccordionListProps {
   data: CategoryBudgetWithCurrentAmountContract[];
@@ -109,11 +110,8 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
                     enableTrigger={isEditable}
                     plannedAmount={item.plannedAmount}
                   />
-                  <EditCategoryNameDialog
-                    categoryId={item.categoryId}
-                    currentName={item.category.name}
-                    enableTrigger={isEditable}
-                  />
+                  <EditCategoryNameDialog categoryId={item.categoryId} currentName={item.category.name} />
+                  <DeleteCategoryDialog categoryId={item.categoryId} categoryName={item.category.name} />
                 </div>
               </AccordionContent>
             </AccordionItem>
