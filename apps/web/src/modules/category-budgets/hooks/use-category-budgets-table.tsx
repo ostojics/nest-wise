@@ -27,10 +27,10 @@ export const useCategoryBudgetsTable = (
           const percentText = `${Math.round(value)}%`;
 
           return (
-            <div className="min-w-[180px]">
+            <div className="min-w-[9.375rem] pr-4">
               <div className="text-foreground/90">{row.original.category.name}</div>
               <div className="mt-1 flex items-center gap-2">
-                <Progress className="h-[6px]" value={value} />
+                <Progress className="h-[0.375rem]" value={value} />
                 <span className="text-xs text-muted-foreground">{percentText}</span>
               </div>
             </div>

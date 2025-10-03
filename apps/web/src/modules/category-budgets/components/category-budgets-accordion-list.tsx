@@ -16,6 +16,13 @@ interface CategoryBudgetsAccordionListProps {
   isEditable: boolean;
 }
 
+function calculateProgressPercent(planned: number, spent: number): number {
+  if (planned <= 0) return spent > 0 ? 100 : 0;
+  const ratio = (spent / planned) * 100;
+
+  return Math.min(100, Math.max(0, ratio));
+}
+
 export default function CategoryBudgetsAccordionList({data, isEditable}: CategoryBudgetsAccordionListProps) {
   const {formatBalance} = useFormatBalance();
   const {isLoading, isError, refetch} = useGetCategoryBudgets();
@@ -29,25 +36,6 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
     );
   }
 
-  const getBadgeStyles = (percentUsed: number) => {
-    if (percentUsed >= 80) {
-      return {
-        className: 'bg-destructive text-white',
-        variant: 'destructive' as const,
-      };
-    } else if (percentUsed >= 50) {
-      return {
-        className: 'bg-secondary text-secondary-foreground',
-        variant: 'secondary' as const,
-      };
-    } else {
-      return {
-        className: 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300',
-        variant: 'secondary' as const,
-      };
-    }
-  };
-
   return (
     <div className="rounded-md border bg-card">
       <Accordion type="single" collapsible className="w-full">
@@ -56,11 +44,10 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
           const spent = item.currentAmount;
           const available = planned - spent;
           const negative = available < 0;
-          const progressValue = planned <= 0 ? 0 : Math.min(100, Math.max(0, (spent / planned) * 100));
+          const progressValue = calculateProgressPercent(planned, spent);
           const status = negative ? 'Prekoračeno' : planned > 0 ? 'U skladu sa planom' : '—';
           const percentUsed = Math.round(progressValue);
           const percentText = `${percentUsed}%`;
-          const badgeStyles = getBadgeStyles(percentUsed);
 
           return (
             <AccordionItem key={item.id} value={String(item.id)}>
@@ -72,8 +59,8 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
                   </div>
                   <div className="flex flex-col items-end shrink-0">
                     <Badge
-                      className={cn('tabular-nums px-2.5 py-1', badgeStyles.className)}
-                      variant={badgeStyles.variant}
+                      className={cn('tabular-nums px-2.5 py-1 bg-secondary text-secondary-fore')}
+                      variant="secondary"
                     >
                       {percentText}
                     </Badge>
