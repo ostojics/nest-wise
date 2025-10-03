@@ -32,7 +32,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
     watch,
     reset,
     formState: {errors},
-  } = useValidateCreateTransaction();
+  } = useValidateCreateTransaction({accountId: (accounts ?? [])[0]?.id});
 
   const watchedCategoryId = watch('categoryId');
   const watchedType = watch('type');

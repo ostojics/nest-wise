@@ -107,12 +107,12 @@ export const createTransactionSchema = z
         required_error: 'Račun je obavezan',
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Račun mora biti važeći UUID'),
+      .uuid('Račun mora biti izabran'),
     categoryId: z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Kategorija mora biti važeći UUID')
+      .uuid('Kategorija mora biti izabrana')
       .nullable(),
     amount: z.coerce
       .number({
@@ -163,12 +163,12 @@ export const createTransactionHouseholdSchema = z
         required_error: 'Račun je obavezan',
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Račun mora biti važeći UUID'),
+      .uuid('Račun mora biti izabran'),
     categoryId: z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Kategorija mora biti važeći UUID')
+      .uuid('Kategorija mora biti izabrana')
       .nullable(),
     amount: z.coerce
       .number({
@@ -224,7 +224,7 @@ export const createTransactionAiSchema = z
         required_error: 'Račun je obavezan',
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Račun mora biti važeći UUID'),
+      .uuid('Račun mora biti izabran'),
     description: z
       .string({
         required_error: 'Opis je obavezan',
@@ -243,7 +243,7 @@ export const createTransactionAiHouseholdSchema = z
         required_error: 'Račun je obavezan',
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Račun mora biti važeći UUID'),
+      .uuid('Račun mora biti izabran'),
     description: z
       .string({
         required_error: 'Opis je obavezan',
@@ -265,7 +265,7 @@ export const updateTransactionSchema = z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Kategorija mora biti važeći UUID')
+      .uuid('Kategorija mora biti izabrana')
       .nullable()
       .optional(),
     amount: z.coerce

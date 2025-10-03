@@ -1,5 +1,4 @@
 import {editAccount} from '@/modules/api/accounts-api';
-import {queryKeys} from '@/modules/api/query-keys';
 import {EditAccountDTO, ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
@@ -12,7 +11,7 @@ export const useEditAccountMutation = () => {
     mutationFn: ({id, dto}: {id: string; dto: EditAccountDTO}) => editAccount(id, dto),
     onSuccess: () => {
       toast.success('Račun je uspešno ažuriran');
-      void queryClient.invalidateQueries({queryKey: queryKeys.accounts.all()});
+      void queryClient.invalidateQueries();
     },
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
