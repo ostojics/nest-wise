@@ -1,5 +1,4 @@
 import {deleteCategory} from '@/modules/api/categories-api';
-import {queryKeys} from '@/modules/api/query-keys';
 import {ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
@@ -11,13 +10,7 @@ export const useDeleteCategory = () => {
   return useMutation({
     mutationFn: async (id: string) => deleteCategory(id),
     onSuccess: async () => {
-      const promises = [
-        client.invalidateQueries({queryKey: queryKeys.categories.all()}),
-        client.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()}),
-        client.invalidateQueries({queryKey: queryKeys.transactions.key()}),
-      ];
-
-      await Promise.all(promises);
+      await client.invalidateQueries();
       toast.success('Kategorija je obrisana');
     },
     onError: async (error) => {

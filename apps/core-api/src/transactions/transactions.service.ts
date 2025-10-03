@@ -205,7 +205,7 @@ export class TransactionsService {
     const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
 
     const {object} = await generateObject({
-      model: openai('gpt-5-mini-2025-08-07'),
+      model: openai('gpt-5-nano-2025-08-07'),
       prompt: categoryPromptFactory({
         categories,
         transactionDescription: transactionData.description,
@@ -213,6 +213,7 @@ export class TransactionsService {
       }),
       temperature: 0.1,
       schema: transactionCategoryOutputSchema,
+      abortSignal: AbortSignal.timeout(20_000),
     });
 
     if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {

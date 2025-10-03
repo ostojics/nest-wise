@@ -1,4 +1,3 @@
-import {queryKeys} from '@/modules/api/query-keys';
 import {createAiTransactionForHousehold} from '@/modules/api/transactions-api';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
@@ -14,12 +13,8 @@ export const useCreateTransactionAI = () => {
       if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
       return createAiTransactionForHousehold(me.householdId, transaction);
     },
-    onSuccess: () => {
-      void client.invalidateQueries({queryKey: queryKeys.accounts.all()});
-      void client.invalidateQueries({queryKey: queryKeys.transactions.key()});
-      void client.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
-      void client.invalidateQueries({queryKey: queryKeys.transactions.allPagesKey()});
-
+    onSuccess: async () => {
+      await client.invalidateQueries();
       toast.success('Transakcija je uspešno obrađena');
     },
     onError: () => {
