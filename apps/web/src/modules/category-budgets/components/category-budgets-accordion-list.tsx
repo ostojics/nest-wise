@@ -16,6 +16,13 @@ interface CategoryBudgetsAccordionListProps {
   isEditable: boolean;
 }
 
+function calculateProgressPercent(planned: number, spent: number): number {
+  if (planned <= 0) return spent > 0 ? 100 : 0;
+  const ratio = (spent / planned) * 100;
+
+  return Math.min(100, Math.max(0, ratio));
+}
+
 export default function CategoryBudgetsAccordionList({data, isEditable}: CategoryBudgetsAccordionListProps) {
   const {formatBalance} = useFormatBalance();
   const {isLoading, isError, refetch} = useGetCategoryBudgets();
@@ -37,8 +44,10 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
           const spent = item.currentAmount;
           const available = planned - spent;
           const negative = available < 0;
-          const progressValue = planned <= 0 ? 0 : Math.min(100, Math.max(0, (spent / planned) * 100));
+          const progressValue = calculateProgressPercent(planned, spent);
           const status = negative ? 'Prekoračeno' : planned > 0 ? 'U skladu sa planom' : '—';
+          const percentUsed = Math.round(progressValue);
+          const percentText = `${percentUsed}%`;
 
           return (
             <AccordionItem key={item.id} value={String(item.id)}>
@@ -50,15 +59,10 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
                   </div>
                   <div className="flex flex-col items-end shrink-0">
                     <Badge
-                      className={cn(
-                        'tabular-nums px-2.5 py-1',
-                        negative
-                          ? 'bg-destructive text-white'
-                          : 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300',
-                      )}
-                      variant={negative ? 'destructive' : 'secondary'}
+                      className={cn('tabular-nums px-2.5 py-1 bg-secondary text-secondary-fore')}
+                      variant="secondary"
                     >
-                      {formatBalance(available)}
+                      {percentText}
                     </Badge>
                   </div>
                 </div>
@@ -101,6 +105,7 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
                     <div className="text-muted-foreground">Napredak</div>
                     <div className="mt-2 flex items-center gap-2">
                       <Progress className="h-[6px]" value={progressValue} />
+                      <span className="text-xs text-muted-foreground">{percentText}</span>
                     </div>
                   </div>
                 </div>
