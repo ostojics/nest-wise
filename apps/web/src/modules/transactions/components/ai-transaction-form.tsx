@@ -28,7 +28,7 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
     watch,
     reset,
     formState: {errors},
-  } = useValidateCreateAiTransaction();
+  } = useValidateCreateAiTransaction({accountId: (accounts ?? [])[0]?.id});
 
   const onSubmit = async (data: CreateTransactionAiHouseholdDTO) => {
     await createAiTransactionMutation.mutateAsync(data);
