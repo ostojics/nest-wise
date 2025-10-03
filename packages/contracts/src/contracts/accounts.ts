@@ -39,7 +39,7 @@ export const createAccountHouseholdScopedSchema = z
         required_error: 'ID vlasnika je obavezan',
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('ID vlasnika mora biti važeći UUID'),
+      .uuid('Vlasnik mora biti izabran'),
   })
   .strict();
 

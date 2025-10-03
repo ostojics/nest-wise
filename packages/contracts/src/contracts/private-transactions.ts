@@ -29,7 +29,7 @@ export const createPrivateTransactionSchema = z
         required_error: 'Račun je obavezan',
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Račun mora biti važeći UUID'),
+      .uuid('Račun mora biti izabran'),
     amount: z.coerce
       .number({
         invalid_type_error: 'Neispravna vrednost (mora biti broj)',
@@ -79,7 +79,7 @@ export const getPrivateTransactionsQuerySchema = z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .uuid('Račun mora biti važeći UUID')
+      .uuid('Račun mora biti izabran')
       .optional(),
     type: z.enum(['income', 'expense']).optional(),
     from: z

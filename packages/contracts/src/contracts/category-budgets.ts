@@ -46,7 +46,7 @@ export const upsertCategoryBudgetSchema = z
                 required_error: 'ID kategorije je obavezan',
                 invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
               })
-              .uuid('ID kategorije mora biti važeći UUID'),
+              .uuid('Kategorija mora biti izabrana'),
             plannedAmount: z.coerce
               .number({
                 invalid_type_error: 'Neispravna vrednost (mora biti broj)',
