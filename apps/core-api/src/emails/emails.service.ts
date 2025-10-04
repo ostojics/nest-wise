@@ -8,7 +8,11 @@ import {Logger} from 'pino-nestjs';
 import {Resend} from 'resend';
 import {EmailJobs} from 'src/common/enums/jobs.enum';
 import {Queues} from 'src/common/enums/queues.enum';
-import {SendInviteEmailPayload, SendPasswordResetEmailPayload} from 'src/common/interfaces/emails.interface';
+import {
+  SendInviteEmailPayload,
+  SendPasswordResetEmailPayload,
+  SendEmailChangeConfirmationPayload,
+} from 'src/common/interfaces/emails.interface';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 
 @Injectable()
@@ -37,6 +41,13 @@ export class EmailsService {
   async sendPasswordResetEmail(payload: SendPasswordResetEmailPayload) {
     this.logger.log('Sending password reset email event', payload);
     await this.emailsQueue.add(EmailJobs.SEND_PASSWORD_RESET_EMAIL, payload, {
+      attempts: 1,
+    });
+  }
+
+  async sendEmailChangeConfirmation(payload: SendEmailChangeConfirmationPayload) {
+    this.logger.log('Sending email change confirmation event', payload);
+    await this.emailsQueue.add(EmailJobs.SEND_EMAIL_CHANGE_CONFIRMATION, payload, {
       attempts: 1,
     });
   }
@@ -107,6 +118,30 @@ export class EmailsService {
 
     if (error) {
       this.logger.error('Error sending password reset email', error);
+      throw new Error(error.message);
+    }
+  }
+
+  async processEmailChangeConfirmationJob(payload: SendEmailChangeConfirmationPayload) {
+    const {webAppUrl} = this.configService.getOrThrow<AppConfig>(AppConfigName);
+
+    const params = new URLSearchParams({token: payload.token});
+    const queryParams = params.toString();
+
+    const {error} = await this.resendClient.emails.send({
+      to: payload.newEmail,
+      from: this.fromEmail,
+      subject: `[NestWise] Potvrda promene e‑pošte`,
+      html: `
+      <p>Zatražili ste promenu e‑pošte za svoj NestWise nalog.</p>
+      <p>Molimo kliknite na link ispod da potvrdite novu e‑poštu. Ovaj link ističe za 15 minuta:</p>
+      <a href="${webAppUrl}/account/email-change?${queryParams}">Potvrdi promenu e‑pošte</a>
+      <p>Ukoliko niste tražili promenu e‑pošte, slobodno ignorišite ovaj email.</p>
+      `,
+    });
+
+    if (error) {
+      this.logger.error('Error sending email change confirmation', error);
       throw new Error(error.message);
     }
   }

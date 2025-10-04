@@ -174,10 +174,50 @@ export const userResponseSchema = z
   })
   .strict();
 
+export const updateUsernameSchema = z
+  .object({
+    username: z
+      .string({
+        required_error: 'Korisničko ime je obavezno',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(3, 'Korisničko ime mora imati najmanje 3 karaktera')
+      .max(50, 'Korisničko ime može imati najviše 50 karaktera')
+      .regex(/^[a-zA-Z0-9_-]+$/, 'Korisničko ime može sadržavati samo slova, brojeve, donje crte i crtice'),
+  })
+  .strict();
+
+export const requestEmailChangeSchema = z
+  .object({
+    newEmail: z
+      .string({
+        required_error: 'Nova e‑pošta je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Nova e‑pošta je obavezna')
+      .email('Neispravan format e‑pošte')
+      .max(255, 'E‑pošta može imati najviše 255 karaktera'),
+  })
+  .strict();
+
+export const confirmEmailChangeSchema = z
+  .object({
+    token: z
+      .string({
+        required_error: 'Token je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Token je obavezan'),
+  })
+  .strict();
+
 export type UserRegistrationDTO = z.infer<typeof userRegistrationSchema>;
 export type UserUpdateDTO = z.infer<typeof userUpdateSchema>;
 export type PasswordChangeDTO = z.infer<typeof passwordChangeSchema>;
 export type UserResponseDTO = z.infer<typeof userResponseSchema>;
+export type UpdateUsernameDTO = z.infer<typeof updateUsernameSchema>;
+export type RequestEmailChangeDTO = z.infer<typeof requestEmailChangeSchema>;
+export type ConfirmEmailChangeDTO = z.infer<typeof confirmEmailChangeSchema>;
 export interface CreateUserDTO extends Omit<UserRegistrationDTO, 'confirm_password'> {
   householdId: string;
 }
