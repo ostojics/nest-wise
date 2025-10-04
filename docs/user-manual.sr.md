@@ -4,9 +4,10 @@ Dobrodošli u NestWise, aplikaciju za upravljanje zajedničkim finansijama namen
 
 ## Šta je NestWise?
 
-NestWise je aplikacija koja omogućava parovima i domaćinstvima da koordiniraju finansije, prate troškove, postavljaju budžete i analiziraju potrošnju — uz opciju privatnosti za lične transakcije.
+NestWise je aplikacija koja omogućava parovima i domaćinstvima da koordiniraju finansije, prate troškove, postavljaju budžete i analiziraju potrošnju, uz opciju privatnosti za lične transakcije.
 
 **Glavne prednosti:**
+
 - Jasan pregled svih računa na jednom mestu
 - Zajednički pristup finansijama sa partnerom ili članovima domaćinstva
 - Privatnost za lične transakcije koje ne želite da delite
@@ -17,15 +18,17 @@ NestWise je aplikacija koja omogućava parovima i domaćinstvima da koordiniraju
 
 ### 1. Prvo pokretanje
 
-Kada prvi put pokrenete NestWise, prođićete kroz proces podešavanja:
+Kada prvi put pokrenete NestWise, proći ćete kroz proces podešavanja:
 
 **Korak 1: Korisnički profil**
+
 - Unesite **korisničko ime** (može biti nadimak ili ime koje koristite)
 - Unesite **e‑poštu** (koristiće se za prijavu i oporavak naloga)
 - Kreirajte **lozinku** (sigurna lozinka, minimum 8 karaktera)
 - Potvrdite lozinku
 
 **Korak 2: Podešavanje domaćinstva**
+
 - Unesite **naziv domaćinstva** (npr. „Porodica Petrović" ili „Stan 23")
 - Izaberite **valutu** (RSD — srpski dinar je podrazumevana opcija)
 
@@ -89,13 +92,14 @@ Kategorije služe za organizovanje troškova i prihoda. Pomažu vam da pratite g
 
 ## Transakcije
 
-Transakcije su srce aplikacije — svaki trošak ili prihod koji beležite.
+Transakcije su srce aplikacije, svaki trošak ili prihod koji beležite.
 
 ### Dodavanje transakcije
 
 Možete dodati transakciju na dva načina:
 
 **Opcija 1: Ručno unošenje**
+
 1. Kliknite dugme **Zabeleži transakciju** u gornjem desnom uglu
 2. Izaberite **Ručno unošenje**
 3. Popunite polja:
@@ -108,9 +112,10 @@ Možete dodati transakciju na dva načina:
 4. Kliknite **Sačuvaj**
 
 **Opcija 2: AI asistent (brže)**
+
 1. Kliknite dugme **Zabeleži transakciju**
 2. Izaberite **AI asistent**
-3. Unesite opis u slobodnoj formi (npr. „platio račun za struju 5000 dinara")
+3. Unesite opis u slobodnoj formi (npr. "Plaćen račun za struju, 5000 dinara")
 4. AI će automatski prepoznati iznos, kategoriju i tip transakcije
 5. Potvrdite ili prilagodite predlog
 6. Kliknite **Sačuvaj**
@@ -118,6 +123,7 @@ Možete dodati transakciju na dva načina:
 ### Pregled transakcija
 
 Na stranici **Transakcije** možete:
+
 - Videti sve transakcije hronološkim redom
 - Filtrirati po računu, kategoriji ili datumu
 - Pretražiti transakcije po opisu
@@ -167,14 +173,12 @@ Budžeti vam pomažu da kontrolišete potrošnju postavljanjem mesečnih limita 
 
 - Aplikacija automatski prati koliko ste potrošili u svakoj kategoriji
 - Vidite procenat iskorišćenosti budžeta
-- Primite obaveštenje kada se približite limitu
 - Analizirajte trendove i prilagodite budžete
 
 ### Saveti za budžetiranje
 
 - Počnite sa realnim procenama na osnovu prošle potrošnje
 - Prilagođavajte budžete mesečno dok ne pronađete optimalan iznos
-- Ostavite malu rezervu (5-10%) za neočekivane troškove
 - Pregledajte budžete krajem meseca i analizirajte odstupanja
 
 ## Štednja i izveštaji
@@ -188,7 +192,6 @@ NestWise automatski prati vašu štednju i nudi detaljne izveštaje o finansijam
    - Ukupnu štednju za odabrani period
    - Trend štednje tokom vremena
    - Grafički prikaz napretka
-   - Projekciju za naredne mesece
 
 ### Izveštaj o neto vrednosti
 
@@ -220,6 +223,7 @@ Možete pozvati partnera ili članove domaćinstva da koriste NestWise zajedno s
 ### Prihvatanje pozivnice
 
 Osoba koja je primila pozivnicu:
+
 1. Dobija e‑poštu sa linkom za pozivnicu
 2. Klikne na link i kreira nalog
 3. Automatski se pridružuje vašem domaćinstvu
@@ -230,7 +234,6 @@ Osoba koja je primila pozivnicu:
 - Svi članovi mogu dodavati, uređivati i brisati zajedničke transakcije
 - Privatne transakcije ostaju vidljive samo njihovom tvorcu
 - Svi članovi mogu videti i menjati budžete i račune
-- Samo osnivač domaćinstva može brisati članove
 
 ## Svakodnevno korišćenje — saveti
 
@@ -256,18 +259,11 @@ NestWise je web aplikacija koja se može koristiti na telefonu, tabletu ili rač
 
 ### Kako da promenim lozinku?
 
-Trenutno ne postoji opcija u aplikaciji. Koristite opciju **Zaboravljena lozinka** na stranici za prijavu.
+Koristite opciju **Zaboravljena lozinka** na stranici za prijavu.
 
 ### Mogu li da koristim različite valute?
 
 Valuta se bira prilikom podešavanja domaćinstva. Trenutno ne možete koristiti više valuta u okviru jednog domaćinstva.
-
-### Šta ako ukucam pogrešan iznos?
-
-1. Idite na **Transakcije**
-2. Pronađite transakciju
-3. Kliknite na transakciju i izaberite **Uredi**
-4. Ispravite iznos i sačuvajte
 
 ### Kako da obrišem račun?
 
@@ -280,10 +276,6 @@ Valuta se bira prilikom podešavanja domaćinstva. Trenutno ne možete koristiti
 
 Ne, privatne transakcije su vidljive samo vama. Međutim, stanje računa će biti ažurirano, tako da partner može videti promenu ukupnog iznosa.
 
-### Kako da isključim domaćinstvo?
-
-Trenutno ne postoji opcija za brisanje domaćinstva kroz aplikaciju. Kontaktirajte podršku za pomoć.
-
 ## Sigurnost i privatnost
 
 - **Lozinke:** NestWise čuva lozinke sigurno koristeći napredne tehnike enkripcije
@@ -294,6 +286,7 @@ Trenutno ne postoji opcija za brisanje domaćinstva kroz aplikaciju. Kontaktiraj
 ## Podrška
 
 Ako imate pitanja, probleme ili predloge:
+
 - Proverite ovaj priručnik
 - Pregledajte **[Tehničku dokumentaciju](architecture.md)** za napredne detalje
 - Kontaktirajte tim za podršku putem e‑pošte
@@ -301,5 +294,5 @@ Ako imate pitanja, probleme ili predloge:
 ---
 
 **Verzija:** 1.0  
-**Datum:** Decembar 2024  
+**Datum:** Oktobar 2025  
 **Jezik:** Srpski (Latinica)
