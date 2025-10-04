@@ -64,9 +64,11 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem disabled>
-                <IconUserCircle />
-                Nalog
+              <DropdownMenuItem asChild>
+                <a href="/account-settings">
+                  <IconUserCircle />
+                  Podešavanja naloga
+                </a>
               </DropdownMenuItem>
               <DropdownMenuItem disabled>
                 <IconCreditCard />
