@@ -25,7 +25,7 @@ const data = {
   navSecondary: [
     {
       title: 'Podešavanja',
-      url: '#',
+      url: '/settings',
       icon: IconSettings,
     },
     {

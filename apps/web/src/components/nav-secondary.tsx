@@ -23,7 +23,7 @@ export function NavSecondary({
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
-    <SidebarGroup {...props} className={cn(props.className, 'opacity-[0.3] pointer-events-none')}>
+    <SidebarGroup {...props} className={cn(props.className)}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
