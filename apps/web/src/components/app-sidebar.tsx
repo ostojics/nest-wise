@@ -32,6 +32,7 @@ const data = {
       title: 'Pomoć',
       url: '#',
       icon: IconHelp,
+      disabled: true,
     },
   ],
 };

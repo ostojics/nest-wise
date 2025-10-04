@@ -33,15 +33,14 @@ const SettingsPage = () => {
     register,
     handleSubmit,
     formState: {errors},
-    reset,
+    setValue,
   } = useValidateEditHousehold();
 
-  // Reset form when household data is loaded
   useEffect(() => {
     if (household) {
-      reset({name: household.name});
+      setValue('name', household.name);
     }
-  }, [household, reset]);
+  }, [household, setValue]);
 
   const onSubmit = handleSubmit((data) => {
     if (!me?.householdId) return;
