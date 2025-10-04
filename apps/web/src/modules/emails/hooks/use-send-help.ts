@@ -12,15 +12,11 @@ export const useSendHelp = () => {
     },
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
-      try {
-        const err = await typedError.response.json();
+      const err = await typedError.response.json();
 
-        if (err.message) {
-          toast.error(err.message);
-          return;
-        }
-      } catch {
-        // Ignore parsing errors
+      if (err.message) {
+        toast.error(err.message);
+        return;
       }
 
       toast.error('Došlo je do neočekivane greške');
