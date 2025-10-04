@@ -8,3 +8,9 @@ export interface SendPasswordResetEmailPayload {
   email: string;
   userId: string;
 }
+
+export interface SendHelpEmailPayload {
+  email: string;
+  message: string;
+  userId?: string;
+}
