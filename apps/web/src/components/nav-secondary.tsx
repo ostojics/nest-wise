@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import {cn} from '@/lib/utils';
+import {useNavigate} from '@tanstack/react-router';
 
 export function NavSecondary({
   items,
@@ -20,19 +21,20 @@ export function NavSecondary({
     title: string;
     url: string;
     icon: Icon;
+    disabled?: boolean;
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+  const navigate = useNavigate();
+
   return (
-    <SidebarGroup {...props} className={cn(props.className, 'opacity-[0.3] pointer-events-none')}>
+    <SidebarGroup {...props} className={cn(props.className)}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
+              <SidebarMenuButton disabled={item.disabled} onClick={() => navigate({to: item.url})}>
+                <item.icon />
+                <span>{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

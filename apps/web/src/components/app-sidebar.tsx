@@ -25,13 +25,14 @@ const data = {
   navSecondary: [
     {
       title: 'Podešavanja',
-      url: '#',
+      url: '/settings',
       icon: IconSettings,
     },
     {
       title: 'Pomoć',
       url: '#',
       icon: IconHelp,
+      disabled: true,
     },
   ],
 };
