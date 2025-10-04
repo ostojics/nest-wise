@@ -1,14 +1,12 @@
 import FormError from '@/components/form-error';
 import {Button} from '@/components/ui/button';
 import {Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle} from '@/components/ui/dialog';
-import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Textarea} from '@/components/ui/textarea';
 import {HelpRequestDTO} from '@nest-wise/contracts';
-import {Mail, MessageSquare} from 'lucide-react';
+import {Loader2, Mail, MessageSquare} from 'lucide-react';
 import {useSendHelp} from '@/modules/emails/hooks/use-send-help';
 import {useValidateHelp} from '@/modules/emails/hooks/use-validate-help';
-import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 interface HelpDialogProps {
   open: boolean;
@@ -17,13 +15,12 @@ interface HelpDialogProps {
 
 const HelpDialog = ({open, onOpenChange}: HelpDialogProps) => {
   const mutation = useSendHelp();
-  const {data} = useGetMe();
   const {
     register,
     handleSubmit,
     formState: {errors},
     reset,
-  } = useValidateHelp({email: data?.email ?? ''});
+  } = useValidateHelp();
 
   const handleSendHelp = async (data: HelpRequestDTO) => {
     await mutation.mutateAsync(data);
@@ -54,13 +51,6 @@ const HelpDialog = ({open, onOpenChange}: HelpDialogProps) => {
         </DialogHeader>
         <form onSubmit={handleSubmit(handleSendHelp)} className="space-y-6">
           <div className="space-y-3">
-            <Label htmlFor="email" className="text-sm font-medium">
-              Vaša e‑pošta <span className="text-red-500">*</span>
-            </Label>
-            <Input id="email" type="email" placeholder="ime@primer.com" className="w-full" {...register('email')} />
-            {errors.email?.message && <FormError error={errors.email.message} />}
-          </div>
-          <div className="space-y-3">
             <Label htmlFor="message" className="text-sm font-medium">
               Poruka <span className="text-red-500">*</span>
             </Label>
@@ -68,7 +58,7 @@ const HelpDialog = ({open, onOpenChange}: HelpDialogProps) => {
               autoFocus
               id="message"
               placeholder="Opišite vaš problem ili pitanje..."
-              className="w-full min-h-[120px]"
+              className="w-full min-h-[7.5rem]"
               {...register('message')}
             />
             {errors.message?.message && <FormError error={errors.message.message} />}
@@ -80,8 +70,14 @@ const HelpDialog = ({open, onOpenChange}: HelpDialogProps) => {
               </Button>
             </DialogClose>
             <Button type="submit" disabled={mutation.isPending}>
-              <Mail className="w-4 h-4" />
-              Pošalji
+              {mutation.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <>
+                  <Mail className="w-4 h-4" />
+                  Pošalji
+                </>
+              )}
             </Button>
           </div>
         </form>

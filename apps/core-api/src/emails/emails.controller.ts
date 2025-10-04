@@ -19,7 +19,7 @@ export class EmailsController {
   @Post('help')
   async sendHelpEmail(@Body() dto: HelpRequestDTO, @CurrentUser() user: JwtPayload): Promise<{message: string}> {
     await this.emailsService.sendHelpEmail({
-      email: dto.email,
+      email: user.email,
       message: dto.message,
       userId: user.sub,
     });
