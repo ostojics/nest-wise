@@ -29,19 +29,10 @@ export function NavSecondary({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              {item.onClick ? (
-                <SidebarMenuButton onClick={item.onClick}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-              ) : (
-                <SidebarMenuButton asChild>
-                  <a href={item.url}>
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </a>
-                </SidebarMenuButton>
-              )}
+              <SidebarMenuButton onClick={item.onClick}>
+                <item.icon />
+                <span>{item.title}</span>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
