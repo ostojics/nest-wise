@@ -24,7 +24,6 @@ export default function TransactionsAccordionList({data}: TransactionsAccordionL
       <Accordion type="single" collapsible className="w-full">
         {data.map((tx) => {
           const isIncome = tx.type === TransactionType.INCOME;
-          const sign = isIncome ? '+' : '-';
           const amount = formatBalance(tx.amount);
           const dateLabel = format(new Date(tx.transactionDate), 'PP');
 
@@ -39,10 +38,7 @@ export default function TransactionsAccordionList({data}: TransactionsAccordionL
                     </div>
                   </div>
                   <div className="flex flex-col items-end shrink-0">
-                    <span className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>
-                      {sign}
-                      {amount}
-                    </span>
+                    <span className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>{amount}</span>
                     <span className="text-xs text-muted-foreground">{dateLabel}</span>
                   </div>
                 </div>
@@ -78,10 +74,7 @@ export default function TransactionsAccordionList({data}: TransactionsAccordionL
                   </div>
                   <div>
                     <div className="text-muted-foreground">Iznos</div>
-                    <div className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>
-                      {sign}
-                      {amount}
-                    </div>
+                    <div className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>{amount}</div>
                   </div>
                 </div>
                 <div className="pt-3 flex justify-end">
