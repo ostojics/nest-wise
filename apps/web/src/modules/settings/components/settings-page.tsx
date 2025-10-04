@@ -4,17 +4,30 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import FormError from '@/components/form-error';
 import {useGetHouseholdById} from '@/modules/households/hooks/use-get-household-by-id';
-import {useUpdateHousehold} from '@/modules/households/hooks/use-update-household';
 import {useValidateEditHousehold} from '@/modules/households/hooks/use-validate-edit-household';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
+import {queryKeys} from '@/modules/api/query-keys';
+import {updateHousehold} from '@/modules/api/households-api';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {toast} from 'sonner';
 import {Loader2} from 'lucide-react';
 import {useEffect} from 'react';
-import {toast} from 'sonner';
 
 const SettingsPage = () => {
   const {data: me} = useGetMe();
   const {data: household} = useGetHouseholdById();
-  const mutation = useUpdateHousehold();
+  const client = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: ({id, data}: {id: string; data: {name?: string}}) => updateHousehold(id, data),
+    onSuccess: (_, {id}) => {
+      void client.invalidateQueries({queryKey: queryKeys.households.single(id)});
+      toast.success('Podešavanja sačuvana');
+    },
+    onError: () => {
+      toast.error('Ažuriranje podešavanja nije uspelo');
+    },
+  });
 
   const {
     register,
@@ -33,14 +46,7 @@ const SettingsPage = () => {
   const onSubmit = handleSubmit((data) => {
     if (!me?.householdId) return;
 
-    mutation.mutate(
-      {id: me.householdId, data},
-      {
-        onSuccess: () => {
-          toast.success('Podešavanja sačuvana');
-        },
-      },
-    );
+    mutation.mutate({id: me.householdId, data});
   });
 
   return (
