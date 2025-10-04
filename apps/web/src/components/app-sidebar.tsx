@@ -24,7 +24,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
   const navSecondary = [
     {
       title: 'Podešavanja',
-      url: '#',
+      url: '/settings',
       icon: IconSettings,
     },
     {

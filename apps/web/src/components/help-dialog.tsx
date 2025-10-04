@@ -8,6 +8,7 @@ import {HelpRequestDTO} from '@nest-wise/contracts';
 import {Mail, MessageSquare} from 'lucide-react';
 import {useSendHelp} from '@/modules/emails/hooks/use-send-help';
 import {useValidateHelp} from '@/modules/emails/hooks/use-validate-help';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 interface HelpDialogProps {
   open: boolean;
@@ -16,12 +17,13 @@ interface HelpDialogProps {
 
 const HelpDialog = ({open, onOpenChange}: HelpDialogProps) => {
   const mutation = useSendHelp();
+  const {data} = useGetMe();
   const {
     register,
     handleSubmit,
     formState: {errors},
     reset,
-  } = useValidateHelp();
+  } = useValidateHelp({email: data?.email ?? ''});
 
   const handleSendHelp = async (data: HelpRequestDTO) => {
     await mutation.mutateAsync(data);
@@ -63,6 +65,7 @@ const HelpDialog = ({open, onOpenChange}: HelpDialogProps) => {
               Poruka <span className="text-red-500">*</span>
             </Label>
             <Textarea
+              autoFocus
               id="message"
               placeholder="Opišite vaš problem ili pitanje..."
               className="w-full min-h-[120px]"
