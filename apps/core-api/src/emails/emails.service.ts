@@ -135,7 +135,7 @@ export class EmailsService {
       html: `
       <p>Zatražili ste promenu e‑pošte za svoj NestWise nalog.</p>
       <p>Molimo kliknite na link ispod da potvrdite novu e‑poštu. Ovaj link ističe za 15 minuta:</p>
-      <a href="${webAppUrl}/account/email-change?${queryParams}">Potvrdi promenu e‑pošte</a>
+      <a href="${webAppUrl}/email-change?${queryParams}">Potvrdi promenu e‑pošte</a>
       <p>Ukoliko niste tražili promenu e‑pošte, slobodno ignorišite ovaj email.</p>
       `,
     });
