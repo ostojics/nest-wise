@@ -1,7 +1,8 @@
 import {useMutation} from '@tanstack/react-query';
 import {sendHelp} from '@/modules/api/emails-api';
 import {toast} from 'sonner';
-import {HelpRequestDTO} from '@nest-wise/contracts';
+import {ErrorResponse, HelpRequestDTO} from '@nest-wise/contracts';
+import {HTTPError} from 'ky';
 
 export const useSendHelp = () => {
   return useMutation({
@@ -9,8 +10,20 @@ export const useSendHelp = () => {
     onSuccess: () => {
       toast.success('Poruka je poslata');
     },
-    onError: () => {
-      toast.error('Došlo je do greške prilikom slanja poruke');
+    onError: async (error) => {
+      const typedError = error as HTTPError<ErrorResponse>;
+      try {
+        const err = await typedError.response.json();
+
+        if (err.message) {
+          toast.error(err.message);
+          return;
+        }
+      } catch {
+        // Ignore parsing errors
+      }
+
+      toast.error('Došlo je do neočekivane greške');
     },
   });
 };

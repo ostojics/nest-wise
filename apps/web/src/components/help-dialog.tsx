@@ -4,10 +4,8 @@ import {Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, Dia
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Textarea} from '@/components/ui/textarea';
-import {ErrorResponse, HelpRequestDTO} from '@nest-wise/contracts';
-import {HTTPError} from 'ky';
+import {HelpRequestDTO} from '@nest-wise/contracts';
 import {Mail, MessageSquare} from 'lucide-react';
-import {toast} from 'sonner';
 import {useSendHelp} from '@/modules/emails/hooks/use-send-help';
 import {useValidateHelp} from '@/modules/emails/hooks/use-validate-help';
 
@@ -26,24 +24,7 @@ const HelpDialog = ({open, onOpenChange}: HelpDialogProps) => {
   } = useValidateHelp();
 
   const handleSendHelp = async (data: HelpRequestDTO) => {
-    await mutation.mutateAsync(data, {
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      onError: async (error) => {
-        const typedError = error as HTTPError<ErrorResponse>;
-        try {
-          const err = await typedError.response.json();
-
-          if (err.message) {
-            toast.error(err.message);
-            return;
-          }
-        } catch {
-          // Ignore parsing errors
-        }
-
-        toast.error('Došlo je do neočekivane greške');
-      },
-    });
+    await mutation.mutateAsync(data);
 
     onOpenChange(false);
     reset();
