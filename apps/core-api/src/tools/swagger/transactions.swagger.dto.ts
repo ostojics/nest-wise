@@ -97,6 +97,14 @@ export class CreateTransactionAiSwaggerDTO {
 
 export class UpdateTransactionSwaggerDTO {
   @ApiProperty({
+    description: 'UUID of the account to move the transaction to (optional)',
+    example: 'd4e5f6g7-h8i9-0123-defg-h45678901234',
+    format: 'uuid',
+    required: false,
+  })
+  accountId?: string;
+
+  @ApiProperty({
     description: 'UUID of the category for this transaction (optional)',
     example: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
     format: 'uuid',

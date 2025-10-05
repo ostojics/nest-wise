@@ -311,13 +311,60 @@ export class TransactionsService {
         throw new NotFoundException('Transakcija nije pronađena');
       }
 
-      if (transactionData.amount !== undefined || transactionData.type !== undefined) {
-        const account = await this.accountsService.findAccountById(existingTransaction.accountId);
+      // Handle category changes based on type
+      if (transactionData.type === 'income') {
+        transactionData.categoryId = null;
+      }
 
-        const oldAmount = Number(existingTransaction.amount);
-        const oldType = existingTransaction.type;
-        const newAmount = transactionData.amount ? Number(transactionData.amount) : oldAmount;
-        const newType = transactionData.type ? (transactionData.type as TransactionType) : oldType;
+      const oldAmount = Number(existingTransaction.amount);
+      const oldType = existingTransaction.type;
+      const oldAccountId = existingTransaction.accountId;
+
+      const newAmount = transactionData.amount !== undefined ? Number(transactionData.amount) : oldAmount;
+      const newType = transactionData.type ? (transactionData.type as TransactionType) : oldType;
+      const newAccountId = transactionData.accountId ?? oldAccountId;
+
+      // Handle account change
+      if (newAccountId !== oldAccountId) {
+        const oldAccount = await this.accountsService.findAccountById(oldAccountId);
+        const newAccount = await this.accountsService.findAccountById(newAccountId);
+
+        // Verify new account belongs to the same household
+        if (newAccount.householdId !== existingTransaction.householdId) {
+          throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
+        }
+
+        // Reverse old effect on old account
+        let oldAccountNewBalance = Number(oldAccount.currentBalance);
+        if (oldType === TransactionType.INCOME) {
+          oldAccountNewBalance -= oldAmount;
+        } else {
+          oldAccountNewBalance += oldAmount;
+        }
+
+        // Apply new effect on new account
+        let newAccountNewBalance = Number(newAccount.currentBalance);
+        if (newType === TransactionType.INCOME) {
+          newAccountNewBalance += newAmount;
+        } else {
+          newAccountNewBalance -= newAmount;
+        }
+
+        // Check for sufficient funds in the new account for expenses
+        if (newType === TransactionType.EXPENSE && newAccountNewBalance < 0) {
+          throw new BadRequestException('Nedovoljno sredstava na novom računu za ovaj rashod');
+        }
+
+        // Update both accounts
+        await this.accountsService.updateAccount(oldAccountId, {
+          currentBalance: oldAccountNewBalance,
+        });
+        await this.accountsService.updateAccount(newAccountId, {
+          currentBalance: newAccountNewBalance,
+        });
+      } else if (transactionData.amount !== undefined || transactionData.type !== undefined) {
+        // Same account but amount or type changed
+        const account = await this.accountsService.findAccountById(oldAccountId);
 
         let balanceAfterOldRemoval = Number(account.currentBalance);
         if (oldType === TransactionType.INCOME) {
@@ -333,7 +380,7 @@ export class TransactionsService {
         const netChange = this.calculateNetBalanceChange(oldAmount, oldType, newAmount, newType);
         if (netChange !== 0) {
           const newBalance = Number(account.currentBalance) + netChange;
-          await this.accountsService.updateAccount(existingTransaction.accountId, {
+          await this.accountsService.updateAccount(oldAccountId, {
             currentBalance: newBalance,
           });
         }
