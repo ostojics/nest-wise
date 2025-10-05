@@ -74,7 +74,7 @@ const SpendingVsTargetCard = () => {
         <CardDescription className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <IconTarget className="h-4 w-4" />
-            Mesečni budžet
+            Ciljani mesečni budžet
           </div>
           <Button
             variant="ghost"

@@ -33,9 +33,7 @@ export default function TransactionsAccordionList({data}: TransactionsAccordionL
                 <div className="w-full flex items-center justify-between gap-5 py-1.5 @container/tx">
                   <div className="min-w-0 flex-1 text-left">
                     <div className="truncate font-medium text-foreground/90">{tx.description}</div>
-                    <div className="text-xs text-muted-foreground truncate hidden @md/tx:block">
-                      {tx.category?.name ?? '-'}
-                    </div>
+                    <div className="text-xs text-muted-foreground truncate">{tx.category?.name ?? '-'}</div>
                   </div>
                   <div className="flex flex-col items-end shrink-0">
                     <span className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>{amount}</span>
