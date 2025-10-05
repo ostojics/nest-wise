@@ -16,32 +16,66 @@ NestWise je aplikacija koja omogućava parovima i domaćinstvima da koordiniraju
 
 ## Brzi početak
 
-### 1. Prvo pokretanje
+Želite da krenete za 5 minuta? Evo najkraćeg puta: podesite nalog i domaćinstvo, dodajte račun, napravite plan (kategorije i budžeti) i zabeležite prvu transakciju - ručno ili uz pomoć AI asistenta. Nakon toga, odmah ćete videti ažurirana stanja i potrošnju.
 
-Kada prvi put pokrenete NestWise, proći ćete kroz proces podešavanja:
+### 1) Podešavanje naloga i domaćinstva
 
-**Korak 1: Korisnički profil**
+Prvo pokretanje vas vodi kroz kratko podešavanje:
 
-- Unesite **korisničko ime** (može biti nadimak ili ime koje koristite)
-- Unesite **e‑poštu** (koristiće se za prijavu i oporavak naloga)
-- Kreirajte **lozinku** (sigurna lozinka, minimum 8 karaktera)
-- Potvrdite lozinku
+- Profil: unesite korisničko ime, e‑poštu i lozinku
+- Domaćinstvo: dajte naziv (npr. „Porodica Jovanović") i izaberite valutu (RSD)
 
-**Korak 2: Podešavanje domaćinstva**
+Kada završite, automatski ste prijavljeni i spremni za rad.
 
-- Unesite **naziv domaćinstva** (npr. „Porodica Petrović" ili „Stan 23")
-- Izaberite **valutu** (RSD — srpski dinar je podrazumevana opcija)
+### 2) Dodajte račun(e), fleksibilno
 
-Nakon podešavanja, bićete automatski prijavljeni i možete početi da koristite aplikaciju.
+Računi predstavljaju mesta gde držite novac (tekući, štednja, kartica, keš...).
 
-### 2. Osnovne radnje nakon podešavanja
+- Idite na stranicu Računi i kliknite „Dodaj račun"
+- Unesite naziv (npr. „Tekući račun"), tip i početno stanje
+- Sačuvajte, stanje će se ubuduće automatski ažurirati kroz transakcije
 
-Kada završite podešavanje, preporučujemo sledeće korake:
+Možete dodati više računa odmah ili kasnije, po potrebi.
 
-1. **Dodajte račune** — unesite sve bankovne račune, kartice i račune za štednju koje koristite
-2. **Kreirajte kategorije** — dodajte kategorije potrošnje (npr. hrana, transport, zabava)
-3. **Postavite budžete** — odredite mesečne limite potrošnje po kategorijama
-4. **Zabeleži prvu transakciju** — unesite prvu transakciju da vidite kako sistem funkcioniše
+### 3) Napravite plan: Kategorije i budžeti
+
+Plan pomaže da potrošnja ima smisao. Kroz kategorije grupišete troškove (Hrana, Transport, Režije...), a uz mesečne budžete dobijate jasnu kontrolu.
+
+- Otvorite Plan → Kategorije: dodajte bar nekoliko kategorija rashoda koje najčešće koristite
+- (Opcionalno) Plan → Budžeti: postavite mesečni plan po kategorijama — npr. „Hrana: 30.000 RSD"
+
+Nema greške: plan možete menjati bilo kada, a transakcije će ga automatski puniti.
+
+### 4) Zabeležite prvu transakciju: Rashod ili Prihod
+
+Transakcije mogu biti i rashodi i prihodi. Imate dva načina unosa:
+
+Opcija A - Ručno unošenje
+
+1. Kliknite „Zabeleži transakciju" → „Ručno unošenje"
+2. Popunite: Opis, Iznos, Račun, Tip (Rashod ili Prihod), Datum
+3. Ako je Rashod, izaberite Kategoriju (npr. „Hrana"). Ako je Prihod, kategorija nije potrebna.
+4. Sačuvajte, stanje računa i plan se odmah ažuriraju
+
+Primeri:
+
+- Rashod: „Kupovina u supermarketu", 2.450 RSD, račun „Tekući", kategorija „Hrana"
+- Prihod: „Plata", 120.000 RSD, račun „Tekući"
+
+Opcija B - AI asistent (brže)
+
+1. Kliknite „Zabeleži transakciju" → „AI asistent"
+2. Opišite transakciju normalnim jezikom (npr. „Kafa i pecivo, 380 dinara")
+3. AI predlagač će proceniti tip (rashod/prihod), iznos, kategoriju i datum — vi samo potvrdite ili izmenite
+4. Sačuvajte
+
+### 5) Gde vidite rezultat?
+
+- Računi: ažurirano stanje posle svake transakcije
+- Transakcije: hronološki pregled sa filtrima i pretragom
+- Plan: budžeti i potrošnja po kategorijama, vidite koliko je ostalo
+
+To je to, spremni ste da beležite troškove i prihode svakog dana, ručno ili uz pomoć AI. Počnite od najčešćih kategorija i dodajte ostalo usput.
 
 ## Računi
 
