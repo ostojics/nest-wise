@@ -158,4 +158,66 @@ export class UsersService {
 
     return updatedUser;
   }
+
+  async requestEmailChange(userId: string, userEmail: string, newEmail: string): Promise<string> {
+    // Check if the new email is already in use
+    const existingUser = await this.findUserByEmail(newEmail);
+    if (existingUser) {
+      throw new ConflictException('E‑pošta je već u upotrebi');
+    }
+
+    // Generate JWT token for email change confirmation
+    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
+    const jwtPayload = {
+      sub: userId,
+      email: userEmail,
+      newEmail: newEmail,
+      iss: appConfig.url,
+      purpose: 'email-change',
+    };
+
+    const token = await this.jwtService.signAsync(jwtPayload, {
+      expiresIn: '15m',
+    });
+
+    // Send email with confirmation link
+    await this.emailsService.sendEmailChangeConfirmation({
+      userId,
+      newEmail,
+      token,
+    });
+
+    return token;
+  }
+
+  async confirmEmailChange(token: string): Promise<void> {
+    const payload = await this.jwtService.verifyAsync<{
+      sub: string;
+      email: string;
+      newEmail: string;
+      iss: string;
+      purpose: string;
+      iat: number;
+      exp: number;
+    }>(token);
+
+    if (payload.purpose !== 'email-change') {
+      throw new ConflictException('Neispravan token');
+    }
+
+    // Verify current user email matches token
+    const user = await this.findUserById(payload.sub);
+    if (user.email !== payload.email) {
+      throw new ConflictException('Neispravan token');
+    }
+
+    // Check if the new email is still available
+    const existingUser = await this.findUserByEmail(payload.newEmail);
+    if (existingUser && existingUser.id !== payload.sub) {
+      throw new ConflictException('E‑pošta je već u upotrebi');
+    }
+
+    // Update user email
+    await this.updateUser(payload.sub, {email: payload.newEmail});
+  }
 }

@@ -34,23 +34,13 @@ import {ZodSchema} from 'zod';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
-import {EmailsService} from 'src/emails/emails.service';
-import {JwtService} from '@nestjs/jwt';
-import {ConfigService} from '@nestjs/config';
-import {AppConfig, AppConfigName} from 'src/config/app.config';
-
 @ApiTags('Users')
 @Controller({
   version: '1',
   path: 'users',
 })
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly emailsService: EmailsService,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({
     summary: 'Update username',
@@ -154,32 +144,7 @@ export class UsersController {
   @UsePipes(new ZodValidationPipe(requestEmailChangeSchema as ZodSchema))
   @HttpCode(HttpStatus.OK)
   async requestEmailChange(@CurrentUser() user: JwtPayload, @Body() dto: RequestEmailChangeDTO) {
-    // Check if the new email is already in use
-    const existingUser = await this.usersService.findUserByEmail(dto.newEmail);
-    if (existingUser) {
-      throw new ConflictException('E‑pošta je već u upotrebi');
-    }
-
-    // Generate JWT token for email change confirmation
-    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
-    const jwtPayload = {
-      sub: user.sub,
-      email: user.email,
-      newEmail: dto.newEmail,
-      iss: appConfig.url,
-      purpose: 'email-change',
-    };
-
-    const token = await this.jwtService.signAsync(jwtPayload, {
-      expiresIn: '15m',
-    });
-
-    // Send email with confirmation link
-    await this.emailsService.sendEmailChangeConfirmation({
-      userId: user.sub,
-      newEmail: dto.newEmail,
-      token,
-    });
+    await this.usersService.requestEmailChange(user.sub, user.email, dto.newEmail);
 
     return {
       message: 'Poslali smo Vam link za potvrdu na novu e‑poštu',
@@ -226,35 +191,7 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   async confirmEmailChange(@Body() dto: ConfirmEmailChangeDTO) {
     try {
-      const payload = await this.jwtService.verifyAsync<{
-        sub: string;
-        email: string;
-        newEmail: string;
-        iss: string;
-        purpose: string;
-        iat: number;
-        exp: number;
-      }>(dto.token);
-
-      if (payload.purpose !== 'email-change') {
-        throw new UnauthorizedException('Neispravan token');
-      }
-
-      // Verify current user email matches token
-      const user = await this.usersService.findUserById(payload.sub);
-      if (user.email !== payload.email) {
-        throw new UnauthorizedException('Neispravan token');
-      }
-
-      // Check if the new email is still available
-      const existingUser = await this.usersService.findUserByEmail(payload.newEmail);
-      if (existingUser && existingUser.id !== payload.sub) {
-        throw new ConflictException('E‑pošta je već u upotrebi');
-      }
-
-      // Update user email
-      await this.usersService.updateUser(payload.sub, {email: payload.newEmail});
-
+      await this.usersService.confirmEmailChange(dto.token);
       return {
         message: 'E‑pošta je uspešno promenjena',
       };
