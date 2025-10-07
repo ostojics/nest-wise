@@ -9,6 +9,7 @@ import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
 import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/use-validate-create-ai-transaction';
 import AiBanner from './ai-banner';
 import {AiDescriptionTooltip} from './ai-description-tooltip';
+import {Loader2} from 'lucide-react';
 
 interface AiTransactionFormProps {
   onSuccess: () => void;
@@ -89,7 +90,11 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
             disabled={createAiTransactionMutation.isPending}
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
           >
-            {createAiTransactionMutation.isPending ? 'Obrađujem transakciju...' : 'Zabeleži transakciju'}
+            {createAiTransactionMutation.isPending ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              'Zabeleži transakciju'
+            )}
           </Button>
         </div>
         {createAiTransactionMutation.isPending && (
