@@ -94,7 +94,7 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
         </div>
         {createAiTransactionMutation.isPending && (
           <div className="text-sm text-muted-foreground text-center pt-2">
-            Analiziram opis i kreiram transakciju. Ovo može potrajati nekoliko sekundi...
+            <p>Analiziram opis i kreiram transakciju. Ovo može potrajati nekoliko sekundi...</p>
           </div>
         )}
       </form>
