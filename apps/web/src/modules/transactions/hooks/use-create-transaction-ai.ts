@@ -16,11 +16,11 @@ export const useCreateTransactionAI = () => {
       const jobResponse = await createAiTransactionForHousehold(me.householdId, transaction);
 
       // Poll for completion
-      const maxAttempts = 30; // 30 seconds max (1 second intervals)
+      const maxAttempts = 15; // 30 seconds max (2 second intervals)
       let attempts = 0;
 
       while (attempts < maxAttempts) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         const status = await getAiTransactionJobStatus(me.householdId, jobResponse.jobId);
 
