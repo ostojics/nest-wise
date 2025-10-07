@@ -7,3 +7,7 @@ export enum EmailJobs {
 export enum SavingsJobs {
   CALCULATE_SAVINGS = 'calculate-savings',
 }
+
+export enum AiTransactionJobs {
+  PROCESS_AI_TRANSACTION = 'process-ai-transaction',
+}

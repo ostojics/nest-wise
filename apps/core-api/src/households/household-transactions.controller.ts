@@ -213,9 +213,9 @@ export class HouseholdTransactionsController {
   }
 
   @ApiOperation({
-    summary: 'Create a transaction using AI analysis for a household',
+    summary: 'Create a transaction using AI analysis for a household (async)',
     description:
-      'Creates a transaction for the specified household by analyzing a natural language description using AI to extract amount, type, and category',
+      'Enqueues a background job to create a transaction for the specified household by analyzing a natural language description using AI. Returns immediately with a job ID that can be used to poll for completion.',
   })
   @ApiParam({
     name: 'householdId',
@@ -255,11 +255,26 @@ export class HouseholdTransactionsController {
     },
   })
   @ApiCreatedResponse({
-    type: TransactionResponseSwaggerDTO,
-    description: 'Transaction created successfully using AI analysis',
+    description: 'Job enqueued successfully, returns job ID for polling',
+    schema: {
+      type: 'object',
+      properties: {
+        jobId: {
+          type: 'string',
+          description: 'Unique identifier for the background job',
+          example: '123456',
+        },
+        status: {
+          type: 'string',
+          enum: ['pending', 'processing', 'completed', 'failed'],
+          description: 'Current status of the job',
+          example: 'pending',
+        },
+      },
+    },
   })
   @ApiBadRequestResponse({
-    description: 'Invalid input data or AI failed to parse transaction description',
+    description: 'Invalid input data',
   })
   @ApiNotFoundResponse({
     description: 'Account not found',
@@ -271,7 +286,64 @@ export class HouseholdTransactionsController {
   @UsePipes(new ZodValidationPipe(createTransactionAiHouseholdSchema))
   @Post('/ai')
   async createTransactionAi(@Param('householdId') householdId: string, @Body() dto: CreateTransactionAiHouseholdDTO) {
-    return await this.transactionsService.createTransactionAiForHousehold(householdId, dto);
+    return await this.transactionsService.enqueueAiTransaction(householdId, dto);
+  }
+
+  @ApiOperation({
+    summary: 'Get AI transaction job status',
+    description:
+      'Retrieves the current status of an AI transaction background job, including the created transaction if completed.',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiParam({
+    name: 'jobId',
+    type: 'string',
+    description: 'The unique identifier of the job',
+    example: '123456',
+  })
+  @ApiOkResponse({
+    description: 'Job status retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        jobId: {
+          type: 'string',
+          description: 'Unique identifier for the background job',
+          example: '123456',
+        },
+        status: {
+          type: 'string',
+          enum: ['pending', 'processing', 'completed', 'failed'],
+          description: 'Current status of the job',
+          example: 'completed',
+        },
+        transaction: {
+          type: 'object',
+          description: 'The created transaction (only present when status is completed)',
+          nullable: true,
+        },
+        error: {
+          type: 'string',
+          description: 'Error message (only present when status is failed)',
+          nullable: true,
+        },
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'Job not found',
+  })
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @Get('ai/:jobId')
+  async getAiTransactionJobStatus(@Param('householdId') householdId: string, @Param('jobId') jobId: string) {
+    return await this.transactionsService.getAiTransactionJobStatus(jobId);
   }
 
   @ApiOperation({

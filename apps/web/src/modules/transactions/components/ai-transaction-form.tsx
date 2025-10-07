@@ -81,7 +81,7 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
+          <Button type="button" variant="outline" onClick={onCancel} disabled={createAiTransactionMutation.isPending}>
             Otkaži
           </Button>
           <Button
@@ -89,9 +89,14 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
             disabled={createAiTransactionMutation.isPending}
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
           >
-            {createAiTransactionMutation.isPending ? 'Obrađujem...' : 'Zabeleži transakciju'}
+            {createAiTransactionMutation.isPending ? 'Obrađujem transakciju...' : 'Zabeleži transakciju'}
           </Button>
         </div>
+        {createAiTransactionMutation.isPending && (
+          <div className="text-sm text-muted-foreground text-center pt-2">
+            Analiziram opis i kreiram transakciju. Ovo može potrajati nekoliko sekundi...
+          </div>
+        )}
       </form>
     </div>
   );
