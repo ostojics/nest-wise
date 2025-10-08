@@ -14,19 +14,6 @@ const EmailChangeConfirmation = ({token}: EmailChangeConfirmationProps) => {
   const confirmEmailChangeMutation = useConfirmEmailChange();
   const [confirmed, setConfirmed] = useState(false);
 
-  if (!token) {
-    return (
-      <section className="flex items-center justify-center h-screen w-screen">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-red-600">Neispravan link</CardTitle>
-            <CardDescription>Link za potvrdu promene e‑pošte je neispravan ili nedostaje.</CardDescription>
-          </CardHeader>
-        </Card>
-      </section>
-    );
-  }
-
   const handleConfirm = () => {
     confirmEmailChangeMutation.mutate(
       {token},
@@ -52,7 +39,7 @@ const EmailChangeConfirmation = ({token}: EmailChangeConfirmationProps) => {
           {confirmed ? (
             <div className="text-center py-4">
               <p className="text-green-600 font-medium">E‑pošta je uspešno promenjena!</p>
-              <p className="text-sm text-muted-foreground mt-2">Preusmeravamo vas na podešavanja naloga...</p>
+              <p className="text-sm text-muted-foreground mt-2">Preusmeravamo vas...</p>
             </div>
           ) : (
             <Button onClick={handleConfirm} className="w-full" disabled={confirmEmailChangeMutation.isPending}>

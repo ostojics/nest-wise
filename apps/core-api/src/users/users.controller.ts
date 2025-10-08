@@ -34,13 +34,17 @@ import {ZodSchema} from 'zod';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
+import {Logger} from 'pino-nestjs';
 @ApiTags('Users')
 @Controller({
   version: '1',
   path: 'users',
 })
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly logger: Logger,
+  ) {}
 
   @ApiOperation({
     summary: 'Update username',
@@ -196,9 +200,17 @@ export class UsersController {
         message: 'E‑pošta je uspešno promenjena',
       };
     } catch (error) {
+      this.logger.debug('Email change confirmation error', {...error});
       if (error instanceof ConflictException) {
         throw error;
       }
+      if (error instanceof Error) {
+        this.logger.debug(`Email change confirmation failed:`, {
+          message: error.message,
+          stack: error.stack,
+        });
+      }
+
       throw new UnauthorizedException('Neispravan ili istekao token');
     }
   }

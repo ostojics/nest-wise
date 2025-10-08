@@ -67,7 +67,7 @@ export function NavUser() {
               <DropdownMenuItem asChild>
                 <a href="/account-settings">
                   <IconUserCircle />
-                  Podešavanja naloga
+                  Nalog
                 </a>
               </DropdownMenuItem>
               <DropdownMenuItem disabled>
