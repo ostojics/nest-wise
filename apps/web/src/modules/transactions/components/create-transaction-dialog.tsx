@@ -30,7 +30,7 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
           <DialogTitle>Zabeleži transakciju</DialogTitle>
           {!isManualMode && (
             <p className="text-sm text-muted-foreground text-balance">
-              Samo opišite transakciju — AI će uraditi ostalo.
+              Samo opišite transakciju, AI će uraditi ostalo.
             </p>
           )}
         </DialogHeader>

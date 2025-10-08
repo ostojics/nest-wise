@@ -14,3 +14,9 @@ export interface SendEmailChangeConfirmationPayload {
   newEmail: string;
   token: string;
 }
+
+export interface SendHelpEmailPayload {
+  email: string;
+  message: string;
+  userId?: string;
+}

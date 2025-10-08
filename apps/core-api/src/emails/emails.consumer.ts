@@ -6,6 +6,7 @@ import {
   SendInviteEmailPayload,
   SendPasswordResetEmailPayload,
   SendEmailChangeConfirmationPayload,
+  SendHelpEmailPayload,
 } from 'src/common/interfaces/emails.interface';
 import {EmailsService} from './emails.service';
 
@@ -27,6 +28,10 @@ export class EmailsConsumer extends WorkerHost {
       }
       case EmailJobs.SEND_EMAIL_CHANGE_CONFIRMATION: {
         await this.emailsService.processEmailChangeConfirmationJob(job.data as SendEmailChangeConfirmationPayload);
+        break;
+      }
+      case EmailJobs.SEND_HELP_EMAIL: {
+        await this.emailsService.processHelpEmailJob(job.data as SendHelpEmailPayload);
         break;
       }
       default:

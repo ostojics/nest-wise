@@ -12,6 +12,7 @@ import {
   SendInviteEmailPayload,
   SendPasswordResetEmailPayload,
   SendEmailChangeConfirmationPayload,
+  SendHelpEmailPayload,
 } from 'src/common/interfaces/emails.interface';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 
@@ -50,6 +51,12 @@ export class EmailsService {
   async sendEmailChangeConfirmation(payload: SendEmailChangeConfirmationPayload) {
     this.logger.log('Sending email change confirmation event', payload);
     await this.emailsQueue.add(EmailJobs.SEND_EMAIL_CHANGE_CONFIRMATION, payload, {
+      attempts: 1,
+    });
+  }
+  async sendHelpEmail(payload: SendHelpEmailPayload) {
+    this.logger.log('Sending help email event', payload);
+    await this.emailsQueue.add(EmailJobs.SEND_HELP_EMAIL, payload, {
       attempts: 1,
     });
   }
@@ -138,6 +145,32 @@ export class EmailsService {
 
     if (error) {
       this.logger.error('Error sending email change confirmation', error);
+      throw new Error(error.message);
+    }
+  }
+  async processHelpEmailJob(payload: SendHelpEmailPayload) {
+    const escapedMessage = payload.message
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\n/g, '<br>');
+
+    const {error} = await this.resendClient.emails.send({
+      to: 'slobodan@ostojic.dev',
+      from: this.fromEmail,
+      subject: `[NestWise] Pomoć – korisnička poruka`,
+      html: `
+      <h3>Nova korisnička poruka</h3>
+      <p><strong>Od:</strong> ${payload.email}</p>
+      ${payload.userId ? `<p><strong>ID korisnika:</strong> ${payload.userId}</p>` : ''}
+      <hr>
+      <p><strong>Poruka:</strong></p>
+      <p>${escapedMessage}</p>
+      `,
+    });
+
+    if (error) {
+      this.logger.error(`Error sending help email: ${error.message}`, error);
       throw new Error(error.message);
     }
   }

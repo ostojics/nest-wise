@@ -12,6 +12,13 @@ This repository contains complete product and technical documentation split acro
 - **[Local Development Setup](docs/setup.md)** - Step-by-step development environment setup
 - **[Self-Hosting Guide](docs/self-hosting.md)** - Production deployment guide (coming soon)
 
+## 🌍 Language & Localization
+
+**NestWise is currently Serbian-first** and specifically tailored for the Serbian market. The user interface, documentation, and user experience are designed with Serbian-speaking users in mind.
+
+- **User Manual (Serbian)**: **[Korisnički priručnik](docs/user-manual.sr.md)** — Comprehensive end-user guide in Serbian (Latin script) covering onboarding, daily usage, budgeting, and all key features
+- **Additional Languages**: Coming soon — we plan to add support for English and other languages in future releases
+
 ## 🚀 Quick Start
 
 ### Prerequisites
