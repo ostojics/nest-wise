@@ -14,6 +14,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitesRouteImport } from './routes/invites'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as EmailChangeRouteImport } from './routes/email-change'
 import { Route as _pathlessLayoutRouteRouteImport } from './routes/__pathlessLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as _pathlessLayoutTransactionsRouteImport } from './routes/__pathlessLayout/transactions'
@@ -23,6 +24,7 @@ import { Route as _pathlessLayoutMyFinancesRouteImport } from './routes/__pathle
 import { Route as _pathlessLayoutMembersRouteImport } from './routes/__pathlessLayout/members'
 import { Route as _pathlessLayoutAnalyticsRouteImport } from './routes/__pathlessLayout/analytics'
 import { Route as _pathlessLayoutAccountsRouteImport } from './routes/__pathlessLayout/accounts'
+import { Route as _pathlessLayoutAccountSettingsRouteImport } from './routes/__pathlessLayout/account-settings'
 import { Route as _pathlessLayoutReportsRouteRouteImport } from './routes/__pathlessLayout/reports/route'
 import { Route as _pathlessLayoutReportsSpendingRouteImport } from './routes/__pathlessLayout/reports/spending'
 import { Route as _pathlessLayoutReportsSavingsRouteImport } from './routes/__pathlessLayout/reports/savings'
@@ -51,6 +53,11 @@ const InvitesRoute = InvitesRouteImport.update({
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmailChangeRoute = EmailChangeRouteImport.update({
+  id: '/email-change',
+  path: '/email-change',
   getParentRoute: () => rootRouteImport,
 } as any)
 const _pathlessLayoutRouteRoute = _pathlessLayoutRouteRouteImport.update({
@@ -100,6 +107,12 @@ const _pathlessLayoutAccountsRoute = _pathlessLayoutAccountsRouteImport.update({
   path: '/accounts',
   getParentRoute: () => _pathlessLayoutRouteRoute,
 } as any)
+const _pathlessLayoutAccountSettingsRoute =
+  _pathlessLayoutAccountSettingsRouteImport.update({
+    id: '/account-settings',
+    path: '/account-settings',
+    getParentRoute: () => _pathlessLayoutRouteRoute,
+  } as any)
 const _pathlessLayoutReportsRouteRoute =
   _pathlessLayoutReportsRouteRouteImport.update({
     id: '/reports',
@@ -127,12 +140,14 @@ const _pathlessLayoutReportsNetWorthRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/email-change': typeof EmailChangeRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
+  '/account-settings': typeof _pathlessLayoutAccountSettingsRoute
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/members': typeof _pathlessLayoutMembersRoute
@@ -146,12 +161,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/email-change': typeof EmailChangeRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
+  '/account-settings': typeof _pathlessLayoutAccountSettingsRoute
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/members': typeof _pathlessLayoutMembersRoute
@@ -167,12 +184,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/__pathlessLayout': typeof _pathlessLayoutRouteRouteWithChildren
+  '/email-change': typeof EmailChangeRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/__pathlessLayout/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
+  '/__pathlessLayout/account-settings': typeof _pathlessLayoutAccountSettingsRoute
   '/__pathlessLayout/accounts': typeof _pathlessLayoutAccountsRoute
   '/__pathlessLayout/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/__pathlessLayout/members': typeof _pathlessLayoutMembersRoute
@@ -188,12 +207,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/email-change'
     | '/forgot-password'
     | '/invites'
     | '/login'
     | '/reset-password'
     | '/setup'
     | '/reports'
+    | '/account-settings'
     | '/accounts'
     | '/analytics'
     | '/members'
@@ -207,12 +228,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/email-change'
     | '/forgot-password'
     | '/invites'
     | '/login'
     | '/reset-password'
     | '/setup'
     | '/reports'
+    | '/account-settings'
     | '/accounts'
     | '/analytics'
     | '/members'
@@ -227,12 +250,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/__pathlessLayout'
+    | '/email-change'
     | '/forgot-password'
     | '/invites'
     | '/login'
     | '/reset-password'
     | '/setup'
     | '/__pathlessLayout/reports'
+    | '/__pathlessLayout/account-settings'
     | '/__pathlessLayout/accounts'
     | '/__pathlessLayout/analytics'
     | '/__pathlessLayout/members'
@@ -248,6 +273,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   _pathlessLayoutRouteRoute: typeof _pathlessLayoutRouteRouteWithChildren
+  EmailChangeRoute: typeof EmailChangeRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvitesRoute: typeof InvitesRoute
   LoginRoute: typeof LoginRoute
@@ -290,6 +316,13 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/email-change': {
+      id: '/email-change'
+      path: '/email-change'
+      fullPath: '/email-change'
+      preLoaderRoute: typeof EmailChangeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/__pathlessLayout': {
@@ -355,6 +388,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof _pathlessLayoutAccountsRouteImport
       parentRoute: typeof _pathlessLayoutRouteRoute
     }
+    '/__pathlessLayout/account-settings': {
+      id: '/__pathlessLayout/account-settings'
+      path: '/account-settings'
+      fullPath: '/account-settings'
+      preLoaderRoute: typeof _pathlessLayoutAccountSettingsRouteImport
+      parentRoute: typeof _pathlessLayoutRouteRoute
+    }
     '/__pathlessLayout/reports': {
       id: '/__pathlessLayout/reports'
       path: '/reports'
@@ -406,6 +446,7 @@ const _pathlessLayoutReportsRouteRouteWithChildren =
 
 interface _pathlessLayoutRouteRouteChildren {
   _pathlessLayoutReportsRouteRoute: typeof _pathlessLayoutReportsRouteRouteWithChildren
+  _pathlessLayoutAccountSettingsRoute: typeof _pathlessLayoutAccountSettingsRoute
   _pathlessLayoutAccountsRoute: typeof _pathlessLayoutAccountsRoute
   _pathlessLayoutAnalyticsRoute: typeof _pathlessLayoutAnalyticsRoute
   _pathlessLayoutMembersRoute: typeof _pathlessLayoutMembersRoute
@@ -418,6 +459,7 @@ interface _pathlessLayoutRouteRouteChildren {
 const _pathlessLayoutRouteRouteChildren: _pathlessLayoutRouteRouteChildren = {
   _pathlessLayoutReportsRouteRoute:
     _pathlessLayoutReportsRouteRouteWithChildren,
+  _pathlessLayoutAccountSettingsRoute: _pathlessLayoutAccountSettingsRoute,
   _pathlessLayoutAccountsRoute: _pathlessLayoutAccountsRoute,
   _pathlessLayoutAnalyticsRoute: _pathlessLayoutAnalyticsRoute,
   _pathlessLayoutMembersRoute: _pathlessLayoutMembersRoute,
@@ -433,6 +475,7 @@ const _pathlessLayoutRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   _pathlessLayoutRouteRoute: _pathlessLayoutRouteRouteWithChildren,
+  EmailChangeRoute: EmailChangeRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InvitesRoute: InvitesRoute,
   LoginRoute: LoginRoute,

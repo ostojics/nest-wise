@@ -9,6 +9,12 @@ export interface SendPasswordResetEmailPayload {
   userId: string;
 }
 
+export interface SendEmailChangeConfirmationPayload {
+  userId: string;
+  newEmail: string;
+  token: string;
+}
+
 export interface SendHelpEmailPayload {
   email: string;
   message: string;

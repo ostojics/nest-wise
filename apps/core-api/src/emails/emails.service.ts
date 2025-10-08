@@ -11,6 +11,7 @@ import {Queues} from 'src/common/enums/queues.enum';
 import {
   SendInviteEmailPayload,
   SendPasswordResetEmailPayload,
+  SendEmailChangeConfirmationPayload,
   SendHelpEmailPayload,
 } from 'src/common/interfaces/emails.interface';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
@@ -19,6 +20,7 @@ import {AppConfig, AppConfigName} from 'src/config/app.config';
 export class EmailsService {
   private readonly resendClient: Resend;
   private readonly fromEmail: string;
+  private readonly webAppUrl: string;
 
   constructor(
     @InjectQueue(Queues.EMAILS) private emailsQueue: Queue,
@@ -29,6 +31,7 @@ export class EmailsService {
     const config = this.configService.getOrThrow<AppConfig>(AppConfigName);
     this.resendClient = new Resend(config.resendApiKey);
     this.fromEmail = 'info@no-reply.nestwise.finance';
+    this.webAppUrl = config.webAppUrl;
   }
 
   async sendInviteEmail(payload: SendInviteEmailPayload) {
@@ -45,6 +48,12 @@ export class EmailsService {
     });
   }
 
+  async sendEmailChangeConfirmation(payload: SendEmailChangeConfirmationPayload) {
+    this.logger.log('Sending email change confirmation event', payload);
+    await this.emailsQueue.add(EmailJobs.SEND_EMAIL_CHANGE_CONFIRMATION, payload, {
+      attempts: 1,
+    });
+  }
   async sendHelpEmail(payload: SendHelpEmailPayload) {
     this.logger.log('Sending help email event', payload);
     await this.emailsQueue.add(EmailJobs.SEND_HELP_EMAIL, payload, {
@@ -53,8 +62,6 @@ export class EmailsService {
   }
 
   async processInviteEmailJob(payload: SendInviteEmailPayload) {
-    const {webAppUrl} = this.configService.getOrThrow<AppConfig>(AppConfigName);
-
     const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
     const jwtPayload = {
       sub: payload.householdId,
@@ -76,7 +83,7 @@ export class EmailsService {
       subject: `[NestWise] Poziv za pridruživanje domaćinstvu`,
       html: `
       <p>Pozvani ste da se pridružite domaćinstvu <b>${payload.householdName}</b> na NestWise platformi. Kliknite na link ispod da prihvatite poziv:</p>
-      <a href="${webAppUrl}/invites?${queryParams}">Prihvati poziv</a>
+      <a href="${this.webAppUrl}/invites?${queryParams}">Prihvati poziv</a>
       `,
     });
 
@@ -87,8 +94,6 @@ export class EmailsService {
   }
 
   async processPasswordResetEmailJob(payload: SendPasswordResetEmailPayload) {
-    const {webAppUrl} = this.configService.getOrThrow<AppConfig>(AppConfigName);
-
     const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
     const jwtPayload = {
       sub: payload.userId,
@@ -111,7 +116,7 @@ export class EmailsService {
       html: `
       <p>Zatražili ste resetovanje lozinke za svoj NestWise nalog.</p>
       <p>Molimo kliknite na link ispod da resetujete lozinku. Ovaj link ističe za 15 minuta:</p>
-      <a href="${webAppUrl}/reset-password?${queryParams}">Resetuj lozinku</a>
+      <a href="${this.webAppUrl}/reset-password?${queryParams}">Resetuj lozinku</a>
       <p>Ukoliko niste tražili resetovanje lozinke, slobodno ignorišite ovaj email.</p>
       `,
     });
@@ -122,6 +127,27 @@ export class EmailsService {
     }
   }
 
+  async processEmailChangeConfirmationJob(payload: SendEmailChangeConfirmationPayload) {
+    const params = new URLSearchParams({token: payload.token});
+    const queryParams = params.toString();
+
+    const {error} = await this.resendClient.emails.send({
+      to: payload.newEmail,
+      from: this.fromEmail,
+      subject: `[NestWise] Potvrda promene e‑pošte`,
+      html: `
+      <p>Zatražili ste promenu e‑pošte za svoj NestWise nalog.</p>
+      <p>Molimo kliknite na link ispod da potvrdite novu e‑poštu. Ovaj link ističe za 15 minuta:</p>
+      <a href="${this.webAppUrl}/email-change?${queryParams}">Potvrdi promenu e‑pošte</a>
+      <p>Ukoliko niste tražili promenu e‑pošte, slobodno ignorišite ovaj email.</p>
+      `,
+    });
+
+    if (error) {
+      this.logger.error('Error sending email change confirmation', error);
+      throw new Error(error.message);
+    }
+  }
   async processHelpEmailJob(payload: SendHelpEmailPayload) {
     const escapedMessage = payload.message
       .replace(/&/g, '&amp;')
@@ -144,7 +170,7 @@ export class EmailsService {
     });
 
     if (error) {
-      this.logger.error('Error sending help email', error);
+      this.logger.error(`Error sending help email: ${error.message}`, error);
       throw new Error(error.message);
     }
   }

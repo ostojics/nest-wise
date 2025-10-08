@@ -5,6 +5,7 @@ import {Queues} from 'src/common/enums/queues.enum';
 import {
   SendInviteEmailPayload,
   SendPasswordResetEmailPayload,
+  SendEmailChangeConfirmationPayload,
   SendHelpEmailPayload,
 } from 'src/common/interfaces/emails.interface';
 import {EmailsService} from './emails.service';
@@ -23,6 +24,10 @@ export class EmailsConsumer extends WorkerHost {
       }
       case EmailJobs.SEND_PASSWORD_RESET_EMAIL: {
         await this.emailsService.processPasswordResetEmailJob(job.data as SendPasswordResetEmailPayload);
+        break;
+      }
+      case EmailJobs.SEND_EMAIL_CHANGE_CONFIRMATION: {
+        await this.emailsService.processEmailChangeConfirmationJob(job.data as SendEmailChangeConfirmationPayload);
         break;
       }
       case EmailJobs.SEND_HELP_EMAIL: {
