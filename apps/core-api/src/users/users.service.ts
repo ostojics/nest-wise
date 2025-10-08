@@ -1,5 +1,5 @@
 import {CreateUserDTO} from '@nest-wise/contracts';
-import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {EmailsService} from 'src/emails/emails.service';
 import {HouseholdsService} from 'src/households/households.service';
 import {hashPassword} from 'src/lib/hashing/hashing';
@@ -202,13 +202,13 @@ export class UsersService {
     }>(token);
 
     if (payload.purpose !== 'email-change') {
-      throw new ConflictException('Neispravan token');
+      throw new UnauthorizedException('Neispravan token');
     }
 
     // Verify current user email matches token
     const user = await this.findUserById(payload.sub);
     if (user.email !== payload.email) {
-      throw new ConflictException('Neispravan token');
+      throw new UnauthorizedException('Neispravan token');
     }
 
     // Check if the new email is still available

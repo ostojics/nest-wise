@@ -200,17 +200,12 @@ export class UsersController {
         message: 'E‑pošta je uspešno promenjena',
       };
     } catch (error) {
-      this.logger.debug('Email change confirmation error', {...error});
       if (error instanceof ConflictException) {
         throw error;
       }
-      if (error instanceof Error) {
-        this.logger.debug(`Email change confirmation failed:`, {
-          message: error.message,
-          stack: error.stack,
-        });
+      if (error instanceof UnauthorizedException) {
+        throw error;
       }
-
       throw new UnauthorizedException('Neispravan ili istekao token');
     }
   }
