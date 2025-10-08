@@ -63,22 +63,14 @@ export function EditTransactionDialog({transaction, open, onOpenChange}: EditTra
     }
   }, [watchedType, setValue]);
 
-  useEffect(() => {
-    if (!open) {
-      reset({
-        accountId: transaction.accountId,
-        categoryId: transaction.categoryId,
-        amount: transaction.amount,
-        type: transaction.type,
-        description: transaction.description,
-        transactionDate: new Date(transaction.transactionDate),
-        isReconciled: transaction.isReconciled,
-      });
-    }
-  }, [open, reset, transaction]);
-
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(value) => {
+        reset();
+        onOpenChange(value);
+      }}
+    >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Izmeni transakciju</DialogTitle>

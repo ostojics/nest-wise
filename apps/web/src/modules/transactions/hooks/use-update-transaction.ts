@@ -9,7 +9,7 @@ export const useUpdateTransaction = () => {
   return useMutation({
     mutationFn: ({id, dto}: {id: string; dto: UpdateTransactionDTO}) => updateTransaction(id, dto),
     onSuccess: async () => {
-      await client.invalidateQueries();
+      await client.invalidateQueries({refetchType: 'all'});
       toast.success('Transakcija je izmenjena');
     },
     onError: () => {

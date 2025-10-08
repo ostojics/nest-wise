@@ -17,7 +17,6 @@ const TransactionRowActions: React.FC<TransactionActionsProps> = ({transaction})
     <>
       <Button
         variant="ghost"
-        className="text-blue-500 hover:text-blue-500"
         title="Izmeni transakciju"
         size="icon"
         aria-label="Izmeni transakciju"
