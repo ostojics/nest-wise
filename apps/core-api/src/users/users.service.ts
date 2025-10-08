@@ -160,13 +160,11 @@ export class UsersService {
   }
 
   async requestEmailChange(userId: string, userEmail: string, newEmail: string): Promise<string> {
-    // Check if the new email is already in use
     const existingUser = await this.findUserByEmail(newEmail);
     if (existingUser) {
       throw new ConflictException('E‑pošta je već u upotrebi');
     }
 
-    // Generate JWT token for email change confirmation
     const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
     const jwtPayload = {
       sub: userId,
@@ -175,12 +173,12 @@ export class UsersService {
       iss: appConfig.url,
       purpose: 'email-change',
     };
+    this.logger.debug(`Generating email change token with payload: ${JSON.stringify(jwtPayload)}`);
 
     const token = await this.jwtService.signAsync(jwtPayload, {
       expiresIn: '15m',
     });
 
-    // Send email with confirmation link
     await this.emailsService.sendEmailChangeConfirmation({
       userId,
       newEmail,
@@ -201,23 +199,24 @@ export class UsersService {
       exp: number;
     }>(token);
 
+    this.logger.debug(`Processing email change for user: ${JSON.stringify(payload)}`);
     if (payload.purpose !== 'email-change') {
       throw new UnauthorizedException('Neispravan token');
     }
 
-    // Verify current user email matches token
     const user = await this.findUserById(payload.sub);
-    if (user.email !== payload.email) {
-      throw new UnauthorizedException('Neispravan token');
+    this.logger.debug(`Found user for email change: ${JSON.stringify(user)}`);
+    if (user.id !== payload.sub) {
+      throw new ConflictException('Neispravan token');
     }
 
     // Check if the new email is still available
     const existingUser = await this.findUserByEmail(payload.newEmail);
+    this.logger.debug(`Checking availability of new email: ${payload.newEmail}`, {existingUser});
     if (existingUser && existingUser.id !== payload.sub) {
       throw new ConflictException('E‑pošta je već u upotrebi');
     }
 
-    // Update user email
     await this.updateUser(payload.sub, {email: payload.newEmail});
   }
 }
