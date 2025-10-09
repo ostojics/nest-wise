@@ -9,7 +9,7 @@ import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
 import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/use-validate-create-ai-transaction';
 import AiBanner from './ai-banner';
 import {AiDescriptionTooltip} from './ai-description-tooltip';
-import {Loader2} from 'lucide-react';
+import {AiProcessingStatus} from './ai-processing-status';
 
 interface AiTransactionFormProps {
   onSuccess: () => void;
@@ -32,9 +32,15 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
   } = useValidateCreateAiTransaction({accountId: (accounts ?? [])[0]?.id});
 
   const onSubmit = async (data: CreateTransactionAiHouseholdDTO) => {
-    await createAiTransactionMutation.mutateAsync(data);
-    onSuccess();
-    reset();
+    try {
+      await createAiTransactionMutation.mutateAsync(data);
+      onSuccess();
+      reset();
+    } catch {
+      // Error already handled by React Query's onError
+      // Close dialog on error
+      onCancel();
+    }
   };
 
   const getAccountDisplayName = (accountId: string) => {
@@ -44,6 +50,15 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
     const accountType = accountTypes.find((type) => type.value === account.type);
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
+
+  // Show processing status when mutation is pending
+  if (createAiTransactionMutation.isPending) {
+    return (
+      <div className="space-y-4">
+        <AiProcessingStatus />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -82,26 +97,16 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel} disabled={createAiTransactionMutation.isPending}>
+          <Button type="button" variant="outline" onClick={onCancel}>
             Otkaži
           </Button>
           <Button
             type="submit"
-            disabled={createAiTransactionMutation.isPending}
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
           >
-            {createAiTransactionMutation.isPending ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              'Zabeleži transakciju'
-            )}
+            Zabeleži transakciju
           </Button>
         </div>
-        {createAiTransactionMutation.isPending && (
-          <div className="text-sm text-muted-foreground text-center pt-2">
-            <p>Analiziram opis i kreiram transakciju. Ovo može potrajati nekoliko sekundi...</p>
-          </div>
-        )}
       </form>
     </div>
   );
