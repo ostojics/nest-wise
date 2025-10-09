@@ -1,3 +1,4 @@
+import {mutationKeys} from '@/modules/api/mutation-keys';
 import {createAiTransactionForHousehold, getAiTransactionJobStatus} from '@/modules/api/transactions-api';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {CreateTransactionAiHouseholdDTO, AiTransactionJobStatus} from '@nest-wise/contracts';
@@ -35,6 +36,7 @@ export const useCreateTransactionAI = () => {
 
       throw new Error('Obrada transakcije je predugo trajala');
     },
+    mutationKey: mutationKeys.transactions.createAiTransaction(),
     onSuccess: async () => {
       await client.invalidateQueries();
       toast.success('Transakcija je uspešno obrađena');
