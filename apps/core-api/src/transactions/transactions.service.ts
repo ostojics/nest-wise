@@ -488,6 +488,8 @@ export class TransactionsService {
       status,
     };
 
+    this.logger.debug('AI transaction job status fetched', {jobId, status});
+
     if (status === AiTransactionJobStatus.COMPLETED) {
       response.transaction = job.returnvalue as TransactionContract;
     } else if (status === AiTransactionJobStatus.FAILED) {

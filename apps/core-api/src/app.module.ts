@@ -72,6 +72,10 @@ import {LicensesModule} from './licenses/licenses.module';
 
             password: config.redisPassword ?? undefined,
           },
+          defaultJobOptions: {
+            removeOnComplete: {age: 3600, count: 1000}, // Keep last 1000 or 1 hour
+            removeOnFail: {age: 172800}, // Keep failed jobs for 48 hours (172800 seconds)
+          },
         };
       },
     }),
