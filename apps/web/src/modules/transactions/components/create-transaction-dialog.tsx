@@ -25,7 +25,7 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Zabeleži transakciju</DialogTitle>
           {!isManualMode && (
@@ -45,11 +45,13 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
             Ručni unos
           </Label>
         </div>
-        {isManualMode ? (
-          <ManualTransactionForm onSuccess={handleSuccess} onCancel={handleCancel} />
-        ) : (
-          <AiTransactionForm onSuccess={handleSuccess} onCancel={handleCancel} />
-        )}
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          {isManualMode ? (
+            <ManualTransactionForm onSuccess={handleSuccess} onCancel={handleCancel} />
+          ) : (
+            <AiTransactionForm onSuccess={handleSuccess} onCancel={handleCancel} />
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

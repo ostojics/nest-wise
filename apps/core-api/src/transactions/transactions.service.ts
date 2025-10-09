@@ -16,8 +16,13 @@ import {
   SpendingTotalContract,
   CategorySpendingPointContract,
   GetSpendingSummaryQueryHouseholdDTO,
+  AiTransactionJobResponseContract,
+  AiTransactionJobStatusContract,
+  AiTransactionJobStatus,
 } from '@nest-wise/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {InjectQueue} from '@nestjs/bullmq';
+import {Queue} from 'bullmq';
 import {generateObject} from 'ai';
 import {CategoriesService} from 'src/categories/categories.service';
 import {HouseholdsService} from 'src/households/households.service';
@@ -29,6 +34,9 @@ import {TransactionType} from '../common/enums/transaction.type.enum';
 import {Transaction} from './transaction.entity';
 import {TransactionsRepository} from './transactions.repository';
 import {Logger} from 'pino-nestjs';
+import {Queues} from 'src/common/enums/queues.enum';
+import {AiTransactionJobs} from 'src/common/enums/jobs.enum';
+import {ProcessAiTransactionPayload} from 'src/common/interfaces/ai-transactions.interface';
 
 @Injectable()
 export class TransactionsService {
@@ -41,6 +49,7 @@ export class TransactionsService {
     private readonly categoriesService: CategoriesService,
     private readonly dataSource: DataSource,
     private readonly logger: Logger,
+    @InjectQueue(Queues.AI_TRANSACTIONS) private readonly aiTransactionsQueue: Queue,
   ) {}
 
   async createTransaction(transactionData: CreateTransactionDTO): Promise<Transaction> {
@@ -413,5 +422,80 @@ export class TransactionsService {
     }
 
     return netChange;
+  }
+
+  async enqueueAiTransaction(
+    householdId: string,
+    transactionData: CreateTransactionAiHouseholdDTO,
+  ): Promise<AiTransactionJobResponseContract> {
+    // Validate account exists and belongs to household before enqueueing
+    const account = await this.accountsService.findAccountById(transactionData.accountId);
+    if (account.householdId !== householdId) {
+      throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
+    }
+
+    const payload: ProcessAiTransactionPayload = {
+      householdId,
+      transactionData,
+    };
+
+    const job = await this.aiTransactionsQueue.add(AiTransactionJobs.PROCESS_AI_TRANSACTION, payload, {
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 2000,
+      },
+    });
+
+    this.logger.debug('AI transaction job enqueued', {jobId: job.id, householdId});
+
+    return {
+      jobId: job.id ?? '',
+      status: AiTransactionJobStatus.PENDING,
+    };
+  }
+
+  async getAiTransactionJobStatus(jobId: string): Promise<AiTransactionJobStatusContract> {
+    const job = await this.aiTransactionsQueue.getJob(jobId);
+
+    if (!job) {
+      throw new NotFoundException('Posao nije pronađen');
+    }
+
+    const state = await job.getState();
+    let status: AiTransactionJobStatus;
+
+    switch (state) {
+      case 'waiting':
+      case 'delayed':
+        status = AiTransactionJobStatus.PENDING;
+        break;
+      case 'active':
+        status = AiTransactionJobStatus.PROCESSING;
+        break;
+      case 'completed':
+        status = AiTransactionJobStatus.COMPLETED;
+        break;
+      case 'failed':
+        status = AiTransactionJobStatus.FAILED;
+        break;
+      default:
+        status = AiTransactionJobStatus.PENDING;
+    }
+
+    const response: AiTransactionJobStatusContract = {
+      jobId,
+      status,
+    };
+
+    this.logger.debug('AI transaction job status fetched', {jobId, status});
+
+    if (status === AiTransactionJobStatus.COMPLETED) {
+      response.transaction = job.returnvalue as TransactionContract;
+    } else if (status === AiTransactionJobStatus.FAILED) {
+      response.error = job.failedReason || 'Obrada transakcije nije uspela';
+    }
+
+    return response;
   }
 }
