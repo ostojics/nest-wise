@@ -18,11 +18,10 @@ const AiBanner = () => {
       <div className="relative flex items-center gap-3">
         <div className="relative">
           <div
-            className={`w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center transition-all duration-1000 ${isListening ? 'scale-110 shadow-lg shadow-blue-500/30' : 'scale-100'}`}
+            className={`w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center transition-all duration-1000`}
           >
             <Brain className="w-5 h-5 text-white" />
           </div>
-
           {isListening && (
             <>
               <div className="absolute inset-0 rounded-full bg-blue-500/20 animate-ping" />

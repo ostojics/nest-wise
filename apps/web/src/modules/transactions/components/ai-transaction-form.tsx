@@ -32,15 +32,17 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
   } = useValidateCreateAiTransaction({accountId: (accounts ?? [])[0]?.id});
 
   const onSubmit = async (data: CreateTransactionAiHouseholdDTO) => {
-    try {
-      await createAiTransactionMutation.mutateAsync(data);
-      onSuccess();
-      reset();
-    } catch {
-      // Error already handled by React Query's onError
-      // Close dialog on error
-      onCancel();
-    }
+    await createAiTransactionMutation.mutateAsync(data, {
+      onSuccess: () => {
+        onSuccess();
+      },
+      onError: () => {
+        onCancel();
+      },
+      onSettled: () => {
+        reset();
+      },
+    });
   };
 
   const getAccountDisplayName = (accountId: string) => {
@@ -51,7 +53,6 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
 
-  // Show processing status when mutation is pending
   if (createAiTransactionMutation.isPending) {
     return (
       <div className="space-y-4">

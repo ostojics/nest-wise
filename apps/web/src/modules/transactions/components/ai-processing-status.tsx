@@ -1,4 +1,4 @@
-import {Brain, Loader2} from 'lucide-react';
+import {Brain} from 'lucide-react';
 import {useEffect, useState} from 'react';
 
 interface AiProcessingStatusProps {
@@ -14,6 +14,7 @@ export function AiProcessingStatus({
     const interval = setInterval(() => {
       setIsPulsing((prev) => !prev);
     }, 2000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -24,7 +25,7 @@ export function AiProcessingStatus({
       <div className="relative flex flex-col items-center gap-4 text-center">
         <div className="relative">
           <div
-            className={`w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center transition-all duration-1000 ${isPulsing ? 'scale-110 shadow-lg shadow-emerald-500/30' : 'scale-100'}`}
+            className={`w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center transition-all duration-1000`}
           >
             <Brain className="w-8 h-8 text-white" />
           </div>
@@ -40,11 +41,10 @@ export function AiProcessingStatus({
         <div className="space-y-2">
           <div className="flex items-center justify-center gap-2">
             <span className="text-base font-medium bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-              NestWise Asistent radi
+              Obrada u toku
             </span>
-            <Loader2 className="size-4 animate-spin text-emerald-600" />
           </div>
-          <p className="text-sm text-muted-foreground max-w-md">{message}</p>
+          <p className="text-sm text-muted-foreground max-w-md text-balance">{message}</p>
         </div>
       </div>
     </div>
