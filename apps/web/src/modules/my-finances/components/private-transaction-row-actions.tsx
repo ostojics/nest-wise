@@ -42,21 +42,23 @@ export default function PrivateTransactionRowActions({transactionId}: PrivateTra
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="mb-3">
           <DialogTitle>Obriši privatnu transakciju</DialogTitle>
           <DialogDescription>Da li ste sigurni da želite da obrišete ovu privatnu transakciju?</DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline" disabled={deleteMutation.isPending}>
-              Otkaži
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" disabled={deleteMutation.isPending}>
+                Otkaži
+              </Button>
+            </DialogClose>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
+              {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Obriši'}
             </Button>
-          </DialogClose>
-          <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Obriši'}
-          </Button>
-        </DialogFooter>
+          </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

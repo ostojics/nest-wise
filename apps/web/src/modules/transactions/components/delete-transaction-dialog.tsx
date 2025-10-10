@@ -31,19 +31,21 @@ export function DeleteTransactionDialog({transaction, open, onOpenChange}: Delet
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="mb-3">
           <DialogTitle>Obriši transakciju</DialogTitle>
           <DialogDescription>Da li ste sigurni da želite da obrišete ovu transakciju?</DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={deleteMutation.isPending}>
-            Otkaži
-          </Button>
-          <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Obriši'}
-          </Button>
-        </DialogFooter>
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <DialogFooter>
+            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={deleteMutation.isPending}>
+              Otkaži
+            </Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
+              {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Obriši'}
+            </Button>
+          </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

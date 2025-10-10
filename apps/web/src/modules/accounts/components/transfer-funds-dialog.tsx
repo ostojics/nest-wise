@@ -65,7 +65,7 @@ const TransferFundsDialog = () => {
           Prebaci sredstva
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Wallet className="w-5 h-5" />
@@ -76,40 +76,44 @@ const TransferFundsDialog = () => {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleTransferFunds)} className="space-y-6">
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Polazni račun</Label>
-            <AccountSelect
-              accounts={accounts}
-              value={fromAccountId}
-              onChange={(id) => setValue('fromAccountId', id, {shouldValidate: true})}
-              placeholder="Izaberite polazni račun"
-              className="w-full"
-              excludeId={toAccountId}
-            />
-            {errors.fromAccountId && <FormError error={errors.fromAccountId.message ?? ''} />}
-          </div>
+          <div className="overflow-y-auto flex-1 -mx-6 px-6">
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Polazni račun</Label>
+                <AccountSelect
+                  accounts={accounts}
+                  value={fromAccountId}
+                  onChange={(id) => setValue('fromAccountId', id, {shouldValidate: true})}
+                  placeholder="Izaberite polazni račun"
+                  className="w-full"
+                  excludeId={toAccountId}
+                />
+                {errors.fromAccountId && <FormError error={errors.fromAccountId.message ?? ''} />}
+              </div>
 
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Odredišni račun</Label>
-            <AccountSelect
-              accounts={accounts}
-              value={toAccountId}
-              onChange={(id) => setValue('toAccountId', id, {shouldValidate: true})}
-              placeholder="Izaberite odredišni račun"
-              className="w-full"
-              excludeId={fromAccountId}
-            />
-            {errors.toAccountId && <FormError error={errors.toAccountId.message ?? ''} />}
-          </div>
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Odredišni račun</Label>
+                <AccountSelect
+                  accounts={accounts}
+                  value={toAccountId}
+                  onChange={(id) => setValue('toAccountId', id, {shouldValidate: true})}
+                  placeholder="Izaberite odredišni račun"
+                  className="w-full"
+                  excludeId={fromAccountId}
+                />
+                {errors.toAccountId && <FormError error={errors.toAccountId.message ?? ''} />}
+              </div>
 
-          <div className="space-y-3">
-            <Label htmlFor="amount" className="text-sm font-medium">
-              Iznos
-            </Label>
-            <div className="relative">
-              <Input id="amount" type="number" step="0.01" placeholder="0.00" {...register('amount')} />
+              <div className="space-y-3">
+                <Label htmlFor="amount" className="text-sm font-medium">
+                  Iznos
+                </Label>
+                <div className="relative">
+                  <Input id="amount" type="number" step="0.01" placeholder="0.00" {...register('amount')} />
+                </div>
+                {errors.amount && <FormError error={errors.amount.message ?? ''} />}
+              </div>
             </div>
-            {errors.amount && <FormError error={errors.amount.message ?? ''} />}
           </div>
 
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">

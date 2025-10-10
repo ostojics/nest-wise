@@ -64,7 +64,7 @@ const EditCategoryBudgetDialog = ({
           Dodeli
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="mb-3">
           <DialogTitle>Dodeli planirani iznos</DialogTitle>
           <DialogDescription>
@@ -72,17 +72,19 @@ const EditCategoryBudgetDialog = ({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleEditCategoryBudget)}>
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="edit-account-name">Planirani iznos</Label>
-              <Input
-                id="edit-planned-amount"
-                type="number"
-                inputMode="decimal"
-                step="0.01"
-                {...register('plannedAmount')}
-              />
-              {errors.plannedAmount?.message && <FormError error={errors.plannedAmount.message} />}
+          <div className="overflow-y-auto flex-1 -mx-6 px-6">
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="edit-account-name">Planirani iznos</Label>
+                <Input
+                  id="edit-planned-amount"
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  {...register('plannedAmount')}
+                />
+                {errors.plannedAmount?.message && <FormError error={errors.plannedAmount.message} />}
+              </div>
             </div>
           </div>
           <DialogFooter className="mt-10">

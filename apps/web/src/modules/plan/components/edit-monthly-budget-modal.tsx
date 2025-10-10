@@ -59,7 +59,7 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, on
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Izmenite mesečni budžet</DialogTitle>
           <DialogDescription>
@@ -68,12 +68,14 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, on
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-3">
-          <div className="space-y-2">
-            <Label htmlFor="monthlyBudget">
-              Mesečni budžet <span className="text-red-500">*</span>
-            </Label>
-            <Input id="monthlyBudget" type="number" step="0.01" placeholder="0.00" {...register('monthlyBudget')} />
-            {errors.monthlyBudget && <FormError error={errors.monthlyBudget.message ?? ''} />}
+          <div className="overflow-y-auto flex-1 -mx-6 px-6">
+            <div className="space-y-2">
+              <Label htmlFor="monthlyBudget">
+                Mesečni budžet <span className="text-red-500">*</span>
+              </Label>
+              <Input id="monthlyBudget" type="number" step="0.01" placeholder="0.00" {...register('monthlyBudget')} />
+              {errors.monthlyBudget && <FormError error={errors.monthlyBudget.message ?? ''} />}
+            </div>
           </div>
 
           <div className="flex justify-end gap-2 pt-4">

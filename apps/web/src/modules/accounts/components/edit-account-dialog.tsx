@@ -68,48 +68,50 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
             <Pencil className="size-4" />
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Izmeni račun</DialogTitle>
             <DialogDescription className="sr-only">Izmenite detalje računa</DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(handleEditAccount)}>
-            <div className="flex flex-col gap-6 py-2">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-account-name">Naziv</Label>
-                <Input id="edit-account-name" {...register('name', {required: true})} />
-                {errors.name?.message && <FormError error={errors.name.message} />}
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-account-type">Tip</Label>
-                <Select
-                  value={selectedType}
-                  onValueChange={(value) => setValue('type', value as EditAccountDTO['type'])}
-                >
-                  <SelectTrigger id="edit-account-type" className="w-full">
-                    <SelectValue placeholder="Izaberite tip" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {accountTypes.map((t) => (
-                      <SelectItem key={t.value} value={t.value}>
-                        {t.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.type?.message && <FormError error={errors.type.message} />}
-              </div>
-              <SelectedAccountType type={selectedType} />
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-account-balance">Trenutno stanje</Label>
-                <Input
-                  id="edit-account-balance"
-                  type="number"
-                  inputMode="decimal"
-                  step="0.01"
-                  {...register('currentBalance')}
-                />
-                {errors.currentBalance?.message && <FormError error={errors.currentBalance.message} />}
+            <div className="overflow-y-auto flex-1 -mx-6 px-6">
+              <div className="flex flex-col gap-6 py-2">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="edit-account-name">Naziv</Label>
+                  <Input id="edit-account-name" {...register('name', {required: true})} />
+                  {errors.name?.message && <FormError error={errors.name.message} />}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="edit-account-type">Tip</Label>
+                  <Select
+                    value={selectedType}
+                    onValueChange={(value) => setValue('type', value as EditAccountDTO['type'])}
+                  >
+                    <SelectTrigger id="edit-account-type" className="w-full">
+                      <SelectValue placeholder="Izaberite tip" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {accountTypes.map((t) => (
+                        <SelectItem key={t.value} value={t.value}>
+                          {t.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.type?.message && <FormError error={errors.type.message} />}
+                </div>
+                <SelectedAccountType type={selectedType} />
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="edit-account-balance">Trenutno stanje</Label>
+                  <Input
+                    id="edit-account-balance"
+                    type="number"
+                    inputMode="decimal"
+                    step="0.01"
+                    {...register('currentBalance')}
+                  />
+                  {errors.currentBalance?.message && <FormError error={errors.currentBalance.message} />}
+                </div>
               </div>
             </div>
             <DialogFooter className="mt-4">

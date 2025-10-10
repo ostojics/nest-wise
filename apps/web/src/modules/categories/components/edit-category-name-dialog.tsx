@@ -59,7 +59,7 @@ const EditCategoryNameDialog = ({categoryId, currentName}: EditCategoryNameDialo
           Preimenuj
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="mb-3">
           <DialogTitle>Preimenujte kategoriju</DialogTitle>
           <DialogDescription>
@@ -67,11 +67,13 @@ const EditCategoryNameDialog = ({categoryId, currentName}: EditCategoryNameDialo
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleEditCategoryName)}>
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col gap-2 flex-1">
-              <Label htmlFor="edit-category-name">Naziv kategorije</Label>
-              <Input id="edit-category-name" type="text" {...register('name')} />
-              {errors.name?.message && <FormError error={errors.name.message} />}
+          <div className="overflow-y-auto flex-1 -mx-6 px-6">
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-2 flex-1">
+                <Label htmlFor="edit-category-name">Naziv kategorije</Label>
+                <Input id="edit-category-name" type="text" {...register('name')} />
+                {errors.name?.message && <FormError error={errors.name.message} />}
+              </div>
             </div>
           </div>
           <DialogFooter className="mt-10">
