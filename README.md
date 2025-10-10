@@ -212,3 +212,16 @@ pnpm --filter @nest-wise/contracts <command>
 ---
 
 **Need Help?** Check the detailed documentation in the [`docs/`](docs/) directory or review the interactive API documentation at http://localhost:8080/swagger when running locally.
+
+# License
+
+This software is licensed under the Polyform Noncommercial License 1.0.0.
+
+You may use, copy, modify, and host this software for personal or internal
+(non-commercial) use at no cost.
+
+You may not use this software to provide a paid service, sell derivative works,
+or otherwise use it for commercial purposes.
+
+Full text available at:
+https://polyformproject.org/licenses/noncommercial/1.0.0/

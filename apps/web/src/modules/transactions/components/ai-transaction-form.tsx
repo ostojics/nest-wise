@@ -9,6 +9,7 @@ import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
 import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/use-validate-create-ai-transaction';
 import AiBanner from './ai-banner';
 import {AiDescriptionTooltip} from './ai-description-tooltip';
+import {AiProcessingStatus} from './ai-processing-status';
 
 interface AiTransactionFormProps {
   onSuccess: () => void;
@@ -31,9 +32,17 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
   } = useValidateCreateAiTransaction({accountId: (accounts ?? [])[0]?.id});
 
   const onSubmit = async (data: CreateTransactionAiHouseholdDTO) => {
-    await createAiTransactionMutation.mutateAsync(data);
-    onSuccess();
-    reset();
+    await createAiTransactionMutation.mutateAsync(data, {
+      onSuccess: () => {
+        onSuccess();
+      },
+      onError: () => {
+        onCancel();
+      },
+      onSettled: () => {
+        reset();
+      },
+    });
   };
 
   const getAccountDisplayName = (accountId: string) => {
@@ -43,6 +52,14 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
     const accountType = accountTypes.find((type) => type.value === account.type);
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
+
+  if (createAiTransactionMutation.isPending) {
+    return (
+      <div className="space-y-4">
+        <AiProcessingStatus />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -86,10 +103,9 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
           </Button>
           <Button
             type="submit"
-            disabled={createAiTransactionMutation.isPending}
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
           >
-            {createAiTransactionMutation.isPending ? 'Obrađujem...' : 'Zabeleži transakciju'}
+            Zabeleži transakciju
           </Button>
         </div>
       </form>

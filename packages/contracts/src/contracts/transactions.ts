@@ -355,3 +355,23 @@ export type UpdateTransactionDTO = z.infer<typeof updateTransactionSchema>;
 export type GetTransactionsQueryDTO = z.infer<typeof getTransactionsQuerySchema>;
 export type GetTransactionsQueryHouseholdDTO = z.infer<typeof getTransactionsQueryHouseholdSchema>;
 export type TransactionSortField = z.infer<typeof TransactionSortFieldEnum>;
+
+// AI Transaction Job Status
+export enum AiTransactionJobStatus {
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+}
+
+export interface AiTransactionJobResponseContract {
+  jobId: string;
+  status: AiTransactionJobStatus;
+}
+
+export interface AiTransactionJobStatusContract {
+  jobId: string;
+  status: AiTransactionJobStatus;
+  transaction?: TransactionContract;
+  error?: string;
+}

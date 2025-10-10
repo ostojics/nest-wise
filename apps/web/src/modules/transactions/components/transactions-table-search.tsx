@@ -6,7 +6,7 @@ const TransactionsTableSearch = () => {
   const search = useSearch({from: '/__pathlessLayout/transactions'});
   const navigate = useNavigate();
   const debounced = useDebouncedCallback((value: string) => {
-    void navigate({search: (prev) => ({...prev, q: value}), to: '/transactions'});
+    void navigate({search: (prev) => ({...prev, q: value, page: 1}), to: '/transactions'});
   }, 350);
 
   return (

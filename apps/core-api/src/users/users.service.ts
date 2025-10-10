@@ -1,5 +1,5 @@
 import {CreateUserDTO} from '@nest-wise/contracts';
-import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {EmailsService} from 'src/emails/emails.service';
 import {HouseholdsService} from 'src/households/households.service';
 import {hashPassword} from 'src/lib/hashing/hashing';
@@ -157,5 +157,66 @@ export class UsersService {
     }
 
     return updatedUser;
+  }
+
+  async requestEmailChange(userId: string, userEmail: string, newEmail: string): Promise<string> {
+    const existingUser = await this.findUserByEmail(newEmail);
+    if (existingUser) {
+      throw new ConflictException('E‑pošta je već u upotrebi');
+    }
+
+    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
+    const jwtPayload = {
+      sub: userId,
+      email: userEmail,
+      newEmail: newEmail,
+      iss: appConfig.url,
+      purpose: 'email-change',
+    };
+    this.logger.debug(`Generating email change token with payload: ${JSON.stringify(jwtPayload)}`);
+
+    const token = await this.jwtService.signAsync(jwtPayload, {
+      expiresIn: '15m',
+    });
+
+    await this.emailsService.sendEmailChangeConfirmation({
+      userId,
+      newEmail,
+      token,
+    });
+
+    return token;
+  }
+
+  async confirmEmailChange(token: string): Promise<void> {
+    const payload = await this.jwtService.verifyAsync<{
+      sub: string;
+      email: string;
+      newEmail: string;
+      iss: string;
+      purpose: string;
+      iat: number;
+      exp: number;
+    }>(token);
+
+    this.logger.debug(`Processing email change for user: ${JSON.stringify(payload)}`);
+    if (payload.purpose !== 'email-change') {
+      throw new UnauthorizedException('Neispravan token');
+    }
+
+    const user = await this.findUserById(payload.sub);
+    this.logger.debug(`Found user for email change: ${JSON.stringify(user)}`);
+    if (user.id !== payload.sub) {
+      throw new ConflictException('Neispravan token');
+    }
+
+    // Check if the new email is still available
+    const existingUser = await this.findUserByEmail(payload.newEmail);
+    this.logger.debug(`Checking availability of new email: ${payload.newEmail}`, {existingUser});
+    if (existingUser && existingUser.id !== payload.sub) {
+      throw new ConflictException('E‑pošta je već u upotrebi');
+    }
+
+    await this.updateUser(payload.sub, {email: payload.newEmail});
   }
 }
