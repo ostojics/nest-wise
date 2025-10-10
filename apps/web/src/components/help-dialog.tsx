@@ -49,8 +49,8 @@ const HelpDialog = ({open, onOpenChange}: HelpDialogProps) => {
             Pošaljite nam poruku i odgovorićemo vam u najkraćem mogućem roku.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleSendHelp)} className="space-y-6">
-          <div className="overflow-y-auto flex-1 -mx-6 px-6">
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <form onSubmit={handleSubmit(handleSendHelp)} className="space-y-6">
             <div className="space-y-3">
               <Label htmlFor="message" className="text-sm font-medium">
                 Poruka <span className="text-red-500">*</span>
@@ -64,25 +64,25 @@ const HelpDialog = ({open, onOpenChange}: HelpDialogProps) => {
               />
               {errors.message?.message && <FormError error={errors.message.message} />}
             </div>
-          </div>
-          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
-            <DialogClose asChild>
-              <Button type="button" variant="outline">
-                Otkaži
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Otkaži
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <>
+                    <Mail className="w-4 h-4" />
+                    Pošalji
+                  </>
+                )}
               </Button>
-            </DialogClose>
-            <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <>
-                  <Mail className="w-4 h-4" />
-                  Pošalji
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
+            </div>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

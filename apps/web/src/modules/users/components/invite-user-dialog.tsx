@@ -77,8 +77,8 @@ const InviteUserDialog = () => {
             Pozovite novog člana u svoje domaćinstvo. Dobiće email sa instrukcijama za registraciju.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleInviteUser)} className="space-y-6">
-          <div className="overflow-y-auto flex-1 -mx-6 px-6">
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <form onSubmit={handleSubmit(handleInviteUser)} className="space-y-6">
             <div className="space-y-3">
               <Label htmlFor="email" className="text-sm font-medium">
                 Email <span className="text-red-500">*</span>
@@ -86,18 +86,18 @@ const InviteUserDialog = () => {
               <Input id="email" type="email" placeholder="ime@primer.com" className="w-full" {...register('email')} />
               {errors.email?.message && <FormError error={errors.email.message} />}
             </div>
-          </div>
-          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
-            <DialogClose asChild>
-              <Button type="button" variant="outline">
-                Otkaži
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Otkaži
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={mutation.isPending}>
+                Pošalji pozivnicu
               </Button>
-            </DialogClose>
-            <Button type="submit" disabled={mutation.isPending}>
-              Pošalji pozivnicu
-            </Button>
-          </div>
-        </form>
+            </div>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -73,8 +73,8 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
             <DialogTitle>Izmeni račun</DialogTitle>
             <DialogDescription className="sr-only">Izmenite detalje računa</DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSubmit(handleEditAccount)}>
-            <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <div className="overflow-y-auto flex-1 -mx-6 px-6">
+            <form onSubmit={handleSubmit(handleEditAccount)}>
               <div className="flex flex-col gap-6 py-2">
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="edit-account-name">Naziv</Label>
@@ -113,18 +113,18 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
                   {errors.currentBalance?.message && <FormError error={errors.currentBalance.message} />}
                 </div>
               </div>
-            </div>
-            <DialogFooter className="mt-4">
-              <DialogClose asChild>
-                <Button variant="outline" type="button" disabled={mutation.isPending}>
-                  Otkaži
+              <DialogFooter className="mt-4">
+                <DialogClose asChild>
+                  <Button variant="outline" type="button" disabled={mutation.isPending}>
+                    Otkaži
+                  </Button>
+                </DialogClose>
+                <Button type="submit" disabled={mutation.isPending}>
+                  {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Sačuvaj'}
                 </Button>
-              </DialogClose>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Sačuvaj'}
-              </Button>
-            </DialogFooter>
-          </form>
+              </DialogFooter>
+            </form>
+          </div>
         </DialogContent>
       </Dialog>
     </>

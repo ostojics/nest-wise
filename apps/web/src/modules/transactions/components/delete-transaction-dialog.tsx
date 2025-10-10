@@ -37,14 +37,16 @@ export function DeleteTransactionDialog({transaction, open, onOpenChange}: Delet
           <DialogDescription>Da li ste sigurni da želite da obrišete ovu transakciju?</DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
-          <DialogFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={deleteMutation.isPending}>
-              Otkaži
-            </Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-              {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Obriši'}
-            </Button>
-          </DialogFooter>
+          <div className="space-y-4">
+            <DialogFooter>
+              <Button variant="outline" onClick={() => onOpenChange(false)} disabled={deleteMutation.isPending}>
+                Otkaži
+              </Button>
+              <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
+                {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Obriši'}
+              </Button>
+            </DialogFooter>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
