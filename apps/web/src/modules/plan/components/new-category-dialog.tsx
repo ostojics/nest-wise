@@ -60,30 +60,32 @@ const NewCategoryDialog = () => {
       <DialogTrigger asChild>
         <Button size="sm">Nova kategorija</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="mb-3">
           <DialogTitle>Kreirajte kategoriju</DialogTitle>
           <DialogDescription className="text-balance">
             Dodajte kategoriju za planiranje i praćenje svojih troškova.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleCreateCategory)}>
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col gap-2 w-full">
-              <Label htmlFor="new-category-name">Naziv</Label>
-              <Input id="new-category-name" placeholder="npr. Namirnice" {...register('name')} />
-              {errors.name?.message && <FormError error={errors.name.message} />}
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <form onSubmit={handleSubmit(handleCreateCategory)}>
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-2 w-full">
+                <Label htmlFor="new-category-name">Naziv</Label>
+                <Input id="new-category-name" placeholder="npr. Namirnice" {...register('name')} />
+                {errors.name?.message && <FormError error={errors.name.message} />}
+              </div>
             </div>
-          </div>
-          <DialogFooter className="mt-10">
-            <DialogClose asChild>
-              <Button type="button" variant="outline">
-                Otkažite
-              </Button>
-            </DialogClose>
-            <Button type="submit">Kreirajte</Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter className="mt-10">
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Otkažite
+                </Button>
+              </DialogClose>
+              <Button type="submit">Kreirajte</Button>
+            </DialogFooter>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -64,38 +64,40 @@ const EditCategoryBudgetDialog = ({
           Dodeli
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="mb-3">
           <DialogTitle>Dodeli planirani iznos</DialogTitle>
           <DialogDescription>
             Unesite koliko planirate da potrošite za ovu kategoriju u izabranom mesecu.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleEditCategoryBudget)}>
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="edit-account-name">Planirani iznos</Label>
-              <Input
-                id="edit-planned-amount"
-                type="number"
-                inputMode="decimal"
-                step="0.01"
-                {...register('plannedAmount')}
-              />
-              {errors.plannedAmount?.message && <FormError error={errors.plannedAmount.message} />}
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <form onSubmit={handleSubmit(handleEditCategoryBudget)}>
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="edit-account-name">Planirani iznos</Label>
+                <Input
+                  id="edit-planned-amount"
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  {...register('plannedAmount')}
+                />
+                {errors.plannedAmount?.message && <FormError error={errors.plannedAmount.message} />}
+              </div>
             </div>
-          </div>
-          <DialogFooter className="mt-10">
-            <DialogClose asChild>
-              <Button type="button" variant="outline" disabled={mutation.isPending}>
-                Otkaži
+            <DialogFooter className="mt-10">
+              <DialogClose asChild>
+                <Button type="button" variant="outline" disabled={mutation.isPending}>
+                  Otkaži
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Sačuvaj'}
               </Button>
-            </DialogClose>
-            <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Sačuvaj'}
-            </Button>
-          </DialogFooter>
-        </form>
+            </DialogFooter>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );
