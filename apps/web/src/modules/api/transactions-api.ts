@@ -4,6 +4,7 @@ import {
   GetTransactionsQueryHouseholdDTO,
   GetAccountsSpendingQueryHouseholdDTO,
   GetSpendingSummaryQueryHouseholdDTO,
+  UpdateTransactionDTO,
   AiTransactionJobResponseContract,
   AiTransactionJobStatusContract,
 } from '@nest-wise/contracts';
@@ -87,6 +88,18 @@ export const getCategoriesSpending = async (householdId: string, dto: GetSpendin
 };
 
 // Item-level endpoints (keep these since they operate on individual transactions)
+export const getTransaction = async (id: string) => {
+  return httpClient.get(`v1/transactions/${id}`).json();
+};
+
+export const updateTransaction = async (id: string, dto: UpdateTransactionDTO) => {
+  return httpClient
+    .put(`v1/transactions/${id}`, {
+      json: dto,
+    })
+    .json();
+};
+
 export const deleteTransaction = async (id: string) => {
   return httpClient.delete(`v1/transactions/${id}`).json();
 };

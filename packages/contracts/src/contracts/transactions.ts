@@ -261,6 +261,12 @@ export const createTransactionAiHouseholdSchema = z
 
 export const updateTransactionSchema = z
   .object({
+    accountId: z
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .uuid('Račun mora biti izabran')
+      .optional(),
     categoryId: z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
@@ -293,7 +299,23 @@ export const updateTransactionSchema = z
       })
       .optional(),
   })
-  .strict();
+  .strict()
+  .superRefine((val, ctx) => {
+    if (val.type === 'income' && val.categoryId !== null && val.categoryId !== undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['categoryId'],
+        message: 'Prihodne transakcije ne smeju imati kategoriju',
+      });
+    }
+    if (val.type === 'expense' && val.categoryId === null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['categoryId'],
+        message: 'Rashodne transakcije moraju imati kategoriju',
+      });
+    }
+  });
 
 export const getTransactionsQuerySchema = z
   .object({
