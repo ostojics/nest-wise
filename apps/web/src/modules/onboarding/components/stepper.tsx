@@ -11,7 +11,7 @@ const Stepper = ({currentStep, totalSteps}: StepperProps) => {
   const steps = Array.from({length: totalSteps}, (_, i) => i + 1);
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-6">
+    <div className="w-full px-4 py-6">
       <div className="flex items-center justify-between">
         {steps.map((step, index) => (
           <div key={step} className="flex items-center flex-1">
@@ -31,7 +31,7 @@ const Stepper = ({currentStep, totalSteps}: StepperProps) => {
                 <p
                   className={cn('text-xs font-medium', currentStep === step ? 'text-primary' : 'text-muted-foreground')}
                 >
-                  Корак {step}
+                  Korak {step}
                 </p>
               </div>
             </div>
