@@ -132,15 +132,7 @@ export const createTransactionSchema = z
       .string({
         invalid_type_error: 'Neispravan datum',
       })
-      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
-      .or(z.string().date())
-      .transform((val) => {
-        // Accept ISO datetime or YYYY-MM-DD (legacy, convert to noon UTC)
-        if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
-          return `${val}T12:00:00.000Z`;
-        }
-        return val;
-      }),
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'}),
     isReconciled: z
       .boolean({
         invalid_type_error: 'Neispravna vrednost (mora biti logička vrednost)',
@@ -198,15 +190,7 @@ export const createTransactionHouseholdSchema = z
       .string({
         invalid_type_error: 'Neispravan datum',
       })
-      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
-      .or(z.string().date())
-      .transform((val) => {
-        // Accept ISO datetime or YYYY-MM-DD (legacy, convert to noon UTC)
-        if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
-          return `${val}T12:00:00.000Z`;
-        }
-        return val;
-      }),
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'}),
     isReconciled: z
       .boolean({
         invalid_type_error: 'Neispravna vrednost (mora biti logička vrednost)',
@@ -276,14 +260,6 @@ export const createTransactionAiHouseholdSchema = z
         invalid_type_error: 'Neispravan datum',
       })
       .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
-      .or(z.string().date())
-      .transform((val) => {
-        // Accept ISO datetime or YYYY-MM-DD (legacy, convert to noon UTC)
-        if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
-          return `${val}T12:00:00.000Z`;
-        }
-        return val;
-      })
       .optional(),
   })
   .strict();
@@ -322,14 +298,6 @@ export const updateTransactionSchema = z
         invalid_type_error: 'Neispravan datum',
       })
       .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
-      .or(z.string().date())
-      .transform((val) => {
-        // Accept ISO datetime or YYYY-MM-DD (legacy, convert to noon UTC)
-        if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
-          return `${val}T12:00:00.000Z`;
-        }
-        return val;
-      })
       .optional(),
     isReconciled: z
       .boolean({
