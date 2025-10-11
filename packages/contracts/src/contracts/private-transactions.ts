@@ -88,11 +88,13 @@ export const getPrivateTransactionsQuerySchema = z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
       .optional(),
     to: z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
       .optional(),
     sort: privateTransactionSortFieldEnum.optional().default('-transactionDate'),
     page: z.coerce
