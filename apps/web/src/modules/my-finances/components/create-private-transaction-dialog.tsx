@@ -36,6 +36,8 @@ export function CreatePrivateTransactionDialog() {
     });
   };
 
+  const transactionDate = watch('transactionDate');
+
   return (
     <Dialog
       open={open}
@@ -113,7 +115,7 @@ export function CreatePrivateTransactionDialog() {
                 Datum transakcije <span className="text-red-500">*</span>
               </Label>
               <DatePicker
-                value={watch('transactionDate') ? new Date(watch('transactionDate')) : undefined}
+                value={new Date(transactionDate)}
                 onChange={(date) => {
                   if (date) {
                     const dateAtNoon = set(date, {hours: 12, minutes: 0, seconds: 0, milliseconds: 0});
