@@ -11,7 +11,7 @@ export interface PrivateTransactionContract {
   amount: number;
   type: TransactionType;
   description: string | null;
-  transactionDate: Date;
+  transactionDate: string; // Date-only string (YYYY-MM-DD)
   account?: AccountContract;
   createdAt: Date;
   updatedAt: Date;
@@ -46,9 +46,12 @@ export const createPrivateTransactionSchema = z
       })
       .min(1, 'Opis je obavezan')
       .max(2048, 'Opis može imati najviše 2048 karaktera'),
-    transactionDate: z.coerce.date({
-      invalid_type_error: 'Neispravan datum',
-    }),
+    transactionDate: z
+      .string({
+        invalid_type_error: 'Datum mora biti tekst u formatu YYYY-MM-DD',
+      })
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum mora biti u formatu YYYY-MM-DD')
+      .date('Neispravan datum'),
   })
   .strict();
 

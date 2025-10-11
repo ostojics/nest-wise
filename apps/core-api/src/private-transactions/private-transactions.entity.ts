@@ -7,11 +7,29 @@ import {
   Index,
   ManyToOne,
   JoinColumn,
+  ValueTransformer,
 } from 'typeorm';
 import {Household} from 'src/households/household.entity';
 import {Account} from 'src/accounts/account.entity';
 import {User} from 'src/users/user.entity';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
+import {formatDateOnly} from 'src/lib/date.util';
+
+// Transformer to ensure transactionDate is always serialized as YYYY-MM-DD string
+const dateOnlyTransformer: ValueTransformer = {
+  to: (value: Date | string | undefined): Date | undefined => {
+    // When writing to database, accept Date objects as-is (TypeORM handles conversion)
+    if (value instanceof Date) return value;
+    if (typeof value === 'string') return new Date(value);
+    return undefined;
+  },
+  from: (value: Date | string | undefined): string | undefined => {
+    // When reading from database, always return as YYYY-MM-DD string
+    if (value instanceof Date) return formatDateOnly(value);
+    if (typeof value === 'string') return value;
+    return undefined;
+  },
+};
 
 @Entity('private_transactions')
 export class PrivateTransaction {
@@ -67,6 +85,7 @@ export class PrivateTransaction {
     type: 'date',
     nullable: false,
     name: 'transaction_date',
+    transformer: dateOnlyTransformer,
   })
   transactionDate: Date;
 

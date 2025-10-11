@@ -189,7 +189,7 @@ export class TransactionsService {
         categoryId: object.transactionType === 'income' ? null : categoryId,
         householdId: account.householdId,
         accountId: account.id,
-        transactionDate: new Date(object.transactionDate),
+        transactionDate: object.transactionDate,
         isReconciled: true,
       });
 
@@ -250,7 +250,7 @@ export class TransactionsService {
         categoryId: object.transactionType === 'income' ? null : categoryId,
         householdId: household.id,
         accountId: account.id,
-        transactionDate: transactionData.transactionDate ?? new Date(object.transactionDate),
+        transactionDate: transactionData.transactionDate ?? object.transactionDate,
         isReconciled: true,
       });
 

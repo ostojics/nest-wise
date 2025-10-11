@@ -19,6 +19,7 @@ import {
   GetSpendingSummaryQueryHouseholdDTO,
 } from '@nest-wise/contracts';
 import {TransactionType} from '../common/enums/transaction.type.enum';
+import {toUtcDateOnly} from 'src/lib/date.util';
 
 @Injectable()
 export class TransactionsRepository {
@@ -31,6 +32,8 @@ export class TransactionsRepository {
     const transaction = this.transactionRepository.create({
       ...transactionData,
       type: transactionData.type as TransactionType,
+      // Convert date-only string to UTC Date for entity
+      transactionDate: toUtcDateOnly(transactionData.transactionDate),
     });
     return await this.transactionRepository.save(transaction);
   }
@@ -161,7 +164,7 @@ export class TransactionsRepository {
 
     queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    const data = (await queryBuilder.getMany()) as TransactionContract[];
+    const data = (await queryBuilder.getMany()) as unknown as TransactionContract[];
 
     return {
       data,
@@ -198,7 +201,7 @@ export class TransactionsRepository {
 
     queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    const data = (await queryBuilder.getMany()) as TransactionContract[];
+    const data = (await queryBuilder.getMany()) as unknown as TransactionContract[];
 
     return {
       data,
@@ -302,10 +305,12 @@ export class TransactionsRepository {
   }
 
   async update(id: string, transactionData: UpdateTransactionDTO): Promise<Transaction | null> {
-    const {type, ...otherData} = transactionData;
+    const {type, transactionDate, ...otherData} = transactionData;
     const updateData = {
       ...otherData,
       ...(type && {type: type as TransactionType}),
+      // Convert date-only string to UTC Date for entity (if provided)
+      ...(transactionDate && {transactionDate: toUtcDateOnly(transactionDate)}),
     };
 
     const updateResult = await this.transactionRepository.update(id, updateData);

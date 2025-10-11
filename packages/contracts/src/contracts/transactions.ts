@@ -16,7 +16,7 @@ export interface TransactionContract {
   amount: number;
   type: TransactionType;
   description: string;
-  transactionDate: Date;
+  transactionDate: string; // Date-only string (YYYY-MM-DD)
   isReconciled: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -128,9 +128,12 @@ export const createTransactionSchema = z
       })
       .min(1, 'Opis je obavezan')
       .max(1000, 'Opis može imati najviše 1000 karaktera'),
-    transactionDate: z.coerce.date({
-      invalid_type_error: 'Neispravan datum',
-    }),
+    transactionDate: z
+      .string({
+        invalid_type_error: 'Datum mora biti tekst u formatu YYYY-MM-DD',
+      })
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum mora biti u formatu YYYY-MM-DD')
+      .date('Neispravan datum'),
     isReconciled: z
       .boolean({
         invalid_type_error: 'Neispravna vrednost (mora biti logička vrednost)',
@@ -184,9 +187,12 @@ export const createTransactionHouseholdSchema = z
       })
       .min(1, 'Opis je obavezan')
       .max(1000, 'Opis može imati najviše 1000 karaktera'),
-    transactionDate: z.coerce.date({
-      invalid_type_error: 'Neispravan datum',
-    }),
+    transactionDate: z
+      .string({
+        invalid_type_error: 'Datum mora biti tekst u formatu YYYY-MM-DD',
+      })
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum mora biti u formatu YYYY-MM-DD')
+      .date('Neispravan datum'),
     isReconciled: z
       .boolean({
         invalid_type_error: 'Neispravna vrednost (mora biti logička vrednost)',
@@ -251,10 +257,12 @@ export const createTransactionAiHouseholdSchema = z
       })
       .min(1, 'Opis je obavezan')
       .max(1000, 'Opis može imati najviše 1000 karaktera'),
-    transactionDate: z.coerce
-      .date({
-        invalid_type_error: 'Neispravan datum',
+    transactionDate: z
+      .string({
+        invalid_type_error: 'Datum mora biti tekst u formatu YYYY-MM-DD',
       })
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum mora biti u formatu YYYY-MM-DD')
+      .date('Neispravan datum')
       .optional(),
   })
   .strict();
@@ -288,10 +296,12 @@ export const updateTransactionSchema = z
       .max(1000, 'Opis može imati najviše 1000 karaktera')
       .nullable()
       .optional(),
-    transactionDate: z.coerce
-      .date({
-        invalid_type_error: 'Neispravan datum',
+    transactionDate: z
+      .string({
+        invalid_type_error: 'Datum mora biti tekst u formatu YYYY-MM-DD',
       })
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum mora biti u formatu YYYY-MM-DD')
+      .date('Neispravan datum')
       .optional(),
     isReconciled: z
       .boolean({

@@ -12,6 +12,7 @@ import {PoliciesService} from 'src/policies/policies.service';
 import {UsersService} from 'src/users/users.service';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
 import {PrivateTransactionsRepository} from './private-transactions.repository';
+import {toUtcDateOnly} from 'src/lib/date.util';
 
 @Injectable()
 export class PrivateTransactionsService {
@@ -50,7 +51,7 @@ export class PrivateTransactionsService {
         amount: dto.amount,
         type: dto.type as TransactionType,
         description: dto.description,
-        transactionDate: dto.transactionDate,
+        transactionDate: toUtcDateOnly(dto.transactionDate),
       });
 
       const current = Number(account.currentBalance);

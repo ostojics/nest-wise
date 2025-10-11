@@ -113,7 +113,11 @@ export function CreatePrivateTransactionDialog() {
               </Label>
               <DatePicker
                 value={watch('transactionDate')}
-                onChange={(date) => setValue('transactionDate', date ?? new Date())}
+                onChange={(date) => {
+                  if (date) {
+                    setValue('transactionDate', date);
+                  }
+                }}
                 placeholder="Izaberi datum transakcije"
               />
               {errors.transactionDate && <p className="text-sm text-red-500">{errors.transactionDate.message}</p>}

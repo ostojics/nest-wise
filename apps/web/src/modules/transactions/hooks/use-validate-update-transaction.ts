@@ -15,7 +15,7 @@ export const useValidateUpdateTransaction = ({transaction}: UseValidateUpdateTra
       amount: transaction.amount,
       type: transaction.type,
       description: transaction.description,
-      transactionDate: new Date(transaction.transactionDate),
+      transactionDate: transaction.transactionDate, // Already a string from API
       isReconciled: transaction.isReconciled,
     },
   });

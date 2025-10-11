@@ -3,8 +3,9 @@ import {Badge} from '@/components/ui/badge';
 import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {TransactionContract, TransactionType} from '@nest-wise/contracts';
-import {format} from 'date-fns';
 import TransactionRowActions from './transaction-row-actions';
+import {formatUtcDateForDisplay} from '@/lib/date-utils';
+import {format} from 'date-fns';
 
 interface TransactionsAccordionListProps {
   data: TransactionContract[];
@@ -25,7 +26,8 @@ export default function TransactionsAccordionList({data}: TransactionsAccordionL
         {data.map((tx) => {
           const isIncome = tx.type === TransactionType.INCOME;
           const amount = formatBalance(tx.amount);
-          const dateLabel = format(new Date(tx.transactionDate), 'PP');
+          const dateLabel = formatUtcDateForDisplay(tx.transactionDate);
+          const recordedAt = format(new Date(tx.createdAt), 'HH:mm');
 
           return (
             <AccordionItem key={tx.id} value={String(tx.id)}>
@@ -69,6 +71,10 @@ export default function TransactionsAccordionList({data}: TransactionsAccordionL
                   <div>
                     <div className="text-muted-foreground">Datum</div>
                     <div className="text-foreground/80">{dateLabel}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Evidentirano u</div>
+                    <div className="text-foreground/80">{recordedAt}</div>
                   </div>
                   <div>
                     <div className="text-muted-foreground">Iznos</div>

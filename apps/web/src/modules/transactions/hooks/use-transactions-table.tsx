@@ -4,9 +4,9 @@ import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {TransactionContract, TransactionType, TransactionSortField} from '@nest-wise/contracts';
 import {useNavigate, useSearch} from '@tanstack/react-router';
 import {ColumnDef, getCoreRowModel, SortingState, useReactTable} from '@tanstack/react-table';
-import {format} from 'date-fns';
 import {useMemo} from 'react';
 import TransactionRowActions from '../components/transaction-row-actions';
+import {formatUtcDateForDisplay} from '@/lib/date-utils';
 
 export const useTransactionsTable = (data: TransactionContract[]) => {
   const {formatBalance} = useFormatBalance();
@@ -61,7 +61,7 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
         accessorKey: 'transactionDate',
         header: 'Datum',
         cell: ({row}) => (
-          <span className="text-foreground/80">{format(new Date(row.original.transactionDate), 'dd.MM.yyyy.')}</span>
+          <span className="text-foreground/80">{formatUtcDateForDisplay(row.original.transactionDate)}</span>
         ),
       },
       {

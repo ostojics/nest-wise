@@ -54,7 +54,7 @@ export class PrivateTransactionsRepository {
 
     qb.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    const data = await qb.getMany();
+    const data = (await qb.getMany()) as unknown as GetPrivateTransactionsResponseContract['data'];
 
     return {
       data,
