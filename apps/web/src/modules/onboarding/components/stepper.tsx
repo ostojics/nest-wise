@@ -13,7 +13,7 @@ const Stepper = ({currentStep, totalSteps}: StepperProps) => {
   return (
     <div className="w-full px-4 py-6">
       <div className="flex items-center justify-between">
-        {steps.map((step, index) => (
+        {steps.map((step) => (
           <div key={step} className="flex items-center flex-1">
             <div className="flex flex-col items-center flex-1">
               <div
@@ -35,17 +35,6 @@ const Stepper = ({currentStep, totalSteps}: StepperProps) => {
                 </p>
               </div>
             </div>
-
-            {index < steps.length - 1 && (
-              <div className="flex-1 mx-2 mb-8">
-                <div
-                  className={cn(
-                    'h-0.5 transition-colors duration-200',
-                    currentStep > step ? 'bg-primary' : 'bg-border',
-                  )}
-                />
-              </div>
-            )}
           </div>
         ))}
       </div>

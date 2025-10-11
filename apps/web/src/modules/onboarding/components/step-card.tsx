@@ -47,12 +47,12 @@ const StepCard = ({icon, title, description, bullets, primaryAction, secondaryAc
 
         <div className="flex flex-col sm:flex-row gap-3 pt-4">
           {primaryAction && (
-            <Button onClick={primaryAction.onClick} className="flex-1" size="lg">
+            <Button onClick={primaryAction.onClick} className="flex-1">
               {primaryAction.label}
             </Button>
           )}
           {secondaryAction && (
-            <Button onClick={secondaryAction.onClick} variant="outline" className="flex-1" size="lg">
+            <Button onClick={secondaryAction.onClick} variant="outline" className="flex-1">
               {secondaryAction.label}
             </Button>
           )}

@@ -3,8 +3,6 @@ import {useNavigate} from '@tanstack/react-router';
 import {Brain, Wallet, Target, Receipt} from 'lucide-react';
 import Stepper from './stepper';
 import StepCard from './step-card';
-import TextBanner from '@/components/text-banner';
-import {Button} from '@/components/ui/button';
 
 const OnboardingPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -27,10 +25,6 @@ const OnboardingPage = () => {
       case 1:
         return (
           <>
-            <TextBanner
-              text="Dobro došli u NestWise! Za 2 minuta bićete spremni: dodajte račun, napravite plan i zabeležite prvu transakciju."
-              className="mx-auto"
-            />
             <StepCard
               icon={
                 <div className="flex gap-4">
@@ -42,11 +36,11 @@ const OnboardingPage = () => {
               title="Dobro došli u NestWise!"
               description="Za 2 minuta: dodajte račun, napravite plan i zabeležite prvu transakciju. Možete preskočiti kad god."
               primaryAction={{
-                label: 'Kreni dalje',
+                label: 'Dalje',
                 onClick: nextStep,
               }}
               secondaryAction={{
-                label: 'Preskoči',
+                label: 'Preskočite',
                 onClick: goToPlan,
               }}
             />
@@ -60,7 +54,7 @@ const OnboardingPage = () => {
             title="Dodajte račun"
             description="Račun je mesto gde držite novac (tekući, štednja, kartica, keš). Dodajte bar jedan da bismo mogli da pratimo stanje."
             bullets={[
-              {text: 'Otvorite stranicu Računi'},
+              {text: 'Otvorite stranicu računi'},
               {text: 'Kliknite „Dodaj račun"'},
               {text: 'Unesite naziv, tip i početno stanje'},
             ]}
@@ -69,7 +63,7 @@ const OnboardingPage = () => {
               onClick: nextStep,
             }}
             secondaryAction={{
-              label: 'Preskoči',
+              label: 'Preskočite',
               onClick: goToPlan,
             }}
           />
@@ -83,10 +77,10 @@ const OnboardingPage = () => {
             description="Kroz kategorije grupišete troškove, a budžeti vam pomažu da držite potrošnju pod kontrolom."
             bullets={[
               {
-                text: 'Kategorije — Dodajte nekoliko kategorija (npr. Hrana, Transport, Režije).',
+                text: 'Kategorije: Dodajte nekoliko kategorija (npr. Hrana, Transport, Režije).',
               },
               {
-                text: 'Budžeti — Postavite mesečne limite po kategorijama (npr. Hrana: 30.000 RSD).',
+                text: 'Budžet: Postavite mesečne limite po kategorijama (npr. Hrana: 20.000 RSD).',
               },
             ]}
             primaryAction={{
@@ -94,7 +88,7 @@ const OnboardingPage = () => {
               onClick: nextStep,
             }}
             secondaryAction={{
-              label: 'Preskoči',
+              label: 'Preskočite',
               onClick: goToPlan,
             }}
           />
@@ -105,22 +99,22 @@ const OnboardingPage = () => {
           <StepCard
             icon={<Receipt className="w-16 h-16 text-primary" />}
             title="Zabeležite prvu transakciju"
-            description="Transakcije mogu biti Rashod ili Prihod. Imate dva načina unosa:"
+            description="Transakcije mogu biti rashod ili prihod. Imate dva načina unosa:"
             bullets={[
               {
-                text: 'Ručno unošenje — Opis, Iznos, Račun, Tip, Datum; ako je Rashod → Kategorija',
+                text: 'Ručno unošenje - opis, iznos, račun, tip, datum; Ako je rashod → kategorija',
               },
               {
                 icon: <Brain className="w-5 h-5 text-primary" />,
-                text: 'AI asistent (brže) — Samo opišite transakciju, AI će prepoznati iznos, kategoriju i datum — Vi potvrdite.',
+                text: 'AI asistent (brže); Samo opišite transakciju, AI će prepoznati iznos, kategoriju i datum.',
               },
             ]}
             primaryAction={{
-              label: 'Završi i idi na plan',
+              label: 'Završite i idite na plan',
               onClick: goToPlan,
             }}
             secondaryAction={{
-              label: 'Preskoči',
+              label: 'Preskočite',
               onClick: goToPlan,
             }}
           />
@@ -136,11 +130,6 @@ const OnboardingPage = () => {
       <div className="w-full max-w-2xl mx-auto space-y-8">
         <Stepper currentStep={currentStep} totalSteps={4} />
         {renderStep()}
-        <div className="flex justify-center pt-4">
-          <Button variant="ghost" onClick={goToPlan} className="text-muted-foreground">
-            Preskoči
-          </Button>
-        </div>
       </div>
     </section>
   );
