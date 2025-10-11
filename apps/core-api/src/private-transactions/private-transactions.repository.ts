@@ -54,7 +54,11 @@ export class PrivateTransactionsRepository {
 
     qb.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    const data = await qb.getMany();
+    const transactions = await qb.getMany();
+    const data = transactions.map((tx) => ({
+      ...tx,
+      transactionDate: tx.transactionDate.toISOString(),
+    }));
 
     return {
       data,
