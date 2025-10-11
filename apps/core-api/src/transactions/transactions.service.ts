@@ -150,7 +150,7 @@ export class TransactionsService {
     const prompt = categoryPromptFactory({
       categories,
       transactionDescription: transactionData.description,
-      currentDate: new Date().toISOString(),
+      currentDate: transactionData.currentDate ?? new Date().toISOString(),
     });
 
     this.logger.debug('AI Transaction Categorization Prompt', {prompt});
@@ -218,7 +218,7 @@ export class TransactionsService {
       prompt: categoryPromptFactory({
         categories,
         transactionDescription: transactionData.description,
-        currentDate: new Date().toISOString(),
+        currentDate: transactionData.currentDate ?? new Date().toISOString(),
       }),
       temperature: 0.1,
       schema: transactionCategoryOutputSchema,

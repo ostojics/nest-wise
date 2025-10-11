@@ -236,6 +236,12 @@ export const createTransactionAiSchema = z
       })
       .min(1, 'Opis je obavezan')
       .max(1000, 'Opis može imati najviše 1000 karaktera'),
+    currentDate: z
+      .string({
+        invalid_type_error: 'Neispravan datum',
+      })
+      .datetime({message: 'Trenutni datum mora biti u ISO 8601 formatu'})
+      .optional(),
   })
   .strict();
 
@@ -260,6 +266,12 @@ export const createTransactionAiHouseholdSchema = z
         invalid_type_error: 'Neispravan datum',
       })
       .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
+      .optional(),
+    currentDate: z
+      .string({
+        invalid_type_error: 'Neispravan datum',
+      })
+      .datetime({message: 'Trenutni datum mora biti u ISO 8601 formatu'})
       .optional(),
   })
   .strict();
