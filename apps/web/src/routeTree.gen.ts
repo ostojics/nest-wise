@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitesRouteImport } from './routes/invites'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -38,6 +39,11 @@ const SetupRoute = SetupRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
@@ -188,6 +196,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/__pathlessLayout/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
@@ -211,6 +220,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/invites'
     | '/login'
+    | '/onboarding'
     | '/reset-password'
     | '/setup'
     | '/reports'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/invites'
     | '/login'
+    | '/onboarding'
     | '/reset-password'
     | '/setup'
     | '/reports'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/invites'
     | '/login'
+    | '/onboarding'
     | '/reset-password'
     | '/setup'
     | '/__pathlessLayout/reports'
@@ -277,6 +289,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvitesRoute: typeof InvitesRoute
   LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SetupRoute: typeof SetupRoute
 }
@@ -295,6 +308,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -479,6 +499,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   InvitesRoute: InvitesRoute,
   LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SetupRoute: SetupRoute,
 }
