@@ -250,7 +250,7 @@ export class TransactionsService {
         categoryId: object.transactionType === 'income' ? null : categoryId,
         householdId: household.id,
         accountId: account.id,
-        transactionDate: transactionData.transactionDate ?? object.transactionDate,
+        transactionDate: object.transactionDate,
         isReconciled: true,
       });
 
