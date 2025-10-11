@@ -150,7 +150,7 @@ export class TransactionsService {
     const prompt = categoryPromptFactory({
       categories,
       transactionDescription: transactionData.description,
-      currentDate: new Date().toISOString(),
+      currentDate: transactionData.currentDate,
     });
 
     this.logger.debug('AI Transaction Categorization Prompt', {prompt});
@@ -189,7 +189,7 @@ export class TransactionsService {
         categoryId: object.transactionType === 'income' ? null : categoryId,
         householdId: account.householdId,
         accountId: account.id,
-        transactionDate: new Date(object.transactionDate),
+        transactionDate: object.transactionDate,
         isReconciled: true,
       });
 
@@ -218,7 +218,7 @@ export class TransactionsService {
       prompt: categoryPromptFactory({
         categories,
         transactionDescription: transactionData.description,
-        currentDate: new Date().toISOString(),
+        currentDate: transactionData.currentDate,
       }),
       temperature: 0.1,
       schema: transactionCategoryOutputSchema,
@@ -250,7 +250,7 @@ export class TransactionsService {
         categoryId: object.transactionType === 'income' ? null : categoryId,
         householdId: household.id,
         accountId: account.id,
-        transactionDate: transactionData.transactionDate ?? new Date(object.transactionDate),
+        transactionDate: object.transactionDate,
         isReconciled: true,
       });
 

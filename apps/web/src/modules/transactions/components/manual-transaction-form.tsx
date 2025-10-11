@@ -152,8 +152,8 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
           Datum transakcije <span className="text-red-500">*</span>
         </Label>
         <DatePicker
-          value={watch('transactionDate')}
-          onChange={(date) => setValue('transactionDate', date ?? new Date())}
+          value={watch('transactionDate') ? new Date(watch('transactionDate')) : undefined}
+          onChange={(date) => setValue('transactionDate', date ? date.toISOString() : new Date().toISOString())}
           placeholder="Izaberi datum transakcije"
         />
         {errors.transactionDate && <p className="text-sm text-red-500">{errors.transactionDate.message}</p>}

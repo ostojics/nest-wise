@@ -163,8 +163,11 @@ export function EditTransactionDialog({transaction, open, onOpenChange}: EditTra
                 Datum transakcije <span className="text-red-500">*</span>
               </Label>
               <DatePicker
-                value={watch('transactionDate')}
-                onChange={(date) => setValue('transactionDate', date ?? new Date())}
+                value={(() => {
+                  const dateValue = watch('transactionDate');
+                  return dateValue && typeof dateValue === 'string' ? new Date(dateValue) : undefined;
+                })()}
+                onChange={(date) => setValue('transactionDate', date ? date.toISOString() : new Date().toISOString())}
                 placeholder="Izaberi datum transakcije"
               />
               {errors.transactionDate && <p className="text-sm text-red-500">{errors.transactionDate.message}</p>}
