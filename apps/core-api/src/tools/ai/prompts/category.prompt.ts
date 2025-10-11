@@ -49,7 +49,8 @@ Parsiranje datuma iz opisa transakcije:
 - Tražite relativne naznake datuma poput „juče“, „danas“, „prošle nedelje“, „pre 2 dana“, itd.
 - Tražite konkretne datume poput „15. januar“, „01/15“, „15-ti“, itd.
 - Ako datum nije naveden, koristite trenutni datum
-- Uvek vratite datum u formatu YYYY-MM-DD
+- Uvek vratite datum u **ISO 8601 formatu** (npr. 2025-10-11T12:00:00.000Z)
+- Koristite podne (12:00:00) kao vreme osim ako nije specificirano drugačije u opisu
 
 ### 5. **Predložena nova kategorija**
 Postavite na \`true\` samo ako predlažete potpuno novi naziv kategorije
@@ -73,7 +74,7 @@ Odgovorite **važećim JSON objektom** koji odgovara sledećoj strukturi:
 {
   "transactionType": "expense" | "income",
   "transactionAmount": number,
-  "transactionDate": "YYYY-MM-DD",
+  "transactionDate": "ISO 8601 string (e.g., 2025-10-11T12:00:00.000Z)",
   "suggestedCategory": {
     "existingCategoryId": "category-id-here" | "",
     "newCategoryName": "New Category Name" | ""
@@ -87,27 +88,27 @@ Odgovorite **važećim JSON objektom** koji odgovara sledećoj strukturi:
 ### Primer 1: Osnovna transakcija
 **Ulaz**: "Platio/la sam $50 u Walmartu"
 **Izlaz**: 
-- Tip: expense, Iznos: 50, Datum: trenutni datum, Kategorija: odgovarajuća postojeća kategorija (npr. ID za namirnice) ili "Groceries"
+- Tip: expense, Iznos: 50, Datum: trenutni datum u ISO formatu (npr. 2025-10-11T12:00:00.000Z), Kategorija: odgovarajuća postojeća kategorija (npr. ID za namirnice) ili "Groceries"
 
 ### Primer 2: Transakcija od juče
 **Ulaz**: "Juče sam kupio/la kafu za $5.50 u Starbucks-u"
 **Izlaz**: 
-- Tip: expense, Iznos: 5.5, Datum: trenutni datum - 1 dan, Kategorija: postojeća kategorija za kafu ili "Coffee & Beverages"
+- Tip: expense, Iznos: 5.5, Datum: trenutni datum - 1 dan u ISO formatu, Kategorija: postojeća kategorija za kafu ili "Coffee & Beverages"
 
 ### Primer 3: Transakcija sa konkretnim datumom
 **Ulaz**: "Uplata plate $3000 dana 15. januara"
 **Izlaz**: 
-- Tip: income, Iznos: 3000, Datum: 2024-01-15 (ili tekuća godina-01-15), Kategorija: postojeća kategorija za platu ili "Salary"
+- Tip: income, Iznos: 3000, Datum: 2024-01-15T12:00:00.000Z (ili tekuća godina-01-15 u ISO formatu), Kategorija: postojeća kategorija za platu ili "Salary"
 
 ### Primer 4: Relativni datum
 **Ulaz**: "Prošlog petka sam potrošio/la $120 u restoranu"
 **Izlaz**: 
-- Tip: expense, Iznos: 120, Datum: najskoriji petak pre trenutnog datuma, Kategorija: postojeća kategorija za restoran ili "Dining Out"
+- Tip: expense, Iznos: 120, Datum: najskoriji petak pre trenutnog datuma u ISO formatu, Kategorija: postojeća kategorija za restoran ili "Dining Out"
 
 ### Primer 5: Pre nekoliko dana
 **Ulaz**: "Pre 3 dana platio/la sam $45 za gorivo"
 **Izlaz**: 
-- Tip: expense, Iznos: 45, Datum: trenutni datum - 3 dana, Kategorija: postojeća kategorija za gorivo ili "Fuel"
+- Tip: expense, Iznos: 45, Datum: trenutni datum - 3 dana u ISO formatu, Kategorija: postojeća kategorija za gorivo ili "Fuel"
 
 ### Primer 6: Ove nedelje
 **Ulaz**: "Ranije ove nedelje primio/la sam $200 honorar"
