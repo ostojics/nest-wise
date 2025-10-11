@@ -234,7 +234,7 @@ export class TransactionsRepository {
     }
 
     if (query.transactionDate_from) {
-      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom', {
+      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom::date', {
         dateFrom: query.transactionDate_from,
       });
     }
@@ -244,7 +244,7 @@ export class TransactionsRepository {
     }
 
     if (query.transactionDate_to) {
-      queryBuilder.andWhere('transaction.transactionDate <= :dateTo', {
+      queryBuilder.andWhere("transaction.transactionDate < (:dateTo::date + INTERVAL '1 day')", {
         dateTo: query.transactionDate_to,
       });
     }
@@ -270,11 +270,11 @@ export class TransactionsRepository {
 
     // Use simplified date parameters
     if (query.from) {
-      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom', {dateFrom: query.from});
+      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom::date', {dateFrom: query.from});
     }
 
     if (query.to) {
-      queryBuilder.andWhere('transaction.transactionDate <= :dateTo', {dateTo: query.to});
+      queryBuilder.andWhere("transaction.transactionDate < (:dateTo::date + INTERVAL '1 day')", {dateTo: query.to});
     }
 
     if (query.type) {
