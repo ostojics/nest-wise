@@ -81,11 +81,11 @@ export class PrivateTransactionsRepository {
     }
 
     if (query.from) {
-      qb.andWhere('pt.transactionDate >= :dateFrom', {dateFrom: query.from});
+      qb.andWhere('pt.transactionDate >= :dateFrom::date', {dateFrom: query.from});
     }
 
     if (query.to) {
-      qb.andWhere('pt.transactionDate <= :dateTo', {dateTo: query.to});
+      qb.andWhere("pt.transactionDate < (:dateTo::date + INTERVAL '1 day')", {dateTo: query.to});
     }
 
     if (query.q) {
