@@ -240,8 +240,7 @@ export const createTransactionAiSchema = z
       .string({
         invalid_type_error: 'Neispravan datum',
       })
-      .datetime({message: 'Trenutni datum mora biti u ISO 8601 formatu'})
-      .optional(),
+      .datetime({message: 'Trenutni datum mora biti u ISO 8601 formatu'}),
   })
   .strict();
 
@@ -271,8 +270,7 @@ export const createTransactionAiHouseholdSchema = z
       .string({
         invalid_type_error: 'Neispravan datum',
       })
-      .datetime({message: 'Trenutni datum mora biti u ISO 8601 formatu'})
-      .optional(),
+      .datetime({message: 'Trenutni datum mora biti u ISO 8601 formatu'}),
   })
   .strict();
 

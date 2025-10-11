@@ -12,6 +12,7 @@ export const useValidateCreateAiTransaction = ({accountId}: UseValidateCreateAiT
     defaultValues: {
       accountId: accountId ?? '',
       description: '',
+      currentDate: new Date().toISOString(),
     },
   });
 };

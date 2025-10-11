@@ -32,13 +32,7 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
   } = useValidateCreateAiTransaction({accountId: (accounts ?? [])[0]?.id});
 
   const onSubmit = async (data: CreateTransactionAiHouseholdDTO) => {
-    // Include the client's current date in local timezone for AI context
-    const dataWithCurrentDate = {
-      ...data,
-      currentDate: new Date().toISOString(),
-    };
-
-    await createAiTransactionMutation.mutateAsync(dataWithCurrentDate, {
+    await createAiTransactionMutation.mutateAsync(data, {
       onSuccess: () => {
         onSuccess();
       },
