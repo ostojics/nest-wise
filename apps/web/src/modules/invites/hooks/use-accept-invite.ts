@@ -13,7 +13,7 @@ export const useAcceptInvite = () => {
   return useMutation({
     mutationFn: acceptInvite,
     onSuccess: () => {
-      void navigate({to: '/onboarding'});
+      void navigate({to: '/onboarding', reloadDocument: true});
       toast.success('Poziv je uspešno prihvaćen');
       void queryClient.invalidateQueries({queryKey: queryKeys.me()});
     },
