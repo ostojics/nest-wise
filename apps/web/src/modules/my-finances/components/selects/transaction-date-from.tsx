@@ -8,7 +8,7 @@ import {Label} from '@/components/ui/label';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {cn, getDateDisableReference} from '@/lib/utils';
 import {useNavigate, useSearch} from '@tanstack/react-router';
-import {formatSelectedDate} from '@/modules/transactions/utils';
+import {formatDateForQueryParam} from '@/modules/transactions/utils';
 
 interface PrivateTransactionDateFromPickerProps {
   className?: string;
@@ -29,7 +29,7 @@ const PrivateTransactionDateFromPicker: React.FC<PrivateTransactionDateFromPicke
   const handleSelectDate = (value: Date | undefined) => {
     if (!value) return;
     void navigate({
-      search: (prev) => ({...prev, from: formatSelectedDate(value), page: 1}),
+      search: (prev) => ({...prev, from: formatDateForQueryParam(value), page: 1}),
       to: '/my-finances',
     });
     setOpen(false);

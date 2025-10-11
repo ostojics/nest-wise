@@ -8,7 +8,7 @@ import {Label} from '@/components/ui/label';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {cn, getDateDisableReference} from '@/lib/utils';
 import {useNavigate, useSearch} from '@tanstack/react-router';
-import {formatSelectedDate} from '../../utils';
+import {formatDateForQueryParam} from '../../utils';
 
 interface TransactionDateToPickerProps {
   className?: string;
@@ -30,7 +30,7 @@ const TransactionDateToPicker: React.FC<TransactionDateToPickerProps> = ({classN
   const handleSelectDate = (value: Date | undefined) => {
     if (!value) return;
 
-    void navigate({search: (prev) => ({...prev, to: formatSelectedDate(value)}), to: '/transactions'});
+    void navigate({search: (prev) => ({...prev, to: formatDateForQueryParam(value)}), to: '/transactions'});
     setOpen(false);
   };
 

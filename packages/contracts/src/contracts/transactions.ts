@@ -342,8 +342,8 @@ export const getTransactionsQuerySchema = z
     accountId: z.string().uuid().optional(),
     categoryId: z.string().uuid().optional(),
     type: TransactionTypeEnum.optional(),
-    transactionDate_from: z.string().date().optional(),
-    transactionDate_to: z.string().date().optional(),
+    transactionDate_from: z.string().datetime({message: 'Datum mora biti u ISO 8601 formatu'}).optional(),
+    transactionDate_to: z.string().datetime({message: 'Datum mora biti u ISO 8601 formatu'}).optional(),
     q: z.string().optional(),
   })
   .strict();
@@ -357,8 +357,8 @@ export const getTransactionsQueryHouseholdSchema = z
     accountId: z.string().uuid().optional(),
     categoryId: z.string().uuid().optional(),
     type: TransactionTypeEnum.optional(),
-    from: z.string().date().optional(),
-    to: z.string().date().optional(),
+    from: z.string().datetime({message: 'Datum mora biti u ISO 8601 formatu'}).optional(),
+    to: z.string().datetime({message: 'Datum mora biti u ISO 8601 formatu'}).optional(),
     q: z.string().optional(),
   })
   .strict();

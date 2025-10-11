@@ -11,7 +11,7 @@ export interface PrivateTransactionContract {
   amount: number;
   type: TransactionType;
   description: string | null;
-  transactionDate: Date;
+  transactionDate: string;
   account?: AccountContract;
   createdAt: Date;
   updatedAt: Date;
@@ -46,9 +46,11 @@ export const createPrivateTransactionSchema = z
       })
       .min(1, 'Opis je obavezan')
       .max(2048, 'Opis može imati najviše 2048 karaktera'),
-    transactionDate: z.coerce.date({
-      invalid_type_error: 'Neispravan datum',
-    }),
+    transactionDate: z
+      .string({
+        invalid_type_error: 'Neispravan datum',
+      })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'}),
   })
   .strict();
 
@@ -86,11 +88,13 @@ export const getPrivateTransactionsQuerySchema = z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
       .optional(),
     to: z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
       .optional(),
     sort: privateTransactionSortFieldEnum.optional().default('-transactionDate'),
     page: z.coerce

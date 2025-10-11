@@ -18,6 +18,7 @@ import {InitSavingsAndBudgets1758655829601} from 'src/migrations/1758655829601-I
 import {InitTransactions1758655840340} from 'src/migrations/1758655840340-InitTransactions';
 import {InitPrivateTransactions1758655853118} from 'src/migrations/1758655853118-InitPrivateTransactions';
 import {ConvertTransactionDateToTimestamptz1760208473000} from 'src/migrations/1760208473000-ConvertTransactionDateToTimestamptz';
+import {ConvertPrivateTransactionDateToTimestamptz1760208473001} from 'src/migrations/1760208473001-ConvertPrivateTransactionDateToTimestamptz';
 
 export const DatabaseConfigName = 'database';
 
@@ -46,6 +47,7 @@ export function getConfig(): DatabaseConfig {
       InitTransactions1758655840340,
       InitPrivateTransactions1758655853118,
       ConvertTransactionDateToTimestamptz1760208473000,
+      ConvertPrivateTransactionDateToTimestamptz1760208473001,
     ],
     migrationsRun: true,
   };

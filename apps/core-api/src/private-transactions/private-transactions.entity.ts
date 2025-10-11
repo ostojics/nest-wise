@@ -64,7 +64,7 @@ export class PrivateTransaction {
   description: string | null;
 
   @Column({
-    type: 'date',
+    type: 'timestamptz',
     nullable: false,
     name: 'transaction_date',
   })

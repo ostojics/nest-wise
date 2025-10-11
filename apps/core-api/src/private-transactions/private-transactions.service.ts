@@ -50,7 +50,7 @@ export class PrivateTransactionsService {
         amount: dto.amount,
         type: dto.type as TransactionType,
         description: dto.description,
-        transactionDate: dto.transactionDate,
+        transactionDate: new Date(dto.transactionDate),
       });
 
       const current = Number(account.currentBalance);
