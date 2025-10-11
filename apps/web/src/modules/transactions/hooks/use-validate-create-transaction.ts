@@ -1,7 +1,6 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {CreateTransactionHouseholdDTO, createTransactionHouseholdSchema} from '@nest-wise/contracts';
-import {UTCDate} from '@date-fns/utc';
 
 interface UseValidateCreateTransactionDefaultValues {
   accountId?: string;
@@ -17,7 +16,7 @@ export const useValidateCreateTransaction = ({accountId}: UseValidateCreateTrans
       amount: 0,
       type: 'expense',
       description: '',
-      transactionDate: new UTCDate(),
+      transactionDate: new Date().toISOString(),
       isReconciled: true,
     },
   });

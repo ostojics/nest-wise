@@ -31,6 +31,7 @@ export class TransactionsRepository {
     const transaction = this.transactionRepository.create({
       ...transactionData,
       type: transactionData.type as TransactionType,
+      transactionDate: new Date(transactionData.transactionDate),
     });
     return await this.transactionRepository.save(transaction);
   }
@@ -161,7 +162,11 @@ export class TransactionsRepository {
 
     queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    const data = (await queryBuilder.getMany()) as TransactionContract[];
+    const transactions = await queryBuilder.getMany();
+    const data = transactions.map((tx) => ({
+      ...tx,
+      transactionDate: tx.transactionDate.toISOString(),
+    })) as TransactionContract[];
 
     return {
       data,
@@ -198,7 +203,11 @@ export class TransactionsRepository {
 
     queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    const data = (await queryBuilder.getMany()) as TransactionContract[];
+    const transactions = await queryBuilder.getMany();
+    const data = transactions.map((tx) => ({
+      ...tx,
+      transactionDate: tx.transactionDate.toISOString(),
+    })) as TransactionContract[];
 
     return {
       data,
@@ -302,10 +311,11 @@ export class TransactionsRepository {
   }
 
   async update(id: string, transactionData: UpdateTransactionDTO): Promise<Transaction | null> {
-    const {type, ...otherData} = transactionData;
+    const {type, transactionDate, ...otherData} = transactionData;
     const updateData = {
       ...otherData,
       ...(type && {type: type as TransactionType}),
+      ...(transactionDate && {transactionDate: new Date(transactionDate)}),
     };
 
     const updateResult = await this.transactionRepository.update(id, updateData);

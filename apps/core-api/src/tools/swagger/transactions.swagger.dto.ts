@@ -48,9 +48,9 @@ export class CreateTransactionSwaggerDTO {
   description?: string | null;
 
   @ApiProperty({
-    description: 'Date when the transaction occurred',
-    example: '2024-01-15',
-    format: 'date',
+    description: 'Date and time when the transaction occurred (ISO 8601 timestamp)',
+    example: '2024-01-15T12:00:00.000Z',
+    format: 'date-time',
   })
   transactionDate: Date;
 
@@ -88,9 +88,9 @@ export class CreateTransactionAiSwaggerDTO {
   description: string;
 
   @ApiProperty({
-    description: 'Date when the transaction occurred',
-    example: '2024-01-15',
-    format: 'date',
+    description: 'Date and time when the transaction occurred (ISO 8601 timestamp)',
+    example: '2024-01-15T12:00:00.000Z',
+    format: 'date-time',
   })
   transactionDate: Date;
 }
@@ -139,9 +139,9 @@ export class UpdateTransactionSwaggerDTO {
   description?: string | null;
 
   @ApiProperty({
-    description: 'Date when the transaction occurred',
-    example: '2024-01-15',
-    format: 'date',
+    description: 'Date and time when the transaction occurred (ISO 8601 timestamp)',
+    example: '2024-01-15T12:00:00.000Z',
+    format: 'date-time',
     required: false,
   })
   transactionDate?: Date;
@@ -205,9 +205,9 @@ export class TransactionResponseSwaggerDTO {
   description: string | null;
 
   @ApiProperty({
-    description: 'Date when the transaction occurred',
-    example: '2024-01-15',
-    format: 'date',
+    description: 'Date and time when the transaction occurred (ISO 8601 timestamp)',
+    example: '2024-01-15T12:00:00.000Z',
+    format: 'date-time',
   })
   transactionDate: Date;
 

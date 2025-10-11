@@ -16,7 +16,7 @@ export interface TransactionContract {
   amount: number;
   type: TransactionType;
   description: string;
-  transactionDate: Date;
+  transactionDate: string; // ISO 8601 timestamp
   isReconciled: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -128,9 +128,19 @@ export const createTransactionSchema = z
       })
       .min(1, 'Opis je obavezan')
       .max(1000, 'Opis može imati najviše 1000 karaktera'),
-    transactionDate: z.coerce.date({
-      invalid_type_error: 'Neispravan datum',
-    }),
+    transactionDate: z
+      .string({
+        invalid_type_error: 'Neispravan datum',
+      })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
+      .or(z.string().date())
+      .transform((val) => {
+        // Accept ISO datetime or YYYY-MM-DD (legacy, convert to noon UTC)
+        if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+          return `${val}T12:00:00.000Z`;
+        }
+        return val;
+      }),
     isReconciled: z
       .boolean({
         invalid_type_error: 'Neispravna vrednost (mora biti logička vrednost)',
@@ -184,9 +194,19 @@ export const createTransactionHouseholdSchema = z
       })
       .min(1, 'Opis je obavezan')
       .max(1000, 'Opis može imati najviše 1000 karaktera'),
-    transactionDate: z.coerce.date({
-      invalid_type_error: 'Neispravan datum',
-    }),
+    transactionDate: z
+      .string({
+        invalid_type_error: 'Neispravan datum',
+      })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
+      .or(z.string().date())
+      .transform((val) => {
+        // Accept ISO datetime or YYYY-MM-DD (legacy, convert to noon UTC)
+        if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+          return `${val}T12:00:00.000Z`;
+        }
+        return val;
+      }),
     isReconciled: z
       .boolean({
         invalid_type_error: 'Neispravna vrednost (mora biti logička vrednost)',
@@ -251,9 +271,18 @@ export const createTransactionAiHouseholdSchema = z
       })
       .min(1, 'Opis je obavezan')
       .max(1000, 'Opis može imati najviše 1000 karaktera'),
-    transactionDate: z.coerce
-      .date({
+    transactionDate: z
+      .string({
         invalid_type_error: 'Neispravan datum',
+      })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
+      .or(z.string().date())
+      .transform((val) => {
+        // Accept ISO datetime or YYYY-MM-DD (legacy, convert to noon UTC)
+        if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+          return `${val}T12:00:00.000Z`;
+        }
+        return val;
       })
       .optional(),
   })
@@ -288,9 +317,18 @@ export const updateTransactionSchema = z
       .max(1000, 'Opis može imati najviše 1000 karaktera')
       .nullable()
       .optional(),
-    transactionDate: z.coerce
-      .date({
+    transactionDate: z
+      .string({
         invalid_type_error: 'Neispravan datum',
+      })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
+      .or(z.string().date())
+      .transform((val) => {
+        // Accept ISO datetime or YYYY-MM-DD (legacy, convert to noon UTC)
+        if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+          return `${val}T12:00:00.000Z`;
+        }
+        return val;
       })
       .optional(),
     isReconciled: z
