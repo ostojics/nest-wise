@@ -11,6 +11,7 @@ import {CreatePrivateTransactionDTO} from '@nest-wise/contracts';
 import {DialogClose, DialogTrigger} from '@radix-ui/react-dialog';
 import {Loader2} from 'lucide-react';
 import {useState} from 'react';
+import {set} from 'date-fns';
 
 export function CreatePrivateTransactionDialog() {
   const [open, setOpen] = useState(false);
@@ -115,8 +116,8 @@ export function CreatePrivateTransactionDialog() {
                 value={watch('transactionDate') ? new Date(watch('transactionDate')) : undefined}
                 onChange={(date) => {
                   if (date) {
-                    const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0);
-                    setValue('transactionDate', localDate.toISOString());
+                    const dateAtNoon = set(date, {hours: 12, minutes: 0, seconds: 0, milliseconds: 0});
+                    setValue('transactionDate', dateAtNoon.toISOString());
                   }
                 }}
                 placeholder="Izaberi datum transakcije"
