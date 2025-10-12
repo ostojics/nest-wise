@@ -1,4 +1,4 @@
-# NestWise — Korisnički priručnik
+# NestWise - Korisnički priručnik
 
 Dobrodošli u NestWise, aplikaciju za upravljanje zajedničkim finansijama namenjena parovima i domaćinstvima. Ovaj priručnik će vam pomoći da brzo savladate ključne funkcije i efikasno upravljate svojim budžetom.
 
