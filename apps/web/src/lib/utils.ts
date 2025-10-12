@@ -76,3 +76,20 @@ export const dateAtNoon = (date: Date) => {
   const dateAtNoon = set(date, {hours: 12, minutes: 0, seconds: 0, milliseconds: 0});
   return dateAtNoon;
 };
+
+/**
+ * Returns start and end of current month as ISO 8601 timestamps at noon local time.
+ * This ensures correct timezone handling for date range queries.
+ *
+ * @returns Object with start and end ISO timestamp strings
+ */
+export const getStartAndEndOfMonthIso = (): {start: string; end: string} => {
+  const now = new Date();
+  const start = startOfMonth(now);
+  const end = endOfMonth(now);
+
+  return {
+    start: dateAtNoon(start).toISOString(),
+    end: dateAtNoon(end).toISOString(),
+  };
+};

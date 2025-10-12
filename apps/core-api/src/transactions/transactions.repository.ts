@@ -398,7 +398,7 @@ export class TransactionsRepository {
       amount: string | number | null;
     }
 
-    // Use simplified date parameters
+    // Use ISO timestamp parameters for timezone-safe filtering
     const dateFrom = query.from;
     const dateTo = query.to;
 
@@ -406,8 +406,8 @@ export class TransactionsRepository {
       `
       WITH params AS (
         SELECT
-          $2::date AS date_from,
-          $3::date AS date_to
+          $2::timestamptz AS date_from,
+          $3::timestamptz AS date_to
       ),
       filtered_tx AS (
         SELECT t.account_id, t.amount
@@ -415,7 +415,7 @@ export class TransactionsRepository {
         WHERE t.household_id = $1
           AND t.type = 'expense'
           AND (p.date_from IS NULL OR t.transaction_date >= p.date_from)
-          AND (p.date_to IS NULL OR t.transaction_date <= p.date_to)
+          AND (p.date_to IS NULL OR t.transaction_date < (p.date_to::date + INTERVAL '1 day'))
       ),
       sums AS (
         SELECT account_id, SUM(amount)::numeric AS amount
@@ -447,7 +447,7 @@ export class TransactionsRepository {
       count: string | number | null;
     }
 
-    // Use simplified date parameters
+    // Use ISO timestamp parameters for timezone-safe filtering
     const dateFrom = query.from;
     const dateTo = query.to;
 
@@ -455,8 +455,8 @@ export class TransactionsRepository {
       `
       WITH params AS (
         SELECT
-          $2::date AS date_from,
-          $3::date AS date_to
+          $2::timestamptz AS date_from,
+          $3::timestamptz AS date_to
       ),
       filtered_tx AS (
         SELECT t.amount
@@ -464,7 +464,7 @@ export class TransactionsRepository {
         WHERE t.household_id = $1
           AND t.type = 'expense'
           AND (p.date_from IS NULL OR t.transaction_date >= p.date_from)
-          AND (p.date_to IS NULL OR t.transaction_date <= p.date_to)
+          AND (p.date_to IS NULL OR t.transaction_date < (p.date_to::date + INTERVAL '1 day'))
       )
       SELECT 
         COALESCE(SUM(amount), 0)::numeric AS total,
@@ -491,7 +491,7 @@ export class TransactionsRepository {
       amount: string | number | null;
     }
 
-    // Use simplified date parameters
+    // Use ISO timestamp parameters for timezone-safe filtering
     const dateFrom = query.from;
     const dateTo = query.to;
 
@@ -499,8 +499,8 @@ export class TransactionsRepository {
       `
       WITH params AS (
         SELECT
-          $2::date AS date_from,
-          $3::date AS date_to
+          $2::timestamptz AS date_from,
+          $3::timestamptz AS date_to
       ),
       filtered_tx AS (
         SELECT t.category_id, t.amount
@@ -508,7 +508,7 @@ export class TransactionsRepository {
         WHERE t.household_id = $1
           AND t.type = 'expense'
           AND (p.date_from IS NULL OR t.transaction_date >= p.date_from)
-          AND (p.date_to IS NULL OR t.transaction_date <= p.date_to)
+          AND (p.date_to IS NULL OR t.transaction_date < (p.date_to::date + INTERVAL '1 day'))
       ),
       sums AS (
         SELECT category_id, SUM(amount)::numeric AS amount
