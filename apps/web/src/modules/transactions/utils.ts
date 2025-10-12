@@ -1,5 +1,6 @@
 import {STANDARD_DATE_FORMAT} from '@/common/constants/dates';
-import {format, set} from 'date-fns';
+import {dateAtNoon} from '@/lib/utils';
+import {format} from 'date-fns';
 
 export const formatSelectedDate = (value: Date) => {
   return format(value, STANDARD_DATE_FORMAT);
@@ -10,6 +11,6 @@ export const formatSelectedDate = (value: Date) => {
  * This ensures correct timezone handling when reading the date back from URL params.
  */
 export const formatDateForQueryParam = (value: Date) => {
-  const dateAtNoon = set(value, {hours: 12, minutes: 0, seconds: 0, milliseconds: 0});
-  return dateAtNoon.toISOString();
+  const adjustedDate = dateAtNoon(value);
+  return adjustedDate.toISOString();
 };

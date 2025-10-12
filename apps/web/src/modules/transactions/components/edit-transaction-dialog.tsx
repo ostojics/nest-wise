@@ -5,6 +5,7 @@ import {Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTi
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
+import {dateAtNoon} from '@/lib/utils';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import {useUpdateTransaction} from '@/modules/transactions/hooks/use-update-transaction';
@@ -37,6 +38,7 @@ export function EditTransactionDialog({transaction, open, onOpenChange}: EditTra
 
   const watchedCategoryId = watch('categoryId');
   const watchedType = watch('type');
+  const transactionDate = watch('transactionDate');
 
   const onSubmit = async (data: UpdateTransactionDTO) => {
     await updateTransactionMutation.mutateAsync(
@@ -163,11 +165,13 @@ export function EditTransactionDialog({transaction, open, onOpenChange}: EditTra
                 Datum transakcije <span className="text-red-500">*</span>
               </Label>
               <DatePicker
-                value={(() => {
-                  const dateValue = watch('transactionDate');
-                  return dateValue && typeof dateValue === 'string' ? new Date(dateValue) : undefined;
-                })()}
-                onChange={(date) => setValue('transactionDate', date ? date.toISOString() : new Date().toISOString())}
+                value={transactionDate ? new Date(transactionDate) : dateAtNoon(new Date())}
+                onChange={(date) => {
+                  if (date) {
+                    const adjustedDate = dateAtNoon(date);
+                    setValue('transactionDate', adjustedDate.toISOString());
+                  }
+                }}
                 placeholder="Izaberi datum transakcije"
               />
               {errors.transactionDate && <p className="text-sm text-red-500">{errors.transactionDate.message}</p>}

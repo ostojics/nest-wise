@@ -1,5 +1,4 @@
 import {deletePrivateTransaction} from '@/modules/api/private-transactions';
-import {queryKeys} from '@/modules/api/query-keys';
 import {ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
@@ -12,7 +11,7 @@ export const useDeletePrivateTransaction = () => {
     mutationFn: async (id: string) => deletePrivateTransaction(id),
     onSuccess: async () => {
       await client.invalidateQueries({
-        queryKey: queryKeys.privateTransactions.key(),
+        refetchType: 'all',
       });
       toast.success('Privatna transakcija je obrisana');
     },
