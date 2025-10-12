@@ -63,8 +63,8 @@ export const getAccountsSpendingQuerySchema = z
 // New household-scoped schema with simplified date parameters
 export const getAccountsSpendingQueryHouseholdSchema = z
   .object({
-    from: z.string().date().optional(),
-    to: z.string().date().optional(),
+    from: z.string().datetime().optional(),
+    to: z.string().datetime().optional(),
   })
   .strict();
 
@@ -74,8 +74,8 @@ export type GetAccountsSpendingQueryHouseholdDTO = z.infer<typeof getAccountsSpe
 // New household-scoped schema for spending aggregations - reusing existing query pattern
 export const getSpendingSummaryQueryHouseholdSchema = z
   .object({
-    from: z.string().date().optional(),
-    to: z.string().date().optional(),
+    from: z.string().datetime().optional(),
+    to: z.string().datetime().optional(),
   })
   .strict();
 

@@ -384,15 +384,15 @@ export class HouseholdTransactionsController {
     name: 'from',
     required: false,
     type: String,
-    format: 'date',
-    description: 'Start date inclusive (YYYY-MM-DD)',
+    format: 'date-time',
+    description: 'Start date as ISO 8601 timestamp (e.g., 2025-03-15T12:00:00.000Z)',
   })
   @ApiQuery({
     name: 'to',
     required: false,
     type: String,
-    format: 'date',
-    description: 'End date inclusive (YYYY-MM-DD)',
+    format: 'date-time',
+    description: 'End date as ISO 8601 timestamp (e.g., 2025-03-31T12:00:00.000Z)',
   })
   @ApiOkResponse({
     description: 'Spending by account computed successfully',
@@ -424,15 +424,15 @@ export class HouseholdTransactionsController {
     name: 'from',
     required: false,
     type: String,
-    format: 'date',
-    description: 'Start date inclusive (YYYY-MM-DD)',
+    format: 'date-time',
+    description: 'Start date as ISO 8601 timestamp (e.g., 2025-03-15T12:00:00.000Z)',
   })
   @ApiQuery({
     name: 'to',
     required: false,
     type: String,
-    format: 'date',
-    description: 'End date inclusive (YYYY-MM-DD)',
+    format: 'date-time',
+    description: 'End date as ISO 8601 timestamp (e.g., 2025-03-31T12:00:00.000Z)',
   })
   @ApiOkResponse({
     description: 'Spending total computed successfully',
@@ -478,15 +478,15 @@ export class HouseholdTransactionsController {
     name: 'from',
     required: false,
     type: String,
-    format: 'date',
-    description: 'Start date inclusive (YYYY-MM-DD)',
+    format: 'date-time',
+    description: 'Start date as ISO 8601 timestamp (e.g., 2025-03-15T12:00:00.000Z)',
   })
   @ApiQuery({
     name: 'to',
     required: false,
     type: String,
-    format: 'date',
-    description: 'End date inclusive (YYYY-MM-DD)',
+    format: 'date-time',
+    description: 'End date as ISO 8601 timestamp (e.g., 2025-03-31T12:00:00.000Z)',
   })
   @ApiOkResponse({
     description: 'Categories spending computed successfully',
