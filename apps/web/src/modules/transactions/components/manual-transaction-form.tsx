@@ -4,6 +4,7 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
+import {dateAtNoon} from '@/lib/utils';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import {useCreateTransaction} from '@/modules/transactions/hooks/use-create-transaction';
@@ -55,6 +56,8 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
     const accountType = accountTypes.find((type) => type.value === account.type);
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
+
+  const transactionDate = watch('transactionDate');
 
   useEffect(() => {
     if (watchedType === 'income') {
@@ -152,8 +155,13 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
           Datum transakcije <span className="text-red-500">*</span>
         </Label>
         <DatePicker
-          value={watch('transactionDate') ? new Date(watch('transactionDate')) : undefined}
-          onChange={(date) => setValue('transactionDate', date ? date.toISOString() : new Date().toISOString())}
+          value={new Date(transactionDate)}
+          onChange={(date) => {
+            if (date) {
+              const adjustedDate = dateAtNoon(date);
+              setValue('transactionDate', adjustedDate.toISOString());
+            }
+          }}
           placeholder="Izaberi datum transakcije"
         />
         {errors.transactionDate && <p className="text-sm text-red-500">{errors.transactionDate.message}</p>}
