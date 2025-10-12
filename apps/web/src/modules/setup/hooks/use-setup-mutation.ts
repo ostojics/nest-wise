@@ -12,7 +12,7 @@ export const useSetupMutation = () => {
     mutationFn: setup,
     onSuccess: async () => {
       await client.invalidateQueries({queryKey: [queryKeys.me]});
-      void navigate({to: '/plan', reloadDocument: true});
+      void navigate({to: '/onboarding', reloadDocument: true});
       toast.success('Podešavanje je uspešno završeno');
     },
     onError: () => {
