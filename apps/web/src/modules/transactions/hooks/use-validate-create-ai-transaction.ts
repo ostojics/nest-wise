@@ -1,6 +1,7 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {CreateTransactionAiHouseholdDTO, createTransactionAiHouseholdSchema} from '@nest-wise/contracts';
+import {dateAtNoon} from '@/lib/utils';
 
 interface UseValidateCreateAiTransactionDefaultValues {
   accountId?: string;
@@ -12,7 +13,7 @@ export const useValidateCreateAiTransaction = ({accountId}: UseValidateCreateAiT
     defaultValues: {
       accountId: accountId ?? '',
       description: '',
-      currentDate: new Date().toISOString(),
+      currentDate: dateAtNoon(new Date()).toISOString(),
     },
   });
 };
