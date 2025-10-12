@@ -1,7 +1,7 @@
 import {Button} from '@/components/ui/button';
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Progress} from '@/components/ui/progress';
-import {cn, getStartAndEndOfMonth} from '@/lib/utils';
+import {cn, getStartAndEndOfMonthIso} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {useGetHouseholdById} from '@/modules/households/hooks/use-get-household-by-id';
 import {IconEdit, IconTarget} from '@tabler/icons-react';
@@ -15,7 +15,7 @@ const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const {formatBalance} = useFormatBalance();
   const {data: household} = useGetHouseholdById();
-  const {start, end} = getStartAndEndOfMonth();
+  const {start, end} = getStartAndEndOfMonthIso();
   const {
     data: spendingSummary,
     isLoading,
