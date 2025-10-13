@@ -8,10 +8,12 @@ test.describe('Plan Page', () => {
 
     // Assert: Verify page title is displayed
     await expect(page.getByTestId('plan-page-title')).toBeVisible();
-    await expect(page.getByTestId('plan-page-title')).toContainText("Plan your household's spending by category");
+    await expect(page.getByTestId('plan-page-title')).toContainText('Planirajte troškove domaćinstva po kategorijama');
 
     // Assert: Verify page description is displayed
     await expect(page.getByTestId('plan-page-description')).toBeVisible();
-    await expect(page.getByTestId('plan-page-description')).toContainText('Set a planned amount for each category');
+    await expect(page.getByTestId('plan-page-description')).toContainText(
+      'Postavite planirani iznos za svaku kategoriju. Kako unosite transakcije, vaša potrošnja se automatski prati za izabrani mesec.',
+    );
   });
 });
