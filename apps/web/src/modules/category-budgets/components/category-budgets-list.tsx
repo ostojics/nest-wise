@@ -40,14 +40,16 @@ const CategoryBudgetsList = () => {
   if (isError && !isMobile) return <CategoryBudgetsListError onRetry={refetch} />;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="category-budgets-section">
       <Card className="@container/card overflow-hidden">
         <CardHeader className="border-b">
           <CardTitle className="text-base">Total planned</CardTitle>
           <CardDescription>{format(new Date(search.month), 'LLLL yyyy')}</CardDescription>
         </CardHeader>
         <CardContent className="py-1">
-          <div className="text-xl font-semibold tabular-nums">{formatBalance(totals.planned)}</div>
+          <div className="text-xl font-semibold tabular-nums" data-testid="total-planned">
+            {formatBalance(totals.planned)}
+          </div>
         </CardContent>
       </Card>
 

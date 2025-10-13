@@ -72,7 +72,7 @@ const SpendingVsTargetCard = () => {
   }
 
   return (
-    <Card className="group flex-1 hover:shadow-md transition-all duration-200">
+    <Card className="group flex-1 hover:shadow-md transition-all duration-200" data-testid="spending-vs-target-card">
       <CardHeader>
         <CardDescription className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -94,17 +94,22 @@ const SpendingVsTargetCard = () => {
             'text-2xl font-semibold tabular-nums @[250px]/card:text-3xl transition-colors',
             getStatusColor(),
           )}
+          data-testid="spending-amount"
         >
           {formatBalance(currentSpending)}
         </CardTitle>
-        <div className="text-sm text-muted-foreground">of {formatBalance(budget)} target</div>
+        <div className="text-sm text-muted-foreground" data-testid="budget-target">
+          of {formatBalance(budget)} target
+        </div>
       </CardHeader>
 
       <CardFooter className="flex-col items-start gap-4 text-sm">
         <div className="w-full space-y-2">
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Progress</span>
-            <span className={cn('font-medium', getStatusColor())}>{spendingPercentage.toFixed(1)}%</span>
+            <span className={cn('font-medium', getStatusColor())} data-testid="progress-percentage">
+              {spendingPercentage.toFixed(1)}%
+            </span>
           </div>
           <Progress value={spendingPercentage} className={getProgressBarClassName(spendingPercentage)} />
         </div>
@@ -117,6 +122,7 @@ const SpendingVsTargetCard = () => {
                 'font-medium',
                 remainingBudget >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
               )}
+              data-testid="remaining-amount"
             >
               {remainingBudget >= 0 ? formatBalance(remainingBudget) : `-${formatBalance(Math.abs(remainingBudget))}`}
             </span>
