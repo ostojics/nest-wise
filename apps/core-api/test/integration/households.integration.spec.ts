@@ -21,6 +21,7 @@ import {queuesConfig} from '../../src/config/queues.config';
 import {throttlerConfig} from '../../src/config/throttler.config';
 import {GlobalConfig} from '../../src/config/config.interface';
 import {CreateHouseholdDTO} from '@nest-wise/contracts';
+import {add, addYears} from 'date-fns';
 
 describe('Integration - Households', () => {
   let module: TestingModule;
@@ -83,7 +84,7 @@ describe('Integration - Households', () => {
     // Create a test license for the household creation
     const licenseRepository = dataSource.getRepository(License);
     const testLicense = licenseRepository.create({
-      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+      expiresAt: addYears(new Date(), 1), // 1 year from now
       note: 'Test license for integration tests',
     });
     const savedLicense = await licenseRepository.save(testLicense);

@@ -1,8 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "isolatedModules": true,
     "baseUrl": "../../",
     "paths": {

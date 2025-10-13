@@ -30,7 +30,6 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-// Enable MSW when MSW_ENABLED is set
 async function enableMocking() {
   if (import.meta.env.VITE_MSW_ENABLED !== 'true') {
     return;
