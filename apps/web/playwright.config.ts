@@ -50,7 +50,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     env: {
       VITE_E2E: '1',
-      MSW_ENABLED: '1',
+      VITE_MSW_ENABLED: 'true',
     },
   },
 });
