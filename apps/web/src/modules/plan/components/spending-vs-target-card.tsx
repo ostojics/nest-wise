@@ -69,7 +69,7 @@ const SpendingVsTargetCard = () => {
   }
 
   return (
-    <Card className="group flex-1 hover:shadow-md transition-all duration-200">
+    <Card className="group flex-1 hover:shadow-md transition-all duration-200" data-testid="spending-vs-target-card">
       <CardHeader>
         <CardDescription className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -91,6 +91,7 @@ const SpendingVsTargetCard = () => {
             'text-2xl font-semibold tabular-nums @[250px]/card:text-3xl transition-colors',
             getStatusColor(),
           )}
+          data-testid="spending-amount"
         >
           {formatBalance(currentSpending)}
         </CardTitle>
@@ -114,6 +115,7 @@ const SpendingVsTargetCard = () => {
                 'font-medium',
                 remainingBudget >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
               )}
+              data-testid="remaining-amount"
             >
               {remainingBudget >= 0 ? formatBalance(remainingBudget) : `-${formatBalance(Math.abs(remainingBudget))}`}
             </span>

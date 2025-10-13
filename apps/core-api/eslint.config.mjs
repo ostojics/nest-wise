@@ -33,7 +33,7 @@ const defaultConfig = tseslint.config(
 /** @type {import("eslint").Linter.Config} */
 export default [
   {
-    ignores: ['dist/**/*', 'eslint.config.mjs'],
+    ignores: ['dist/**/*', 'eslint.config.mjs', 'test/**/*'],
   },
   ...baseConfig,
   ...defaultConfig,
