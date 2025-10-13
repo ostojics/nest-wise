@@ -99,7 +99,7 @@ export const useWeeklyTransactions = () => {
 
       // Find today's key for initial selection
       const todayKey = format(today, 'yyyy-MM-dd');
-      const initialSelectedDay = days.find((d) => d.key === todayKey)?.key ?? (days[0]?.key || '');
+      const initialSelectedDay = days.find((d) => d.key === todayKey)?.key ?? days[0]?.key ?? '';
 
       return {
         days,
