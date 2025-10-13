@@ -5,7 +5,7 @@ import {Badge} from '@/components/ui/badge';
 import {accountTypes} from '@/common/constants/account-types';
 import {format} from 'date-fns';
 import {cn} from '@/lib/utils';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import EditAccountDialog from './edit-account-dialog';
 
 interface AccountProps {
@@ -18,7 +18,7 @@ const Account: React.FC<AccountProps> = ({account}) => {
   const IconComponent = accountType?.icon;
 
   const formatDate = (date: Date) => {
-    return format(new Date(date), 'MMM dd, yyyy');
+    return format(new Date(date), 'dd.MM.yyyy.');
   };
 
   return (
@@ -48,7 +48,7 @@ const Account: React.FC<AccountProps> = ({account}) => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col items-start @lg/account-card:flex-row  @lg/account-card:items-center justify-between">
-          <div className="text-sm text-muted-foreground">Current Balance</div>
+          <div className="text-sm text-muted-foreground">Trenutno stanje</div>
           <div
             className={cn(
               'text-right font-semibold tabular-nums',

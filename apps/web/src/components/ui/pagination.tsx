@@ -50,13 +50,13 @@ function PaginationLink({className, isActive, size = 'icon', ...props}: Paginati
 function PaginationPrevious({className, ...props}: React.ComponentProps<typeof PaginationLink>) {
   return (
     <PaginationLink
-      aria-label="Go to previous page"
+      aria-label="Prethodna stranica"
       size="default"
       className={cn('gap-1 px-2.5 sm:pl-2.5', className)}
       {...props}
     >
       <ChevronLeftIcon />
-      <span className="hidden sm:block">Previous</span>
+      <span className="hidden sm:block">Prethodna stranica</span>
     </PaginationLink>
   );
 }
@@ -64,12 +64,12 @@ function PaginationPrevious({className, ...props}: React.ComponentProps<typeof P
 function PaginationNext({className, ...props}: React.ComponentProps<typeof PaginationLink>) {
   return (
     <PaginationLink
-      aria-label="Go to next page"
+      aria-label="Sledeća stranica"
       size="default"
       className={cn('gap-1 px-2.5 sm:pr-2.5', className)}
       {...props}
     >
-      <span className="hidden sm:block">Next</span>
+      <span className="hidden sm:block">Sledeća stranica</span>
       <ChevronRightIcon />
     </PaginationLink>
   );

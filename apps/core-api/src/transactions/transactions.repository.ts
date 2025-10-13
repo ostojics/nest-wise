@@ -14,6 +14,9 @@ import {
   GetAccountsSpendingQueryDTO,
   GetAccountsSpendingQueryHouseholdDTO,
   NetWorthTrendPointContract,
+  SpendingTotalContract,
+  CategorySpendingPointContract,
+  GetSpendingSummaryQueryHouseholdDTO,
 } from '@nest-wise/contracts';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 
@@ -28,6 +31,7 @@ export class TransactionsRepository {
     const transaction = this.transactionRepository.create({
       ...transactionData,
       type: transactionData.type as TransactionType,
+      transactionDate: new Date(transactionData.transactionDate),
     });
     return await this.transactionRepository.save(transaction);
   }
@@ -158,7 +162,11 @@ export class TransactionsRepository {
 
     queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    const data = (await queryBuilder.getMany()) as TransactionContract[];
+    const transactions = await queryBuilder.getMany();
+    const data = transactions.map((tx) => ({
+      ...tx,
+      transactionDate: tx.transactionDate.toISOString(),
+    })) as TransactionContract[];
 
     return {
       data,
@@ -195,7 +203,11 @@ export class TransactionsRepository {
 
     queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    const data = (await queryBuilder.getMany()) as TransactionContract[];
+    const transactions = await queryBuilder.getMany();
+    const data = transactions.map((tx) => ({
+      ...tx,
+      transactionDate: tx.transactionDate.toISOString(),
+    })) as TransactionContract[];
 
     return {
       data,
@@ -222,7 +234,7 @@ export class TransactionsRepository {
     }
 
     if (query.transactionDate_from) {
-      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom', {
+      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom::timestamptz::date', {
         dateFrom: query.transactionDate_from,
       });
     }
@@ -232,7 +244,7 @@ export class TransactionsRepository {
     }
 
     if (query.transactionDate_to) {
-      queryBuilder.andWhere('transaction.transactionDate <= :dateTo', {
+      queryBuilder.andWhere("transaction.transactionDate < (:dateTo::timestamptz::date + INTERVAL '1 day')", {
         dateTo: query.transactionDate_to,
       });
     }
@@ -258,11 +270,13 @@ export class TransactionsRepository {
 
     // Use simplified date parameters
     if (query.from) {
-      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom', {dateFrom: query.from});
+      queryBuilder.andWhere('transaction.transactionDate >= :dateFrom::timestamptz::date', {dateFrom: query.from});
     }
 
     if (query.to) {
-      queryBuilder.andWhere('transaction.transactionDate <= :dateTo', {dateTo: query.to});
+      queryBuilder.andWhere("transaction.transactionDate < (:dateTo::timestamptz::date + INTERVAL '1 day')", {
+        dateTo: query.to,
+      });
     }
 
     if (query.type) {
@@ -299,10 +313,11 @@ export class TransactionsRepository {
   }
 
   async update(id: string, transactionData: UpdateTransactionDTO): Promise<Transaction | null> {
-    const {type, ...otherData} = transactionData;
+    const {type, transactionDate, ...otherData} = transactionData;
     const updateData = {
       ...otherData,
       ...(type && {type: type as TransactionType}),
+      ...(transactionDate && {transactionDate: new Date(transactionDate)}),
     };
 
     const updateResult = await this.transactionRepository.update(id, updateData);
@@ -383,7 +398,7 @@ export class TransactionsRepository {
       amount: string | number | null;
     }
 
-    // Use simplified date parameters
+    // Use ISO timestamp parameters for timezone-safe filtering
     const dateFrom = query.from;
     const dateTo = query.to;
 
@@ -391,8 +406,8 @@ export class TransactionsRepository {
       `
       WITH params AS (
         SELECT
-          $2::date AS date_from,
-          $3::date AS date_to
+          $2::timestamptz AS date_from,
+          $3::timestamptz AS date_to
       ),
       filtered_tx AS (
         SELECT t.account_id, t.amount
@@ -400,7 +415,7 @@ export class TransactionsRepository {
         WHERE t.household_id = $1
           AND t.type = 'expense'
           AND (p.date_from IS NULL OR t.transaction_date >= p.date_from)
-          AND (p.date_to IS NULL OR t.transaction_date <= p.date_to)
+          AND (p.date_to IS NULL OR t.transaction_date < (p.date_to::date + INTERVAL '1 day'))
       ),
       sums AS (
         SELECT account_id, SUM(amount)::numeric AS amount
@@ -419,6 +434,102 @@ export class TransactionsRepository {
     return rows.map((r) => ({
       accountId: r.account_id,
       name: r.name,
+      amount: r.amount === null ? 0 : Number(r.amount),
+    }));
+  }
+
+  async getSpendingTotalForHousehold(
+    householdId: string,
+    query: GetSpendingSummaryQueryHouseholdDTO,
+  ): Promise<SpendingTotalContract> {
+    interface Row {
+      total: string | number | null;
+      count: string | number | null;
+    }
+
+    // Use ISO timestamp parameters for timezone-safe filtering
+    const dateFrom = query.from;
+    const dateTo = query.to;
+
+    const rows: Row[] = await this.transactionRepository.query(
+      `
+      WITH params AS (
+        SELECT
+          $2::timestamptz AS date_from,
+          $3::timestamptz AS date_to
+      ),
+      filtered_tx AS (
+        SELECT t.amount
+        FROM transactions t, params p
+        WHERE t.household_id = $1
+          AND t.type = 'expense'
+          AND (p.date_from IS NULL OR t.transaction_date >= p.date_from)
+          AND (p.date_to IS NULL OR t.transaction_date < (p.date_to::date + INTERVAL '1 day'))
+      )
+      SELECT 
+        COALESCE(SUM(amount), 0)::numeric AS total,
+        COUNT(*)::int AS count
+      FROM filtered_tx;
+      `,
+      [householdId, dateFrom, dateTo],
+    );
+
+    const row = rows[0];
+    return {
+      total: row.total === null ? 0 : Number(row.total),
+      count: row.count === null ? 0 : Number(row.count),
+    };
+  }
+
+  async getCategoriesSpendingForHousehold(
+    householdId: string,
+    query: GetSpendingSummaryQueryHouseholdDTO,
+  ): Promise<CategorySpendingPointContract[]> {
+    interface Row {
+      category_id: string | null;
+      category_name: string;
+      amount: string | number | null;
+    }
+
+    // Use ISO timestamp parameters for timezone-safe filtering
+    const dateFrom = query.from;
+    const dateTo = query.to;
+
+    const rows: Row[] = await this.transactionRepository.query(
+      `
+      WITH params AS (
+        SELECT
+          $2::timestamptz AS date_from,
+          $3::timestamptz AS date_to
+      ),
+      filtered_tx AS (
+        SELECT t.category_id, t.amount
+        FROM transactions t, params p
+        WHERE t.household_id = $1
+          AND t.type = 'expense'
+          AND (p.date_from IS NULL OR t.transaction_date >= p.date_from)
+          AND (p.date_to IS NULL OR t.transaction_date < (p.date_to::date + INTERVAL '1 day'))
+      ),
+      sums AS (
+        SELECT category_id, SUM(amount)::numeric AS amount
+        FROM filtered_tx
+        GROUP BY category_id
+      )
+      SELECT 
+        s.category_id,
+        COALESCE(c.name, 'Other') AS category_name,
+        COALESCE(s.amount, 0)::numeric AS amount
+      FROM sums s
+      LEFT JOIN categories c ON c.id = s.category_id
+      WHERE s.amount > 0
+      ORDER BY s.amount DESC;
+      `,
+      [householdId, dateFrom, dateTo],
+    );
+
+    return rows.map((r) => ({
+      categoryId: r.category_id,
+      categoryName: r.category_name,
       amount: r.amount === null ? 0 : Number(r.amount),
     }));
   }

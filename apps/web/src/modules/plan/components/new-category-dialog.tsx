@@ -13,9 +13,9 @@ import {
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {queryKeys} from '@/modules/api/query-keys';
-import {useGetMe} from '@/modules/auth/hooks/useGetMe';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {useValidateCreateCategory} from '@/modules/categories/hooks/use-validate-create-category';
-import {useCreateCategory} from '@/modules/categories/hooks/useCreateCategory';
+import {useCreateCategory} from '@/modules/categories/hooks/use-create-category';
 import {CreateCategoryDTO} from '@nest-wise/contracts';
 import {useQueryClient} from '@tanstack/react-query';
 import {useSearch} from '@tanstack/react-router';
@@ -58,32 +58,34 @@ const NewCategoryDialog = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button size="sm">New Category</Button>
+        <Button size="sm">Nova kategorija</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="mb-3">
-          <DialogTitle>Create category</DialogTitle>
+          <DialogTitle>Kreirajte kategoriju</DialogTitle>
           <DialogDescription className="text-balance">
-            Add a category to plan and track your spending.
+            Dodajte kategoriju za planiranje i praćenje svojih troškova.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleCreateCategory)}>
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col gap-2 w-full">
-              <Label htmlFor="new-category-name">Name</Label>
-              <Input id="new-category-name" placeholder="e.g. Groceries" {...register('name')} />
-              {errors.name?.message && <FormError error={errors.name.message} />}
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <form onSubmit={handleSubmit(handleCreateCategory)}>
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-2 w-full">
+                <Label htmlFor="new-category-name">Naziv</Label>
+                <Input id="new-category-name" placeholder="npr. Namirnice" {...register('name')} />
+                {errors.name?.message && <FormError error={errors.name.message} />}
+              </div>
             </div>
-          </div>
-          <DialogFooter className="mt-10">
-            <DialogClose asChild>
-              <Button type="button" variant="outline">
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit">Create</Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter className="mt-10">
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Otkažite
+                </Button>
+              </DialogClose>
+              <Button type="submit">Kreirajte</Button>
+            </DialogFooter>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

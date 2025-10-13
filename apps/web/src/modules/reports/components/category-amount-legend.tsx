@@ -1,5 +1,5 @@
 import React from 'react';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 
 interface LegendItemPayload {
   amount?: number;

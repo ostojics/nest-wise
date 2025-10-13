@@ -5,34 +5,34 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
+import {useIsMobile} from '@/hooks/use-mobile';
 import {useLocation, useNavigate} from '@tanstack/react-router';
 
 export function NavMain() {
   const {pathname} = useLocation();
   const navigate = useNavigate();
+  const {toggleSidebar} = useSidebar();
+  const isMobile = useIsMobile();
+
+  const handleNavItemClick = (url: string) => {
+    void navigate({to: url});
+    if (isMobile) {
+      toggleSidebar();
+    }
+  };
 
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
-        {/* <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton
-              tooltip="Quick Create"
-              className="bg-primary cursor-pointer text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
-            >
-              <IconCirclePlusFilled />
-              <span>Quick Create</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu> */}
         <SidebarMenu>
           {mainLinks.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 tooltip={item.title}
                 isActive={pathname.startsWith(item.url)}
-                onClick={() => navigate({to: item.url})}
+                onClick={() => handleNavItemClick(item.url)}
               >
                 {item.icon}
                 <span>{item.title}</span>

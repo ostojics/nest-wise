@@ -4,6 +4,9 @@ import {createRoot} from 'react-dom/client';
 import App from './app';
 import './index.css';
 import {router} from './router';
+import {PostHogProvider} from 'posthog-js/react';
+import {setDefaultOptions} from 'date-fns';
+import {srLatn} from 'date-fns/locale';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +22,8 @@ declare module '@tanstack/react-router' {
     router: typeof router;
   }
 }
+
+setDefaultOptions({locale: srLatn});
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -48,9 +53,19 @@ enableMocking()
   .finally(() => {
     createRoot(rootElement).render(
       <StrictMode>
-        <QueryClientProvider client={queryClient}>
-          <App />
-        </QueryClientProvider>
+        <PostHogProvider
+          apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+          options={{
+            api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+            defaults: '2025-05-24',
+            capture_exceptions: true,
+            debug: import.meta.env.DEV,
+          }}
+        >
+          <QueryClientProvider client={queryClient}>
+            <App />
+          </QueryClientProvider>
+        </PostHogProvider>
       </StrictMode>,
     );
   });

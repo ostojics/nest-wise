@@ -8,27 +8,27 @@ export const mainLinks = [
     icon: <IconCalendar />,
   },
   {
-    title: 'Accounts',
+    title: 'Računi',
     url: '/accounts',
     icon: <Landmark />,
   },
   {
-    title: 'Transactions',
+    title: 'Transakcije',
     url: '/transactions',
     icon: <IconReceipt />,
   },
   {
-    title: 'Reports',
+    title: 'Izveštaji',
     url: '/reports',
     icon: <IconChartBar />,
   },
   {
-    title: 'My Finances',
+    title: 'Moje finansije',
     url: '/my-finances',
     icon: <IconWallet />,
   },
   {
-    title: 'Members',
+    title: 'Članovi',
     url: '/members',
     icon: <IconUsers />,
   },

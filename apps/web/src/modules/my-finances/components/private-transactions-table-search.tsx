@@ -15,7 +15,7 @@ const PrivateTransactionsTableSearch = () => {
       className="w-full @xl/transactions-table-actions:max-w-sm"
       defaultValue={search.q ?? ''}
       onChange={(e) => debounced(e.target.value)}
-      placeholder="Search private transactions"
+      placeholder="Pretraži privatne transakcije"
     />
   );
 };

@@ -1,37 +1,34 @@
 import {Button} from '@/components/ui/button';
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Progress} from '@/components/ui/progress';
-import {cn, getStartAndEndOfMonth} from '@/lib/utils';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
+import {cn, getStartAndEndOfMonthIso} from '@/lib/utils';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
+import {useGetHouseholdById} from '@/modules/households/hooks/use-get-household-by-id';
 import {IconEdit, IconTarget} from '@tabler/icons-react';
 import {useMemo, useState} from 'react';
 import EditMonthlyBudgetModal from './edit-monthly-budget-modal';
 import SpendingVsTargetCardSkeleton from './spending-vs-target-card.skeleton';
 import SpendingVsTargetCardError from './spending-vs-target-card.error';
-import {useGetAllTransactions} from '@/modules/transactions/hooks/useGetAllTransactions';
+import {useGetSpendingTotal} from '@/modules/transactions/hooks/use-get-spending-total';
 
 const SpendingVsTargetCard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const {formatBalance} = useFormatBalance();
   const {data: household} = useGetHouseholdById();
-  const {start, end} = getStartAndEndOfMonth();
+  const {start, end} = getStartAndEndOfMonthIso();
   const {
-    data: transactions,
+    data: spendingSummary,
     isLoading,
     isError,
     refetch,
-  } = useGetAllTransactions({
+  } = useGetSpendingTotal({
     search: {
-      type: 'expense',
       from: start,
       to: end,
     },
   });
 
-  const currentSpending = useMemo(() => {
-    return transactions?.reduce((acc, transaction) => acc + Number(transaction.amount), 0) ?? 0;
-  }, [transactions]);
+  const currentSpending = spendingSummary?.total ?? 0;
 
   const budget = household?.monthlyBudget ?? 0;
 
@@ -77,14 +74,14 @@ const SpendingVsTargetCard = () => {
         <CardDescription className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <IconTarget className="h-4 w-4" />
-            Monthly Budget
+            Ciljani mesečni budžet
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsEditModalOpen(true)}
             className="h-8 w-8 p-0 hover:bg-muted/50 transition-colors"
-            title="Edit monthly budget"
+            title="Izmeni mesečni budžet"
           >
             <IconEdit className="h-4 w-4" />
           </Button>
@@ -98,25 +95,21 @@ const SpendingVsTargetCard = () => {
         >
           {formatBalance(currentSpending)}
         </CardTitle>
-        <div className="text-sm text-muted-foreground" data-testid="budget-target">
-          of {formatBalance(budget)} target
-        </div>
+        <div className="text-sm text-muted-foreground">od cilja {formatBalance(budget)}</div>
       </CardHeader>
 
       <CardFooter className="flex-col items-start gap-4 text-sm">
         <div className="w-full space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Progress</span>
-            <span className={cn('font-medium', getStatusColor())} data-testid="progress-percentage">
-              {spendingPercentage.toFixed(1)}%
-            </span>
+            <span className="text-muted-foreground">Napredak</span>
+            <span className={cn('font-medium', getStatusColor())}>{spendingPercentage.toFixed(1)}%</span>
           </div>
           <Progress value={spendingPercentage} className={getProgressBarClassName(spendingPercentage)} />
         </div>
 
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-col">
-            <span className="text-muted-foreground">Remaining</span>
+            <span className="text-muted-foreground">Preostalo</span>
             <span
               className={cn(
                 'font-medium',

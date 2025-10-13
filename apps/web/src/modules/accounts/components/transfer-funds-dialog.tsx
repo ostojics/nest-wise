@@ -16,8 +16,8 @@ import {ArrowLeftRight, Loader2, Wallet} from 'lucide-react';
 import {useState} from 'react';
 import {useTransferFundsMutation} from '../hooks/use-transfer-funds-mutation';
 import {useValidateTransferFunds} from '../hooks/use-validate-transfer-funds';
-import {useGetHouseholdAccounts} from '../hooks/useGetHouseholdAccounts';
-import {useGetHouseholdById} from '@/modules/households/hooks/useGetHouseholdById';
+import {useGetHouseholdAccounts} from '../hooks/use-get-household-accounts';
+import {useGetHouseholdById} from '@/modules/households/hooks/use-get-household-by-id';
 import AccountSelect from './account-select';
 
 const TransferFundsDialog = () => {
@@ -62,67 +62,69 @@ const TransferFundsDialog = () => {
       <DialogTrigger asChild>
         <Button>
           <ArrowLeftRight className="w-4 h-4" />
-          Transfer funds
+          Prebaci sredstva
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Wallet className="w-5 h-5" />
-            Transfer Funds
+            Prebacivanje sredstava
           </DialogTitle>
           <DialogDescription className="text-left">
-            Move money between your accounts. Select the source and destination accounts and enter an amount.
+            Prebacite novac između svojih računa. Izaberite polazni i odredišni račun i unesite iznos.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(handleTransferFunds)} className="space-y-6">
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Source account</Label>
-            <AccountSelect
-              accounts={accounts}
-              value={fromAccountId}
-              onChange={(id) => setValue('fromAccountId', id, {shouldValidate: true})}
-              placeholder="Select source account"
-              className="w-full"
-              excludeId={toAccountId}
-            />
-            {errors.fromAccountId && <FormError error={errors.fromAccountId.message ?? ''} />}
-          </div>
-
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Destination account</Label>
-            <AccountSelect
-              accounts={accounts}
-              value={toAccountId}
-              onChange={(id) => setValue('toAccountId', id, {shouldValidate: true})}
-              placeholder="Select destination account"
-              className="w-full"
-              excludeId={fromAccountId}
-            />
-            {errors.toAccountId && <FormError error={errors.toAccountId.message ?? ''} />}
-          </div>
-
-          <div className="space-y-3">
-            <Label htmlFor="amount" className="text-sm font-medium">
-              Amount
-            </Label>
-            <div className="relative">
-              <Input id="amount" type="number" step="0.01" placeholder="0.00" {...register('amount')} />
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <form onSubmit={handleSubmit(handleTransferFunds)} className="space-y-6">
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Polazni račun</Label>
+              <AccountSelect
+                accounts={accounts}
+                value={fromAccountId}
+                onChange={(id) => setValue('fromAccountId', id, {shouldValidate: true})}
+                placeholder="Izaberite polazni račun"
+                className="w-full"
+                excludeId={toAccountId}
+              />
+              {errors.fromAccountId && <FormError error={errors.fromAccountId.message ?? ''} />}
             </div>
-            {errors.amount && <FormError error={errors.amount.message ?? ''} />}
-          </div>
 
-          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
-            <DialogClose asChild>
-              <Button type="button" variant="outline" disabled={mutation.isPending}>
-                Cancel
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Odredišni račun</Label>
+              <AccountSelect
+                accounts={accounts}
+                value={toAccountId}
+                onChange={(id) => setValue('toAccountId', id, {shouldValidate: true})}
+                placeholder="Izaberite odredišni račun"
+                className="w-full"
+                excludeId={fromAccountId}
+              />
+              {errors.toAccountId && <FormError error={errors.toAccountId.message ?? ''} />}
+            </div>
+
+            <div className="space-y-3">
+              <Label htmlFor="amount" className="text-sm font-medium">
+                Iznos
+              </Label>
+              <div className="relative">
+                <Input id="amount" type="number" step="0.01" placeholder="0.00" {...register('amount')} />
+              </div>
+              {errors.amount && <FormError error={errors.amount.message ?? ''} />}
+            </div>
+
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4">
+              <DialogClose asChild>
+                <Button type="button" variant="outline" disabled={mutation.isPending}>
+                  Otkaži
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Prebaci'}
               </Button>
-            </DialogClose>
-            <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Transfer'}
-            </Button>
-          </div>
-        </form>
+            </div>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

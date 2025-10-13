@@ -12,6 +12,13 @@ This repository contains complete product and technical documentation split acro
 - **[Local Development Setup](docs/setup.md)** - Step-by-step development environment setup
 - **[Self-Hosting Guide](docs/self-hosting.md)** - Production deployment guide (coming soon)
 
+## 🌍 Language & Localization
+
+**NestWise is currently Serbian-first** and specifically tailored for the Serbian market. The user interface, documentation, and user experience are designed with Serbian-speaking users in mind.
+
+- **User Manual (Serbian)**: **[Korisnički priručnik](docs/user-manual.sr.md)** — Comprehensive end-user guide in Serbian (Latin script) covering onboarding, daily usage, budgeting, and all key features
+- **Additional Languages**: Coming soon — we plan to add support for English and other languages in future releases
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -51,6 +58,25 @@ pnpm --filter @nest-wise/web dev
 - **API Health**: `curl http://localhost:8080/` → "Hello World!"
 - **Web App**: `curl http://localhost:5173/` → HTML with "NestWise"
 - **API Docs**: http://localhost:8080/swagger
+
+### PWA Update Prompt Testing
+
+The web app includes a PWA update prompt that notifies users when a new version is available:
+
+1. **Start Development**: Run `pnpm --filter @nest-wise/web dev` to enable PWA in dev mode
+2. **Verify Service Worker**: Check browser console for "SW Registered" and "SW offline ready" messages
+3. **Test Update Flow**:
+   - Make a change to any source file in `apps/web/src/`
+   - Wait for Vite to rebuild (hot reload)
+   - The update prompt should appear as a toast notification
+   - Click "Update" to reload with the latest version
+4. **Manual Testing**: Build and serve static files to simulate production updates:
+   ```bash
+   pnpm --filter @nest-wise/web build
+   pnpm --filter @nest-wise/web preview
+   ```
+
+The update prompt uses Sonner toast notifications and appears automatically when a new service worker is available.
 
 ## 🏗️ Project Structure
 
@@ -186,3 +212,16 @@ pnpm --filter @nest-wise/contracts <command>
 ---
 
 **Need Help?** Check the detailed documentation in the [`docs/`](docs/) directory or review the interactive API documentation at http://localhost:8080/swagger when running locally.
+
+# License
+
+This software is licensed under the Polyform Noncommercial License 1.0.0.
+
+You may use, copy, modify, and host this software for personal or internal
+(non-commercial) use at no cost.
+
+You may not use this software to provide a paid service, sell derivative works,
+or otherwise use it for commercial purposes.
+
+Full text available at:
+https://polyformproject.org/licenses/noncommercial/1.0.0/

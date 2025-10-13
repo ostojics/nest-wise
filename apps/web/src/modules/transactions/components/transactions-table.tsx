@@ -2,7 +2,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/c
 import {TransactionContract} from '@nest-wise/contracts';
 import {flexRender} from '@tanstack/react-table';
 import {ArrowUpDown} from 'lucide-react';
-import {useTransactionsTable} from '../hooks/useTransactionsTable';
+import {useTransactionsTable} from '../hooks/use-transactions-table';
 import {cn} from '@/lib/utils';
 
 interface TransactionsTableProps {
@@ -33,7 +33,7 @@ export function TransactionsTable({data}: TransactionsTableProps) {
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         <ArrowUpDown className="size-4" />
-                        {sorted && <span className="sr-only">{sorted === 'asc' ? 'ascending' : 'descending'}</span>}
+                        {sorted && <span className="sr-only">{sorted === 'asc' ? 'rastuće' : 'opadajuće'}</span>}
                       </button>
                     ) : (
                       flexRender(header.column.columnDef.header, header.getContext())
@@ -56,7 +56,7 @@ export function TransactionsTable({data}: TransactionsTableProps) {
           ) : (
             <TableRow>
               <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center text-muted-foreground">
-                No transactions found
+                Nema pronađenih transakcija
               </TableCell>
             </TableRow>
           )}

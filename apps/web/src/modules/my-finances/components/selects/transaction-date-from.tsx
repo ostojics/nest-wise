@@ -8,7 +8,7 @@ import {Label} from '@/components/ui/label';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {cn, getDateDisableReference} from '@/lib/utils';
 import {useNavigate, useSearch} from '@tanstack/react-router';
-import {formatSelectedDate} from '@/modules/transactions/utils';
+import {formatDateForQueryParam} from '@/modules/transactions/utils';
 
 interface PrivateTransactionDateFromPickerProps {
   className?: string;
@@ -29,7 +29,7 @@ const PrivateTransactionDateFromPicker: React.FC<PrivateTransactionDateFromPicke
   const handleSelectDate = (value: Date | undefined) => {
     if (!value) return;
     void navigate({
-      search: (prev) => ({...prev, from: formatSelectedDate(value), page: 1}),
+      search: (prev) => ({...prev, from: formatDateForQueryParam(value), page: 1}),
       to: '/my-finances',
     });
     setOpen(false);
@@ -38,7 +38,7 @@ const PrivateTransactionDateFromPicker: React.FC<PrivateTransactionDateFromPicke
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <Label htmlFor="private-transaction-date-from" className="px-1 sr-only">
-        Private transaction date from
+        Datum privatne transakcije od
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -47,7 +47,7 @@ const PrivateTransactionDateFromPicker: React.FC<PrivateTransactionDateFromPicke
             id="private-transaction-date-from"
             className="h-9 min-w-50 justify-between font-normal"
           >
-            {selectedDate ? format(selectedDate, 'PPP') : 'Select date from'}
+            {selectedDate ? format(selectedDate, 'PPP') : 'Izaberi datum od'}
             <ChevronsUpDown className="ml-2 size-4 opacity-50" />
           </Button>
         </PopoverTrigger>

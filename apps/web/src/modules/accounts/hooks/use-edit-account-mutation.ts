@@ -1,5 +1,4 @@
 import {editAccount} from '@/modules/api/accounts-api';
-import {queryKeys} from '@/modules/api/query-keys';
 import {EditAccountDTO, ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
@@ -11,8 +10,8 @@ export const useEditAccountMutation = () => {
   return useMutation({
     mutationFn: ({id, dto}: {id: string; dto: EditAccountDTO}) => editAccount(id, dto),
     onSuccess: () => {
-      toast.success('Account updated successfully');
-      void queryClient.invalidateQueries({queryKey: queryKeys.accounts.all()});
+      toast.success('Račun je uspešno ažuriran');
+      void queryClient.invalidateQueries();
     },
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
@@ -23,7 +22,7 @@ export const useEditAccountMutation = () => {
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Došlo je do neočekivane greške');
     },
   });
 };

@@ -6,7 +6,7 @@ import {ConfigModule, ConfigService} from '@nestjs/config';
 
 import {ThrottlerModule} from '@nestjs/throttler';
 import {throttlerConfig, throttlerFactory} from './config/throttler.config';
-import {appConfig} from './config/app.config';
+import {AppConfig, appConfig, AppConfigName} from './config/app.config';
 import {DatabaseConfig, databaseConfig, DatabaseConfigName} from './config/database.config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {GlobalConfig} from './config/config.interface';
@@ -30,7 +30,19 @@ import {LicensesModule} from './licenses/licenses.module';
 @Module({
   imports: [
     ConfigModule.forRoot({cache: true, load: [appConfig, throttlerConfig, databaseConfig, queuesConfig]}),
-    LoggerModule.forRoot(),
+    LoggerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<GlobalConfig>) => {
+        const config = configService.getOrThrow<AppConfig>(AppConfigName);
+
+        return {
+          pinoHttp: {
+            level: config.logLevel,
+          },
+        };
+      },
+    }),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -59,6 +71,10 @@ import {LicensesModule} from './licenses/licenses.module';
             port: config.redisPort,
 
             password: config.redisPassword ?? undefined,
+          },
+          defaultJobOptions: {
+            removeOnComplete: {age: 3600, count: 1000}, // Keep last 1000 or 1 hour
+            removeOnFail: {age: 172800}, // Keep failed jobs for 48 hours (172800 seconds)
           },
         };
       },

@@ -28,14 +28,14 @@ export class PrivateTransactionsService {
   async create(userId: string, dto: CreatePrivateTransactionDTO): Promise<PrivateTransaction> {
     const can = await this.policiesService.canUserUpdateAccount(userId, dto.accountId);
     if (!can) {
-      throw new BadRequestException('You cannot create a private transaction for this account/household');
+      throw new BadRequestException('Ne možete kreirati privatnu transakciju za ovaj račun/domaćinstvo');
     }
 
     const user = await this.usersService.findUserById(userId);
     const account = await this.accountsService.findAccountById(dto.accountId);
 
     if (account.householdId !== user.householdId) {
-      throw new NotFoundException('Account not found in your household');
+      throw new NotFoundException('Račun nije pronađen u vašem domaćinstvu');
     }
 
     if (dto.type === 'expense' && Number(account.currentBalance) < dto.amount) {
@@ -50,7 +50,7 @@ export class PrivateTransactionsService {
         amount: dto.amount,
         type: dto.type as TransactionType,
         description: dto.description,
-        transactionDate: dto.transactionDate,
+        transactionDate: new Date(dto.transactionDate),
       });
 
       const current = Number(account.currentBalance);
@@ -65,11 +65,11 @@ export class PrivateTransactionsService {
     return await this.dataSource.transaction(async () => {
       const tx = await this.privateTransactionsRepository.findById(id);
       if (!tx) {
-        throw new NotFoundException('Private transaction not found');
+        throw new NotFoundException('Privatna transakcija nije pronađena');
       }
 
       if (tx.userId !== userId) {
-        throw new BadRequestException('You cannot delete this private transaction');
+        throw new BadRequestException('Ne možete obrisati ovu privatnu transakciju');
       }
 
       const account = await this.accountsService.findAccountById(tx.accountId);

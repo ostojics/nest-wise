@@ -8,7 +8,7 @@ import {Label} from '@/components/ui/label';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {cn, getDateDisableReference} from '@/lib/utils';
 import {useNavigate, useSearch} from '@tanstack/react-router';
-import {formatSelectedDate} from '../../utils';
+import {formatDateForQueryParam} from '../../utils';
 
 interface TransactionDateFromPickerProps {
   className?: string;
@@ -31,7 +31,7 @@ const TransactionDateFromPicker: React.FC<TransactionDateFromPickerProps> = ({cl
     if (!value) return;
 
     void navigate({
-      search: (prev) => ({...prev, from: formatSelectedDate(value)}),
+      search: (prev) => ({...prev, from: formatDateForQueryParam(value)}),
       to: '/transactions',
     });
     setOpen(false);
@@ -40,12 +40,12 @@ const TransactionDateFromPicker: React.FC<TransactionDateFromPickerProps> = ({cl
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <Label htmlFor="transaction-date-from" className="px-1 sr-only">
-        Transaction date from
+        Datum transakcije od
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" id="transaction-date-from" className="h-9 min-w-50 justify-between font-normal">
-            {selectedDate ? format(selectedDate, 'PPP') : 'Select date from'}
+            {selectedDate ? format(selectedDate, 'PPP') : 'Izaberi datum od'}
             <ChevronsUpDown className="ml-2 size-4 opacity-50" />
           </Button>
         </PopoverTrigger>

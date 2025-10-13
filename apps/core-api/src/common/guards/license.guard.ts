@@ -24,7 +24,7 @@ export class LicenseGuard implements CanActivate {
       if (error instanceof ForbiddenException) {
         throw error;
       }
-      throw new ForbiddenException('Invalid license or household access');
+      throw new ForbiddenException('Nevažeća licenca ili pristup domaćinstvu');
     }
   }
 }

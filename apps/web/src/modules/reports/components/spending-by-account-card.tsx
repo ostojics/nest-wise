@@ -1,6 +1,6 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader} from '@/components/ui/card';
 import {ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {IconChartPie} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
 import {Cell, Pie, PieChart} from 'recharts';
@@ -60,12 +60,12 @@ const SpendingByAccountCard = () => {
       <CardHeader className="flex flex-col gap-4 justify-start @2xl/card:flex-row @2xl/card:items-center">
         <CardDescription className="flex items-center gap-2 flex-2">
           <IconChartPie className="h-4 w-4" />
-          Spending by account
+          Troškovi po računu
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {isEmpty ? (
-          <div className="text-sm text-muted-foreground text-center py-16">No spending in the selected range.</div>
+          <div className="text-sm text-muted-foreground text-center py-16">Nema troškova u izabranom periodu.</div>
         ) : (
           <ChartContainer config={{}} className="mx-auto aspect-square max-h-[23.75rem] @2xs/card:max-h-[34.375rem]">
             <PieChart>
@@ -110,7 +110,7 @@ const SpendingByAccountCard = () => {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm pt-4">
         <div className="text-muted-foreground leading-none text-center">
-          Total spending: {formatBalance(totalSpending)}
+          Ukupni troškovi: {formatBalance(totalSpending)}
         </div>
       </CardFooter>
     </Card>

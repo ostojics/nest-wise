@@ -1,5 +1,5 @@
 import {Button} from '@/components/ui/button';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
+import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
 import PrivateTransactionsTableSearch from './private-transactions-table-search';
 import PrivateTransactionDateFromPicker from './selects/transaction-date-from';
 import PrivateTransactionDateToPicker from './selects/transaction-date-to';
@@ -18,7 +18,7 @@ const PrivateTransactionsTableActions = () => {
           <AccountCombobox accounts={accounts ?? []} />
           <PrivateTransactionDateFromPicker />
           <PrivateTransactionDateToPicker />
-          <Button onClick={() => navigate({to: '/my-finances'})}>Reset filters</Button>
+          <Button onClick={() => navigate({to: '/my-finances'})}>Resetuj filtere</Button>
         </div>
       </div>
     </section>

@@ -64,65 +64,67 @@ const EditAccountDialog: React.FC<EditAccountDialogProps> = ({account}) => {
         }}
       >
         <DialogTrigger asChild>
-          <Button variant="ghost" title="Edit account" size="icon" aria-label="Edit account">
+          <Button variant="ghost" title="Izmeni račun" size="icon" aria-label="Izmeni račun">
             <Pencil className="size-4" />
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="max-h-[90vh] flex flex-col">
           <DialogHeader>
-            <DialogTitle>Edit Account</DialogTitle>
-            <DialogDescription className="sr-only">Edit the account details</DialogDescription>
+            <DialogTitle>Izmeni račun</DialogTitle>
+            <DialogDescription className="sr-only">Izmenite detalje računa</DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSubmit(handleEditAccount)}>
-            <div className="flex flex-col gap-6 py-2">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-account-name">Name</Label>
-                <Input id="edit-account-name" {...register('name', {required: true})} />
-                {errors.name?.message && <FormError error={errors.name.message} />}
+          <div className="overflow-y-auto flex-1 -mx-6 px-6">
+            <form onSubmit={handleSubmit(handleEditAccount)}>
+              <div className="flex flex-col gap-6 py-2">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="edit-account-name">Naziv</Label>
+                  <Input id="edit-account-name" {...register('name', {required: true})} />
+                  {errors.name?.message && <FormError error={errors.name.message} />}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="edit-account-type">Tip</Label>
+                  <Select
+                    value={selectedType}
+                    onValueChange={(value) => setValue('type', value as EditAccountDTO['type'])}
+                  >
+                    <SelectTrigger id="edit-account-type" className="w-full">
+                      <SelectValue placeholder="Izaberite tip" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {accountTypes.map((t) => (
+                        <SelectItem key={t.value} value={t.value}>
+                          {t.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.type?.message && <FormError error={errors.type.message} />}
+                </div>
+                <SelectedAccountType type={selectedType} />
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="edit-account-balance">Trenutno stanje</Label>
+                  <Input
+                    id="edit-account-balance"
+                    type="number"
+                    inputMode="decimal"
+                    step="0.01"
+                    {...register('currentBalance')}
+                  />
+                  {errors.currentBalance?.message && <FormError error={errors.currentBalance.message} />}
+                </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-account-type">Type</Label>
-                <Select
-                  value={selectedType}
-                  onValueChange={(value) => setValue('type', value as EditAccountDTO['type'])}
-                >
-                  <SelectTrigger id="edit-account-type" className="w-full">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {accountTypes.map((t) => (
-                      <SelectItem key={t.value} value={t.value}>
-                        {t.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.type?.message && <FormError error={errors.type.message} />}
-              </div>
-              <SelectedAccountType type={selectedType} />
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-account-balance">Current Balance</Label>
-                <Input
-                  id="edit-account-balance"
-                  type="number"
-                  inputMode="decimal"
-                  step="0.01"
-                  {...register('currentBalance')}
-                />
-                {errors.currentBalance?.message && <FormError error={errors.currentBalance.message} />}
-              </div>
-            </div>
-            <DialogFooter className="mt-4">
-              <DialogClose asChild>
-                <Button variant="outline" type="button" disabled={mutation.isPending}>
-                  Cancel
+              <DialogFooter className="mt-4">
+                <DialogClose asChild>
+                  <Button variant="outline" type="button" disabled={mutation.isPending}>
+                    Otkaži
+                  </Button>
+                </DialogClose>
+                <Button type="submit" disabled={mutation.isPending}>
+                  {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Sačuvaj'}
                 </Button>
-              </DialogClose>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Save'}
-              </Button>
-            </DialogFooter>
-          </form>
+              </DialogFooter>
+            </form>
+          </div>
         </DialogContent>
       </Dialog>
     </>

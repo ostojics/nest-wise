@@ -7,6 +7,8 @@ import {
   getTransactionsQueryHouseholdSchema,
   GetAccountsSpendingQueryHouseholdDTO,
   getAccountsSpendingQueryHouseholdSchema,
+  GetSpendingSummaryQueryHouseholdDTO,
+  getSpendingSummaryQueryHouseholdSchema,
 } from '@nest-wise/contracts';
 import {Body, Controller, Get, Param, Post, Query, UseGuards, UsePipes} from '@nestjs/common';
 import {
@@ -34,7 +36,12 @@ import {
   AccountSpendingPointSwaggerDTO,
 } from 'src/tools/swagger/transactions.swagger.dto';
 import {TransactionsService} from '../transactions/transactions.service';
-import {AccountSpendingPointContract, NetWorthTrendPointContract} from '@nest-wise/contracts';
+import {
+  AccountSpendingPointContract,
+  NetWorthTrendPointContract,
+  SpendingTotalContract,
+  CategorySpendingPointContract,
+} from '@nest-wise/contracts';
 
 @ApiTags('Household Transactions')
 @UseGuards(AuthGuard, LicenseGuard)
@@ -206,9 +213,9 @@ export class HouseholdTransactionsController {
   }
 
   @ApiOperation({
-    summary: 'Create a transaction using AI analysis for a household',
+    summary: 'Create a transaction using AI analysis for a household (async)',
     description:
-      'Creates a transaction for the specified household by analyzing a natural language description using AI to extract amount, type, and category',
+      'Enqueues a background job to create a transaction for the specified household by analyzing a natural language description using AI. Returns immediately with a job ID that can be used to poll for completion.',
   })
   @ApiParam({
     name: 'householdId',
@@ -248,11 +255,26 @@ export class HouseholdTransactionsController {
     },
   })
   @ApiCreatedResponse({
-    type: TransactionResponseSwaggerDTO,
-    description: 'Transaction created successfully using AI analysis',
+    description: 'Job enqueued successfully, returns job ID for polling',
+    schema: {
+      type: 'object',
+      properties: {
+        jobId: {
+          type: 'string',
+          description: 'Unique identifier for the background job',
+          example: '123456',
+        },
+        status: {
+          type: 'string',
+          enum: ['pending', 'processing', 'completed', 'failed'],
+          description: 'Current status of the job',
+          example: 'pending',
+        },
+      },
+    },
   })
   @ApiBadRequestResponse({
-    description: 'Invalid input data or AI failed to parse transaction description',
+    description: 'Invalid input data',
   })
   @ApiNotFoundResponse({
     description: 'Account not found',
@@ -264,7 +286,64 @@ export class HouseholdTransactionsController {
   @UsePipes(new ZodValidationPipe(createTransactionAiHouseholdSchema))
   @Post('/ai')
   async createTransactionAi(@Param('householdId') householdId: string, @Body() dto: CreateTransactionAiHouseholdDTO) {
-    return await this.transactionsService.createTransactionAiForHousehold(householdId, dto);
+    return await this.transactionsService.enqueueAiTransaction(householdId, dto);
+  }
+
+  @ApiOperation({
+    summary: 'Get AI transaction job status',
+    description:
+      'Retrieves the current status of an AI transaction background job, including the created transaction if completed.',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiParam({
+    name: 'jobId',
+    type: 'string',
+    description: 'The unique identifier of the job',
+    example: '123456',
+  })
+  @ApiOkResponse({
+    description: 'Job status retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        jobId: {
+          type: 'string',
+          description: 'Unique identifier for the background job',
+          example: '123456',
+        },
+        status: {
+          type: 'string',
+          enum: ['pending', 'processing', 'completed', 'failed'],
+          description: 'Current status of the job',
+          example: 'completed',
+        },
+        transaction: {
+          type: 'object',
+          description: 'The created transaction (only present when status is completed)',
+          nullable: true,
+        },
+        error: {
+          type: 'string',
+          description: 'Error message (only present when status is failed)',
+          nullable: true,
+        },
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'Job not found',
+  })
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @Get('ai/:jobId')
+  async getAiTransactionJobStatus(@Param('householdId') householdId: string, @Param('jobId') jobId: string) {
+    return await this.transactionsService.getAiTransactionJobStatus(jobId);
   }
 
   @ApiOperation({
@@ -305,15 +384,15 @@ export class HouseholdTransactionsController {
     name: 'from',
     required: false,
     type: String,
-    format: 'date',
-    description: 'Start date inclusive (YYYY-MM-DD)',
+    format: 'date-time',
+    description: 'Start date as ISO 8601 timestamp (e.g., 2025-03-15T12:00:00.000Z)',
   })
   @ApiQuery({
     name: 'to',
     required: false,
     type: String,
-    format: 'date',
-    description: 'End date inclusive (YYYY-MM-DD)',
+    format: 'date-time',
+    description: 'End date as ISO 8601 timestamp (e.g., 2025-03-31T12:00:00.000Z)',
   })
   @ApiOkResponse({
     description: 'Spending by account computed successfully',
@@ -327,5 +406,123 @@ export class HouseholdTransactionsController {
     @Query(new ZodValidationPipe(getAccountsSpendingQueryHouseholdSchema)) query: GetAccountsSpendingQueryHouseholdDTO,
   ): Promise<AccountSpendingPointContract[]> {
     return await this.transactionsService.getAccountsSpendingForHousehold(householdId, query);
+  }
+
+  @ApiOperation({
+    summary: 'Get household spending total',
+    description:
+      'Returns the total EXPENSE spending amount and count for the specified household, within an optional date range.',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    format: 'date-time',
+    description: 'Start date as ISO 8601 timestamp (e.g., 2025-03-15T12:00:00.000Z)',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    format: 'date-time',
+    description: 'End date as ISO 8601 timestamp (e.g., 2025-03-31T12:00:00.000Z)',
+  })
+  @ApiOkResponse({
+    description: 'Spending total computed successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        total: {
+          type: 'number',
+          description: 'Total spending amount',
+          example: 1250.75,
+        },
+        count: {
+          type: 'number',
+          description: 'Number of expense transactions',
+          example: 42,
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @Get('spending-total')
+  async getSpendingTotal(
+    @Param('householdId') householdId: string,
+    @Query(new ZodValidationPipe(getSpendingSummaryQueryHouseholdSchema)) query: GetSpendingSummaryQueryHouseholdDTO,
+  ): Promise<SpendingTotalContract> {
+    return await this.transactionsService.getSpendingTotalForHousehold(householdId, query);
+  }
+
+  @ApiOperation({
+    summary: 'Get household spending aggregated by category',
+    description:
+      'Returns EXPENSE spending aggregated by category for the specified household, within an optional date range.',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    type: String,
+    format: 'date-time',
+    description: 'Start date as ISO 8601 timestamp (e.g., 2025-03-15T12:00:00.000Z)',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    type: String,
+    format: 'date-time',
+    description: 'End date as ISO 8601 timestamp (e.g., 2025-03-31T12:00:00.000Z)',
+  })
+  @ApiOkResponse({
+    description: 'Categories spending computed successfully',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          categoryId: {
+            type: 'string',
+            format: 'uuid',
+            nullable: true,
+            description: 'Category ID (null for uncategorized)',
+            example: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
+          },
+          categoryName: {
+            type: 'string',
+            description: 'Category name',
+            example: 'Groceries',
+          },
+          amount: {
+            type: 'number',
+            description: 'Total spending amount for this category',
+            example: 350.25,
+          },
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @Get('categories-spending')
+  async getCategoriesSpending(
+    @Param('householdId') householdId: string,
+    @Query(new ZodValidationPipe(getSpendingSummaryQueryHouseholdSchema)) query: GetSpendingSummaryQueryHouseholdDTO,
+  ): Promise<CategorySpendingPointContract[]> {
+    return await this.transactionsService.getCategoriesSpendingForHousehold(householdId, query);
   }
 }

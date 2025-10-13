@@ -342,7 +342,7 @@ export class HouseholdsController {
       dto.toAccountId,
     );
     if (!allowed) {
-      throw new ForbiddenException('You cannot transfer between these accounts');
+      throw new ForbiddenException('Ne možete prebacivati sredstva između ovih računa');
     }
 
     await this.accountsService.transferFundsForHousehold(householdId, dto);
@@ -379,7 +379,7 @@ export class HouseholdsController {
   ): Promise<UserContract[]> {
     const canAccess = await this.policiesService.canUserAccessHousehold(user.sub, householdId);
     if (!canAccess) {
-      throw new ForbiddenException('Cannot access users from different household');
+      throw new ForbiddenException('Nije dozvoljen pristup korisnicima iz drugog domaćinstva');
     }
 
     return (await this.usersService.findUsersByHouseholdId(householdId)) as UserContract[];
@@ -425,7 +425,7 @@ export class HouseholdsController {
     try {
       const canInvite = await this.policiesService.canUserInviteToHousehold(user.sub, householdId);
       if (!canInvite) {
-        throw new ForbiddenException('Cannot invite users to different household');
+        throw new ForbiddenException('Nije dozvoljeno pozivanje korisnika u drugo domaćinstvo');
       }
 
       await this.usersService.inviteUser(householdId, body.email);

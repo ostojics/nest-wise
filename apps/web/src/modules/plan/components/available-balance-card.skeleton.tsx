@@ -8,7 +8,7 @@ const NetWorthCardSkeleton = () => {
       <CardHeader>
         <CardDescription className="flex items-center gap-2">
           <IconWallet className="h-4 w-4" />
-          Available Balance
+          Raspoloživo stanje
         </CardDescription>
         <Skeleton className="h-8 w-48" />
         <CardAction>

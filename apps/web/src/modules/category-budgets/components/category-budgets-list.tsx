@@ -3,7 +3,7 @@ import {useSearch} from '@tanstack/react-router';
 import {format, isAfter, parse} from 'date-fns';
 
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
-import {useFormatBalance} from '@/modules/formatting/hooks/useFormatBalance';
+import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {useGetCategoryBudgets} from '../hooks/use-get-category-budgets';
 import {lazy, Suspense, useMemo} from 'react';
 import CategoryBudgetsTableSkeleton from './category-budgets-table.skeleton';
@@ -43,7 +43,7 @@ const CategoryBudgetsList = () => {
     <div className="space-y-4" data-testid="category-budgets-section">
       <Card className="@container/card overflow-hidden">
         <CardHeader className="border-b">
-          <CardTitle className="text-base">Total planned</CardTitle>
+          <CardTitle className="text-base">Ukupno planirano</CardTitle>
           <CardDescription>{format(new Date(search.month), 'LLLL yyyy')}</CardDescription>
         </CardHeader>
         <CardContent className="py-1">

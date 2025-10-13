@@ -1,5 +1,5 @@
 import httpClient from './http-client';
-import {CategoryContract, CreateCategoryDTO} from '@nest-wise/contracts';
+import {CategoryContract, CreateCategoryDTO, UpdateCategoryDTO} from '@nest-wise/contracts';
 
 export const createCategoryForHousehold = async (householdId: string, category: CreateCategoryDTO) => {
   return await httpClient
@@ -7,4 +7,16 @@ export const createCategoryForHousehold = async (householdId: string, category: 
       json: category,
     })
     .json<CategoryContract>();
+};
+
+export const updateCategory = async (id: string, dto: UpdateCategoryDTO) => {
+  return await httpClient
+    .put(`v1/categories/${id}`, {
+      json: dto,
+    })
+    .json<CategoryContract>();
+};
+
+export const deleteCategory = async (id: string) => {
+  return httpClient.delete(`v1/categories/${id}`).json();
 };

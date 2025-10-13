@@ -2,7 +2,7 @@ import {ColumnSort} from '@tanstack/react-table';
 import {ClassValue, clsx} from 'clsx';
 import {twMerge} from 'tailwind-merge';
 import {STANDARD_DATE_FORMAT} from '@/common/constants/dates';
-import {endOfMonth, format, startOfMonth, add, sub} from 'date-fns';
+import {endOfMonth, format, startOfMonth, add, sub, set} from 'date-fns';
 import {PUBLIC_PAGES} from '@/common/constants/public-pages';
 
 export function cn(...inputs: ClassValue[]) {
@@ -64,4 +64,32 @@ export const generateRandomHsl = (): string => {
 
 export const isPublicRoute = (path: string) => {
   return PUBLIC_PAGES.some((page) => path.startsWith(page));
+};
+
+/**
+ * Returns a new Date object set to noon (12:00:00.000) of the provided date.
+ *
+ * @param date - The original Date object to adjust.
+ * @returns A new Date object with the time set to 12:00 PM (noon) on the same day as the input date.
+ */
+export const dateAtNoon = (date: Date) => {
+  const dateAtNoon = set(date, {hours: 12, minutes: 0, seconds: 0, milliseconds: 0});
+  return dateAtNoon;
+};
+
+/**
+ * Returns start and end of current month as ISO 8601 timestamps at noon local time.
+ * This ensures correct timezone handling for date range queries.
+ *
+ * @returns Object with start and end ISO timestamp strings
+ */
+export const getStartAndEndOfMonthIso = (): {start: string; end: string} => {
+  const now = new Date();
+  const start = startOfMonth(now);
+  const end = endOfMonth(now);
+
+  return {
+    start: dateAtNoon(start).toISOString(),
+    end: dateAtNoon(end).toISOString(),
+  };
 };

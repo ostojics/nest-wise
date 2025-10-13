@@ -16,7 +16,7 @@ export const useTransferFundsMutation = ({householdId}: UseTransferFundsMutation
   return useMutation({
     mutationFn: (dto: TransferFundsDTO) => transferFundsForHousehold(householdId, dto),
     onSuccess: () => {
-      toast.success('Funds transferred successfully');
+      toast.success('Sredstva su uspešno prebačena');
       void queryClient.invalidateQueries({queryKey: queryKeys.accounts.all()});
     },
     onError: async (error) => {
@@ -28,7 +28,7 @@ export const useTransferFundsMutation = ({householdId}: UseTransferFundsMutation
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Došlo je do neočekivane greške');
     },
   });
 };

@@ -3,12 +3,18 @@ import {
   CreateTransactionAiHouseholdDTO,
   GetTransactionsQueryHouseholdDTO,
   GetAccountsSpendingQueryHouseholdDTO,
+  GetSpendingSummaryQueryHouseholdDTO,
+  UpdateTransactionDTO,
+  AiTransactionJobResponseContract,
+  AiTransactionJobStatusContract,
 } from '@nest-wise/contracts';
 import httpClient from './http-client';
 import {
   AccountSpendingPointContract,
   GetTransactionsResponseContract,
   NetWorthTrendPointContract,
+  SpendingTotalContract,
+  CategorySpendingPointContract,
 } from '@nest-wise/contracts';
 
 // Household-scoped endpoints
@@ -39,7 +45,13 @@ export const createAiTransactionForHousehold = async (
     .post(`v1/households/${householdId}/transactions/ai`, {
       json: transaction,
     })
-    .json();
+    .json<AiTransactionJobResponseContract>();
+};
+
+export const getAiTransactionJobStatus = async (householdId: string, jobId: string) => {
+  return await httpClient
+    .get(`v1/households/${householdId}/transactions/ai/${jobId}`)
+    .json<AiTransactionJobStatusContract>();
 };
 
 export const getNetWorthTrendForHousehold = async (householdId: string) => {
@@ -59,7 +71,35 @@ export const spendingByAccountsForHousehold = async (
     .json<AccountSpendingPointContract[]>();
 };
 
+export const getSpendingTotal = async (householdId: string, dto: GetSpendingSummaryQueryHouseholdDTO) => {
+  return httpClient
+    .get(`v1/households/${householdId}/transactions/spending-total`, {
+      searchParams: dto,
+    })
+    .json<SpendingTotalContract>();
+};
+
+export const getCategoriesSpending = async (householdId: string, dto: GetSpendingSummaryQueryHouseholdDTO) => {
+  return httpClient
+    .get(`v1/households/${householdId}/transactions/categories-spending`, {
+      searchParams: dto,
+    })
+    .json<CategorySpendingPointContract[]>();
+};
+
 // Item-level endpoints (keep these since they operate on individual transactions)
+export const getTransaction = async (id: string) => {
+  return httpClient.get(`v1/transactions/${id}`).json();
+};
+
+export const updateTransaction = async (id: string, dto: UpdateTransactionDTO) => {
+  return httpClient
+    .put(`v1/transactions/${id}`, {
+      json: dto,
+    })
+    .json();
+};
+
 export const deleteTransaction = async (id: string) => {
   return httpClient.delete(`v1/transactions/${id}`).json();
 };

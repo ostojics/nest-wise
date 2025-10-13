@@ -4,9 +4,9 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {LoginDTO} from '@nest-wise/contracts';
-import {useValidateLogin} from '../hooks/useValidateLogin';
+import {useValidateLogin} from '../hooks/use-validate-login';
 import FormError from '@/components/form-error';
-import {useLoginMutation} from '../hooks/useLoginMutation';
+import {useLoginMutation} from '../hooks/use-login-mutation';
 import {Loader2} from 'lucide-react';
 import {Link} from '@tanstack/react-router';
 
@@ -26,25 +26,25 @@ const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
     <div className={cn('flex flex-col w-md p-4', className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>Enter your email and password below to login to your account</CardDescription>
+          <CardTitle>Prijavite se</CardTitle>
+          <CardDescription>Unesite vašu e‑poštu i lozinku</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit((data) => handleLogin(data))}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">E‑pošta</Label>
                 <Input {...register('email', {required: true})} placeholder="m@example.com" />
                 {errors.email && <FormError error={errors.email.message ?? ''} />}
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">Lozinka</Label>
                   <Link
                     to="/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
-                    Forgot your password?
+                    Zaboravili ste lozinku?
                   </Link>
                 </div>
                 <Input {...register('password', {required: true})} type="password" />
@@ -52,7 +52,7 @@ const LoginForm = ({className, ...props}: React.ComponentProps<'div'>) => {
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={mutation.isPending}>
-                  {mutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Login'}
+                  {mutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Prijavite se'}
                 </Button>
               </div>
             </div>

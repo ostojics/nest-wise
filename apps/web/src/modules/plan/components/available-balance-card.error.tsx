@@ -12,20 +12,20 @@ const AvailableBalanceCardError = ({onRetry}: AvailableBalanceCardErrorProps) =>
       <CardHeader>
         <CardDescription className="flex items-center gap-2">
           <IconWallet className="h-4 w-4" />
-          Available Balance
+          Raspoloživo stanje
         </CardDescription>
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl transition-colors text-red-600 dark:text-red-400">
-          Error
+          Greška
         </CardTitle>
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm w-full">
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center gap-2 text-muted-foreground">
             <IconAlertTriangle className="h-4 w-4 text-yellow-500" />
-            <span>Failed to load available balance.</span>
+            <span>Nije moguće učitati raspoloživo stanje.</span>
           </div>
           <Button variant="outline" size="sm" onClick={onRetry}>
-            Retry
+            Pokušaj ponovo
           </Button>
         </div>
       </CardFooter>

@@ -2,7 +2,12 @@ import {Processor, WorkerHost} from '@nestjs/bullmq';
 import {Job} from 'bullmq';
 import {EmailJobs} from 'src/common/enums/jobs.enum';
 import {Queues} from 'src/common/enums/queues.enum';
-import {SendInviteEmailPayload, SendPasswordResetEmailPayload} from 'src/common/interfaces/emails.interface';
+import {
+  SendInviteEmailPayload,
+  SendPasswordResetEmailPayload,
+  SendEmailChangeConfirmationPayload,
+  SendHelpEmailPayload,
+} from 'src/common/interfaces/emails.interface';
 import {EmailsService} from './emails.service';
 
 @Processor(Queues.EMAILS)
@@ -19,6 +24,14 @@ export class EmailsConsumer extends WorkerHost {
       }
       case EmailJobs.SEND_PASSWORD_RESET_EMAIL: {
         await this.emailsService.processPasswordResetEmailJob(job.data as SendPasswordResetEmailPayload);
+        break;
+      }
+      case EmailJobs.SEND_EMAIL_CHANGE_CONFIRMATION: {
+        await this.emailsService.processEmailChangeConfirmationJob(job.data as SendEmailChangeConfirmationPayload);
+        break;
+      }
+      case EmailJobs.SEND_HELP_EMAIL: {
+        await this.emailsService.processHelpEmailJob(job.data as SendHelpEmailPayload);
         break;
       }
       default:

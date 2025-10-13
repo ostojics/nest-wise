@@ -1,5 +1,5 @@
 import React from 'react';
-import {useSetupContext} from '../hooks/useSetup';
+import {useSetupContext} from '../hooks/use-setup';
 import {CheckIcon} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import {Button} from '@/components/ui/button';
@@ -7,13 +7,13 @@ import {Button} from '@/components/ui/button';
 const steps = [
   {
     id: 1,
-    title: 'User Profile',
-    description: 'Create your account',
+    title: 'Korisnički profil',
+    description: 'Kreirajte nalog',
   },
   {
     id: 2,
-    title: 'Household Setup',
-    description: 'Set up your household',
+    title: 'Podešavanje domaćinstva',
+    description: 'Podesite svoje domaćinstvo',
   },
 ];
 

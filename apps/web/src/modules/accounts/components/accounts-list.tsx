@@ -1,5 +1,5 @@
 import {Skeleton} from '@/components/ui/skeleton';
-import {useGetHouseholdAccounts} from '../hooks/useGetHouseholdAccounts';
+import {useGetHouseholdAccounts} from '../hooks/use-get-household-accounts';
 import Account from './account';
 
 const AccountsList = () => {
@@ -34,9 +34,9 @@ const AccountsList = () => {
     return (
       <div className="mt-6 flex flex-col items-center justify-center py-12">
         <div className="text-center">
-          <h3 className="text-lg font-semibold text-foreground">No accounts found</h3>
+          <h3 className="text-lg font-semibold text-foreground">Nema pronađenih računa</h3>
           <p className="text-sm text-muted-foreground mt-1">
-            Create your first financial account to get started with managing your finances.
+            Kreirajte prvi finansijski račun da biste započeli upravljanje finansijama.
           </p>
         </div>
       </div>

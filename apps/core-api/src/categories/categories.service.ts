@@ -10,7 +10,7 @@ export class CategoriesService {
   async createCategoryForHousehold(householdId: string, categoryData: CreateCategoryDTO): Promise<Category> {
     const nameExists = await this.categoriesRepository.nameExistsForHousehold(categoryData.name, householdId);
     if (nameExists) {
-      throw new ConflictException('Category name already exists for this household');
+      throw new ConflictException('Naziv kategorije već postoji u ovom domaćinstvu');
     }
 
     return await this.categoriesRepository.create({
@@ -22,7 +22,7 @@ export class CategoriesService {
   async findCategoryById(id: string): Promise<Category> {
     const category = await this.categoriesRepository.findById(id);
     if (!category) {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException('Kategorija nije pronađena');
     }
 
     return category;
@@ -39,7 +39,7 @@ export class CategoriesService {
   async updateCategory(id: string, categoryData: UpdateCategoryDTO): Promise<Category> {
     const existingCategory = await this.categoriesRepository.findById(id);
     if (!existingCategory) {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException('Kategorija nije pronađena');
     }
 
     if (categoryData.name && categoryData.name !== existingCategory.name) {
@@ -48,13 +48,13 @@ export class CategoriesService {
         existingCategory.householdId,
       );
       if (nameExists) {
-        throw new ConflictException('Category name already exists for this household');
+        throw new ConflictException('Naziv kategorije već postoji u ovom domaćinstvu');
       }
     }
 
     const updatedCategory = await this.categoriesRepository.update(id, categoryData);
     if (!updatedCategory) {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException('Kategorija nije pronađena');
     }
 
     return updatedCategory;
@@ -63,7 +63,7 @@ export class CategoriesService {
   async deleteCategory(id: string): Promise<void> {
     const deleted = await this.categoriesRepository.delete(id);
     if (!deleted) {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException('Kategorija nije pronađena');
     }
   }
 }

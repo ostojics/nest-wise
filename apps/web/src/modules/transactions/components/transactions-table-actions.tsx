@@ -1,6 +1,6 @@
 import {Button} from '@/components/ui/button';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/useGetHouseholdAccounts';
-import {useGetHouseholdCategories} from '@/modules/categories/hooks/useGetHouseholdCategories';
+import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import AccountCombobox from './selects/account-combobox';
 import CategoryCombobox from './selects/category-combobox';
 import TransactionDateFromPicker from './selects/transaction-date-from';
@@ -22,7 +22,7 @@ const TransactionsTableActions = () => {
           <CategoryCombobox categories={categories ?? []} />
           <TransactionDateFromPicker />
           <TransactionDateToPicker />
-          <Button onClick={() => navigate({to: '/transactions'})}>Reset filters</Button>
+          <Button onClick={() => navigate({to: '/transactions'})}>Poništi filtere</Button>
         </div>
       </div>
     </section>
