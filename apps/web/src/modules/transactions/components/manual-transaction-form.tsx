@@ -12,7 +12,6 @@ import {useValidateCreateTransaction} from '@/modules/transactions/hooks/use-val
 import {CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
 import {useEffect} from 'react';
-import {toast} from 'sonner';
 
 interface ManualTransactionFormProps {
   onSuccess: () => void;
@@ -37,16 +36,20 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
 
   const watchedCategoryId = watch('categoryId');
   const watchedType = watch('type');
+  const transactionDate = watch('transactionDate');
 
   const onSubmit = async (data: CreateTransactionHouseholdDTO) => {
-    try {
-      await createTransactionMutation.mutateAsync(data);
-      reset();
-
-      onSuccess();
-    } catch {
-      toast.error('Kreiranje transakcije nije uspelo');
-    }
+    await createTransactionMutation.mutateAsync(data, {
+      onSuccess: () => {
+        onSuccess();
+      },
+      onError: () => {
+        onCancel();
+      },
+      onSettled: () => {
+        reset();
+      },
+    });
   };
 
   const getAccountDisplayName = (accountId: string) => {
@@ -56,8 +59,6 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
     const accountType = accountTypes.find((type) => type.value === account.type);
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
-
-  const transactionDate = watch('transactionDate');
 
   useEffect(() => {
     if (watchedType === 'income') {
