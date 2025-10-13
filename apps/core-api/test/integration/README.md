@@ -15,14 +15,6 @@ The integration tests validate critical infrastructure and end-to-end service fu
 
 ## Test Suites
 
-### Connectivity Tests (`connectivity.spec.ts`)
-
-- Database connection validation
-- Simple SQL query execution
-- Migration verification (checks that all expected tables exist)
-- Redis connection and PING test
-- Key-value operations validation
-
 ### Household Integration Tests (`households.integration.spec.ts`)
 
 - End-to-end CRUD operations for households
