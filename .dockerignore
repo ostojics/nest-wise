@@ -1,1 +1,3 @@
 node_modules
+apps/core-api/test
+apps/core-api/jest.integration.config.ts
