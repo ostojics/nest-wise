@@ -1,4 +1,5 @@
 import CategoryBudgetsList from '@/modules/category-budgets/components/category-budgets-list';
+import WeeklySpendingOverview from '@/modules/category-budgets/components/weekly-spending-overview';
 import AvailableBalanceCard from './available-balance-card';
 import SpendingVsTargetCard from './spending-vs-target-card';
 import NewCategoryDialog from './new-category-dialog';
@@ -29,6 +30,7 @@ const PlanPage = () => {
         <NewCategoryDialog />
       </div>
       <CategoryBudgetsList />
+      <WeeklySpendingOverview />
     </section>
   );
 };
