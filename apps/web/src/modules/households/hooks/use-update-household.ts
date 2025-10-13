@@ -16,10 +16,10 @@ export const useUpdateHousehold = () => {
     mutationFn: ({id, data}: UpdateHouseholdParams) => updateHousehold(id, data),
     onSuccess: (_, {id}) => {
       void client.invalidateQueries({queryKey: queryKeys.households.single(id)});
-      toast.success('Household updated successfully');
+      toast.success('Domaćinstvo je uspešno ažurirano');
     },
     onError: () => {
-      toast.error('Failed to update household');
+      toast.error('Ažuriranje domaćinstva nije uspelo');
     },
   });
 };

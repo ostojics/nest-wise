@@ -6,6 +6,8 @@ import {CategoryBudgetWithCurrentAmountContract} from '@nest-wise/contracts';
 import {ColumnDef, getCoreRowModel, useReactTable} from '@tanstack/react-table';
 import {useMemo} from 'react';
 import EditCategoryBudgetDialog from '../components/edit-category-budget-dialog';
+import EditCategoryNameDialog from '@/modules/categories/components/edit-category-name-dialog';
+import DeleteCategoryDialog from '../components/delete-category-dialog';
 
 export const useCategoryBudgetsTable = (
   data: CategoryBudgetWithCurrentAmountContract[],
@@ -17,17 +19,19 @@ export const useCategoryBudgetsTable = (
     () => [
       {
         id: 'category',
-        header: 'Category',
+        header: 'Kategorija',
         cell: ({row}) => {
           const planned = row.original.plannedAmount;
           const spent = row.original.currentAmount;
           const value = planned <= 0 ? 0 : Math.min(100, Math.max(0, (spent / planned) * 100));
+          const percentText = `${Math.round(value)}%`;
 
           return (
-            <div className="min-w-[180px]">
+            <div className="min-w-[9.375rem] pr-4">
               <div className="text-foreground/90">{row.original.category.name}</div>
               <div className="mt-1 flex items-center gap-2">
-                <Progress className="h-[6px]" value={value} />
+                <Progress className="h-[0.375rem]" value={value} />
+                <span className="text-xs text-muted-foreground">{percentText}</span>
               </div>
             </div>
           );
@@ -41,26 +45,26 @@ export const useCategoryBudgetsTable = (
           const spent = row.original.currentAmount;
           const available = planned - spent;
           const isOverspent = available < 0;
-          const label = isOverspent ? 'Overspent' : planned > 0 ? 'On Track' : '—';
+          const label = isOverspent ? 'Prekoračeno' : planned > 0 ? 'U skladu sa planom' : '—';
           return <span>{label}</span>;
         },
         enableSorting: false,
       },
       {
         accessorKey: 'plannedAmount',
-        header: 'Assigned',
+        header: 'Planirano',
         enableSorting: false,
         cell: ({row}) => <span className="tabular-nums">{formatBalance(row.original.plannedAmount)}</span>,
       },
       {
         id: 'spent',
-        header: 'Spent',
+        header: 'Potrošeno',
         enableSorting: false,
         cell: ({row}) => <span className="tabular-nums">{formatBalance(row.original.currentAmount)}</span>,
       },
       {
         id: 'available',
-        header: 'Available',
+        header: 'Raspoloživo',
         cell: ({row}) => {
           const available = row.original.plannedAmount - row.original.currentAmount;
           const negative = available < 0;
@@ -81,13 +85,16 @@ export const useCategoryBudgetsTable = (
       },
       {
         id: 'actions',
-        header: 'Actions',
         cell: ({row}) => (
-          <EditCategoryBudgetDialog
-            categoryBudgetId={row.original.id}
-            enableTrigger={opts?.isEditable}
-            plannedAmount={row.original.plannedAmount}
-          />
+          <div className="flex items-center gap-2">
+            <EditCategoryBudgetDialog
+              categoryBudgetId={row.original.id}
+              enableTrigger={opts?.isEditable}
+              plannedAmount={row.original.plannedAmount}
+            />
+            <EditCategoryNameDialog categoryId={row.original.categoryId} currentName={row.original.category.name} />
+            <DeleteCategoryDialog categoryId={row.original.categoryId} categoryName={row.original.category.name} />
+          </div>
         ),
         enableSorting: false,
       },

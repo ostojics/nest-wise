@@ -13,7 +13,7 @@ const planQuerySchema = getCategoryBudgetsQueryParamsSchema
   .extend({
     month: z
       .string()
-      .regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Month must be in the format YYYY-MM')
+      .regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Mesec mora biti formata YYYY-MM')
       .default(defaultMonthValue)
       .catch(defaultMonthValue),
   });

@@ -14,7 +14,7 @@ export const useGetSpendingTotal = ({search}: UseGetSpendingTotalArgs) => {
   return useQuery({
     queryKey: queryKeys.transactions.spendingTotal(search),
     queryFn: async () => {
-      if (!me?.householdId) throw new Error('No household ID available');
+      if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
       return await getSpendingTotal(me.householdId, search);
     },
     enabled: Boolean(me?.householdId),

@@ -11,15 +11,15 @@ export class LicensesService {
     const license = await this.licensesRepository.findByKey(key);
 
     if (!license) {
-      throw new NotFoundException('License key not found');
+      throw new NotFoundException('Licencni ključ nije pronađen');
     }
 
     if (license.usedAt) {
-      throw new ForbiddenException('License key has already been used');
+      throw new ForbiddenException('Licencni ključ je već iskorišćen');
     }
 
     if (this.hasLicenseExpired(license.expiresAt)) {
-      throw new ForbiddenException('License key has expired');
+      throw new ForbiddenException('Licencni ključ je istekao');
     }
 
     return license;
@@ -29,15 +29,15 @@ export class LicensesService {
     const license = await this.licensesRepository.findById(licenseId);
 
     if (!license) {
-      throw new NotFoundException('License not found');
+      throw new NotFoundException('Licenca nije pronađena');
     }
 
     if (!license.usedAt) {
-      throw new ForbiddenException('License not yet redeemed');
+      throw new ForbiddenException('Licenca još uvek nije iskorišćena');
     }
 
     if (this.hasLicenseExpired(license.expiresAt)) {
-      throw new ForbiddenException('License has expired');
+      throw new ForbiddenException('Licenca je istekla');
     }
   }
 

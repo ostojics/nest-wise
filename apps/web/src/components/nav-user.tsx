@@ -1,4 +1,4 @@
-import {IconCreditCard, IconDotsVertical, IconLogout, IconUserCircle} from '@tabler/icons-react';
+import {IconCreditCard, IconDotsVertical, IconLogout, IconQuestionMark, IconUserCircle} from '@tabler/icons-react';
 
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {
@@ -14,6 +14,8 @@ import {SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar} from '@/com
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {useMemo} from 'react';
 import {useLogOut} from '@/modules/auth/hooks/use-log-out';
+import {Link} from '@tanstack/react-router';
+import {BookIcon} from 'lucide-react';
 
 export function NavUser() {
   const {isMobile} = useSidebar();
@@ -64,19 +66,37 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem disabled>
-                <IconUserCircle />
-                Account
+              <DropdownMenuItem asChild>
+                <Link to="/account-settings">
+                  <IconUserCircle />
+                  Nalog
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a
+                  href="https://github.com/ostojics/nest-wise/blob/main/docs/user-manual.sr.md"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <BookIcon />
+                  Priručnik
+                </a>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/onboarding">
+                  <IconQuestionMark />
+                  Tutorial
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem disabled>
                 <IconCreditCard />
-                Billing
+                Plaćanja
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => mutation.mutate()} disabled={mutation.isPending}>
               <IconLogout />
-              Log out
+              Odjavite se
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

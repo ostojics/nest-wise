@@ -31,6 +31,7 @@ export default tseslint.config(
       'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
       'no-console': 'error',
       '@typescript-eslint/no-require-imports': 'off',
+      'turbo/no-undeclared-env-vars': 'off',
     },
   },
   {

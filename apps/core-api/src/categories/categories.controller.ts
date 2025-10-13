@@ -1,10 +1,11 @@
 import {UpdateCategoryDTO, updateCategorySchema} from '@nest-wise/contracts';
-import {Body, Controller, Delete, Param, Put, UseGuards, UsePipes} from '@nestjs/common';
+import {Body, Controller, Delete, ForbiddenException, Param, Put, UseGuards, UsePipes} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiConflictResponse,
+  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -13,9 +14,12 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import {CurrentUser} from 'src/common/decorators/current-user.decorator';
 import {AuthGuard} from 'src/common/guards/auth.guard';
 import {LicenseGuard} from 'src/common/guards/license.guard';
+import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
+import {PoliciesService} from 'src/policies/policies.service';
 import {CategoryResponseSwaggerDTO, UpdateCategorySwaggerDTO} from 'src/tools/swagger/categories.swagger.dto';
 import {CategoriesService} from './categories.service';
 
@@ -25,7 +29,10 @@ import {CategoriesService} from './categories.service';
   path: 'categories',
 })
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(
+    private readonly categoriesService: CategoriesService,
+    private readonly policiesService: PoliciesService,
+  ) {}
 
   @ApiOperation({
     summary: 'Update a category',
@@ -66,11 +73,19 @@ export class CategoriesController {
   @ApiUnauthorizedResponse({
     description: 'Authentication required',
   })
+  @ApiForbiddenResponse({
+    description: 'User does not have access to this category',
+  })
   @ApiBearerAuth()
   @UseGuards(AuthGuard, LicenseGuard)
   @UsePipes(new ZodValidationPipe(updateCategorySchema))
   @Put(':id')
-  async updateCategory(@Param('id') id: string, @Body() dto: UpdateCategoryDTO) {
+  async updateCategory(@CurrentUser() user: JwtPayload, @Param('id') id: string, @Body() dto: UpdateCategoryDTO) {
+    const canUpdate = await this.policiesService.canUserModifyCategory(user.sub, id);
+    if (!canUpdate) {
+      throw new ForbiddenException('Nemate pristup ovom resursu');
+    }
+
     return await this.categoriesService.updateCategory(id, dto);
   }
 
@@ -97,7 +112,12 @@ export class CategoriesController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard, LicenseGuard)
   @Delete(':id')
-  async deleteCategory(@Param('id') id: string) {
+  async deleteCategory(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    const allowed = await this.policiesService.canUserModifyCategory(user.sub, id);
+    if (!allowed) {
+      throw new ForbiddenException('Nemate dozvolu za brisanje ove kategorije');
+    }
+
     return await this.categoriesService.deleteCategory(id);
   }
 }

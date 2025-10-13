@@ -11,27 +11,45 @@ export interface HouseholdContract {
 
 export const createHouseholdSchema = z
   .object({
-    name: z.string().min(1, 'Household name is required').max(255, 'Household name must be 255 characters or less'),
+    name: z
+      .string({
+        required_error: 'Naziv domaćinstva je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Naziv domaćinstva je obavezan')
+      .max(255, 'Naziv domaćinstva može imati najviše 255 karaktera'),
     currencyCode: z
-      .string()
-      .length(3, 'Valid currency code must be selected')
-      .regex(/^[A-Z]{3}$/, 'Currency code must be 3 uppercase letters (e.g., USD, EUR, GBP)'),
+      .string({
+        required_error: 'Valuta je obavezna',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .length(3, 'Valuta mora imati tačno 3 karaktera')
+      .regex(/^[A-Z]{3}$/, 'Valuta mora biti 3 velika slova (npr. USD, EUR, RSD)'),
   })
   .strict();
 
 export const updateHouseholdSchema = z
   .object({
     name: z
-      .string()
-      .min(1, 'Household name is required')
-      .max(255, 'Household name must be 255 characters or less')
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Naziv domaćinstva je obavezan')
+      .max(255, 'Naziv domaćinstva može imati najviše 255 karaktera')
       .optional(),
     currencyCode: z
-      .string()
-      .length(3, 'Currency code must be exactly 3 characters')
-      .regex(/^[A-Z]{3}$/, 'Currency code must be 3 uppercase letters (e.g., USD, EUR, GBP)')
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .length(3, 'Valuta mora imati tačno 3 karaktera')
+      .regex(/^[A-Z]{3}$/, 'Valuta mora biti 3 velika slova (npr. USD, EUR, RSD)')
       .optional(),
-    monthlyBudget: z.coerce.number().min(0, 'Monthly budget must be 0 or greater').optional(),
+    monthlyBudget: z.coerce
+      .number({
+        invalid_type_error: 'Neispravna vrednost (mora biti broj)',
+      })
+      .min(0, 'Mesečni budžet mora biti 0 ili veći')
+      .optional(),
   })
   .strict();
 

@@ -1,5 +1,4 @@
 import {createPrivateTransaction} from '@/modules/api/private-transactions';
-import {queryKeys} from '@/modules/api/query-keys';
 import {ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
@@ -10,14 +9,9 @@ export const useCreatePrivateTransaction = () => {
 
   return useMutation({
     mutationFn: createPrivateTransaction,
-    onSuccess: async () => {
-      await client.invalidateQueries({
-        queryKey: queryKeys.privateTransactions.key(),
-      });
-      await client.invalidateQueries({
-        queryKey: queryKeys.accounts.all(),
-      });
-      toast.success('Private transaction created successfully');
+    onSuccess: () => {
+      void client.invalidateQueries();
+      toast.success('Privatna transakcija je uspešno kreirana');
     },
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
@@ -28,7 +22,7 @@ export const useCreatePrivateTransaction = () => {
         return;
       }
 
-      toast.error('Unexpected error occurred');
+      toast.error('Došlo je do neočekivane greške');
     },
   });
 };

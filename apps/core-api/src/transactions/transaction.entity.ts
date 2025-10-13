@@ -64,10 +64,11 @@ export class Transaction {
   description: string | null;
 
   @Column({
-    type: 'date',
+    type: 'timestamptz',
     nullable: false,
     name: 'transaction_date',
   })
+  @Index()
   transactionDate: Date;
 
   @Column({

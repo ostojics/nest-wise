@@ -7,7 +7,7 @@ import {Calendar} from '@/components/ui/calendar';
 import {Label} from '@/components/ui/label';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {cn, getDateDisableReference} from '@/lib/utils';
-import {formatSelectedDate} from '@/modules/transactions/utils';
+import {formatDateForQueryParam} from '@/modules/transactions/utils';
 import {useNavigate, useSearch} from '@tanstack/react-router';
 
 interface DateFromPickerProps {
@@ -28,7 +28,7 @@ const DateFromPicker: React.FC<DateFromPickerProps> = ({className}) => {
     if (!value) return;
 
     void navigate({
-      search: (prev) => ({...prev, from: formatSelectedDate(value)}),
+      search: (prev) => ({...prev, from: formatDateForQueryParam(value)}),
       to: '/reports/spending',
     });
     setOpen(false);
@@ -37,12 +37,12 @@ const DateFromPicker: React.FC<DateFromPickerProps> = ({className}) => {
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <Label htmlFor="dashboard-date-from" className="px-1 sr-only">
-        Date from
+        Datum od
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" id="dashboard-date-from" className="h-9 justify-between font-normal">
-            {selectedDate ? format(selectedDate, 'PPP') : 'Select date from'}
+            {selectedDate ? format(selectedDate, 'PPP') : 'Izaberi datum od'}
             <ChevronsUpDown className="ml-2 size-4 opacity-50" />
           </Button>
         </PopoverTrigger>

@@ -21,18 +21,18 @@ export const usePrivateTransactionsTable = (data: PrivateTransactionContract[]) 
     () => [
       {
         accessorKey: 'description',
-        header: 'Description',
+        header: 'Opis',
         cell: ({row}) => <span className="text-foreground/90">{row.original.description}</span>,
         enableSorting: false,
       },
       {
         id: 'accountName',
-        header: 'Account',
+        header: 'Račun',
         cell: ({row}) => <span className="text-muted-foreground">{row.original.account?.name ?? '-'}</span>,
       },
       {
         accessorKey: 'amount',
-        header: 'Amount',
+        header: 'Iznos',
         cell: ({row}) => {
           const isIncome = row.original.type === TransactionType.INCOME;
           const formatted = formatBalance(row.original.amount);
@@ -41,26 +41,25 @@ export const usePrivateTransactionsTable = (data: PrivateTransactionContract[]) 
       },
       {
         accessorKey: 'type',
-        header: 'Type',
+        header: 'Tip',
         cell: ({row}) => (
           <Badge
             className={cn(row.original.type === TransactionType.INCOME && 'bg-emerald-100 text-emerald-700')}
             variant={row.original.type === TransactionType.EXPENSE ? 'destructive' : 'secondary'}
           >
-            {row.original.type}
+            {row.original.type === TransactionType.EXPENSE ? 'Rashod' : 'Prihod'}
           </Badge>
         ),
       },
       {
         accessorKey: 'transactionDate',
-        header: 'Date',
+        header: 'Datum',
         cell: ({row}) => (
-          <span className="text-foreground/80">{format(new Date(row.original.transactionDate), 'PP')}</span>
+          <span className="text-foreground/80">{format(new Date(row.original.transactionDate), 'dd.MM.yyyy.')}</span>
         ),
       },
       {
         id: 'actions',
-        header: 'Actions',
         cell: ({row}) => <PrivateTransactionRowActions transactionId={row.original.id} />,
         enableSorting: false,
       },

@@ -9,6 +9,7 @@ import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
 import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/use-validate-create-ai-transaction';
 import AiBanner from './ai-banner';
 import {AiDescriptionTooltip} from './ai-description-tooltip';
+import {AiProcessingStatus} from './ai-processing-status';
 
 interface AiTransactionFormProps {
   onSuccess: () => void;
@@ -28,12 +29,20 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
     watch,
     reset,
     formState: {errors},
-  } = useValidateCreateAiTransaction();
+  } = useValidateCreateAiTransaction({accountId: (accounts ?? [])[0]?.id});
 
   const onSubmit = async (data: CreateTransactionAiHouseholdDTO) => {
-    await createAiTransactionMutation.mutateAsync(data);
-    onSuccess();
-    reset();
+    await createAiTransactionMutation.mutateAsync(data, {
+      onSuccess: () => {
+        onSuccess();
+      },
+      onError: () => {
+        onCancel();
+      },
+      onSettled: () => {
+        reset();
+      },
+    });
   };
 
   const getAccountDisplayName = (accountId: string) => {
@@ -44,20 +53,28 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
 
+  if (createAiTransactionMutation.isPending) {
+    return (
+      <div className="space-y-4">
+        <AiProcessingStatus />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <AiBanner />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="accountId">
-            Account <span className="text-red-500">*</span>
+            Račun <span className="text-red-500">*</span>
           </Label>
           <Select value={watch('accountId')} onValueChange={(value) => setValue('accountId', value)}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select account" />
+              <SelectValue placeholder="Izaberi račun" />
             </SelectTrigger>
             <SelectContent>
-              {!hasAccounts && <span className="text-sm text-muted-foreground">No accounts available.</span>}
+              {!hasAccounts && <span className="text-sm text-muted-foreground">Nema dostupnih računa.</span>}
               {hasAccounts &&
                 accounts?.map((account) => (
                   <SelectItem key={account.id} value={account.id}>
@@ -72,24 +89,23 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
             <Label htmlFor="description">
-              Description <span className="text-red-500">*</span>
+              Opis <span className="text-red-500">*</span>
             </Label>
             <AiDescriptionTooltip />
           </div>
-          <Input placeholder="e.g. Bought groceries for 120" {...register('description')} />
+          <Input placeholder="npr. Kupovina namirnica za 2000 RSD" {...register('description')} />
           {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
+            Otkaži
           </Button>
           <Button
             type="submit"
-            disabled={createAiTransactionMutation.isPending}
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
           >
-            {createAiTransactionMutation.isPending ? 'Processing...' : 'Log Transaction'}
+            Zabeleži transakciju
           </Button>
         </div>
       </form>

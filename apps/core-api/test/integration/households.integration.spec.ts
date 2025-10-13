@@ -147,7 +147,7 @@ describe('Integration - Households', () => {
     it('should throw NotFoundException when household not found', async () => {
       const nonExistentId = '00000000-0000-0000-0000-000000000000';
 
-      await expect(householdsService.findHouseholdById(nonExistentId)).rejects.toThrow('Household not found');
+      await expect(householdsService.findHouseholdById(nonExistentId)).rejects.toThrow('Domaćinstvo nije pronađeno');
     });
 
     it('should update a household successfully', async () => {

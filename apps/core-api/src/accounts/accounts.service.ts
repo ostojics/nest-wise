@@ -15,7 +15,7 @@ export class AccountsService {
   async createAccountForHousehold(householdId: string, accountData: CreateAccountHouseholdScopedDTO): Promise<Account> {
     const nameExists = await this.accountsRepository.nameExistsForHousehold(accountData.name, householdId);
     if (nameExists) {
-      throw new ConflictException('Account name already exists for this household');
+      throw new ConflictException('Naziv računa već postoji u ovom domaćinstvu');
     }
 
     return await this.accountsRepository.create({
@@ -31,7 +31,7 @@ export class AccountsService {
   async findAccountById(id: string): Promise<Account> {
     const account = await this.accountsRepository.findById(id);
     if (!account) {
-      throw new NotFoundException('Account not found');
+      throw new NotFoundException('Račun nije pronađen');
     }
     return account;
   }
@@ -47,7 +47,7 @@ export class AccountsService {
   async updateAccount(id: string, accountData: EditAccountDTO): Promise<Account> {
     const existingAccount = await this.accountsRepository.findById(id);
     if (!existingAccount) {
-      throw new NotFoundException('Account not found');
+      throw new NotFoundException('Račun nije pronađen');
     }
 
     if (accountData.name && accountData.name !== existingAccount.name) {
@@ -56,13 +56,13 @@ export class AccountsService {
         existingAccount.householdId,
       );
       if (nameExists) {
-        throw new ConflictException('Account name already exists for this household');
+        throw new ConflictException('Naziv računa već postoji u ovom domaćinstvu');
       }
     }
 
     const updatedAccount = await this.accountsRepository.update(id, accountData);
     if (!updatedAccount) {
-      throw new NotFoundException('Account not found');
+      throw new NotFoundException('Račun nije pronađen');
     }
 
     return updatedAccount;
@@ -71,7 +71,7 @@ export class AccountsService {
   async deleteAccount(id: string): Promise<void> {
     const deleted = await this.accountsRepository.delete(id);
     if (!deleted) {
-      throw new NotFoundException('Account not found');
+      throw new NotFoundException('Račun nije pronađen');
     }
   }
 
@@ -81,7 +81,7 @@ export class AccountsService {
     dto: TransferFundsDTO,
   ): Promise<{fromAccount: Account; toAccount: Account}> {
     if (dto.fromAccountId === dto.toAccountId) {
-      throw new BadRequestException('fromAccountId and toAccountId must be different');
+      throw new BadRequestException('Polazni i odredišni račun moraju biti različiti');
     }
 
     const fromAccount = await this.findAccountById(dto.fromAccountId);
@@ -89,14 +89,14 @@ export class AccountsService {
 
     // Validate both accounts belong to the specified household
     if (fromAccount.householdId !== householdId) {
-      throw new BadRequestException('Source account does not belong to the specified household');
+      throw new BadRequestException('Polazni račun ne pripada navedenom domaćinstvu');
     }
     if (toAccount.householdId !== householdId) {
-      throw new BadRequestException('Destination account does not belong to the specified household');
+      throw new BadRequestException('Odredišni račun ne pripada navedenom domaćinstvu');
     }
 
     if (fromAccount.householdId !== toAccount.householdId) {
-      throw new BadRequestException('Accounts must belong to the same household');
+      throw new BadRequestException('Računi moraju pripadati istom domaćinstvu');
     }
 
     const fromBalance = Number(fromAccount.currentBalance);
@@ -104,7 +104,7 @@ export class AccountsService {
     const amount = Number(dto.amount);
 
     if (fromBalance < amount) {
-      throw new BadRequestException('Insufficient funds for this transfer');
+      throw new BadRequestException('Nedovoljno sredstava za ovaj transfer');
     }
 
     return await this.dataSource.transaction(async () => {
@@ -112,14 +112,14 @@ export class AccountsService {
         currentBalance: fromBalance - amount,
       });
       if (!updatedFrom) {
-        throw new NotFoundException('Source account not found');
+        throw new NotFoundException('Polazni račun nije pronađen');
       }
 
       const updatedTo = await this.accountsRepository.update(dto.toAccountId, {
         currentBalance: toBalance + amount,
       });
       if (!updatedTo) {
-        throw new NotFoundException('Destination account not found');
+        throw new NotFoundException('Odredišni račun nije pronađen');
       }
 
       return {fromAccount: updatedFrom, toAccount: updatedTo};

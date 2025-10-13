@@ -11,17 +11,21 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitesRouteImport } from './routes/invites'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as EmailChangeRouteImport } from './routes/email-change'
 import { Route as _pathlessLayoutRouteRouteImport } from './routes/__pathlessLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as _pathlessLayoutTransactionsRouteImport } from './routes/__pathlessLayout/transactions'
+import { Route as _pathlessLayoutSettingsRouteImport } from './routes/__pathlessLayout/settings'
 import { Route as _pathlessLayoutPlanRouteImport } from './routes/__pathlessLayout/plan'
 import { Route as _pathlessLayoutMyFinancesRouteImport } from './routes/__pathlessLayout/my-finances'
 import { Route as _pathlessLayoutMembersRouteImport } from './routes/__pathlessLayout/members'
 import { Route as _pathlessLayoutAnalyticsRouteImport } from './routes/__pathlessLayout/analytics'
 import { Route as _pathlessLayoutAccountsRouteImport } from './routes/__pathlessLayout/accounts'
+import { Route as _pathlessLayoutAccountSettingsRouteImport } from './routes/__pathlessLayout/account-settings'
 import { Route as _pathlessLayoutReportsRouteRouteImport } from './routes/__pathlessLayout/reports/route'
 import { Route as _pathlessLayoutReportsSpendingRouteImport } from './routes/__pathlessLayout/reports/spending'
 import { Route as _pathlessLayoutReportsSavingsRouteImport } from './routes/__pathlessLayout/reports/savings'
@@ -35,6 +39,11 @@ const SetupRoute = SetupRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -52,6 +61,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmailChangeRoute = EmailChangeRouteImport.update({
+  id: '/email-change',
+  path: '/email-change',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const _pathlessLayoutRouteRoute = _pathlessLayoutRouteRouteImport.update({
   id: '/__pathlessLayout',
   getParentRoute: () => rootRouteImport,
@@ -67,6 +81,11 @@ const _pathlessLayoutTransactionsRoute =
     path: '/transactions',
     getParentRoute: () => _pathlessLayoutRouteRoute,
   } as any)
+const _pathlessLayoutSettingsRoute = _pathlessLayoutSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => _pathlessLayoutRouteRoute,
+} as any)
 const _pathlessLayoutPlanRoute = _pathlessLayoutPlanRouteImport.update({
   id: '/plan',
   path: '/plan',
@@ -94,6 +113,12 @@ const _pathlessLayoutAccountsRoute = _pathlessLayoutAccountsRouteImport.update({
   path: '/accounts',
   getParentRoute: () => _pathlessLayoutRouteRoute,
 } as any)
+const _pathlessLayoutAccountSettingsRoute =
+  _pathlessLayoutAccountSettingsRouteImport.update({
+    id: '/account-settings',
+    path: '/account-settings',
+    getParentRoute: () => _pathlessLayoutRouteRoute,
+  } as any)
 const _pathlessLayoutReportsRouteRoute =
   _pathlessLayoutReportsRouteRouteImport.update({
     id: '/reports',
@@ -121,17 +146,21 @@ const _pathlessLayoutReportsNetWorthRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/email-change': typeof EmailChangeRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
+  '/account-settings': typeof _pathlessLayoutAccountSettingsRoute
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/members': typeof _pathlessLayoutMembersRoute
   '/my-finances': typeof _pathlessLayoutMyFinancesRoute
   '/plan': typeof _pathlessLayoutPlanRoute
+  '/settings': typeof _pathlessLayoutSettingsRoute
   '/transactions': typeof _pathlessLayoutTransactionsRoute
   '/reports/net-worth': typeof _pathlessLayoutReportsNetWorthRoute
   '/reports/savings': typeof _pathlessLayoutReportsSavingsRoute
@@ -139,17 +168,21 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/email-change': typeof EmailChangeRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
+  '/account-settings': typeof _pathlessLayoutAccountSettingsRoute
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/members': typeof _pathlessLayoutMembersRoute
   '/my-finances': typeof _pathlessLayoutMyFinancesRoute
   '/plan': typeof _pathlessLayoutPlanRoute
+  '/settings': typeof _pathlessLayoutSettingsRoute
   '/transactions': typeof _pathlessLayoutTransactionsRoute
   '/reports/net-worth': typeof _pathlessLayoutReportsNetWorthRoute
   '/reports/savings': typeof _pathlessLayoutReportsSavingsRoute
@@ -159,17 +192,21 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/__pathlessLayout': typeof _pathlessLayoutRouteRouteWithChildren
+  '/email-change': typeof EmailChangeRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invites': typeof InvitesRoute
   '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/__pathlessLayout/reports': typeof _pathlessLayoutReportsRouteRouteWithChildren
+  '/__pathlessLayout/account-settings': typeof _pathlessLayoutAccountSettingsRoute
   '/__pathlessLayout/accounts': typeof _pathlessLayoutAccountsRoute
   '/__pathlessLayout/analytics': typeof _pathlessLayoutAnalyticsRoute
   '/__pathlessLayout/members': typeof _pathlessLayoutMembersRoute
   '/__pathlessLayout/my-finances': typeof _pathlessLayoutMyFinancesRoute
   '/__pathlessLayout/plan': typeof _pathlessLayoutPlanRoute
+  '/__pathlessLayout/settings': typeof _pathlessLayoutSettingsRoute
   '/__pathlessLayout/transactions': typeof _pathlessLayoutTransactionsRoute
   '/__pathlessLayout/reports/net-worth': typeof _pathlessLayoutReportsNetWorthRoute
   '/__pathlessLayout/reports/savings': typeof _pathlessLayoutReportsSavingsRoute
@@ -179,17 +216,21 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/email-change'
     | '/forgot-password'
     | '/invites'
     | '/login'
+    | '/onboarding'
     | '/reset-password'
     | '/setup'
     | '/reports'
+    | '/account-settings'
     | '/accounts'
     | '/analytics'
     | '/members'
     | '/my-finances'
     | '/plan'
+    | '/settings'
     | '/transactions'
     | '/reports/net-worth'
     | '/reports/savings'
@@ -197,17 +238,21 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/email-change'
     | '/forgot-password'
     | '/invites'
     | '/login'
+    | '/onboarding'
     | '/reset-password'
     | '/setup'
     | '/reports'
+    | '/account-settings'
     | '/accounts'
     | '/analytics'
     | '/members'
     | '/my-finances'
     | '/plan'
+    | '/settings'
     | '/transactions'
     | '/reports/net-worth'
     | '/reports/savings'
@@ -216,17 +261,21 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/__pathlessLayout'
+    | '/email-change'
     | '/forgot-password'
     | '/invites'
     | '/login'
+    | '/onboarding'
     | '/reset-password'
     | '/setup'
     | '/__pathlessLayout/reports'
+    | '/__pathlessLayout/account-settings'
     | '/__pathlessLayout/accounts'
     | '/__pathlessLayout/analytics'
     | '/__pathlessLayout/members'
     | '/__pathlessLayout/my-finances'
     | '/__pathlessLayout/plan'
+    | '/__pathlessLayout/settings'
     | '/__pathlessLayout/transactions'
     | '/__pathlessLayout/reports/net-worth'
     | '/__pathlessLayout/reports/savings'
@@ -236,9 +285,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   _pathlessLayoutRouteRoute: typeof _pathlessLayoutRouteRouteWithChildren
+  EmailChangeRoute: typeof EmailChangeRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvitesRoute: typeof InvitesRoute
   LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SetupRoute: typeof SetupRoute
 }
@@ -257,6 +308,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -280,6 +338,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/email-change': {
+      id: '/email-change'
+      path: '/email-change'
+      fullPath: '/email-change'
+      preLoaderRoute: typeof EmailChangeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/__pathlessLayout': {
       id: '/__pathlessLayout'
       path: ''
@@ -299,6 +364,13 @@ declare module '@tanstack/react-router' {
       path: '/transactions'
       fullPath: '/transactions'
       preLoaderRoute: typeof _pathlessLayoutTransactionsRouteImport
+      parentRoute: typeof _pathlessLayoutRouteRoute
+    }
+    '/__pathlessLayout/settings': {
+      id: '/__pathlessLayout/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof _pathlessLayoutSettingsRouteImport
       parentRoute: typeof _pathlessLayoutRouteRoute
     }
     '/__pathlessLayout/plan': {
@@ -334,6 +406,13 @@ declare module '@tanstack/react-router' {
       path: '/accounts'
       fullPath: '/accounts'
       preLoaderRoute: typeof _pathlessLayoutAccountsRouteImport
+      parentRoute: typeof _pathlessLayoutRouteRoute
+    }
+    '/__pathlessLayout/account-settings': {
+      id: '/__pathlessLayout/account-settings'
+      path: '/account-settings'
+      fullPath: '/account-settings'
+      preLoaderRoute: typeof _pathlessLayoutAccountSettingsRouteImport
       parentRoute: typeof _pathlessLayoutRouteRoute
     }
     '/__pathlessLayout/reports': {
@@ -387,22 +466,26 @@ const _pathlessLayoutReportsRouteRouteWithChildren =
 
 interface _pathlessLayoutRouteRouteChildren {
   _pathlessLayoutReportsRouteRoute: typeof _pathlessLayoutReportsRouteRouteWithChildren
+  _pathlessLayoutAccountSettingsRoute: typeof _pathlessLayoutAccountSettingsRoute
   _pathlessLayoutAccountsRoute: typeof _pathlessLayoutAccountsRoute
   _pathlessLayoutAnalyticsRoute: typeof _pathlessLayoutAnalyticsRoute
   _pathlessLayoutMembersRoute: typeof _pathlessLayoutMembersRoute
   _pathlessLayoutMyFinancesRoute: typeof _pathlessLayoutMyFinancesRoute
   _pathlessLayoutPlanRoute: typeof _pathlessLayoutPlanRoute
+  _pathlessLayoutSettingsRoute: typeof _pathlessLayoutSettingsRoute
   _pathlessLayoutTransactionsRoute: typeof _pathlessLayoutTransactionsRoute
 }
 
 const _pathlessLayoutRouteRouteChildren: _pathlessLayoutRouteRouteChildren = {
   _pathlessLayoutReportsRouteRoute:
     _pathlessLayoutReportsRouteRouteWithChildren,
+  _pathlessLayoutAccountSettingsRoute: _pathlessLayoutAccountSettingsRoute,
   _pathlessLayoutAccountsRoute: _pathlessLayoutAccountsRoute,
   _pathlessLayoutAnalyticsRoute: _pathlessLayoutAnalyticsRoute,
   _pathlessLayoutMembersRoute: _pathlessLayoutMembersRoute,
   _pathlessLayoutMyFinancesRoute: _pathlessLayoutMyFinancesRoute,
   _pathlessLayoutPlanRoute: _pathlessLayoutPlanRoute,
+  _pathlessLayoutSettingsRoute: _pathlessLayoutSettingsRoute,
   _pathlessLayoutTransactionsRoute: _pathlessLayoutTransactionsRoute,
 }
 
@@ -412,9 +495,11 @@ const _pathlessLayoutRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   _pathlessLayoutRouteRoute: _pathlessLayoutRouteRouteWithChildren,
+  EmailChangeRoute: EmailChangeRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InvitesRoute: InvitesRoute,
   LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SetupRoute: SetupRoute,
 }

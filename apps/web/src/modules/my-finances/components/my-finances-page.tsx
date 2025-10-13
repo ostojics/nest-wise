@@ -47,8 +47,8 @@ const MyFinancesPage = () => {
   return (
     <section className="p-4 flex flex-col h-full @container/transactions">
       <TextBanner
-        aria-label="My finances overview"
-        text="This page shows only your private finances. Use it to review and log your personal expenses and income."
+        aria-label="Pregled mojih finansija"
+        text="Ova stranica prikazuje samo vaše privatne finansije. Koristite je za pregled i beleženje vaših ličnih rashoda i prihoda."
       />
       <div className="mt-4">
         <CreatePrivateTransactionDialog />

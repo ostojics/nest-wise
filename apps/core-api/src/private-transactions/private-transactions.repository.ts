@@ -54,7 +54,11 @@ export class PrivateTransactionsRepository {
 
     qb.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    const data = await qb.getMany();
+    const transactions = await qb.getMany();
+    const data = transactions.map((tx) => ({
+      ...tx,
+      transactionDate: tx.transactionDate.toISOString(),
+    }));
 
     return {
       data,
@@ -77,11 +81,11 @@ export class PrivateTransactionsRepository {
     }
 
     if (query.from) {
-      qb.andWhere('pt.transactionDate >= :dateFrom', {dateFrom: query.from});
+      qb.andWhere('pt.transactionDate >= :dateFrom::timestamptz::date', {dateFrom: query.from});
     }
 
     if (query.to) {
-      qb.andWhere('pt.transactionDate <= :dateTo', {dateTo: query.to});
+      qb.andWhere("pt.transactionDate < (:dateTo::timestamptz::date + INTERVAL '1 day')", {dateTo: query.to});
     }
 
     if (query.q) {

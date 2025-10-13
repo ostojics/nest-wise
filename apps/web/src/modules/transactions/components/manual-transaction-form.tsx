@@ -4,6 +4,7 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
+import {dateAtNoon} from '@/lib/utils';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import {useCreateTransaction} from '@/modules/transactions/hooks/use-create-transaction';
@@ -32,7 +33,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
     watch,
     reset,
     formState: {errors},
-  } = useValidateCreateTransaction();
+  } = useValidateCreateTransaction({accountId: (accounts ?? [])[0]?.id});
 
   const watchedCategoryId = watch('categoryId');
   const watchedType = watch('type');
@@ -44,7 +45,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
 
       onSuccess();
     } catch {
-      toast.error('Failed to create transaction');
+      toast.error('Kreiranje transakcije nije uspelo');
     }
   };
 
@@ -55,6 +56,8 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
     const accountType = accountTypes.find((type) => type.value === account.type);
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
+
+  const transactionDate = watch('transactionDate');
 
   useEffect(() => {
     if (watchedType === 'income') {
@@ -67,14 +70,14 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="accountId">
-          Account <span className="text-red-500">*</span>
+          Račun <span className="text-red-500">*</span>
         </Label>
         <Select value={watch('accountId')} onValueChange={(value) => setValue('accountId', value)}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select account" />
+            <SelectValue placeholder="Izaberi račun" />
           </SelectTrigger>
           <SelectContent>
-            {!hasAccounts && <span className="text-sm text-muted-foreground">No accounts available.</span>}
+            {!hasAccounts && <span className="text-sm text-muted-foreground">Nema dostupnih računa.</span>}
             {hasAccounts &&
               accounts?.map((account) => (
                 <SelectItem key={account.id} value={account.id}>
@@ -89,12 +92,12 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
       {watchedType === 'expense' && (
         <div className="space-y-2">
           <Label htmlFor="categoryId">
-            Category <span className="text-red-500">*</span>
+            Kategorija <span className="text-red-500">*</span>
           </Label>
           <div className="flex gap-2">
             <Select value={watchedCategoryId ?? ''} onValueChange={(value) => setValue('categoryId', value)}>
               <SelectTrigger className="flex-1">
-                <SelectValue placeholder="Select category" />
+                <SelectValue placeholder="Izaberi kategoriju" />
               </SelectTrigger>
               <SelectContent>
                 {categories && categories.length > 0 ? (
@@ -105,7 +108,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
                   ))
                 ) : (
                   <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                    <span>No categories available. Create one on the plan page.</span>
+                    <span>Nema dostupnih kategorija. Kreirajte novu na stranici plana.</span>
                   </div>
                 )}
               </SelectContent>
@@ -117,15 +120,15 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
 
       <div className="space-y-2">
         <Label htmlFor="type">
-          Type <span className="text-red-500">*</span>
+          Tip <span className="text-red-500">*</span>
         </Label>
         <Select value={watch('type')} onValueChange={(value) => setValue('type', value as 'income' | 'expense')}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="expense">Expense</SelectItem>
-            <SelectItem value="income">Income</SelectItem>
+            <SelectItem value="expense">Rashod</SelectItem>
+            <SelectItem value="income">Prihod</SelectItem>
           </SelectContent>
         </Select>
         {errors.type && <p className="text-sm text-red-500">{errors.type.message}</p>}
@@ -133,7 +136,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
 
       <div className="space-y-2">
         <Label htmlFor="amount">
-          Amount <span className="text-red-500">*</span>
+          Iznos <span className="text-red-500">*</span>
         </Label>
         <Input type="number" step="0.01" placeholder="0.00" {...register('amount')} />
         {errors.amount && <p className="text-sm text-red-500">{errors.amount.message}</p>}
@@ -141,34 +144,39 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
 
       <div className="space-y-2">
         <Label htmlFor="description">
-          Description <span className="text-red-500">*</span>
+          Opis <span className="text-red-500">*</span>
         </Label>
-        <Input placeholder="Transaction description" {...register('description')} />
+        <Input placeholder="Opis transakcije" {...register('description')} />
         {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="transactionDate">
-          Transaction Date <span className="text-red-500">*</span>
+          Datum transakcije <span className="text-red-500">*</span>
         </Label>
         <DatePicker
-          value={watch('transactionDate')}
-          onChange={(date) => setValue('transactionDate', date ?? new Date())}
-          placeholder="Select transaction date"
+          value={new Date(transactionDate)}
+          onChange={(date) => {
+            if (date) {
+              const adjustedDate = dateAtNoon(date);
+              setValue('transactionDate', adjustedDate.toISOString());
+            }
+          }}
+          placeholder="Izaberi datum transakcije"
         />
         {errors.transactionDate && <p className="text-sm text-red-500">{errors.transactionDate.message}</p>}
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
+          Otkaži
         </Button>
         <Button
           type="submit"
           disabled={createTransactionMutation.isPending}
           className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
         >
-          {createTransactionMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Log Transaction'}
+          {createTransactionMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Zabeleži transakciju'}
         </Button>
       </div>
     </form>

@@ -48,9 +48,9 @@ export class CreateTransactionSwaggerDTO {
   description?: string | null;
 
   @ApiProperty({
-    description: 'Date when the transaction occurred',
-    example: '2024-01-15',
-    format: 'date',
+    description: 'Date and time when the transaction occurred (ISO 8601 timestamp)',
+    example: '2024-01-15T12:00:00.000Z',
+    format: 'date-time',
   })
   transactionDate: Date;
 
@@ -88,14 +88,22 @@ export class CreateTransactionAiSwaggerDTO {
   description: string;
 
   @ApiProperty({
-    description: 'Date when the transaction occurred',
-    example: '2024-01-15',
-    format: 'date',
+    description: 'Date and time when the transaction occurred (ISO 8601 timestamp)',
+    example: '2024-01-15T12:00:00.000Z',
+    format: 'date-time',
   })
   transactionDate: Date;
 }
 
 export class UpdateTransactionSwaggerDTO {
+  @ApiProperty({
+    description: 'UUID of the account to move the transaction to (optional)',
+    example: 'd4e5f6g7-h8i9-0123-defg-h45678901234',
+    format: 'uuid',
+    required: false,
+  })
+  accountId?: string;
+
   @ApiProperty({
     description: 'UUID of the category for this transaction (optional)',
     example: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
@@ -131,9 +139,9 @@ export class UpdateTransactionSwaggerDTO {
   description?: string | null;
 
   @ApiProperty({
-    description: 'Date when the transaction occurred',
-    example: '2024-01-15',
-    format: 'date',
+    description: 'Date and time when the transaction occurred (ISO 8601 timestamp)',
+    example: '2024-01-15T12:00:00.000Z',
+    format: 'date-time',
     required: false,
   })
   transactionDate?: Date;
@@ -197,9 +205,9 @@ export class TransactionResponseSwaggerDTO {
   description: string | null;
 
   @ApiProperty({
-    description: 'Date when the transaction occurred',
-    example: '2024-01-15',
-    format: 'date',
+    description: 'Date and time when the transaction occurred (ISO 8601 timestamp)',
+    example: '2024-01-15T12:00:00.000Z',
+    format: 'date-time',
   })
   transactionDate: Date;
 

@@ -2,7 +2,7 @@ import {z} from 'zod';
 
 export const accountTypeEnum = z.enum(['checking', 'savings', 'credit_card', 'investment', 'cash', 'other'], {
   errorMap: () => ({
-    message: 'Account type must be one of: checking, savings, credit_card, investment, cash, other',
+    message: 'Tip računa mora biti jedan od: tekući, štednja, kreditni, investicioni, gotovina, ostalo',
   }),
 });
 
@@ -21,10 +21,25 @@ export interface AccountContract {
 // Household-scoped version without householdId (comes from path)
 export const createAccountHouseholdScopedSchema = z
   .object({
-    name: z.string().min(1, 'Account name is required').max(255, 'Account name must be 255 characters or less'),
+    name: z
+      .string({
+        required_error: 'Naziv računa je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Naziv računa je obavezan')
+      .max(255, 'Naziv računa može imati najviše 255 karaktera'),
     type: accountTypeEnum,
-    initialBalance: z.coerce.number().min(0, 'Balance must be 0 or greater'),
-    ownerId: z.string().uuid('Owner ID must be a valid UUID'),
+    initialBalance: z.coerce
+      .number({
+        invalid_type_error: 'Neispravna vrednost (mora biti broj)',
+      })
+      .min(0, 'Stanje mora biti 0 ili veće'),
+    ownerId: z
+      .string({
+        required_error: 'ID vlasnika je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .uuid('Vlasnik mora biti izabran'),
   })
   .strict();
 
@@ -33,12 +48,19 @@ export type CreateAccountHouseholdScopedDTO = z.infer<typeof createAccountHouseh
 export const editAccountSchema = z
   .object({
     name: z
-      .string()
-      .min(1, 'Account name is required')
-      .max(255, 'Account name must be 255 characters or less')
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Naziv računa je obavezan')
+      .max(255, 'Naziv računa može imati najviše 255 karaktera')
       .optional(),
     type: accountTypeEnum.optional(),
-    currentBalance: z.coerce.number().min(0, 'Balance must be 0 or greater').optional(),
+    currentBalance: z.coerce
+      .number({
+        invalid_type_error: 'Neispravna vrednost (mora biti broj)',
+      })
+      .min(0, 'Stanje mora biti 0 ili veće')
+      .optional(),
   })
   .strict();
 
@@ -46,13 +68,27 @@ export type EditAccountDTO = z.infer<typeof editAccountSchema>;
 
 export const transferFundsSchema = z
   .object({
-    fromAccountId: z.string().uuid('Source account must be selected'),
-    toAccountId: z.string().uuid('Destination account must be selected'),
-    amount: z.coerce.number().min(1, 'Transfer amount must be at least 1'),
+    fromAccountId: z
+      .string({
+        required_error: 'Polazni račun je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .uuid('Polazni račun mora biti izabran'),
+    toAccountId: z
+      .string({
+        required_error: 'Odredišni račun je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .uuid('Odredišni račun mora biti izabran'),
+    amount: z.coerce
+      .number({
+        invalid_type_error: 'Neispravna vrednost (mora biti broj)',
+      })
+      .min(1, 'Iznos prebacivanja mora biti najmanje 1'),
   })
   .strict()
   .refine((data) => data.fromAccountId !== data.toAccountId, {
-    message: 'fromAccountId and toAccountId must be different',
+    message: 'Polazni i odredišni račun moraju biti različiti',
     path: ['toAccountId'],
   });
 

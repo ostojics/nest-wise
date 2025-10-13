@@ -1,5 +1,5 @@
 import {CreateUserDTO} from '@nest-wise/contracts';
-import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {EmailsService} from 'src/emails/emails.service';
 import {HouseholdsService} from 'src/households/households.service';
 import {hashPassword} from 'src/lib/hashing/hashing';
@@ -26,12 +26,12 @@ export class UsersService {
   async createUser(userData: CreateUserDTO & {isHouseholdAuthor?: boolean}): Promise<User> {
     const emailExists = await this.usersRepository.emailExists(userData.email);
     if (emailExists) {
-      throw new ConflictException('Cannot create user');
+      throw new ConflictException('Nije moguće kreirati korisnika');
     }
 
     const usernameExists = await this.usersRepository.usernameExists(userData.username);
     if (usernameExists) {
-      throw new ConflictException('Cannot create user');
+      throw new ConflictException('Nije moguće kreirati korisnika');
     }
 
     const passwordHash = await hashPassword(userData.password);
@@ -47,7 +47,7 @@ export class UsersService {
   async findUserById(id: string): Promise<User> {
     const user = await this.usersRepository.findById(id);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Korisnik nije pronađen');
     }
     return user;
   }
@@ -72,26 +72,26 @@ export class UsersService {
   async updateUser(id: string, userData: Partial<User>): Promise<User> {
     const existingUser = await this.usersRepository.findById(id);
     if (!existingUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Korisnik nije pronađen');
     }
 
     if (userData.email && userData.email !== existingUser.email) {
       const emailExists = await this.usersRepository.emailExists(userData.email);
       if (emailExists) {
-        throw new ConflictException('Cannot update user');
+        throw new ConflictException('Nije moguće izmeniti korisnika');
       }
     }
 
     if (userData.username && userData.username !== existingUser.username) {
       const usernameExists = await this.usersRepository.usernameExists(userData.username);
       if (usernameExists) {
-        throw new ConflictException('Cannot update user');
+        throw new ConflictException('Nije moguće izmeniti korisnika');
       }
     }
 
     const updatedUser = await this.usersRepository.update(id, userData);
     if (!updatedUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Korisnik nije pronađen');
     }
 
     return updatedUser;
@@ -100,14 +100,14 @@ export class UsersService {
   async deleteUser(id: string): Promise<void> {
     const deleted = await this.usersRepository.delete(id);
     if (!deleted) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Korisnik nije pronađen');
     }
   }
 
   async inviteUser(householdId: string, email: string) {
     const user = await this.usersRepository.findByEmail(email);
     if (user) {
-      throw new ConflictException('User with this email already exists');
+      throw new ConflictException('Korisnik sa ovom e‑poštom već postoji');
     }
 
     const household = await this.householdsService.findHouseholdById(householdId);
@@ -153,9 +153,70 @@ export class UsersService {
     const updatedUser = await this.usersRepository.update(userId, {passwordHash: hashedPassword});
 
     if (!updatedUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Korisnik nije pronađen');
     }
 
     return updatedUser;
+  }
+
+  async requestEmailChange(userId: string, userEmail: string, newEmail: string): Promise<string> {
+    const existingUser = await this.findUserByEmail(newEmail);
+    if (existingUser) {
+      throw new ConflictException('E‑pošta je već u upotrebi');
+    }
+
+    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
+    const jwtPayload = {
+      sub: userId,
+      email: userEmail,
+      newEmail: newEmail,
+      iss: appConfig.url,
+      purpose: 'email-change',
+    };
+    this.logger.debug(`Generating email change token with payload: ${JSON.stringify(jwtPayload)}`);
+
+    const token = await this.jwtService.signAsync(jwtPayload, {
+      expiresIn: '15m',
+    });
+
+    await this.emailsService.sendEmailChangeConfirmation({
+      userId,
+      newEmail,
+      token,
+    });
+
+    return token;
+  }
+
+  async confirmEmailChange(token: string): Promise<void> {
+    const payload = await this.jwtService.verifyAsync<{
+      sub: string;
+      email: string;
+      newEmail: string;
+      iss: string;
+      purpose: string;
+      iat: number;
+      exp: number;
+    }>(token);
+
+    this.logger.debug(`Processing email change for user: ${JSON.stringify(payload)}`);
+    if (payload.purpose !== 'email-change') {
+      throw new UnauthorizedException('Neispravan token');
+    }
+
+    const user = await this.findUserById(payload.sub);
+    this.logger.debug(`Found user for email change: ${JSON.stringify(user)}`);
+    if (user.id !== payload.sub) {
+      throw new ConflictException('Neispravan token');
+    }
+
+    // Check if the new email is still available
+    const existingUser = await this.findUserByEmail(payload.newEmail);
+    this.logger.debug(`Checking availability of new email: ${payload.newEmail}`, {existingUser});
+    if (existingUser && existingUser.id !== payload.sub) {
+      throw new ConflictException('E‑pošta je već u upotrebi');
+    }
+
+    await this.updateUser(payload.sub, {email: payload.newEmail});
   }
 }

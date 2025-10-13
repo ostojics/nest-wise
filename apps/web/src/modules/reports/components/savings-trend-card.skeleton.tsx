@@ -8,7 +8,7 @@ const SavingsTrendCardSkeleton = () => {
       <CardHeader className="items-center pb-0">
         <CardDescription className="flex items-center gap-2">
           <IconPigMoney className="h-4 w-4" />
-          Savings Trend
+          Trend štednje
         </CardDescription>
         <Skeleton className="h-6 w-40" />
       </CardHeader>

@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromCookie(request);
 
     if (!token) {
-      throw new UnauthorizedException('No authentication token found');
+      throw new UnauthorizedException('Autentifikacioni token nije pronađen');
     }
 
     try {
@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
       (request as AuthenticatedRequest).user = payload;
       return true;
     } catch {
-      throw new UnauthorizedException('Invalid authentication token');
+      throw new UnauthorizedException('Neispravan autentifikacioni token');
     }
   }
 

@@ -177,7 +177,7 @@ function Sidebar({
           side={side}
         >
           <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
+            <SheetTitle>Navigacioni meni</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
           <div className="flex h-full w-full flex-col">{children}</div>
@@ -251,7 +251,7 @@ function SidebarTrigger({className, onClick, ...props}: React.ComponentProps<typ
       {...props}
     >
       <PanelLeftIcon />
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className="sr-only">Prikaži/sakrij bočnu traku</span>
     </Button>
   );
 }
@@ -263,10 +263,10 @@ function SidebarRail({className, ...props}: React.ComponentProps<'button'>) {
     <button
       data-sidebar="rail"
       data-slot="sidebar-rail"
-      aria-label="Toggle Sidebar"
+      aria-label="Prikaži/sakrij bočnu traku"
       tabIndex={-1}
       onClick={toggleSidebar}
-      title="Toggle Sidebar"
+      title="Prikaži/sakrij bočnu traku"
       className={cn(
         'hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex',
         'in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize',

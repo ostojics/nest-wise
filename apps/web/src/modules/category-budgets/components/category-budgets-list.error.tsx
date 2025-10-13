@@ -14,17 +14,17 @@ const CategoryBudgetsListError = ({onRetry, disabled}: CategoryBudgetsListErrorP
         <CardHeader className="border-b">
           <CardDescription className="flex items-center gap-2">
             <IconListDetails className="h-4 w-4" />
-            Category Budgets
+            Budžeti kategorija
           </CardDescription>
-          <CardTitle className="text-base text-red-600 dark:text-red-400">Error</CardTitle>
+          <CardTitle className="text-base text-red-600 dark:text-red-400">Greška</CardTitle>
         </CardHeader>
         <CardFooter className="flex items-center justify-between text-sm w-full pt-4">
           <div className="flex items-center gap-2 text-muted-foreground">
             <IconAlertTriangle className="h-4 w-4 text-yellow-500" />
-            <span>Failed to load category budgets.</span>
+            <span>Nije moguće učitati budžete kategorija.</span>
           </div>
           <Button variant="outline" size="sm" onClick={onRetry} disabled={disabled}>
-            Retry
+            Pokušaj ponovo
           </Button>
         </CardFooter>
       </Card>

@@ -59,36 +59,42 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, on
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>Edit Monthly Budget</DialogTitle>
+          <DialogTitle>Izmenite mesečni budžet</DialogTitle>
           <DialogDescription>
-            Update your monthly budget target. <br /> Current: {formatBalance(household?.monthlyBudget ?? 0)}
+            Ažurirajte ciljani mesečni budžet. <br /> Trenutno: {formatBalance(household?.monthlyBudget ?? 0)}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-3">
-          <div className="space-y-2">
-            <Label htmlFor="monthlyBudget">
-              Monthly Budget <span className="text-red-500">*</span>
-            </Label>
-            <Input id="monthlyBudget" type="number" step="0.01" placeholder="0.00" {...register('monthlyBudget')} />
-            {errors.monthlyBudget && <FormError error={errors.monthlyBudget.message ?? ''} />}
-          </div>
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-3">
+            <div className="space-y-2">
+              <Label htmlFor="monthlyBudget">
+                Mesečni budžet <span className="text-red-500">*</span>
+              </Label>
+              <Input id="monthlyBudget" type="number" step="0.01" placeholder="0.00" {...register('monthlyBudget')} />
+              {errors.monthlyBudget && <FormError error={errors.monthlyBudget.message ?? ''} />}
+            </div>
 
-          <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={updateHouseholdMutation.isPending}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
-            >
-              {updateHouseholdMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : 'Update Budget'}
-            </Button>
-          </div>
-        </form>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button type="button" variant="outline" onClick={handleCancel}>
+                Otkaži
+              </Button>
+              <Button
+                type="submit"
+                disabled={updateHouseholdMutation.isPending}
+                className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
+              >
+                {updateHouseholdMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  'Ažuriraj budžet'
+                )}
+              </Button>
+            </div>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

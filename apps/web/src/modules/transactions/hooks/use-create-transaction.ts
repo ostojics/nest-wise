@@ -1,4 +1,3 @@
-import {queryKeys} from '@/modules/api/query-keys';
 import {createTransactionForHousehold} from '@/modules/api/transactions-api';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
@@ -11,19 +10,16 @@ export const useCreateTransaction = () => {
 
   return useMutation({
     mutationFn: (transaction: CreateTransactionHouseholdDTO) => {
-      if (!me?.householdId) throw new Error('No household ID available');
+      if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
       return createTransactionForHousehold(me.householdId, transaction);
     },
     onSuccess: () => {
-      void client.invalidateQueries({queryKey: queryKeys.accounts.all()});
-      void client.invalidateQueries({queryKey: queryKeys.transactions.key()});
-      void client.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
-      void client.invalidateQueries({queryKey: queryKeys.transactions.allPagesKey()});
+      void client.invalidateQueries();
 
-      toast.success('Transaction created successfully');
+      toast.success('Transakcija je uspešno kreirana');
     },
     onError: () => {
-      toast.error('Failed to create transaction');
+      toast.error('Kreiranje transakcije nije uspelo');
     },
   });
 };

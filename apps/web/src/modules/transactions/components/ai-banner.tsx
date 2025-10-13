@@ -18,11 +18,10 @@ const AiBanner = () => {
       <div className="relative flex items-center gap-3">
         <div className="relative">
           <div
-            className={`w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center transition-all duration-1000 ${isListening ? 'scale-110 shadow-lg shadow-blue-500/30' : 'scale-100'}`}
+            className={`w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center transition-all duration-1000`}
           >
             <Brain className="w-5 h-5 text-white" />
           </div>
-
           {isListening && (
             <>
               <div className="absolute inset-0 rounded-full bg-blue-500/20 animate-ping" />
@@ -34,7 +33,7 @@ const AiBanner = () => {
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              NestWise Assistant
+              NestWise Asistent
             </span>
             <div className="flex gap-1">
               <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse" />
@@ -42,7 +41,7 @@ const AiBanner = () => {
               <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse animation-delay-200" />
             </div>
           </div>
-          <p className="text-sm text-muted-foreground">I'm ready to help you log your transaction...</p>
+          <p className="text-sm text-muted-foreground">Spreman sam da vam pomognem da zabeležite transakciju...</p>
         </div>
       </div>
     </div>

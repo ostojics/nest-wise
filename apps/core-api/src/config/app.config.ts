@@ -9,6 +9,7 @@ export interface AppConfig {
   resendApiKey: string;
   webAppUrl: string;
   cookieDomain: string | null;
+  logLevel: string;
 }
 
 export const AppConfigName = 'app';
@@ -25,6 +26,7 @@ export function getConfig(): AppConfig {
     resendApiKey: process.env.RESEND_API_KEY || '',
     webAppUrl: process.env.WEB_APP_URL || '',
     cookieDomain: process.env.COOKIE_DOMAIN || null,
+    logLevel: process.env.LOG_LEVEL || 'info',
   };
 }
 

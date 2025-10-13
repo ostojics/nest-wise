@@ -76,6 +76,26 @@ export class TransactionsController {
           description: 'Coffee at Starbucks - updated amount',
         },
       },
+      changeAccount: {
+        summary: 'Move to Another Account',
+        value: {
+          accountId: 'd4e5f6g7-h8i9-0123-defg-h45678901234',
+        },
+      },
+      changeTypeToIncome: {
+        summary: 'Change Type to Income (clears category)',
+        value: {
+          type: 'income',
+          categoryId: null,
+        },
+      },
+      changeTypeToExpense: {
+        summary: 'Change Type to Expense (requires category)',
+        value: {
+          type: 'expense',
+          categoryId: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
+        },
+      },
       reconcile: {
         summary: 'Mark as Reconciled',
         value: {

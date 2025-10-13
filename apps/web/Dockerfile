@@ -21,8 +21,12 @@ COPY --from=builder /app/out/json/ .
 RUN pnpm install --frozen-lockfile
 
 COPY --from=builder /app/out/full/ .
-ARG VITE_API_URL
-ENV VITE_API_URL=${VITE_API_URL}
+ARG API_URL
+ENV VITE_API_URL=${API_URL}
+ARG POSTHOG_KEY
+ENV VITE_PUBLIC_POSTHOG_KEY=${POSTHOG_KEY}
+ARG POSTHOG_HOST
+ENV VITE_PUBLIC_POSTHOG_HOST=${POSTHOG_HOST}
 
 RUN pnpm turbo run build
 

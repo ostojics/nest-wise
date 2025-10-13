@@ -33,30 +33,34 @@ export default function PrivateTransactionRowActions({transactionId}: PrivateTra
         <Button
           variant="ghost"
           className="text-red-500 hover:text-red-500"
-          title="Delete private transaction"
+          title="Obriši privatnu transakciju"
           size="icon"
-          aria-label="Delete"
+          aria-label="Obriši"
         >
           {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
-          <span className="sr-only">Delete private transaction</span>
+          <span className="sr-only">Obriši privatnu transakciju</span>
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="mb-3">
-          <DialogTitle>Delete private transaction</DialogTitle>
-          <DialogDescription>Are you sure you want to delete this private transaction?</DialogDescription>
+          <DialogTitle>Obriši privatnu transakciju</DialogTitle>
+          <DialogDescription>Da li ste sigurni da želite da obrišete ovu privatnu transakciju?</DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline" disabled={deleteMutation.isPending}>
-              Cancel
-            </Button>
-          </DialogClose>
-          <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Delete'}
-          </Button>
-        </DialogFooter>
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          <div className="space-y-4">
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" disabled={deleteMutation.isPending}>
+                  Otkaži
+                </Button>
+              </DialogClose>
+              <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
+                {deleteMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Obriši'}
+              </Button>
+            </DialogFooter>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

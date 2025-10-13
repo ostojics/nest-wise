@@ -87,7 +87,7 @@ export class AccountsController {
   async updateAccount(@Param('id') id: string, @Body() dto: EditAccountDTO, @CurrentUser() user: JwtPayload) {
     const canUpdate = await this.policiesService.canUserUpdateAccount(user.sub, id);
     if (!canUpdate) {
-      throw new ForbiddenException('You cannot update this account');
+      throw new ForbiddenException('Ne možete ažurirati ovaj račun');
     }
 
     return await this.accountsService.updateAccount(id, dto);

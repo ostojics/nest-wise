@@ -4,6 +4,9 @@ import {
   GetTransactionsQueryHouseholdDTO,
   GetAccountsSpendingQueryHouseholdDTO,
   GetSpendingSummaryQueryHouseholdDTO,
+  UpdateTransactionDTO,
+  AiTransactionJobResponseContract,
+  AiTransactionJobStatusContract,
 } from '@nest-wise/contracts';
 import httpClient from './http-client';
 import {
@@ -42,7 +45,13 @@ export const createAiTransactionForHousehold = async (
     .post(`v1/households/${householdId}/transactions/ai`, {
       json: transaction,
     })
-    .json();
+    .json<AiTransactionJobResponseContract>();
+};
+
+export const getAiTransactionJobStatus = async (householdId: string, jobId: string) => {
+  return await httpClient
+    .get(`v1/households/${householdId}/transactions/ai/${jobId}`)
+    .json<AiTransactionJobStatusContract>();
 };
 
 export const getNetWorthTrendForHousehold = async (householdId: string) => {
@@ -79,6 +88,18 @@ export const getCategoriesSpending = async (householdId: string, dto: GetSpendin
 };
 
 // Item-level endpoints (keep these since they operate on individual transactions)
+export const getTransaction = async (id: string) => {
+  return httpClient.get(`v1/transactions/${id}`).json();
+};
+
+export const updateTransaction = async (id: string, dto: UpdateTransactionDTO) => {
+  return httpClient
+    .put(`v1/transactions/${id}`, {
+      json: dto,
+    })
+    .json();
+};
+
 export const deleteTransaction = async (id: string) => {
   return httpClient.delete(`v1/transactions/${id}`).json();
 };

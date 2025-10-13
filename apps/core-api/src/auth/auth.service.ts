@@ -62,7 +62,7 @@ export class AuthService {
     const passwordIsValid = await verifyPassword(password, hashToVerify);
 
     if (!user || !passwordIsValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Neispravni kredencijali');
     }
 
     const token = await this.craftJwt(user.id, user.email);
@@ -110,19 +110,19 @@ export class AuthService {
       }>(dto.token);
 
       if (payload.purpose !== 'password-reset') {
-        throw new UnauthorizedException('Invalid token');
+        throw new UnauthorizedException('Neispravan token');
       }
 
       const user = await this.usersService.findUserById(payload.sub);
       if (user.email !== payload.email) {
-        throw new UnauthorizedException('Invalid token');
+        throw new UnauthorizedException('Neispravan token');
       }
 
       await this.usersService.setPassword(user.id, dto.password);
 
       return;
     } catch {
-      throw new UnauthorizedException('Invalid or expired token');
+      throw new UnauthorizedException('Neispravan ili istekao token');
     }
   }
 }

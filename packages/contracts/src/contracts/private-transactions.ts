@@ -11,7 +11,7 @@ export interface PrivateTransactionContract {
   amount: number;
   type: TransactionType;
   description: string | null;
-  transactionDate: Date;
+  transactionDate: string;
   account?: AccountContract;
   createdAt: Date;
   updatedAt: Date;
@@ -24,16 +24,33 @@ export interface GetPrivateTransactionsResponseContract {
 
 export const createPrivateTransactionSchema = z
   .object({
-    accountId: z.string().uuid('Account must be selected'),
+    accountId: z
+      .string({
+        required_error: 'Račun je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .uuid('Račun mora biti izabran'),
     amount: z.coerce
-      .number()
-      .min(0.01, 'Amount must be greater than 0')
-      .max(10000000, 'Amount must be less than 10,000,000'),
+      .number({
+        invalid_type_error: 'Neispravna vrednost (mora biti broj)',
+      })
+      .min(0.01, 'Iznos mora biti veći od 0')
+      .max(10000000, 'Iznos mora biti manji od 10.000.000'),
     type: z.enum(['income', 'expense'], {
-      errorMap: () => ({message: 'Type must be either income or expense'}),
+      errorMap: () => ({message: 'Tip mora biti prihod ili rashod'}),
     }),
-    description: z.string().min(1, 'Description is required').max(2048),
-    transactionDate: z.coerce.date(),
+    description: z
+      .string({
+        required_error: 'Opis je obavezan',
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .min(1, 'Opis je obavezan')
+      .max(2048, 'Opis može imati najviše 2048 karaktera'),
+    transactionDate: z
+      .string({
+        invalid_type_error: 'Neispravan datum',
+      })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'}),
   })
   .strict();
 
@@ -54,14 +71,47 @@ export type TPrivateTransactionSortField = z.infer<typeof privateTransactionSort
 
 export const getPrivateTransactionsQuerySchema = z
   .object({
-    q: z.string().max(2048, 'Search query must be less than 2048 characters').optional(),
-    accountId: z.string().uuid().optional(),
+    q: z
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .max(2048, 'Pretraga može imati najviše 2048 karaktera')
+      .optional(),
+    accountId: z
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .uuid('Račun mora biti izabran')
+      .optional(),
     type: z.enum(['income', 'expense']).optional(),
-    from: z.string().optional(),
-    to: z.string().optional(),
+    from: z
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
+      .optional(),
+    to: z
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .datetime({message: 'Datum mora biti u ISO 8601 formatu'})
+      .optional(),
     sort: privateTransactionSortFieldEnum.optional().default('-transactionDate'),
-    page: z.coerce.number().int().min(1).default(1),
-    pageSize: z.coerce.number().int().min(1).max(100).default(15),
+    page: z.coerce
+      .number({
+        invalid_type_error: 'Neispravna vrednost (mora biti broj)',
+      })
+      .int()
+      .min(1)
+      .default(1),
+    pageSize: z.coerce
+      .number({
+        invalid_type_error: 'Neispravna vrednost (mora biti broj)',
+      })
+      .int()
+      .min(1)
+      .max(100)
+      .default(15),
   })
   .strict();
 

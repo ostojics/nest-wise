@@ -17,7 +17,7 @@ export const useCreateAccountMutation = ({householdId, closeDialog}: UseCreateAc
     mutationFn: (dto: CreateAccountHouseholdScopedDTO) => createAccountForHousehold(householdId, dto),
     onSuccess: () => {
       void client.invalidateQueries({queryKey: queryKeys.accounts.all()});
-      toast.success('Account created successfully');
+      toast.success('Račun je uspešno kreiran');
       closeDialog();
     },
     onError: async (error) => {
@@ -29,7 +29,7 @@ export const useCreateAccountMutation = ({householdId, closeDialog}: UseCreateAc
         return;
       }
 
-      toast.error('Failed to create account');
+      toast.error('Kreiranje računa nije uspelo');
     },
   });
 };

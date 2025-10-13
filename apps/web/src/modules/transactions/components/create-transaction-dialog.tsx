@@ -4,6 +4,8 @@ import {Label} from '@/components/ui/label';
 import {AiTransactionForm} from './ai-transaction-form';
 import {ManualTransactionForm} from './manual-transaction-form';
 import {useState} from 'react';
+import {useMutationState} from '@tanstack/react-query';
+import {mutationKeys} from '@/modules/api/mutation-keys';
 
 interface CreateTransactionDialogProps {
   open: boolean;
@@ -12,6 +14,11 @@ interface CreateTransactionDialogProps {
 
 export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionDialogProps) {
   const [isManualMode, setIsManualMode] = useState(false);
+  const pendingStatuses = useMutationState({
+    filters: {mutationKey: mutationKeys.transactions.createAiTransaction()},
+    select: (mutation) => mutation.state.status === 'pending',
+  });
+  const isLatestPending = pendingStatuses.at(-1) ?? false;
 
   const handleSuccess = () => {
     setIsManualMode(false);
@@ -25,31 +32,35 @@ export function CreateTransactionDialog({open, onOpenChange}: CreateTransactionD
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>Log Transaction</DialogTitle>
+          <DialogTitle>Zabeleži transakciju</DialogTitle>
           {!isManualMode && (
             <p className="text-sm text-muted-foreground text-balance">
-              Just describe the transaction - AI will handle the rest!
+              Samo opišite transakciju, AI će uraditi ostalo.
             </p>
           )}
         </DialogHeader>
-        <DialogDescription className="hidden">Create transaction</DialogDescription>
-        <div className="flex items-center space-x-2 pb-4">
-          <Checkbox
-            id="manual-mode"
-            checked={isManualMode}
-            onCheckedChange={(checked) => setIsManualMode(checked === true)}
-          />
-          <Label htmlFor="manual-mode" className="text-sm text-muted-foreground">
-            Manual input
-          </Label>
-        </div>
-        {isManualMode ? (
-          <ManualTransactionForm onSuccess={handleSuccess} onCancel={handleCancel} />
-        ) : (
-          <AiTransactionForm onSuccess={handleSuccess} onCancel={handleCancel} />
+        <DialogDescription className="hidden">Kreiraj transakciju</DialogDescription>
+        {!isLatestPending && (
+          <div className="flex items-center space-x-2 pb-4">
+            <Checkbox
+              id="manual-mode"
+              checked={isManualMode}
+              onCheckedChange={(checked) => setIsManualMode(checked === true)}
+            />
+            <Label htmlFor="manual-mode" className="text-sm text-muted-foreground">
+              Ručni unos
+            </Label>
+          </div>
         )}
+        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+          {isManualMode ? (
+            <ManualTransactionForm onSuccess={handleSuccess} onCancel={handleCancel} />
+          ) : (
+            <AiTransactionForm onSuccess={handleSuccess} onCancel={handleCancel} />
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
