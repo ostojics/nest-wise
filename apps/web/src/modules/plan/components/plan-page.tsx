@@ -18,8 +18,10 @@ const PlanPage = () => {
       </section>
       <div className="flex flex-col items-start justify-between gap-4">
         <div className="space-y-1.5">
-          <h3 className="text-xl font-semibold">Planirajte troškove domaćinstva po kategorijama</h3>
-          <p className="text-muted-foreground text-sm">
+          <h3 className="text-xl font-semibold" data-testid="plan-page-title">
+            Planirajte troškove domaćinstva po kategorijama
+          </h3>
+          <p className="text-muted-foreground text-sm" data-testid="plan-page-description">
             Postavite planirani iznos za svaku kategoriju. Kako unosite transakcije, vaša potrošnja se automatski prati
             za izabrani mesec.
           </p>

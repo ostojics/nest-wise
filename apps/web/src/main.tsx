@@ -23,27 +23,49 @@ declare module '@tanstack/react-router' {
   }
 }
 
+setDefaultOptions({locale: srLatn});
+
 const rootElement = document.getElementById('root');
 if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-setDefaultOptions({locale: srLatn});
+// Enable MSW when MSW_ENABLED is set
+async function enableMocking() {
+  if (import.meta.env.VITE_MSW_ENABLED !== 'true') {
+    return;
+  }
 
-createRoot(rootElement).render(
-  <StrictMode>
-    <PostHogProvider
-      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
-      options={{
-        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-        defaults: '2025-05-24',
-        capture_exceptions: true,
-        debug: import.meta.env.DEV,
-      }}
-    >
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </PostHogProvider>
-  </StrictMode>,
-);
+  const {worker} = await import('./msw/worker');
+  return worker.start({
+    serviceWorker: {
+      url: '/mockServiceWorker.js',
+    },
+    onUnhandledRequest: 'warn',
+  });
+}
+
+enableMocking()
+  .catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error('Failed to start MSW:', error);
+  })
+  .finally(() => {
+    createRoot(rootElement).render(
+      <StrictMode>
+        <PostHogProvider
+          apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+          options={{
+            api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+            defaults: '2025-05-24',
+            capture_exceptions: true,
+            debug: import.meta.env.DEV,
+          }}
+        >
+          <QueryClientProvider client={queryClient}>
+            <App />
+          </QueryClientProvider>
+        </PostHogProvider>
+      </StrictMode>,
+    );
+  });
