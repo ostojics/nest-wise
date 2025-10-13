@@ -26,7 +26,7 @@ const mockTransactions: TransactionContract[] = [
     amount: 25000, // $250.00
     type: TransactionType.EXPENSE,
     description: 'Grocery shopping',
-    transactionDate: new Date('2024-01-15T00:00:00.000Z'),
+    transactionDate: new Date('2024-01-15T00:00:00.000Z').toISOString(),
     isReconciled: true,
     createdAt: new Date('2024-01-15T00:00:00.000Z'),
     updatedAt: new Date('2024-01-15T00:00:00.000Z'),
@@ -41,7 +41,7 @@ const mockTransactions: TransactionContract[] = [
     amount: 15000, // $150.00
     type: TransactionType.EXPENSE,
     description: 'Utility bill',
-    transactionDate: new Date('2024-01-10T00:00:00.000Z'),
+    transactionDate: new Date('2024-01-10T00:00:00.000Z').toISOString(),
     isReconciled: true,
     createdAt: new Date('2024-01-10T00:00:00.000Z'),
     updatedAt: new Date('2024-01-10T00:00:00.000Z'),
