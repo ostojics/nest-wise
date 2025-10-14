@@ -1,8 +1,9 @@
 import {mutationKeys} from '@/modules/api/mutation-keys';
 import {createAiTransactionForHousehold, getAiTransactionJobStatus} from '@/modules/api/transactions-api';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
-import {CreateTransactionAiHouseholdDTO, AiTransactionJobStatus} from '@nest-wise/contracts';
+import {CreateTransactionAiHouseholdDTO, AiTransactionJobStatus, ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {HTTPError} from 'ky';
 import {toast} from 'sonner';
 
 export const useCreateTransactionAI = () => {
@@ -41,7 +42,15 @@ export const useCreateTransactionAI = () => {
       await client.invalidateQueries();
       toast.success('Transakcija je uspešno obrađena');
     },
-    onError: () => {
+    onError: async (error) => {
+      const typedError = error as HTTPError<ErrorResponse>;
+      const err = await typedError.response.json();
+
+      if (err.message) {
+        toast.error(err.message);
+        return;
+      }
+
       toast.error('Obrada transakcije nije uspela');
     },
   });

@@ -19,7 +19,13 @@ const App = () => {
     <>
       <RouterProvider router={router} context={{isAuthenticated: Boolean(data && !isError)}} />
       <ReactQueryDevtools initialIsOpen={false} />
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          classNames: {
+            toast: 'app-toast',
+          },
+        }}
+      />
       <PwaUpdater />
     </>
   );

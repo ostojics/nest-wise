@@ -130,3 +130,15 @@
 .animation-delay-200 {
   animation-delay: 200ms;
 }
+
+.app-toast[data-type='error'] {
+  background-color: var(--destructive);
+  color: #fff;
+  border-color: var(--destructive);
+}
+
+.app-toast[data-type='success'] {
+  background-color: var(--chart-5);
+  color: #fff;
+  border-color: var(--chart-5);
+}
