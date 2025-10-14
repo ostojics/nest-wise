@@ -2,8 +2,8 @@ import {useQuery} from '@tanstack/react-query';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {getTransactionsForHousehold} from '@/modules/api/transactions-api';
 import {TransactionContract} from '@nest-wise/contracts';
-import {dateAtNoon} from '@/lib/utils';
-import {addDays, format, startOfDay} from 'date-fns';
+import {dateAtNoon, getWeeklyOverviewKey} from '@/lib/utils';
+import {addDays, startOfDay} from 'date-fns';
 import {DayData} from '@/modules/plan/weekly-spending-overview/hooks/use-selected-day-data';
 
 const DAY_LABELS = ['Ponedeljak', 'Utorak', 'Sreda', 'Četvrtak', 'Petak', 'Subota', 'Nedelja'];
@@ -53,14 +53,14 @@ export const useWeeklyTransactions = ({weekStart, weekEnd}: UseWeeklyTransaction
 
       for (let i = 0; i < 7; i++) {
         const dayDate = addDays(weekStart, i);
-        const key = format(dayDate, 'yyyy-MM-dd');
+        const key = getWeeklyOverviewKey(dayDate);
         byDay[key] = {total: 0, transactions: []};
       }
 
       // Group transactions and calculate totals
       allTransactions.forEach((tx) => {
         const txDate = new Date(tx.transactionDate);
-        const key = format(txDate, 'yyyy-MM-dd');
+        const key = getWeeklyOverviewKey(txDate);
 
         if (byDay[key]) {
           byDay[key].transactions.push(tx);
@@ -71,7 +71,7 @@ export const useWeeklyTransactions = ({weekStart, weekEnd}: UseWeeklyTransaction
       const days: DayData[] = [];
       for (let i = 0; i < 7; i++) {
         const dayDate = addDays(weekStart, i);
-        const key = format(dayDate, 'yyyy-MM-dd');
+        const key = getWeeklyOverviewKey(dayDate);
         const dayData = byDay[key];
 
         if (dayData) {
@@ -86,7 +86,7 @@ export const useWeeklyTransactions = ({weekStart, weekEnd}: UseWeeklyTransaction
         }
       }
 
-      const todayKey = format(today, 'yyyy-MM-dd');
+      const todayKey = getWeeklyOverviewKey(today);
       const initialSelectedDay = days.find((d) => d.key === todayKey)?.key ?? days[0]?.key ?? '';
 
       return {

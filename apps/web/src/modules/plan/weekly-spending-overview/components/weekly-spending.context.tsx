@@ -1,5 +1,6 @@
 import React, {createContext, useContext, useState} from 'react';
 import {startOfWeek, endOfWeek, addWeeks, subWeeks} from 'date-fns';
+import {getWeeklyOverviewKey} from '@/lib/utils';
 
 interface WeeklySpendingContextValue {
   selectedDayKey: string;
@@ -15,25 +16,29 @@ const WeeklySpendingContext = createContext<WeeklySpendingContextValue | undefin
 
 interface WeeklySpendingProviderProps {
   children: React.ReactNode;
-  initialSelectedDay: string;
 }
 
-export function WeeklySpendingProvider({children, initialSelectedDay}: WeeklySpendingProviderProps) {
-  const [selectedDayKey, setSelectedDayKey] = useState(initialSelectedDay);
+export function WeeklySpendingProvider({children}: WeeklySpendingProviderProps) {
+  const [selectedDayKey, setSelectedDayKey] = useState(() => getWeeklyOverviewKey(new Date()));
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date(), {weekStartsOn: 1}));
-
   const weekEnd = endOfWeek(weekStart, {weekStartsOn: 1});
 
   const goToPreviousWeek = () => {
-    setWeekStart((prev) => subWeeks(prev, 1));
+    const newStart = subWeeks(weekStart, 1);
+    setWeekStart(newStart);
+    setSelectedDayKey(getWeeklyOverviewKey(newStart));
   };
 
   const goToNextWeek = () => {
-    setWeekStart((prev) => addWeeks(prev, 1));
+    const newStart = addWeeks(weekStart, 1);
+    setWeekStart(newStart);
+    setSelectedDayKey(getWeeklyOverviewKey(newStart));
   };
 
   const goToCurrentWeek = () => {
-    setWeekStart(startOfWeek(new Date(), {weekStartsOn: 1}));
+    const newStart = startOfWeek(new Date(), {weekStartsOn: 1});
+    setWeekStart(newStart);
+    setSelectedDayKey(getWeeklyOverviewKey(newStart));
   };
 
   return (

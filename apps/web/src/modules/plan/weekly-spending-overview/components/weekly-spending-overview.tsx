@@ -20,7 +20,7 @@ function WeeklySpendingOverviewInner() {
 
 export default function WeeklySpendingOverview() {
   return (
-    <WeeklySpendingProvider initialSelectedDay="">
+    <WeeklySpendingProvider>
       <WeeklySpendingOverviewInner />
     </WeeklySpendingProvider>
   );

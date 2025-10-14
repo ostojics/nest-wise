@@ -1,13 +1,10 @@
 import {Button} from '@/components/ui/button';
 import {ChevronLeft, ChevronRight} from 'lucide-react';
-import {format, isSameWeek} from 'date-fns';
+import {format} from 'date-fns';
 import {useWeeklySpending} from './weekly-spending.context';
 
 export default function WeekNavigation() {
-  const {weekStart, weekEnd, goToPreviousWeek, goToNextWeek, goToCurrentWeek} = useWeeklySpending();
-
-  const isCurrentWeek = isSameWeek(weekStart, new Date(), {weekStartsOn: 1});
-
+  const {weekStart, weekEnd, goToPreviousWeek, goToNextWeek} = useWeeklySpending();
   const weekRangeText = `${format(weekStart, 'd.M.')} - ${format(weekEnd, 'd.M.yyyy')}`;
 
   return (
@@ -16,13 +13,8 @@ export default function WeekNavigation() {
         <ChevronLeft className="h-4 w-4" />
       </Button>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col items-center gap-2">
         <span className="text-sm font-medium">{weekRangeText}</span>
-        {!isCurrentWeek && (
-          <Button variant="ghost" size="sm" onClick={goToCurrentWeek}>
-            Trenutna nedelja
-          </Button>
-        )}
       </div>
 
       <Button variant="outline" size="icon" onClick={goToNextWeek} aria-label="Sledeća nedelja">
