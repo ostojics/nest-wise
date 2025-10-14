@@ -34,6 +34,7 @@ import {
   TransactionResponseSwaggerDTO,
   NetWorthTrendPointSwaggerDTO,
   AccountSpendingPointSwaggerDTO,
+  AiTransactionSuggestionSwaggerDTO,
 } from 'src/tools/swagger/transactions.swagger.dto';
 import {TransactionsService} from '../transactions/transactions.service';
 import {
@@ -213,9 +214,9 @@ export class HouseholdTransactionsController {
   }
 
   @ApiOperation({
-    summary: 'Create a transaction using AI analysis for a household (async)',
+    summary: 'Request AI transaction suggestion for a household (async)',
     description:
-      'Enqueues a background job to create a transaction for the specified household by analyzing a natural language description using AI. Returns immediately with a job ID that can be used to poll for completion.',
+      'Enqueues a background job to generate a transaction suggestion by analyzing a natural language description using AI. Returns immediately with a job ID that can be used to poll for the suggestion. The suggestion is NOT saved to the database and must be confirmed by the user.',
   })
   @ApiParam({
     name: 'householdId',
@@ -226,7 +227,7 @@ export class HouseholdTransactionsController {
   })
   @ApiBody({
     type: CreateTransactionAiSwaggerDTO,
-    description: 'Transaction creation data with natural language description for AI analysis',
+    description: 'Transaction data with natural language description for AI analysis',
     examples: {
       expense: {
         summary: 'Expense Transaction',
@@ -290,9 +291,9 @@ export class HouseholdTransactionsController {
   }
 
   @ApiOperation({
-    summary: 'Get AI transaction job status',
+    summary: 'Get AI transaction suggestion job status',
     description:
-      'Retrieves the current status of an AI transaction background job, including the created transaction if completed.',
+      'Retrieves the current status of an AI transaction suggestion background job, including the suggestion if completed. The suggestion has NOT been saved to the database yet.',
   })
   @ApiParam({
     name: 'householdId',
@@ -323,9 +324,9 @@ export class HouseholdTransactionsController {
           description: 'Current status of the job',
           example: 'completed',
         },
-        transaction: {
+        suggestion: {
           type: 'object',
-          description: 'The created transaction (only present when status is completed)',
+          description: 'The AI-generated transaction suggestion (only present when status is completed)',
           nullable: true,
         },
         error: {

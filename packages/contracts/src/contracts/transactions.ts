@@ -385,9 +385,21 @@ export interface AiTransactionJobResponseContract {
   status: AiTransactionJobStatus;
 }
 
+// AI Transaction Suggestion (returned by backend, not saved to DB yet)
+export interface AiTransactionSuggestion {
+  transactionAmount: number;
+  transactionType: 'income' | 'expense';
+  transactionDate: string; // ISO 8601 timestamp
+  newCategorySuggested: boolean;
+  suggestedCategory: {
+    existingCategoryId?: string;
+    newCategoryName?: string;
+  };
+}
+
 export interface AiTransactionJobStatusContract {
   jobId: string;
   status: AiTransactionJobStatus;
-  transaction?: TransactionContract;
+  suggestion?: AiTransactionSuggestion;
   error?: string;
 }

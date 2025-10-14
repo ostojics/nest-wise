@@ -19,6 +19,7 @@ import {
   AiTransactionJobResponseContract,
   AiTransactionJobStatusContract,
   AiTransactionJobStatus,
+  AiTransactionSuggestion,
 } from '@nest-wise/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectQueue} from '@nestjs/bullmq';
@@ -199,6 +200,60 @@ export class TransactionsService {
     });
   }
 
+  /**
+   * Generate an AI transaction suggestion without creating a transaction.
+   * This is used by the background job to return a suggestion that the user can confirm.
+   */
+  async generateAiTransactionSuggestion(
+    householdId: string,
+    transactionData: CreateTransactionAiHouseholdDTO,
+  ): Promise<AiTransactionSuggestion> {
+    const account = await this.accountsService.findAccountById(transactionData.accountId);
+
+    // Verify account belongs to the household
+    if (account.householdId !== householdId) {
+      throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
+    }
+
+    const household = await this.householdsService.findHouseholdById(householdId);
+    const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
+
+    const {object} = await generateObject({
+      model: openai('gpt-5-nano-2025-08-07'),
+      prompt: categoryPromptFactory({
+        categories,
+        transactionDescription: transactionData.description,
+        currentDate: transactionData.currentDate,
+      }),
+      temperature: 0.1,
+      schema: transactionCategoryOutputSchema,
+      abortSignal: AbortSignal.timeout(20_000),
+    });
+
+    if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
+      throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
+    }
+
+    // Return suggestion without creating a transaction
+    const suggestion: AiTransactionSuggestion = {
+      transactionAmount: object.transactionAmount,
+      transactionType: object.transactionType as 'income' | 'expense',
+      transactionDate: object.transactionDate,
+      newCategorySuggested: object.newCategorySuggested,
+      suggestedCategory: {
+        existingCategoryId: object.suggestedCategory.existingCategoryId || undefined,
+        newCategoryName: object.suggestedCategory.newCategoryName || undefined,
+      },
+    };
+
+    return suggestion;
+  }
+
+  /**
+   * @deprecated Use generateAiTransactionSuggestion instead.
+   * This method creates a transaction directly, which is not the desired flow.
+   * Keep for backwards compatibility but should be removed after migration.
+   */
   async createTransactionAiForHousehold(
     householdId: string,
     transactionData: CreateTransactionAiHouseholdDTO,
@@ -538,7 +593,7 @@ export class TransactionsService {
     this.logger.debug('AI transaction job status fetched', {jobId, status});
 
     if (status === AiTransactionJobStatus.COMPLETED) {
-      response.transaction = job.returnvalue as TransactionContract;
+      response.suggestion = job.returnvalue as AiTransactionSuggestion;
     } else if (status === AiTransactionJobStatus.FAILED) {
       response.error = job.failedReason || 'Obrada transakcije nije uspela';
     }

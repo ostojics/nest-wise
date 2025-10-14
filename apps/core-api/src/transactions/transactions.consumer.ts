@@ -16,21 +16,21 @@ export class TransactionsConsumer extends WorkerHost {
 
   async process(job: Job) {
     const payload = job.data as ProcessAiTransactionPayload;
-    this.logger.debug('Processing AI transaction job', {jobId: job.id, payload});
+    this.logger.debug('Processing AI transaction suggestion job', {jobId: job.id, payload});
 
     try {
-      const transaction = await this.transactionsService.createTransactionAiForHousehold(
+      const suggestion = await this.transactionsService.generateAiTransactionSuggestion(
         payload.householdId,
         payload.transactionData,
       );
 
-      this.logger.debug('AI transaction job completed successfully', {
+      this.logger.debug('AI transaction suggestion job completed successfully', {
         jobId: job.id,
-        transactionId: transaction.id,
+        suggestion,
       });
-      return transaction;
+      return suggestion;
     } catch (error: unknown) {
-      this.logger.error('AI transaction job failed', {
+      this.logger.error('AI transaction suggestion job failed', {
         jobId: job.id,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
