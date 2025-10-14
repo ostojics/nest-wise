@@ -34,7 +34,6 @@ import {
   TransactionResponseSwaggerDTO,
   NetWorthTrendPointSwaggerDTO,
   AccountSpendingPointSwaggerDTO,
-  AiTransactionSuggestionSwaggerDTO,
 } from 'src/tools/swagger/transactions.swagger.dto';
 import {TransactionsService} from '../transactions/transactions.service';
 import {

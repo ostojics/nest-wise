@@ -12,13 +12,10 @@ import {useValidateCreateTransaction} from '@/modules/transactions/hooks/use-val
 import {CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
 import {useEffect} from 'react';
+import {useCreateTransactionDialog} from './create-transaction-dialog.context';
 
-interface ManualTransactionFormProps {
-  onSuccess: () => void;
-  onCancel: () => void;
-}
-
-export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFormProps) {
+export function ManualTransactionForm() {
+  const {success, close} = useCreateTransactionDialog();
   const {data: accounts} = useGetHouseholdAccounts();
   const {data: categories} = useGetHouseholdCategories();
   const hasAccounts = (accounts ?? []).length > 0;
@@ -41,10 +38,10 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
   const onSubmit = async (data: CreateTransactionHouseholdDTO) => {
     await createTransactionMutation.mutateAsync(data, {
       onSuccess: () => {
-        onSuccess();
+        success();
       },
       onError: () => {
-        onCancel();
+        close();
       },
       onSettled: () => {
         reset();
@@ -169,7 +166,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button type="button" variant="outline" onClick={close}>
           Otkaži
         </Button>
         <Button

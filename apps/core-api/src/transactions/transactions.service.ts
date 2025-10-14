@@ -237,7 +237,7 @@ export class TransactionsService {
     // Return suggestion without creating a transaction
     const suggestion: AiTransactionSuggestion = {
       transactionAmount: object.transactionAmount,
-      transactionType: object.transactionType as 'income' | 'expense',
+      transactionType: object.transactionType,
       transactionDate: object.transactionDate,
       newCategorySuggested: object.newCategorySuggested,
       suggestedCategory: {

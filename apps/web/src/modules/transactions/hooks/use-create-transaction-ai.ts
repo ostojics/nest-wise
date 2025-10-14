@@ -26,8 +26,10 @@ export const useCreateTransactionAI = () => {
 
         const status = await getAiTransactionJobStatus(me.householdId, jobResponse.jobId);
 
-        if (status.status === AiTransactionJobStatus.COMPLETED) {
-          return status.transaction;
+        if (status.status === AiTransactionJobStatus.COMPLETED && status.suggestion) {
+          // Legacy: This hook is deprecated, but we keep it for backwards compatibility
+          // In the new flow, we don't create transactions automatically
+          throw new Error('This endpoint now returns suggestions, not transactions. Use the new flow.');
         } else if (status.status === AiTransactionJobStatus.FAILED) {
           throw new Error(status.error ?? 'Obrada transakcije nije uspela');
         }
