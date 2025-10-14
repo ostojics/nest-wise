@@ -1,10 +1,10 @@
 import {useQuery} from '@tanstack/react-query';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {getTransactionsForHousehold} from '@/modules/api/transactions-api';
-import {TransactionContract, TransactionType} from '@nest-wise/contracts';
+import {TransactionContract} from '@nest-wise/contracts';
 import {getStartAndEndOfWeekIso} from '@/lib/utils';
-import {startOfWeek, addDays, format, isFuture, isToday, startOfDay} from 'date-fns';
-import {DayData} from '../components/weekly-spending.context';
+import {startOfWeek, addDays, format, startOfDay} from 'date-fns';
+import {DayData} from '@/modules/plan/weekly-spending-overview/hooks/use-selected-day-data';
 
 const DAY_LABELS = ['Ponedeljak', 'Utorak', 'Sreda', 'Četvrtak', 'Petak', 'Subota', 'Nedelja'];
 const DAY_SHORT_LABELS = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'];
@@ -30,6 +30,7 @@ export const useWeeklyTransactions = () => {
         const response = await getTransactionsForHousehold(me.householdId, {
           from: start,
           to: end,
+          type: 'expense',
           page: currentPage,
           pageSize: 100, // Use maximum page size
           sort: '-transactionDate',
@@ -51,26 +52,16 @@ export const useWeeklyTransactions = () => {
         byDay[key] = {total: 0, transactions: []};
       }
 
-      // Group transactions and calculate totals (expenses only)
+      // Group transactions and calculate totals
       allTransactions.forEach((tx) => {
         const txDate = new Date(tx.transactionDate);
         const key = format(txDate, 'yyyy-MM-dd');
 
         if (byDay[key]) {
           byDay[key].transactions.push(tx);
-          // Only count expenses for "spending" total
-          if (tx.type === TransactionType.EXPENSE) {
-            byDay[key].total += Number(tx.amount);
-          }
+          byDay[key].total += Number(tx.amount);
         }
       });
-
-      // // Sort each day's transactions by date descending
-      // Object.values(byDay).forEach((dayData) => {
-      //   dayData.transactions.sort((a, b) => {
-      //     return new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime();
-      //   });
-      // });
 
       const days: DayData[] = [];
       for (let i = 0; i < 7; i++) {
@@ -86,7 +77,6 @@ export const useWeeklyTransactions = () => {
             shortLabel: DAY_SHORT_LABELS[i] ?? '',
             total: dayData.total,
             transactions: dayData.transactions,
-            isFuture: isFuture(dayDate) && !isToday(dayDate),
           });
         }
       }

@@ -3,9 +3,14 @@ import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {format} from 'date-fns';
 import {useWeeklySpending} from './weekly-spending.context';
+import {DayData} from '../hooks/use-selected-day-data';
 
-export default function WeekDayStrip() {
-  const {days, selectedDayKey, setSelectedDayKey} = useWeeklySpending();
+interface WeekDayStripProps {
+  days: DayData[];
+}
+
+export default function WeekDayStrip({days}: WeekDayStripProps) {
+  const {selectedDayKey, setSelectedDayKey} = useWeeklySpending();
   const {formatBalance} = useFormatBalance();
 
   return (
@@ -20,13 +25,12 @@ export default function WeekDayStrip() {
             className={cn(
               'p-3 cursor-pointer transition-all hover:border-primary/50',
               isSelected && 'border-primary bg-primary/5',
-              day.isFuture && 'opacity-40 pointer-events-none',
             )}
-            onClick={() => !day.isFuture && setSelectedDayKey(day.key)}
+            onClick={() => setSelectedDayKey(day.key)}
             role="button"
-            tabIndex={day.isFuture ? -1 : 0}
+            tabIndex={0}
             onKeyDown={(e) => {
-              if ((e.key === 'Enter' || e.key === ' ') && !day.isFuture) {
+              if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 setSelectedDayKey(day.key);
               }
