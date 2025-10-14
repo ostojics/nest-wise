@@ -37,9 +37,7 @@ export default function WeeklySpendingContent({days}: WeeklySpendingContentProps
             <WeekDaySelect days={days} />
             <div className="text-sm">
               <span className="text-muted-foreground">Ukupna potrošnja: </span>
-              <span className={selectedDayData.total > 0 ? 'text-red-600 font-medium' : 'text-muted-foreground'}>
-                {formatBalance(selectedDayData.total)}
-              </span>
+              <span className="font-medium">{formatBalance(selectedDayData.total)}</span>
             </div>
           </div>
         ) : (
