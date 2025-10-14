@@ -1,3 +1,4 @@
+import React from 'react';
 import {CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Separator} from '@/components/ui/separator';
 import {Accordion} from '@/components/ui/accordion';
@@ -5,9 +6,11 @@ import {useIsMobile, TABLET_BREAKPOINT} from '@/hooks/use-mobile';
 import TransactionAccordionItem from '@/modules/transactions/components/transaction-accordion-item';
 import WeekDayStrip from './week-day-strip';
 import WeekDaySelect from './week-day-select';
+import WeekNavigation from './week-navigation';
 import {useWeeklySpending} from './weekly-spending.context';
 import {useSelectedDayData, DayData} from '../hooks/use-selected-day-data';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
+import {format} from 'date-fns';
 
 interface WeeklySpendingContentProps {
   days: DayData[];
@@ -15,9 +18,19 @@ interface WeeklySpendingContentProps {
 
 export default function WeeklySpendingContent({days}: WeeklySpendingContentProps) {
   const isMobileOrTablet = useIsMobile(TABLET_BREAKPOINT);
-  const {selectedDayKey} = useWeeklySpending();
+  const {selectedDayKey, setSelectedDayKey} = useWeeklySpending();
   const selectedDayData = useSelectedDayData({days, selectedDayKey});
   const {formatBalance} = useFormatBalance();
+
+  // Set initial selected day when days change or if no day is selected
+  React.useEffect(() => {
+    if (days.length > 0 && (!selectedDayKey || !days.find((d) => d.key === selectedDayKey))) {
+      const today = new Date();
+      const todayKey = format(today, 'yyyy-MM-dd');
+      const todayDay = days.find((d) => d.key === todayKey);
+      setSelectedDayKey(todayDay?.key ?? (days[0]?.key || ''));
+    }
+  }, [days, selectedDayKey, setSelectedDayKey]);
 
   if (!selectedDayData) {
     return null;
@@ -32,6 +45,10 @@ export default function WeeklySpendingContent({days}: WeeklySpendingContentProps
         <CardDescription>Pregled dnevne potrošnje i transakcija</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        <WeekNavigation />
+
+        <Separator />
+
         {isMobileOrTablet ? (
           <div className="space-y-2">
             <WeekDaySelect days={days} />

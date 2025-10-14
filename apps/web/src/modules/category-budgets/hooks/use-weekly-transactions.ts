@@ -2,26 +2,32 @@ import {useQuery} from '@tanstack/react-query';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {getTransactionsForHousehold} from '@/modules/api/transactions-api';
 import {TransactionContract} from '@nest-wise/contracts';
-import {getStartAndEndOfWeekIso} from '@/lib/utils';
-import {startOfWeek, addDays, format, startOfDay} from 'date-fns';
+import {dateAtNoon} from '@/lib/utils';
+import {addDays, format, startOfDay} from 'date-fns';
 import {DayData} from '@/modules/plan/weekly-spending-overview/hooks/use-selected-day-data';
 
 const DAY_LABELS = ['Ponedeljak', 'Utorak', 'Sreda', 'Četvrtak', 'Petak', 'Subota', 'Nedelja'];
 const DAY_SHORT_LABELS = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'];
 
+interface UseWeeklyTransactionsArgs {
+  weekStart: Date;
+  weekEnd: Date;
+}
+
 /**
- * Fetches all transactions for the current week and groups them by day.
+ * Fetches all transactions for the specified week and groups them by day.
  * Paginates through all results using maximum page size.
  */
-export const useWeeklyTransactions = () => {
+export const useWeeklyTransactions = ({weekStart, weekEnd}: UseWeeklyTransactionsArgs) => {
   const {data: me} = useGetMe();
 
   return useQuery({
-    queryKey: ['weekly-transactions', me?.householdId],
+    queryKey: ['weekly-transactions', me?.householdId, weekStart.toISOString(), weekEnd.toISOString()],
     queryFn: async () => {
       if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
 
-      const {start, end} = getStartAndEndOfWeekIso();
+      const start = dateAtNoon(weekStart).toISOString();
+      const end = dateAtNoon(weekEnd).toISOString();
       const allTransactions: TransactionContract[] = [];
       let currentPage = 1;
       let hasMore = true;
@@ -42,7 +48,6 @@ export const useWeeklyTransactions = () => {
         currentPage++;
       }
 
-      const weekStart = startOfWeek(new Date(), {weekStartsOn: 1});
       const today = startOfDay(new Date());
       const byDay: Record<string, {total: number; transactions: TransactionContract[]}> = {};
 
