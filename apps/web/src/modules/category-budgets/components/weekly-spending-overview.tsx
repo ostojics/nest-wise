@@ -22,14 +22,12 @@ function WeeklySpendingContent() {
   return (
     <>
       <CardHeader>
-        <CardTitle>Potrošnja za tekuću nedelju</CardTitle>
+        <CardTitle>Potrošnja za tekuću sedmicu</CardTitle>
         <CardDescription>Pregled dnevne potrošnje i transakcija</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {isMobileOrTablet ? <WeekDaySelect /> : <WeekDayStrip />}
-
         <Separator />
-
         <div className="max-h-[31.25rem] overflow-y-auto">
           {transactions.length === 0 ? (
             <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">
@@ -54,7 +52,7 @@ function WeeklySpendingLoading() {
   return (
     <>
       <CardHeader>
-        <CardTitle>Potrošnja za tekuću nedelju</CardTitle>
+        <CardTitle>Potrošnja za tekuću sedmicu</CardTitle>
         <CardDescription>Pregled dnevne potrošnje i transakcija</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -74,7 +72,7 @@ function WeeklySpendingError() {
   return (
     <>
       <CardHeader>
-        <CardTitle>Potrošnja za tekuću nedelju</CardTitle>
+        <CardTitle>Potrošnja za tekuću sedmicu</CardTitle>
         <CardDescription>Pregled dnevne potrošnje i transakcija</CardDescription>
       </CardHeader>
       <CardContent>

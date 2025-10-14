@@ -19,7 +19,7 @@ export default function TransactionAccordionItem({transaction: tx, actions}: Tra
 
   return (
     <AccordionItem key={tx.id} value={String(tx.id)}>
-      <AccordionTrigger className="px-4">
+      <AccordionTrigger className="px-4 hover:no-underline cursor-pointer">
         <div className="w-full flex items-center justify-between gap-5 py-1.5 @container/tx">
           <div className="min-w-0 flex-1 text-left">
             <div className="truncate font-medium text-foreground/90">{tx.description}</div>

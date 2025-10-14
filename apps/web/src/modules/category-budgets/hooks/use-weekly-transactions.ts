@@ -22,8 +22,6 @@ export const useWeeklyTransactions = () => {
       if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
 
       const {start, end} = getStartAndEndOfWeekIso();
-
-      // Fetch all transactions for the week by paginating
       const allTransactions: TransactionContract[] = [];
       let currentPage = 1;
       let hasMore = true;
@@ -39,17 +37,14 @@ export const useWeeklyTransactions = () => {
 
         allTransactions.push(...response.data);
 
-        // Check if we have more pages
         hasMore = response.meta.currentPage < response.meta.totalPages;
         currentPage++;
       }
 
-      // Group transactions by day
       const weekStart = startOfWeek(new Date(), {weekStartsOn: 1});
       const today = startOfDay(new Date());
       const byDay: Record<string, {total: number; transactions: TransactionContract[]}> = {};
 
-      // Initialize all days of the week
       for (let i = 0; i < 7; i++) {
         const dayDate = addDays(weekStart, i);
         const key = format(dayDate, 'yyyy-MM-dd');
@@ -65,19 +60,18 @@ export const useWeeklyTransactions = () => {
           byDay[key].transactions.push(tx);
           // Only count expenses for "spending" total
           if (tx.type === TransactionType.EXPENSE) {
-            byDay[key].total += tx.amount;
+            byDay[key].total += Number(tx.amount);
           }
         }
       });
 
-      // Sort each day's transactions by date descending
-      Object.values(byDay).forEach((dayData) => {
-        dayData.transactions.sort((a, b) => {
-          return new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime();
-        });
-      });
+      // // Sort each day's transactions by date descending
+      // Object.values(byDay).forEach((dayData) => {
+      //   dayData.transactions.sort((a, b) => {
+      //     return new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime();
+      //   });
+      // });
 
-      // Build days array
       const days: DayData[] = [];
       for (let i = 0; i < 7; i++) {
         const dayDate = addDays(weekStart, i);
@@ -97,7 +91,6 @@ export const useWeeklyTransactions = () => {
         }
       }
 
-      // Find today's key for initial selection
       const todayKey = format(today, 'yyyy-MM-dd');
       const initialSelectedDay = days.find((d) => d.key === todayKey)?.key ?? days[0]?.key ?? '';
 
