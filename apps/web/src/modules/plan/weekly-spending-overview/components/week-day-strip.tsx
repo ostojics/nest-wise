@@ -29,6 +29,7 @@ export default function WeekDayStrip({days}: WeekDayStripProps) {
               )}
               onClick={() => setSelectedDayKey(day.key)}
               role="button"
+              title="Izaberi dan"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
