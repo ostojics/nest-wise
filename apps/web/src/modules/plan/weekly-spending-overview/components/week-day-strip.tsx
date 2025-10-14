@@ -14,7 +14,7 @@ export default function WeekDayStrip({days}: WeekDayStripProps) {
   const {formatBalance} = useFormatBalance();
 
   return (
-    <div className="max-w-[62.3125rem] overflow-x-auto">
+    <div className="max-w-[62.3125rem] overflow-x-auto min-w-[100%]">
       <div className="grid grid-cols-7 gap-2 min-w-max">
         {days.map((day) => {
           const isSelected = day.key === selectedDayKey;
