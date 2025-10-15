@@ -9,7 +9,7 @@ export default function WeeklySpendingError() {
       </CardHeader>
       <CardContent>
         <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">
-          Nije moguće učitati podatke o potrošnji.
+          <p>Nije moguće učitati podatke o potrošnji</p>
         </div>
       </CardContent>
     </>

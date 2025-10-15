@@ -39,9 +39,15 @@ export default function WeekDayStrip({days}: WeekDayStripProps) {
               }}
             >
               <div className="flex flex-col items-center gap-1">
-                <div className="text-xs text-muted-foreground font-medium">{day.shortLabel}</div>
-                <div className="text-sm font-semibold">{dateLabel}</div>
-                <div className="text-sm font-medium">{formatBalance(day.total)}</div>
+                <div className="text-xs text-muted-foreground font-medium">
+                  <span>{day.shortLabel}</span>
+                </div>
+                <div className="text-sm font-semibold">
+                  <span>{dateLabel}</span>
+                </div>
+                <div className="text-sm font-medium">
+                  <span>{formatBalance(day.total)}</span>
+                </div>
               </div>
             </Card>
           );

@@ -9,16 +9,18 @@ export default function WeekNavigation() {
 
   return (
     <div className="flex items-center justify-between gap-2">
-      <Button variant="outline" size="icon" onClick={goToPreviousWeek} aria-label="Prethodna nedelja">
+      <Button variant="outline" size="icon" onClick={goToPreviousWeek}>
         <ChevronLeft className="h-4 w-4" />
+        <span className="sr-only">Prethodna nedelja</span>
       </Button>
 
       <div className="flex flex-col items-center gap-2">
         <span className="text-sm font-medium">{weekRangeText}</span>
       </div>
 
-      <Button variant="outline" size="icon" onClick={goToNextWeek} aria-label="Sledeća nedelja">
+      <Button variant="outline" size="icon" onClick={goToNextWeek}>
         <ChevronRight className="h-4 w-4" />
+        <span className="sr-only">Sledeća nedelja</span>
       </Button>
     </div>
   );

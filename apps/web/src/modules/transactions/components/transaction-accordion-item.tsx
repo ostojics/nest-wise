@@ -34,35 +34,45 @@ export default function TransactionAccordionItem({transaction: tx, actions}: Tra
       <AccordionContent className="px-4 pb-4">
         <div className="grid grid-cols-1 gap-3 text-sm @sm:grid-cols-2">
           <div>
-            <div className="text-muted-foreground">Opis</div>
-            <div className="text-foreground/90">{tx.description}</div>
+            <span className="text-muted-foreground">Opis</span>
+            <div>
+              <span className="text-foreground/90">{tx.description}</span>
+            </div>
           </div>
           <div>
-            <div className="text-muted-foreground">Račun</div>
-            <div className="text-foreground/80">{tx.account?.name ?? '-'}</div>
+            <span className="text-muted-foreground">Račun</span>
+            <div>
+              <span className="text-foreground/80">{tx.account?.name ?? '-'}</span>
+            </div>
           </div>
           <div>
-            <div className="text-muted-foreground">Kategorija</div>
-            <div className="text-foreground/80">{tx.category?.name ?? '-'}</div>
+            <span className="text-muted-foreground">Kategorija</span>
+            <div>
+              <span className="text-foreground/80">{tx.category?.name ?? '-'}</span>
+            </div>
           </div>
           <div>
-            <div className="text-muted-foreground">Tip</div>
+            <span className="text-muted-foreground">Tip</span>
             <div className="mt-1">
               <Badge
                 className={cn(isIncome && 'bg-emerald-100 text-emerald-700')}
                 variant={tx.type === TransactionType.EXPENSE ? 'destructive' : 'secondary'}
               >
-                {tx.type === TransactionType.EXPENSE ? 'Rashod' : 'Prihod'}
+                <span>{tx.type === TransactionType.EXPENSE ? 'Rashod' : 'Prihod'}</span>
               </Badge>
             </div>
           </div>
           <div>
-            <div className="text-muted-foreground">Datum</div>
-            <div className="text-foreground/80">{dateLabel}</div>
+            <span className="text-muted-foreground">Datum</span>
+            <div>
+              <span className="text-foreground/80">{dateLabel}</span>
+            </div>
           </div>
           <div>
-            <div className="text-muted-foreground">Iznos</div>
-            <div className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>{amount}</div>
+            <span className="text-muted-foreground">Iznos</span>
+            <div>
+              <span className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>{amount}</span>
+            </div>
           </div>
         </div>
         {actions && <div className="pt-3 flex justify-end">{actions}</div>}

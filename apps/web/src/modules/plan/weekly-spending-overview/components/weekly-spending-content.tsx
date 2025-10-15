@@ -53,7 +53,7 @@ export default function WeeklySpendingContent({days}: WeeklySpendingContentProps
         <div className="max-h-[31.25rem] overflow-y-auto">
           {transactions.length === 0 ? (
             <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">
-              Nema transakcija za ovaj dan
+              <p>Nema transakcija za ovaj dan</p>
             </div>
           ) : (
             <div className="rounded-md border bg-card">
