@@ -81,11 +81,7 @@ const EditMonthlyBudgetModal: React.FC<EditMonthlyBudgetModalProps> = ({open, on
               <Button type="button" variant="outline" onClick={handleCancel}>
                 Otkaži
               </Button>
-              <Button
-                type="submit"
-                disabled={updateHouseholdMutation.isPending}
-                className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
-              >
+              <Button type="submit" disabled={updateHouseholdMutation.isPending}>
                 {updateHouseholdMutation.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
                 ) : (
