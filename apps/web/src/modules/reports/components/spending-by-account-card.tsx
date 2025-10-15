@@ -67,7 +67,7 @@ const SpendingByAccountCard = () => {
         {isEmpty ? (
           <div className="text-sm text-muted-foreground text-center py-16">Nema troškova u izabranom periodu.</div>
         ) : (
-          <ChartContainer config={{}} className="mx-auto aspect-square max-h-[23.75rem] @2xs/card:max-h-[34.375rem]">
+          <ChartContainer config={{}} className="mx-auto aspect-square max-h-[28rem] @2xs/card:max-h-[34.375rem]">
             <PieChart margin={{top: 20, right: 20, bottom: 20, left: 20}}>
               <ChartTooltip
                 cursor={false}
@@ -98,7 +98,7 @@ const SpendingByAccountCard = () => {
                 className="outline-hidden"
                 label={renderCustomizedLabel}
                 labelLine={false}
-                outerRadius="80%"
+                outerRadius="85%"
               >
                 {dataWithPercentages.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.fill} />
