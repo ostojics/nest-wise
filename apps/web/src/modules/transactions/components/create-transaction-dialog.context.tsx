@@ -1,8 +1,10 @@
-import React, {createContext, useContext, ReactNode} from 'react';
+import React, {createContext, useContext, ReactNode, useState} from 'react';
 
 interface CreateTransactionDialogContextType {
-  isManual: boolean;
-  setManual: (isManual: boolean) => void;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  isManualMode: boolean;
+  setIsManualMode: (manual: boolean) => void;
   close: () => void;
   success: () => void;
 }
@@ -11,24 +13,29 @@ const CreateTransactionDialogContext = createContext<CreateTransactionDialogCont
 
 interface CreateTransactionDialogProviderProps {
   children: ReactNode;
-  isManual: boolean;
-  setManual: (isManual: boolean) => void;
-  onClose: () => void;
-  onSuccess: () => void;
 }
 
-export function CreateTransactionDialogProvider({
-  children,
-  isManual,
-  setManual,
-  onClose,
-  onSuccess,
-}: CreateTransactionDialogProviderProps) {
+export function CreateTransactionDialogProvider({children}: CreateTransactionDialogProviderProps) {
+  const [isManualMode, setIsManualMode] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSuccess = () => {
+    setIsManualMode(false);
+    setIsOpen(false);
+  };
+
+  const handleClose = () => {
+    setIsManualMode(false);
+    setIsOpen(false);
+  };
+
   const value: CreateTransactionDialogContextType = {
-    isManual,
-    setManual,
-    close: onClose,
-    success: onSuccess,
+    isManualMode,
+    setIsManualMode,
+    isOpen,
+    setIsOpen,
+    close: handleClose,
+    success: handleSuccess,
   };
 
   return <CreateTransactionDialogContext.Provider value={value}>{children}</CreateTransactionDialogContext.Provider>;

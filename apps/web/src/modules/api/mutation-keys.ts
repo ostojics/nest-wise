@@ -1,5 +1,5 @@
 export const mutationKeys = {
   transactions: {
-    createAiTransaction: () => ['create-ai-transaction'],
+    createAiTransactionSuggestion: () => ['create-ai-transaction-suggestion'],
   },
 };

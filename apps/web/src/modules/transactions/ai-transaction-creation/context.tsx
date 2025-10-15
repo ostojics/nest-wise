@@ -1,12 +1,9 @@
 import React, {createContext, useContext, ReactNode, useState} from 'react';
-import {AiTransactionSuggestion} from '@nest-wise/contracts';
 
 type Step = 'input' | 'processing' | 'confirm';
 
 interface AiTransactionCreationContextType {
   step: Step;
-  suggestion: AiTransactionSuggestion | null;
-  setSuggestion: (suggestion: AiTransactionSuggestion) => void;
   setStep: (step: Step) => void;
   back: () => void;
   reset: () => void;
@@ -20,24 +17,19 @@ interface AiTransactionCreationProviderProps {
 
 export function AiTransactionCreationProvider({children}: AiTransactionCreationProviderProps) {
   const [step, setStep] = useState<Step>('input');
-  const [suggestion, setSuggestion] = useState<AiTransactionSuggestion | null>(null);
 
   const back = () => {
     if (step === 'confirm') {
       setStep('input');
-      setSuggestion(null);
     }
   };
 
   const reset = () => {
     setStep('input');
-    setSuggestion(null);
   };
 
   const value: AiTransactionCreationContextType = {
     step,
-    suggestion,
-    setSuggestion,
     setStep,
     back,
     reset,

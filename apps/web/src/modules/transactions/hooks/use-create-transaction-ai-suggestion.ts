@@ -39,21 +39,16 @@ export const useCreateTransactionAISuggestion = () => {
         attempts++;
       }
 
-      throw new Error('Obrada predloga transakcije je predugo trajala');
+      throw new Error('Obrada predloga transakcije nije uspela');
     },
-    mutationKey: mutationKeys.transactions.createAiTransaction(),
+    mutationKey: mutationKeys.transactions.createAiTransactionSuggestion(),
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
+      const err = await typedError.response.json();
 
-      try {
-        const err = await typedError.response.json();
-
-        if (err.message) {
-          toast.error(err.message);
-          return;
-        }
-      } catch {
-        // If JSON parsing fails, fall through to generic error
+      if (err.message) {
+        toast.error(err.message);
+        return;
       }
 
       toast.error('Obrada predloga transakcije nije uspela');

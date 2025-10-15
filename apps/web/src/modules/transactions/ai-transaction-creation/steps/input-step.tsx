@@ -4,7 +4,7 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
-import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/use-validate-create-ai-transaction';
+import {useValidateCreateAiTransactionSuggestion} from '@/modules/transactions/hooks/use-validate-create-ai-transaction';
 import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
 import AiBanner from '../../components/ai-banner';
 import {AiDescriptionTooltip} from '../../components/ai-description-tooltip';
@@ -15,7 +15,7 @@ import {useCreateTransactionAISuggestion} from '../../hooks/use-create-transacti
 export default function InputStep() {
   const {data: accounts} = useGetHouseholdAccounts();
   const hasAccounts = (accounts ?? []).length > 0;
-  const {setStep, setSuggestion} = useAiTransactionCreation();
+  const {setStep} = useAiTransactionCreation();
   const {close} = useCreateTransactionDialog();
   const suggestionMutation = useCreateTransactionAISuggestion();
 
@@ -25,17 +25,16 @@ export default function InputStep() {
     setValue,
     watch,
     formState: {errors},
-  } = useValidateCreateAiTransaction({accountId: (accounts ?? [])[0]?.id});
+  } = useValidateCreateAiTransactionSuggestion({accountId: (accounts ?? [])[0]?.id});
 
   const onSubmit = (data: CreateTransactionAiHouseholdDTO) => {
     setStep('processing');
+
     suggestionMutation.mutate(data, {
-      onSuccess: (suggestion) => {
-        setSuggestion(suggestion);
+      onSuccess: () => {
         setStep('confirm');
       },
       onError: () => {
-        // Error handling is done in the mutation hook
         setStep('input');
       },
     });

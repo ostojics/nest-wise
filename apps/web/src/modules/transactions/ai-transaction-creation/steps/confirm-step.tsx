@@ -11,19 +11,28 @@ import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-hous
 import {useCreateCategory} from '@/modules/categories/hooks/use-create-category';
 import {useCreateTransaction} from '@/modules/transactions/hooks/use-create-transaction';
 import {useValidateCreateTransaction} from '@/modules/transactions/hooks/use-validate-create-transaction';
-import {CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
+import {AiTransactionSuggestion, CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
-import {useAiTransactionCreation} from '../context';
 import {useCreateTransactionDialog} from '../../components/create-transaction-dialog.context';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
+import {useMutationState} from '@tanstack/react-query';
+import {mutationKeys} from '@/modules/api/mutation-keys';
+import {toast} from 'sonner';
+import {useEffect} from 'react';
+import {useAiTransactionCreation} from '../context';
 
 export default function ConfirmStep() {
   const {data: accounts} = useGetHouseholdAccounts();
   const {data: categories} = useGetHouseholdCategories();
+  const {reset: resetFlow} = useAiTransactionCreation();
   const {data: me} = useGetMe();
   const hasAccounts = (accounts ?? []).length > 0;
-  const {suggestion, back} = useAiTransactionCreation();
-  const {success, close} = useCreateTransactionDialog();
+  const {close} = useCreateTransactionDialog();
+  const transactionSuggestions = useMutationState({
+    filters: {mutationKey: mutationKeys.transactions.createAiTransactionSuggestion()},
+    select: (mutation) => mutation.state.data,
+  });
+  const suggestion = transactionSuggestions.at(-1) as AiTransactionSuggestion | undefined;
 
   const createTransactionMutation = useCreateTransaction();
   const createCategoryMutation = useCreateCategory(me?.householdId);
@@ -33,23 +42,10 @@ export default function ConfirmStep() {
     handleSubmit,
     setValue,
     watch,
-    reset,
     formState: {errors},
   } = useValidateCreateTransaction({
     accountId: suggestion?.accountId ?? (accounts ?? [])[0]?.id,
   });
-
-  // Set initial values from suggestion after form is initialized
-  React.useEffect(() => {
-    if (suggestion) {
-      setValue('type', suggestion.transactionType);
-      setValue('amount', suggestion.transactionAmount);
-      setValue('transactionDate', suggestion.transactionDate);
-      if (suggestion.transactionType !== 'income' && !suggestion.newCategorySuggested) {
-        setValue('categoryId', suggestion.suggestedCategory.existingCategoryId ?? null);
-      }
-    }
-  }, [suggestion, setValue]);
 
   const watchedCategoryId = watch('categoryId');
   const watchedType = watch('type');
@@ -58,19 +54,24 @@ export default function ConfirmStep() {
   const onSubmit = async (data: CreateTransactionHouseholdDTO) => {
     let finalCategoryId = data.categoryId;
 
-    // If a new category is suggested, create it first
     if (suggestion?.newCategorySuggested && suggestion.suggestedCategory.newCategoryName) {
-      try {
-        const newCategory = await createCategoryMutation.mutateAsync({
+      await createCategoryMutation.mutateAsync(
+        {
           name: suggestion.suggestedCategory.newCategoryName,
-        });
-        finalCategoryId = newCategory.id;
-      } catch {
-        return;
-      }
+        },
+        {
+          onSuccess: (data) => {
+            finalCategoryId = data.id;
+          },
+          onError: () => {
+            toast.error('Greška pri kreiranju nove kategorije.');
+            resetFlow();
+            close();
+          },
+        },
+      );
     }
 
-    // Now create the transaction with the final category ID
     await createTransactionMutation.mutateAsync(
       {
         ...data,
@@ -78,14 +79,9 @@ export default function ConfirmStep() {
         description: suggestion?.description ?? data.description,
       },
       {
-        onSuccess: () => {
-          success();
-        },
-        onError: () => {
-          close();
-        },
         onSettled: () => {
-          reset();
+          close();
+          resetFlow();
         },
       },
     );
@@ -99,13 +95,25 @@ export default function ConfirmStep() {
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
 
-  React.useEffect(() => {
+  const isProcessing = createTransactionMutation.isPending || createCategoryMutation.isPending;
+
+  useEffect(() => {
     if (watchedType === 'income') {
       setValue('categoryId', null);
     }
   }, [watchedType, setValue]);
 
-  const isProcessing = createTransactionMutation.isPending || createCategoryMutation.isPending;
+  useEffect(() => {
+    if (suggestion) {
+      setValue('type', suggestion.transactionType);
+      setValue('amount', suggestion.transactionAmount);
+      setValue('transactionDate', suggestion.transactionDate);
+      setValue('description', suggestion.description);
+      if (suggestion.transactionType !== 'income') {
+        setValue('categoryId', suggestion.suggestedCategory.existingCategoryId ?? null);
+      }
+    }
+  }, [suggestion, setValue]);
 
   return (
     <div className="space-y-4">
@@ -226,22 +234,15 @@ export default function ConfirmStep() {
         </div>
 
         <div className="flex justify-between gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={back} disabled={isProcessing}>
-            Nazad
+          <Button type="button" variant="outline" onClick={close} disabled={isProcessing}>
+            Otkaži
           </Button>
           <Button
             type="submit"
             disabled={isProcessing}
             className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
           >
-            {isProcessing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Kreiranje...
-              </>
-            ) : (
-              'Potvrdi transakciju'
-            )}
+            {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Potvrdi transakciju'}
           </Button>
         </div>
       </form>

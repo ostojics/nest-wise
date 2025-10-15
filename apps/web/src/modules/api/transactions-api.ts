@@ -17,7 +17,6 @@ import {
   CategorySpendingPointContract,
 } from '@nest-wise/contracts';
 
-// Household-scoped endpoints
 export const getTransactionsForHousehold = async (householdId: string, query: GetTransactionsQueryHouseholdDTO) => {
   return httpClient
     .get<GetTransactionsResponseContract>(`v1/households/${householdId}/transactions`, {
@@ -37,7 +36,6 @@ export const createTransactionForHousehold = async (
     .json();
 };
 
-// AI suggestion endpoints (new flow)
 export const requestAiTransactionSuggestion = async (
   householdId: string,
   transaction: CreateTransactionAiHouseholdDTO,
@@ -88,7 +86,6 @@ export const getCategoriesSpending = async (householdId: string, dto: GetSpendin
     .json<CategorySpendingPointContract[]>();
 };
 
-// Item-level endpoints (keep these since they operate on individual transactions)
 export const getTransaction = async (id: string) => {
   return httpClient.get(`v1/transactions/${id}`).json();
 };
