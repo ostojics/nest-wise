@@ -15,6 +15,10 @@ import SpendingByCategoryCardError from './spending-by-category-card.error';
 import SpendingByCategoryCardSkeleton from './spending-by-category-card.skeleton';
 import {useGetCategoriesSpending} from '@/modules/transactions/hooks/use-get-categories-spending';
 
+const PIE_INNER_RADIUS = '55%';
+const PIE_OUTER_RADIUS = '80%';
+const MIN_LABEL_PERCENTAGE_THRESHOLD = 3;
+
 const SpendingByCategoryCard = () => {
   const {formatBalance} = useFormatBalance();
   const search = useSearch({from: '/__pathlessLayout/reports/spending'});
@@ -102,8 +106,8 @@ const SpendingByCategoryCard = () => {
                 nameKey="category"
                 strokeWidth={2}
                 className="outline-hidden"
-                innerRadius="55%"
-                outerRadius="80%"
+                innerRadius={PIE_INNER_RADIUS}
+                outerRadius={PIE_OUTER_RADIUS}
                 labelLine={false}
               >
                 {dataWithPercentages.map((entry, index) => (
@@ -113,7 +117,7 @@ const SpendingByCategoryCard = () => {
                   dataKey="percentage"
                   position="inside"
                   className="fill-background font-medium text-xs"
-                  formatter={(value: number) => (value >= 3 ? `${value.toFixed(1)}%` : '')}
+                  formatter={(value: number) => (value >= MIN_LABEL_PERCENTAGE_THRESHOLD ? `${value.toFixed(1)}%` : '')}
                 />
               </Pie>
               <ChartLegend content={<CategoryAmountLegend />} />
