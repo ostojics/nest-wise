@@ -1,9 +1,11 @@
 import {test, expect} from '@playwright/test';
 
+const TEST_LICENSE_KEY = '00000000-0000-0000-0000-000000000000';
+
 test.describe('Setup and Onboarding', () => {
   test('user completes setup step 1 - user form', async ({page}) => {
     // Arrange: Navigate to setup page with license param
-    await page.goto('/setup?license=00000000-0000-0000-0000-000000000000');
+    await page.goto(`/setup?license=${TEST_LICENSE_KEY}`);
     await page.waitForLoadState('networkidle');
 
     // Act: Fill in user information
@@ -19,7 +21,7 @@ test.describe('Setup and Onboarding', () => {
 
   test('user completes setup step 2 - household form and redirect', async ({page}) => {
     // Arrange: Navigate to setup and complete step 1
-    await page.goto('/setup?license=00000000-0000-0000-0000-000000000000');
+    await page.goto(`/setup?license=${TEST_LICENSE_KEY}`);
     await page.waitForLoadState('networkidle');
 
     // Complete step 1
