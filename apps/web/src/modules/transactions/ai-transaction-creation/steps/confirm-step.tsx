@@ -13,7 +13,6 @@ import {useCreateTransaction} from '@/modules/transactions/hooks/use-create-tran
 import {useValidateCreateTransaction} from '@/modules/transactions/hooks/use-validate-create-transaction';
 import {CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
-import {useState} from 'react';
 import {useAiTransactionCreation} from '../context';
 import {useCreateTransactionDialog} from '../../components/create-transaction-dialog.context';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
@@ -23,9 +22,8 @@ export default function ConfirmStep() {
   const {data: categories} = useGetHouseholdCategories();
   const {data: me} = useGetMe();
   const hasAccounts = (accounts ?? []).length > 0;
-  const {suggestion, inputData, back} = useAiTransactionCreation();
+  const {suggestion, back} = useAiTransactionCreation();
   const {success, close} = useCreateTransactionDialog();
-  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
 
   const createTransactionMutation = useCreateTransaction();
   const createCategoryMutation = useCreateCategory(me?.householdId);
@@ -38,7 +36,7 @@ export default function ConfirmStep() {
     reset,
     formState: {errors},
   } = useValidateCreateTransaction({
-    accountId: inputData?.accountId ?? (accounts ?? [])[0]?.id,
+    accountId: suggestion?.accountId ?? (accounts ?? [])[0]?.id,
   });
 
   // Set initial values from suggestion after form is initialized
@@ -62,17 +60,14 @@ export default function ConfirmStep() {
 
     // If a new category is suggested, create it first
     if (suggestion?.newCategorySuggested && suggestion.suggestedCategory.newCategoryName) {
-      setIsCreatingCategory(true);
       try {
         const newCategory = await createCategoryMutation.mutateAsync({
           name: suggestion.suggestedCategory.newCategoryName,
         });
         finalCategoryId = newCategory.id;
       } catch {
-        setIsCreatingCategory(false);
         return;
       }
-      setIsCreatingCategory(false);
     }
 
     // Now create the transaction with the final category ID
@@ -80,7 +75,7 @@ export default function ConfirmStep() {
       {
         ...data,
         categoryId: finalCategoryId,
-        description: inputData?.description ?? data.description,
+        description: suggestion?.description ?? data.description,
       },
       {
         onSuccess: () => {
@@ -110,7 +105,7 @@ export default function ConfirmStep() {
     }
   }, [watchedType, setValue]);
 
-  const isProcessing = createTransactionMutation.isPending || isCreatingCategory;
+  const isProcessing = createTransactionMutation.isPending || createCategoryMutation.isPending;
 
   return (
     <div className="space-y-4">
@@ -225,7 +220,7 @@ export default function ConfirmStep() {
           <Input
             placeholder="Opis transakcije"
             {...register('description')}
-            defaultValue={inputData?.description ?? ''}
+            defaultValue={suggestion?.description ?? ''}
           />
           {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
         </div>

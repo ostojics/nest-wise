@@ -387,6 +387,8 @@ export interface AiTransactionJobResponseContract {
 
 // AI Transaction Suggestion (returned by backend, not saved to DB yet)
 export interface AiTransactionSuggestion {
+  accountId: string;
+  description: string;
   transactionAmount: number;
   transactionType: 'income' | 'expense';
   transactionDate: string; // ISO 8601 timestamp

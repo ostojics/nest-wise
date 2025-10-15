@@ -55,26 +55,6 @@ export const getAiTransactionSuggestionStatus = async (householdId: string, jobI
     .json<AiTransactionJobStatusContract>();
 };
 
-// Legacy endpoint (deprecated - kept for backwards compatibility)
-/** @deprecated Use requestAiTransactionSuggestion instead */
-export const createAiTransactionForHousehold = async (
-  householdId: string,
-  transaction: CreateTransactionAiHouseholdDTO,
-) => {
-  return await httpClient
-    .post(`v1/households/${householdId}/transactions/ai`, {
-      json: transaction,
-    })
-    .json<AiTransactionJobResponseContract>();
-};
-
-/** @deprecated Use getAiTransactionSuggestionStatus instead */
-export const getAiTransactionJobStatus = async (householdId: string, jobId: string) => {
-  return await httpClient
-    .get(`v1/households/${householdId}/transactions/ai/${jobId}`)
-    .json<AiTransactionJobStatusContract>();
-};
-
 export const getNetWorthTrendForHousehold = async (householdId: string) => {
   return await httpClient
     .get(`v1/households/${householdId}/transactions/net-worth-trend`)

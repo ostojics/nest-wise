@@ -1,6 +1,5 @@
 import {openai} from '@ai-sdk/openai';
 import {
-  CreateTransactionAiDTO,
   CreateTransactionAiHouseholdDTO,
   CreateTransactionDTO,
   CreateTransactionHouseholdDTO,
@@ -144,62 +143,6 @@ export class TransactionsService {
     return await this.transactionsRepository.getCategoriesSpendingForHousehold(householdId, query);
   }
 
-  async createTransactionAi(transactionData: CreateTransactionAiDTO): Promise<Transaction> {
-    const account = await this.accountsService.findAccountById(transactionData.accountId);
-    const household = await this.householdsService.findHouseholdById(account.householdId);
-    const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
-    const prompt = categoryPromptFactory({
-      categories,
-      transactionDescription: transactionData.description,
-      currentDate: transactionData.currentDate,
-    });
-
-    this.logger.debug('AI Transaction Categorization Prompt', {prompt});
-
-    const {object} = await generateObject({
-      model: openai('gpt-5-mini-2025-08-07'),
-      prompt,
-      temperature: 0.1,
-      schema: transactionCategoryOutputSchema,
-    });
-
-    this.logger.debug('AI Transaction Categorization Result', {object});
-
-    if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
-      throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
-    }
-
-    return await this.dataSource.transaction(async () => {
-      const isNewCategorySuggested = object.newCategorySuggested;
-      let categoryId: string | null = null;
-
-      if (isNewCategorySuggested) {
-        const newCategory = await this.categoriesService.createCategoryForHousehold(household.id, {
-          name: object.suggestedCategory.newCategoryName,
-        });
-
-        categoryId = newCategory.id;
-      } else {
-        categoryId = object.suggestedCategory.existingCategoryId;
-      }
-
-      const transaction = await this.transactionsRepository.create({
-        description: transactionData.description,
-        amount: object.transactionAmount,
-        type: object.transactionType as TransactionType,
-        categoryId: object.transactionType === 'income' ? null : categoryId,
-        householdId: account.householdId,
-        accountId: account.id,
-        transactionDate: object.transactionDate,
-        isReconciled: true,
-      });
-
-      await this.updateBalance(transaction.accountId, transaction.amount, transaction.type);
-
-      return transaction;
-    });
-  }
-
   /**
    * Generate an AI transaction suggestion without creating a transaction.
    * This is used by the background job to return a suggestion that the user can confirm.
@@ -236,6 +179,8 @@ export class TransactionsService {
 
     // Return suggestion without creating a transaction
     const suggestion: AiTransactionSuggestion = {
+      accountId: transactionData.accountId,
+      description: transactionData.description,
       transactionAmount: object.transactionAmount,
       transactionType: object.transactionType,
       transactionDate: object.transactionDate,
@@ -247,72 +192,6 @@ export class TransactionsService {
     };
 
     return suggestion;
-  }
-
-  /**
-   * @deprecated Use generateAiTransactionSuggestion instead.
-   * This method creates a transaction directly, which is not the desired flow.
-   * Keep for backwards compatibility but should be removed after migration.
-   */
-  async createTransactionAiForHousehold(
-    householdId: string,
-    transactionData: CreateTransactionAiHouseholdDTO,
-  ): Promise<Transaction> {
-    const account = await this.accountsService.findAccountById(transactionData.accountId);
-
-    // Verify account belongs to the household
-    if (account.householdId !== householdId) {
-      throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
-    }
-
-    const household = await this.householdsService.findHouseholdById(householdId);
-    const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
-
-    const {object} = await generateObject({
-      model: openai('gpt-5-nano-2025-08-07'),
-      prompt: categoryPromptFactory({
-        categories,
-        transactionDescription: transactionData.description,
-        currentDate: transactionData.currentDate,
-      }),
-      temperature: 0.1,
-      schema: transactionCategoryOutputSchema,
-      abortSignal: AbortSignal.timeout(20_000),
-    });
-
-    if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
-      throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
-    }
-
-    return await this.dataSource.transaction(async () => {
-      const isNewCategorySuggested = object.newCategorySuggested;
-      let categoryId: string | null = null;
-
-      if (isNewCategorySuggested) {
-        const newCategory = await this.categoriesService.createCategoryForHousehold(householdId, {
-          name: object.suggestedCategory.newCategoryName,
-        });
-
-        categoryId = newCategory.id;
-      } else {
-        categoryId = object.suggestedCategory.existingCategoryId;
-      }
-
-      const transaction = await this.transactionsRepository.create({
-        description: transactionData.description,
-        amount: object.transactionAmount,
-        type: object.transactionType as TransactionType,
-        categoryId: object.transactionType === 'income' ? null : categoryId,
-        householdId: household.id,
-        accountId: account.id,
-        transactionDate: object.transactionDate,
-        isReconciled: true,
-      });
-
-      await this.updateBalance(transaction.accountId, transaction.amount, transaction.type);
-
-      return transaction;
-    });
   }
 
   async findTransactionById(id: string): Promise<Transaction> {

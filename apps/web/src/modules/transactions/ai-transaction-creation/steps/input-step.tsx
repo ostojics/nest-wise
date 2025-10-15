@@ -10,12 +10,14 @@ import AiBanner from '../../components/ai-banner';
 import {AiDescriptionTooltip} from '../../components/ai-description-tooltip';
 import {useAiTransactionCreation} from '../context';
 import {useCreateTransactionDialog} from '../../components/create-transaction-dialog.context';
+import {useCreateTransactionAISuggestion} from '../../hooks/use-create-transaction-ai-suggestion';
 
 export default function InputStep() {
   const {data: accounts} = useGetHouseholdAccounts();
   const hasAccounts = (accounts ?? []).length > 0;
-  const {submitInput} = useAiTransactionCreation();
+  const {setStep, setSuggestion} = useAiTransactionCreation();
   const {close} = useCreateTransactionDialog();
+  const suggestionMutation = useCreateTransactionAISuggestion();
 
   const {
     register,
@@ -26,7 +28,17 @@ export default function InputStep() {
   } = useValidateCreateAiTransaction({accountId: (accounts ?? [])[0]?.id});
 
   const onSubmit = (data: CreateTransactionAiHouseholdDTO) => {
-    submitInput(data);
+    setStep('processing');
+    suggestionMutation.mutate(data, {
+      onSuccess: (suggestion) => {
+        setSuggestion(suggestion);
+        setStep('confirm');
+      },
+      onError: () => {
+        // Error handling is done in the mutation hook
+        setStep('input');
+      },
+    });
   };
 
   const getAccountDisplayName = (accountId: string) => {
