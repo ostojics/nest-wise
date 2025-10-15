@@ -29,13 +29,19 @@ const StepCard = ({icon, title, description, bullets, primaryAction, secondaryAc
     <Card className={cn('w-full max-w-2xl', className)}>
       <CardHeader>
         {icon && <div className="flex justify-center mb-4">{icon}</div>}
-        <CardTitle className="text-center text-2xl">{title}</CardTitle>
+        <CardTitle className="text-center text-2xl" data-testid="onboarding-step-title">
+          {title}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {description && <p className="text-center text-muted-foreground">{description}</p>}
+        {description && (
+          <p className="text-center text-muted-foreground" data-testid="onboarding-step-description">
+            {description}
+          </p>
+        )}
 
         {bullets && bullets.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-3" data-testid="onboarding-step-bullets">
             {bullets.map((bullet, index) => (
               <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
                 {bullet.icon && <div className="mt-0.5 flex-shrink-0">{bullet.icon}</div>}
@@ -47,12 +53,17 @@ const StepCard = ({icon, title, description, bullets, primaryAction, secondaryAc
 
         <div className="flex flex-col sm:flex-row gap-3 pt-4">
           {primaryAction && (
-            <Button onClick={primaryAction.onClick} className="flex-1">
+            <Button onClick={primaryAction.onClick} className="flex-1" data-testid="onboarding-primary-action">
               {primaryAction.label}
             </Button>
           )}
           {secondaryAction && (
-            <Button onClick={secondaryAction.onClick} variant="outline" className="flex-1">
+            <Button
+              onClick={secondaryAction.onClick}
+              variant="outline"
+              className="flex-1"
+              data-testid="onboarding-secondary-action"
+            >
               {secondaryAction.label}
             </Button>
           )}

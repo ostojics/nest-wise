@@ -43,6 +43,7 @@ const Step1 = () => {
                   id="username"
                   placeholder="Unesite korisničko ime"
                   autoComplete="username"
+                  data-testid="setup-username-input"
                 />
                 {errors.username && <FormError error={errors.username.message ?? ''} />}
               </div>
@@ -55,6 +56,7 @@ const Step1 = () => {
                   type="email"
                   placeholder="Unesite e‑poštu"
                   autoComplete="email"
+                  data-testid="setup-email-input"
                 />
                 {errors.email && <FormError error={errors.email.message ?? ''} />}
               </div>
@@ -67,6 +69,7 @@ const Step1 = () => {
                   type="password"
                   placeholder="Kreirajte lozinku"
                   autoComplete="new-password"
+                  data-testid="setup-password-input"
                 />
                 {errors.password && <FormError error={errors.password.message ?? ''} />}
               </div>
@@ -79,12 +82,13 @@ const Step1 = () => {
                   type="password"
                   placeholder="Potvrdite lozinku"
                   autoComplete="new-password"
+                  data-testid="setup-confirm-password-input"
                 />
                 {errors.confirm_password && <FormError error={errors.confirm_password.message ?? ''} />}
               </div>
 
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                <Button type="submit" className="w-full" disabled={isSubmitting} data-testid="setup-step1-submit">
                   {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Nastavi'}
                 </Button>
               </div>

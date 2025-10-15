@@ -28,4 +28,13 @@ export const userHandlers = [
       },
     });
   }),
+
+  // POST /v1/auth/setup (setup endpoint for E2E tests)
+  http.post('*/v1/auth/setup', () => {
+    return HttpResponse.json(mockUser, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }),
 ];

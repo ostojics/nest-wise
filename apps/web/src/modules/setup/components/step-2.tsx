@@ -54,13 +54,14 @@ const Step2 = () => {
                   id="name"
                   placeholder="npr. Porodični budžet, Zajednički troškovi"
                   autoComplete="organization"
+                  data-testid="setup-household-name-input"
                 />
                 {errors.name && <FormError error={errors.name.message ?? ''} />}
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="currency">Glavna valuta</Label>
                 <Select onValueChange={handleCurrencyChange}>
-                  <SelectTrigger id="currency" className="w-full">
+                  <SelectTrigger id="currency" className="w-full" data-testid="setup-currency-select">
                     <SelectValue placeholder="Izaberi valutu" />
                   </SelectTrigger>
                   <SelectContent>
@@ -91,7 +92,12 @@ const Step2 = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full" disabled={isSubmitting || !licenseKey}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting || !licenseKey}
+                  data-testid="setup-step2-submit"
+                >
                   {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Kreiraj domaćinstvo'}
                 </Button>
               </div>
