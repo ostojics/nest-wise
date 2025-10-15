@@ -3,7 +3,7 @@ import {ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent} from '@/
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {IconChartPie} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
-import {Cell, Pie, PieChart} from 'recharts';
+import {Cell, LabelList, Pie, PieChart} from 'recharts';
 import {generateRandomHsl} from '@/lib/utils';
 import {useGetSpendingByAccount} from '../../reports/hooks/use-get-spending-by-account';
 import CategoryAmountLegend from './category-amount-legend';
@@ -14,15 +14,10 @@ interface AccountChartDataEntry {
   category: string;
   amount: number;
   fill: string;
-  percentage: string;
+  percentage: number;
   totalValue: number;
   value: number;
 }
-
-const renderCustomizedLabel = (entry: AccountChartDataEntry) => {
-  const percent = ((entry.value / entry.totalValue) * 100).toFixed(1);
-  return `${percent}%`;
-};
 
 const SpendingByAccountCard = () => {
   const {formatBalance} = useFormatBalance();
@@ -44,7 +39,7 @@ const SpendingByAccountCard = () => {
   const dataWithPercentages = useMemo(() => {
     return spendingData.map((item) => ({
       ...item,
-      percentage: totalSpending === 0 ? '0' : ((item.amount / totalSpending) * 100).toFixed(1),
+      percentage: totalSpending === 0 ? 0 : (item.amount / totalSpending) * 100,
       totalValue: totalSpending,
       value: item.amount,
     }));
@@ -68,7 +63,7 @@ const SpendingByAccountCard = () => {
           <div className="text-sm text-muted-foreground text-center py-16">Nema troškova u izabranom periodu.</div>
         ) : (
           <ChartContainer config={{}} className="mx-auto aspect-square max-h-[23.75rem] @2xs/card:max-h-[34.375rem]">
-            <PieChart>
+            <PieChart margin={{top: 16, right: 16, bottom: 16, left: 16}}>
               <ChartTooltip
                 cursor={false}
                 content={
@@ -76,13 +71,13 @@ const SpendingByAccountCard = () => {
                     hideLabel
                     formatter={(value, name, props) => {
                       const payload = props.payload as AccountChartDataEntry | undefined;
-                      const percentage = payload?.percentage ?? '0';
+                      const percentage = payload?.percentage ?? 0;
                       return (
                         <div className="flex w-full justify-between items-center gap-4">
                           <span>{name}</span>
                           <div className="text-right">
                             <div className="font-mono font-medium tabular-nums">{formatBalance(value as number)}</div>
-                            <div className="text-sm text-muted-foreground">{percentage}%</div>
+                            <div className="text-sm text-muted-foreground">{percentage.toFixed(1)}%</div>
                           </div>
                         </div>
                       );
@@ -96,12 +91,19 @@ const SpendingByAccountCard = () => {
                 nameKey="category"
                 strokeWidth={2}
                 className="outline-hidden"
-                label={renderCustomizedLabel}
+                innerRadius="55%"
+                outerRadius="80%"
                 labelLine={false}
               >
                 {dataWithPercentages.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.fill} />
                 ))}
+                <LabelList
+                  dataKey="percentage"
+                  position="inside"
+                  className="fill-background font-medium text-xs"
+                  formatter={(value: number) => (value >= 3 ? `${value.toFixed(1)}%` : '')}
+                />
               </Pie>
               <ChartLegend content={<CategoryAmountLegend />} />
             </PieChart>
