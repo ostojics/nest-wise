@@ -101,12 +101,7 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
           <Button type="button" variant="outline" onClick={onCancel}>
             Otkaži
           </Button>
-          <Button
-            type="submit"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
-          >
-            Zabeleži transakciju
-          </Button>
+          <Button type="submit">Zabeleži transakciju</Button>
         </div>
       </form>
     </div>

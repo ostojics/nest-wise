@@ -172,11 +172,7 @@ export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFo
         <Button type="button" variant="outline" onClick={onCancel}>
           Otkaži
         </Button>
-        <Button
-          type="submit"
-          disabled={createTransactionMutation.isPending}
-          className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
-        >
+        <Button type="submit" disabled={createTransactionMutation.isPending}>
           {createTransactionMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Zabeleži transakciju'}
         </Button>
       </div>
