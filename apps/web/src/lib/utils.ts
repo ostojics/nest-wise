@@ -93,3 +93,13 @@ export const getStartAndEndOfMonthIso = (): {start: string; end: string} => {
     end: dateAtNoon(end).toISOString(),
   };
 };
+
+/**
+ * Generates a string key representing the given date in 'yyyy-MM-dd' format.
+ *
+ * @param date - The date object to format.
+ * @returns A string key in 'yyyy-MM-dd' format for the provided date.
+ */
+export const getWeeklyOverviewKey = (date: Date) => {
+  return format(date, 'yyyy-MM-dd');
+};
