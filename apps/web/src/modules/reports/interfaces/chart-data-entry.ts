@@ -2,7 +2,7 @@ export interface ChartDataEntry {
   category: string;
   amount: number;
   fill: string;
-  percentage: number;
+  percentage: string;
   totalValue: number;
   value: number;
 }
