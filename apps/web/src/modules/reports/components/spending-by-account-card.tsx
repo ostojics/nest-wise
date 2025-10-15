@@ -67,8 +67,11 @@ const SpendingByAccountCard = () => {
         {isEmpty ? (
           <div className="text-sm text-muted-foreground text-center py-16">Nema troškova u izabranom periodu.</div>
         ) : (
-          <ChartContainer config={{}} className="mx-auto aspect-square max-h-[28rem] @2xs/card:max-h-[34.375rem]">
-            <PieChart margin={{top: 20, right: 20, bottom: 20, left: 20}}>
+          <ChartContainer
+            config={{}}
+            className="mx-auto aspect-square max-h-[28rem] @2xs/card:max-h-[34.375rem] overflow-visible"
+          >
+            <PieChart margin={{top: 30, right: 20, bottom: 20, left: 20}}>
               <ChartTooltip
                 cursor={false}
                 content={

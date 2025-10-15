@@ -78,8 +78,11 @@ const SpendingByCategoryCard = () => {
         {isEmpty ? (
           <SpendingByCategoryCardEmpty />
         ) : (
-          <ChartContainer config={{}} className="mx-auto aspect-square max-h-[28rem] @2xs/card:max-h-[34.375rem]">
-            <PieChart margin={{top: 20, right: 20, bottom: 20, left: 20}}>
+          <ChartContainer
+            config={{}}
+            className="mx-auto aspect-square max-h-[28rem] @2xs/card:max-h-[34.375rem] overflow-visible"
+          >
+            <PieChart margin={{top: 30, right: 20, bottom: 20, left: 20}}>
               <ChartTooltip
                 cursor={false}
                 content={
