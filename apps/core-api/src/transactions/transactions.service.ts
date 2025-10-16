@@ -154,11 +154,11 @@ export class TransactionsService {
   ): Promise<AiTransactionSuggestion> {
     const account = await this.accountsService.findAccountById(transactionData.accountId);
 
-    // Verify account belongs to the household
     if (account.householdId !== householdId) {
       throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
     }
 
+    this.logger.debug('Generating AI transaction suggestion', {householdId, transactionData});
     const household = await this.householdsService.findHouseholdById(householdId);
     const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
 
@@ -171,17 +171,20 @@ export class TransactionsService {
       }),
       temperature: 0.1,
       schema: transactionCategoryOutputSchema,
-      abortSignal: AbortSignal.timeout(20_000),
     });
+
+    this.logger.debug('AI transaction suggestion generated', {object});
 
     if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
       throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
     }
 
+    this.logger.debug('AI transaction suggestion validation passed', {object});
+
     // Return suggestion without creating a transaction
     const suggestion: AiTransactionSuggestion = {
       accountId: transactionData.accountId,
-      description: transactionData.description,
+      description: object.transactionDescription,
       transactionAmount: object.transactionAmount,
       transactionType: object.transactionType,
       transactionDate: object.transactionDate,
@@ -219,7 +222,8 @@ export class TransactionsService {
     return await this.dataSource.transaction(async () => {
       let finalCategoryId = confirmationData.categoryId;
 
-      // Create new category if suggested and no category is selected
+      this.logger.debug('Confirming AI transaction suggestion', {confirmationData, householdId});
+
       if (
         confirmationData.newCategorySuggested &&
         confirmationData.suggestedCategoryName &&
@@ -231,7 +235,8 @@ export class TransactionsService {
         finalCategoryId = newCategory.id;
       }
 
-      // Create the transaction
+      this.logger.debug('Final category ID determined', {finalCategoryId});
+
       const transaction = await this.transactionsRepository.create({
         description: confirmationData.description,
         amount: confirmationData.amount,
@@ -243,12 +248,15 @@ export class TransactionsService {
         isReconciled: confirmationData.isReconciled,
       });
 
-      // Update account balance
+      this.logger.debug('Transaction created', {transactionId: transaction.id});
+
       await this.updateBalance(
         confirmationData.accountId,
         confirmationData.amount,
         confirmationData.type as TransactionType,
       );
+
+      this.logger.debug('Account balance updated', {accountId: confirmationData.accountId});
 
       return transaction;
     });
@@ -500,6 +508,7 @@ export class TransactionsService {
     const job = await this.aiTransactionsQueue.getJob(jobId);
 
     if (!job) {
+      this.logger.error('AI transaction job not found', {jobId});
       throw new NotFoundException('Posao nije pronađen');
     }
 

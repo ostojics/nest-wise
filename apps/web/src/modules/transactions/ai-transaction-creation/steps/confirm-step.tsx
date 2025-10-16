@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {accountTypes} from '@/common/constants/account-types';
 import {DatePicker} from '@/components/date-picker';
 import {Input} from '@/components/ui/input';
@@ -6,26 +5,27 @@ import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {dateAtNoon} from '@/lib/utils';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
-import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import {useValidateConfirmAiTransaction} from '@/modules/transactions/hooks/use-validate-confirm-ai-transaction';
 import {useConfirmAiTransaction} from '@/modules/transactions/hooks/use-confirm-ai-transaction';
-import {ConfirmAiTransactionSuggestionHouseholdDTO} from '@nest-wise/contracts';
+import {AiTransactionSuggestion, ConfirmAiTransactionSuggestionHouseholdDTO} from '@nest-wise/contracts';
 import {useCreateTransactionDialog} from '@/contexts/create-transaction-dialog-context';
 import {useEffect} from 'react';
 import {useAiTransactionCreation} from '@/contexts/ai-transaction-creation-context';
 import {useAiSuggestionMutationState} from '../../hooks/use-ai-suggestion-mutation-state';
 import {ConfirmationBanner} from './confirm-step-components/confirmation-banner';
-import {CategoryField} from './confirm-step-components/category-field';
 import {FormActions} from './confirm-step-components/form-actions';
+import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
+import {SuggestedCategory} from './confirm-step-components/suggested-category';
 
 export default function ConfirmStep() {
   const {data: accounts} = useGetHouseholdAccounts();
-  const {data: categories} = useGetHouseholdCategories();
   const {reset: resetFlow} = useAiTransactionCreation();
+  const {data: categories} = useGetHouseholdCategories();
   const hasAccounts = (accounts ?? []).length > 0;
   const {close} = useCreateTransactionDialog();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-  const suggestion = useAiSuggestionMutationState((mutation) => mutation.data);
+  const suggestion = useAiSuggestionMutationState<AiTransactionSuggestion>(
+    (mutation) => mutation.state.data as AiTransactionSuggestion,
+  );
 
   const confirmAiTransactionMutation = useConfirmAiTransaction();
 
@@ -36,11 +36,18 @@ export default function ConfirmStep() {
     watch,
     formState: {errors},
   } = useValidateConfirmAiTransaction({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     accountId: suggestion?.accountId ?? (accounts ?? [])[0]?.id,
+    categoryId: suggestion?.suggestedCategory.existingCategoryId ?? null,
+    type: suggestion?.transactionType ?? 'expense',
+    amount: suggestion?.transactionAmount ?? 0,
+    transactionDate: suggestion?.transactionDate ?? dateAtNoon(new Date()).toISOString(),
+    description: suggestion?.description ?? '',
+    newCategorySuggested: suggestion?.newCategorySuggested ?? false,
+    suggestedCategoryName: suggestion?.suggestedCategory.newCategoryName,
   });
 
   const watchedCategoryId = watch('categoryId');
+  const watchedSuggestedCategoryName = watch('suggestedCategoryName');
   const watchedType = watch('type');
   const transactionDate = watch('transactionDate');
 
@@ -68,31 +75,6 @@ export default function ConfirmStep() {
       setValue('categoryId', null);
     }
   }, [watchedType, setValue]);
-
-  useEffect(() => {
-    if (suggestion) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      setValue('type', suggestion.transactionType);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      setValue('amount', suggestion.transactionAmount);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      setValue('transactionDate', suggestion.transactionDate);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      setValue('description', suggestion.description);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      setValue('newCategorySuggested', suggestion.newCategorySuggested);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (suggestion.transactionType !== 'income' && !suggestion.newCategorySuggested) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        setValue('categoryId', suggestion.suggestedCategory.existingCategoryId ?? null);
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (suggestion.newCategorySuggested && suggestion.suggestedCategory.newCategoryName) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        setValue('suggestedCategoryName', suggestion.suggestedCategory.newCategoryName);
-      }
-    }
-  }, [suggestion, setValue]);
 
   return (
     <div className="space-y-4">
@@ -144,14 +126,36 @@ export default function ConfirmStep() {
           {errors.amount && <p className="text-sm text-red-500">{errors.amount.message}</p>}
         </div>
 
-        {watchedType === 'expense' && (
-          <CategoryField
-            suggestion={suggestion}
-            categories={categories}
-            value={watchedCategoryId}
-            onChange={(value) => setValue('categoryId', value)}
-            error={errors.categoryId?.message}
+        {Boolean(watchedSuggestedCategoryName) && (
+          <SuggestedCategory
+            value={watchedSuggestedCategoryName ?? ''}
+            onChange={(value) => setValue('suggestedCategoryName', value ?? '')}
+            error={errors.suggestedCategoryName?.message ?? null}
           />
+        )}
+
+        {watchedType === 'expense' && (
+          <div className="space-y-2">
+            <Label htmlFor="categoryId">
+              Kategorija <span className="text-red-500">*</span>
+            </Label>
+            <Select value={watchedCategoryId ?? ''} onValueChange={(val) => setValue('categoryId', val)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Izaberi kategoriju" />
+              </SelectTrigger>
+              <SelectContent>
+                {(categories ?? []).length === 0 && (
+                  <span className="text-sm text-muted-foreground p-2">Nema dostupnih kategorija.</span>
+                )}
+                {(categories ?? []).map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
+          </div>
         )}
 
         <div className="space-y-2">
@@ -168,7 +172,9 @@ export default function ConfirmStep() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="description">Opis</Label>
+          <Label htmlFor="description">
+            Opis <span className="text-red-500">*</span>
+          </Label>
           <Input
             placeholder="Opis transakcije"
             {...register('description')}

@@ -30,7 +30,7 @@ export const createTransactionForHousehold = async (
   householdId: string,
   transaction: CreateTransactionHouseholdDTO,
 ) => {
-  return await httpClient
+  return httpClient
     .post(`v1/households/${householdId}/transactions`, {
       json: transaction,
     })
@@ -41,7 +41,7 @@ export const requestAiTransactionSuggestion = async (
   householdId: string,
   transaction: CreateTransactionAiHouseholdDTO,
 ) => {
-  return await httpClient
+  return httpClient
     .post(`v1/households/${householdId}/transactions/ai`, {
       json: transaction,
     })
@@ -49,16 +49,14 @@ export const requestAiTransactionSuggestion = async (
 };
 
 export const getAiTransactionSuggestionStatus = async (householdId: string, jobId: string) => {
-  return await httpClient
-    .get(`v1/households/${householdId}/transactions/ai/${jobId}`)
-    .json<AiTransactionJobStatusContract>();
+  return httpClient.get(`v1/households/${householdId}/transactions/ai/${jobId}`).json<AiTransactionJobStatusContract>();
 };
 
 export const confirmAiTransactionSuggestion = async (
   householdId: string,
   confirmation: ConfirmAiTransactionSuggestionHouseholdDTO,
 ) => {
-  return await httpClient
+  return httpClient
     .post(`v1/households/${householdId}/transactions/ai/confirm`, {
       json: confirmation,
     })
@@ -66,7 +64,7 @@ export const confirmAiTransactionSuggestion = async (
 };
 
 export const getNetWorthTrendForHousehold = async (householdId: string) => {
-  return await httpClient
+  return httpClient
     .get(`v1/households/${householdId}/transactions/net-worth-trend`)
     .json<NetWorthTrendPointContract[]>();
 };

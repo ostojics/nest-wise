@@ -16,7 +16,7 @@ import {useCreateTransactionDialog} from '@/contexts/create-transaction-dialog-c
 import {TransactionModeToggle} from './transaction-mode-toggle';
 
 export function ManualTransactionForm() {
-  const {success, close} = useCreateTransactionDialog();
+  const {close} = useCreateTransactionDialog();
   const {data: accounts} = useGetHouseholdAccounts();
   const {data: categories} = useGetHouseholdCategories();
   const hasAccounts = (accounts ?? []).length > 0;
@@ -38,13 +38,8 @@ export function ManualTransactionForm() {
 
   const onSubmit = async (data: CreateTransactionHouseholdDTO) => {
     await createTransactionMutation.mutateAsync(data, {
-      onSuccess: () => {
-        success();
-      },
-      onError: () => {
-        close();
-      },
       onSettled: () => {
+        close();
         reset();
       },
     });

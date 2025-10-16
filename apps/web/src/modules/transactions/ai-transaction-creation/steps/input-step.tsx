@@ -30,11 +30,7 @@ export default function InputStep() {
 
   const onSubmit = (data: CreateTransactionAiHouseholdDTO) => {
     setStep('processing');
-    suggestionMutation.mutate(data, {
-      onError: () => {
-        setStep('input');
-      },
-    });
+    suggestionMutation.mutate(data);
   };
 
   const getAccountDisplayName = (accountId: string) => {

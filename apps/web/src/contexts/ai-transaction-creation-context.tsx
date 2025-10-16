@@ -5,7 +5,6 @@ type Step = 'input' | 'processing' | 'confirm';
 interface AiTransactionCreationContextType {
   step: Step;
   setStep: (step: Step) => void;
-  back: () => void;
   reset: () => void;
 }
 
@@ -18,12 +17,6 @@ interface AiTransactionCreationProviderProps {
 export function AiTransactionCreationProvider({children}: AiTransactionCreationProviderProps) {
   const [step, setStep] = useState<Step>('input');
 
-  const back = () => {
-    if (step === 'confirm') {
-      setStep('input');
-    }
-  };
-
   const reset = () => {
     setStep('input');
   };
@@ -31,7 +24,6 @@ export function AiTransactionCreationProvider({children}: AiTransactionCreationP
   const value: AiTransactionCreationContextType = {
     step,
     setStep,
-    back,
     reset,
   };
 

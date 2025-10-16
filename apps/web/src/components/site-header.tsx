@@ -27,10 +27,6 @@ export function SiteHeader() {
           </CreateTransactionDialogProvider>
         </div>
       </div>
-
-      {/* <CreateTransactionDialogProvider>
-        <CreateTransactionDialog />
-      </CreateTransactionDialogProvider> */}
     </header>
   );
 }

@@ -2,6 +2,9 @@ import z from 'zod';
 
 export const transactionCategoryOutputSchema = z.object({
   transactionType: z.enum(['expense', 'income']).describe('Whether this is an expense or income transaction'),
+  transactionDescription: z
+    .string()
+    .describe('A brief description of the transaction, suitable for use as a transaction description'),
   transactionAmount: z.number().positive().describe('The monetary amount extracted from the transaction description'),
   transactionDate: z
     .string()

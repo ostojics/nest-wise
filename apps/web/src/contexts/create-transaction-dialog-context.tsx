@@ -6,7 +6,6 @@ interface CreateTransactionDialogContextType {
   isManualMode: boolean;
   setIsManualMode: (manual: boolean) => void;
   close: () => void;
-  success: () => void;
 }
 
 const CreateTransactionDialogContext = createContext<CreateTransactionDialogContextType | undefined>(undefined);
@@ -19,11 +18,6 @@ export function CreateTransactionDialogProvider({children}: CreateTransactionDia
   const [isManualMode, setIsManualMode] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleSuccess = () => {
-    setIsManualMode(false);
-    setIsOpen(false);
-  };
-
   const handleClose = () => {
     setIsManualMode(false);
     setIsOpen(false);
@@ -35,7 +29,6 @@ export function CreateTransactionDialogProvider({children}: CreateTransactionDia
     isOpen,
     setIsOpen,
     close: handleClose,
-    success: handleSuccess,
   };
 
   return <CreateTransactionDialogContext.Provider value={value}>{children}</CreateTransactionDialogContext.Provider>;
