@@ -6,6 +6,7 @@ import {useAiSuggestionMutationState} from '../../hooks/use-ai-suggestion-mutati
 
 export default function ProcessingStep() {
   const {setStep} = useAiTransactionCreation();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
   const latestStatus = useAiSuggestionMutationState((mutation) => mutation.status);
 
   useEffect(() => {

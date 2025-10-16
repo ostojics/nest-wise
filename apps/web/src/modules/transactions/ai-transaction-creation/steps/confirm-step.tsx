@@ -9,7 +9,7 @@ import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-househol
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import {useCreateCategory} from '@/modules/categories/hooks/use-create-category';
 import {useCreateTransaction} from '@/modules/transactions/hooks/use-create-transaction';
-import {useValidateCreateTransaction} from '@/modules/transactions/hooks/use-validate-create-transaction';
+import {useValidateConfirmTransaction} from '@/modules/transactions/hooks/use-validate-confirm-transaction';
 import {CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
 import {useCreateTransactionDialog} from '@/contexts/create-transaction-dialog-context';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
@@ -28,6 +28,7 @@ export default function ConfirmStep() {
   const {data: me} = useGetMe();
   const hasAccounts = (accounts ?? []).length > 0;
   const {close} = useCreateTransactionDialog();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
   const suggestion = useAiSuggestionMutationState((mutation) => mutation.data);
 
   const createTransactionMutation = useCreateTransaction();
@@ -39,7 +40,8 @@ export default function ConfirmStep() {
     setValue,
     watch,
     formState: {errors},
-  } = useValidateCreateTransaction({
+  } = useValidateConfirmTransaction({
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     accountId: suggestion?.accountId ?? (accounts ?? [])[0]?.id,
   });
 
@@ -50,13 +52,22 @@ export default function ConfirmStep() {
   const onSubmit = async (data: CreateTransactionHouseholdDTO) => {
     let finalCategoryId = data.categoryId;
 
-    // Only create new category if suggested AND user hasn't selected a different category
-    const shouldCreateNewCategory =
-      suggestion?.newCategorySuggested && suggestion.suggestedCategory.newCategoryName && !data.categoryId;
+    // For expense transactions, ensure we have a category (either selected or will be created)
+    const shouldCreateNewCategory = Boolean(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      suggestion?.newCategorySuggested && suggestion.suggestedCategory.newCategoryName && !data.categoryId,
+    );
 
+    if (data.type === 'expense' && !data.categoryId && !shouldCreateNewCategory) {
+      toast.error('Kategorija je obavezna za rashodne transakcije');
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (shouldCreateNewCategory && suggestion.suggestedCategory.newCategoryName) {
       try {
         const newCategory = await createCategoryMutation.mutateAsync({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           name: suggestion.suggestedCategory.newCategoryName,
         });
         finalCategoryId = newCategory.id;
@@ -72,6 +83,7 @@ export default function ConfirmStep() {
       {
         ...data,
         categoryId: finalCategoryId,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         description: suggestion?.description ?? data.description,
       },
       {
@@ -101,11 +113,17 @@ export default function ConfirmStep() {
 
   useEffect(() => {
     if (suggestion) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       setValue('type', suggestion.transactionType);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       setValue('amount', suggestion.transactionAmount);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       setValue('transactionDate', suggestion.transactionDate);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       setValue('description', suggestion.description);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (suggestion.transactionType !== 'income' && !suggestion.newCategorySuggested) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         setValue('categoryId', suggestion.suggestedCategory.existingCategoryId ?? null);
       }
     }
@@ -115,7 +133,6 @@ export default function ConfirmStep() {
     <div className="space-y-4">
       <ConfirmationBanner />
 
-      {/* @ts-expect-error DTO is inferred from the schema */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="accountId">
@@ -190,6 +207,7 @@ export default function ConfirmStep() {
           <Input
             placeholder="Opis transakcije"
             {...register('description')}
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             defaultValue={suggestion?.description ?? ''}
           />
           {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
