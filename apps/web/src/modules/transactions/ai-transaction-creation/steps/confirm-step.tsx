@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {accountTypes} from '@/common/constants/account-types';
 import {DatePicker} from '@/components/date-picker';
-import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
@@ -11,15 +10,16 @@ import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-hous
 import {useCreateCategory} from '@/modules/categories/hooks/use-create-category';
 import {useCreateTransaction} from '@/modules/transactions/hooks/use-create-transaction';
 import {useValidateCreateTransaction} from '@/modules/transactions/hooks/use-validate-create-transaction';
-import {AiTransactionSuggestion, CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
-import {Loader2} from 'lucide-react';
-import {useCreateTransactionDialog} from '../../components/create-transaction-dialog.context';
+import {CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
+import {useCreateTransactionDialog} from '@/contexts/create-transaction-dialog-context';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
-import {useMutationState} from '@tanstack/react-query';
-import {mutationKeys} from '@/modules/api/mutation-keys';
 import {toast} from 'sonner';
 import {useEffect} from 'react';
-import {useAiTransactionCreation} from '../context';
+import {useAiTransactionCreation} from '@/contexts/ai-transaction-creation-context';
+import {useAiSuggestionMutationState} from '../../hooks/use-ai-suggestion-mutation-state';
+import {ConfirmationBanner} from './confirm-step-components/confirmation-banner';
+import {CategoryField} from './confirm-step-components/category-field';
+import {FormActions} from './confirm-step-components/form-actions';
 
 export default function ConfirmStep() {
   const {data: accounts} = useGetHouseholdAccounts();
@@ -28,11 +28,7 @@ export default function ConfirmStep() {
   const {data: me} = useGetMe();
   const hasAccounts = (accounts ?? []).length > 0;
   const {close} = useCreateTransactionDialog();
-  const transactionSuggestions = useMutationState({
-    filters: {mutationKey: mutationKeys.transactions.createAiTransactionSuggestion()},
-    select: (mutation) => mutation.state.data,
-  });
-  const suggestion = transactionSuggestions.at(-1) as AiTransactionSuggestion | undefined;
+  const suggestion = useAiSuggestionMutationState((mutation) => mutation.data);
 
   const createTransactionMutation = useCreateTransaction();
   const createCategoryMutation = useCreateCategory(me?.householdId);
@@ -54,22 +50,22 @@ export default function ConfirmStep() {
   const onSubmit = async (data: CreateTransactionHouseholdDTO) => {
     let finalCategoryId = data.categoryId;
 
-    if (suggestion?.newCategorySuggested && suggestion.suggestedCategory.newCategoryName) {
-      await createCategoryMutation.mutateAsync(
-        {
+    // Only create new category if suggested AND user hasn't selected a different category
+    const shouldCreateNewCategory =
+      suggestion?.newCategorySuggested && suggestion.suggestedCategory.newCategoryName && !data.categoryId;
+
+    if (shouldCreateNewCategory && suggestion.suggestedCategory.newCategoryName) {
+      try {
+        const newCategory = await createCategoryMutation.mutateAsync({
           name: suggestion.suggestedCategory.newCategoryName,
-        },
-        {
-          onSuccess: (data) => {
-            finalCategoryId = data.id;
-          },
-          onError: () => {
-            toast.error('Greška pri kreiranju nove kategorije.');
-            resetFlow();
-            close();
-          },
-        },
-      );
+        });
+        finalCategoryId = newCategory.id;
+      } catch {
+        toast.error('Greška pri kreiranju nove kategorije.');
+        resetFlow();
+        close();
+        return;
+      }
     }
 
     await createTransactionMutation.mutateAsync(
@@ -109,7 +105,7 @@ export default function ConfirmStep() {
       setValue('amount', suggestion.transactionAmount);
       setValue('transactionDate', suggestion.transactionDate);
       setValue('description', suggestion.description);
-      if (suggestion.transactionType !== 'income') {
+      if (suggestion.transactionType !== 'income' && !suggestion.newCategorySuggested) {
         setValue('categoryId', suggestion.suggestedCategory.existingCategoryId ?? null);
       }
     }
@@ -117,11 +113,7 @@ export default function ConfirmStep() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg bg-blue-50 dark:bg-blue-950 p-4 border border-blue-200 dark:border-blue-800">
-        <p className="text-sm text-blue-900 dark:text-blue-100 font-medium">
-          AI je analizirao vašu transakciju. Proverite i potvrdite detalje.
-        </p>
-      </div>
+      <ConfirmationBanner />
 
       {/* @ts-expect-error DTO is inferred from the schema */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -171,43 +163,13 @@ export default function ConfirmStep() {
         </div>
 
         {watchedType === 'expense' && (
-          <div className="space-y-2">
-            <Label htmlFor="categoryId">
-              Kategorija <span className="text-red-500">*</span>
-            </Label>
-            {suggestion?.newCategorySuggested && suggestion.suggestedCategory.newCategoryName ? (
-              <div className="p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-md">
-                <p className="text-sm text-green-900 dark:text-green-100">
-                  <strong>Nova kategorija:</strong> {suggestion.suggestedCategory.newCategoryName}
-                </p>
-                <p className="text-xs text-green-700 dark:text-green-300 mt-1">
-                  Ova kategorija će biti automatski kreirana
-                </p>
-              </div>
-            ) : (
-              <>
-                <Select
-                  value={watchedCategoryId ?? ''}
-                  onValueChange={(value) => setValue('categoryId', value || null)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Izaberi kategoriju" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(categories ?? []).length === 0 && (
-                      <span className="text-sm text-muted-foreground">Nema dostupnih kategorija.</span>
-                    )}
-                    {(categories ?? []).map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.categoryId && <p className="text-sm text-red-500">{errors.categoryId.message}</p>}
-              </>
-            )}
-          </div>
+          <CategoryField
+            suggestion={suggestion}
+            categories={categories}
+            value={watchedCategoryId}
+            onChange={(value) => setValue('categoryId', value)}
+            error={errors.categoryId?.message}
+          />
         )}
 
         <div className="space-y-2">
@@ -233,18 +195,7 @@ export default function ConfirmStep() {
           {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
         </div>
 
-        <div className="flex justify-between gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={close} disabled={isProcessing}>
-            Otkaži
-          </Button>
-          <Button
-            type="submit"
-            disabled={isProcessing}
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700"
-          >
-            {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Potvrdi transakciju'}
-          </Button>
-        </div>
+        <FormActions onCancel={close} isProcessing={isProcessing} />
       </form>
     </div>
   );

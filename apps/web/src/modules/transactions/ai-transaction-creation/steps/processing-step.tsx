@@ -1,17 +1,12 @@
-import {useMutationState} from '@tanstack/react-query';
 import {AiProcessingStatus} from '../../components/ai-processing-status';
-import {mutationKeys} from '@/modules/api/mutation-keys';
 import {useEffect} from 'react';
-import {useAiTransactionCreation} from '../context';
+import {useAiTransactionCreation} from '@/contexts/ai-transaction-creation-context';
 import {toast} from 'sonner';
+import {useAiSuggestionMutationState} from '../../hooks/use-ai-suggestion-mutation-state';
 
 export default function ProcessingStep() {
   const {setStep} = useAiTransactionCreation();
-  const statuses = useMutationState({
-    filters: {mutationKey: mutationKeys.transactions.createAiTransactionSuggestion()},
-    select: (mutation) => mutation.state.status,
-  });
-  const latestStatus = statuses.at(-1);
+  const latestStatus = useAiSuggestionMutationState((mutation) => mutation.status);
 
   useEffect(() => {
     if (latestStatus === 'success') {

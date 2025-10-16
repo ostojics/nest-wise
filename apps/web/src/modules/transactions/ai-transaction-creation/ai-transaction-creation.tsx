@@ -1,5 +1,5 @@
 import {Suspense, lazy} from 'react';
-import {AiTransactionCreationProvider, useAiTransactionCreation} from './context';
+import {AiTransactionCreationProvider, useAiTransactionCreation} from '@/contexts/ai-transaction-creation-context';
 import {Loader2} from 'lucide-react';
 
 // Lazy load steps

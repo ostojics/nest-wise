@@ -2,7 +2,7 @@ import {mainLinks} from '@/common/constants/main-links';
 import {Separator} from '@/components/ui/separator';
 import {SidebarTrigger} from '@/components/ui/sidebar';
 import {CreateTransactionDialog} from '@/modules/transactions/components/create-transaction-dialog';
-import {CreateTransactionDialogProvider} from '@/modules/transactions/components/create-transaction-dialog.context';
+import {CreateTransactionDialogProvider} from '@/contexts/create-transaction-dialog-context';
 import {useLocation} from '@tanstack/react-router';
 import {useMemo} from 'react';
 

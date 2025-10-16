@@ -8,9 +8,10 @@ import {useValidateCreateAiTransactionSuggestion} from '@/modules/transactions/h
 import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
 import AiBanner from '../../components/ai-banner';
 import {AiDescriptionTooltip} from '../../components/ai-description-tooltip';
-import {useAiTransactionCreation} from '../context';
-import {useCreateTransactionDialog} from '../../components/create-transaction-dialog.context';
+import {useAiTransactionCreation} from '@/contexts/ai-transaction-creation-context';
+import {useCreateTransactionDialog} from '@/contexts/create-transaction-dialog-context';
 import {useCreateTransactionAISuggestion} from '../../hooks/use-create-transaction-ai-suggestion';
+import {TransactionModeToggle} from '../../components/transaction-mode-toggle';
 
 export default function InputStep() {
   const {data: accounts} = useGetHouseholdAccounts();
@@ -29,11 +30,7 @@ export default function InputStep() {
 
   const onSubmit = (data: CreateTransactionAiHouseholdDTO) => {
     setStep('processing');
-
     suggestionMutation.mutate(data, {
-      onSuccess: () => {
-        setStep('confirm');
-      },
       onError: () => {
         setStep('input');
       },
@@ -50,6 +47,8 @@ export default function InputStep() {
 
   return (
     <div className="space-y-4">
+      <p className="text-sm text-muted-foreground text-balance">Samo opišite transakciju, AI će uraditi ostalo.</p>
+      <TransactionModeToggle />
       <AiBanner />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
