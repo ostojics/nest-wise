@@ -9,6 +9,8 @@ import {
   getAccountsSpendingQueryHouseholdSchema,
   GetSpendingSummaryQueryHouseholdDTO,
   getSpendingSummaryQueryHouseholdSchema,
+  ConfirmAiTransactionSuggestionHouseholdDTO,
+  confirmAiTransactionSuggestionHouseholdSchema,
 } from '@nest-wise/contracts';
 import {Body, Controller, Get, Param, Post, Query, UseGuards, UsePipes} from '@nestjs/common';
 import {
@@ -344,6 +346,107 @@ export class HouseholdTransactionsController {
   @Get('ai/:jobId')
   async getAiTransactionJobStatus(@Param('householdId') householdId: string, @Param('jobId') jobId: string) {
     return await this.transactionsService.getAiTransactionJobStatus(jobId);
+  }
+
+  @ApiOperation({
+    summary: 'Confirm AI transaction suggestion and create transaction',
+    description:
+      'Confirms an AI-generated transaction suggestion and creates the transaction. If a new category was suggested and no categoryId is provided, creates the category first. All operations are performed in a database transaction for atomicity.',
+  })
+  @ApiParam({
+    name: 'householdId',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the household',
+    example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  })
+  @ApiBody({
+    description: 'Confirmed transaction data with optional new category information',
+    schema: {
+      type: 'object',
+      required: ['accountId', 'amount', 'type', 'description', 'transactionDate', 'newCategorySuggested'],
+      properties: {
+        accountId: {
+          type: 'string',
+          format: 'uuid',
+          description: 'UUID of the account',
+          example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
+        },
+        categoryId: {
+          type: 'string',
+          format: 'uuid',
+          nullable: true,
+          description: 'UUID of the category (null for income or when using suggested new category)',
+          example: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
+        },
+        amount: {
+          type: 'number',
+          description: 'Transaction amount',
+          example: 50.75,
+          minimum: 0.01,
+          maximum: 10000000,
+        },
+        type: {
+          type: 'string',
+          enum: ['income', 'expense'],
+          description: 'Type of transaction',
+          example: 'expense',
+        },
+        description: {
+          type: 'string',
+          description: 'Transaction description',
+          example: 'Groceries at Walmart',
+          minLength: 1,
+          maxLength: 1000,
+        },
+        transactionDate: {
+          type: 'string',
+          format: 'date-time',
+          description: 'Transaction date (ISO 8601 timestamp)',
+          example: '2024-01-15T12:00:00.000Z',
+        },
+        isReconciled: {
+          type: 'boolean',
+          description: 'Whether the transaction is reconciled',
+          example: true,
+          default: true,
+        },
+        newCategorySuggested: {
+          type: 'boolean',
+          description: 'Whether AI suggested a new category',
+          example: true,
+        },
+        suggestedCategoryName: {
+          type: 'string',
+          description:
+            'Name of the suggested new category (required if newCategorySuggested is true and categoryId is null)',
+          example: 'Groceries',
+          maxLength: 100,
+        },
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    type: TransactionResponseSwaggerDTO,
+    description: 'Transaction created successfully',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data or insufficient funds',
+  })
+  @ApiNotFoundResponse({
+    description: 'Account not found',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Authentication required',
+  })
+  @ApiBearerAuth()
+  @UsePipes(new ZodValidationPipe(confirmAiTransactionSuggestionHouseholdSchema))
+  @Post('/ai/confirm')
+  async confirmAiTransactionSuggestion(
+    @Param('householdId') householdId: string,
+    @Body() dto: ConfirmAiTransactionSuggestionHouseholdDTO,
+  ) {
+    return await this.transactionsService.confirmAiTransactionSuggestion(householdId, dto);
   }
 
   @ApiOperation({

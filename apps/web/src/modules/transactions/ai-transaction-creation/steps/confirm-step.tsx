@@ -7,13 +7,10 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/c
 import {dateAtNoon} from '@/lib/utils';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
-import {useCreateCategory} from '@/modules/categories/hooks/use-create-category';
-import {useCreateTransaction} from '@/modules/transactions/hooks/use-create-transaction';
-import {useValidateConfirmTransaction} from '@/modules/transactions/hooks/use-validate-confirm-transaction';
-import {CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
+import {useValidateConfirmAiTransaction} from '@/modules/transactions/hooks/use-validate-confirm-ai-transaction';
+import {useConfirmAiTransaction} from '@/modules/transactions/hooks/use-confirm-ai-transaction';
+import {ConfirmAiTransactionSuggestionHouseholdDTO} from '@nest-wise/contracts';
 import {useCreateTransactionDialog} from '@/contexts/create-transaction-dialog-context';
-import {useGetMe} from '@/modules/auth/hooks/use-get-me';
-import {toast} from 'sonner';
 import {useEffect} from 'react';
 import {useAiTransactionCreation} from '@/contexts/ai-transaction-creation-context';
 import {useAiSuggestionMutationState} from '../../hooks/use-ai-suggestion-mutation-state';
@@ -25,14 +22,12 @@ export default function ConfirmStep() {
   const {data: accounts} = useGetHouseholdAccounts();
   const {data: categories} = useGetHouseholdCategories();
   const {reset: resetFlow} = useAiTransactionCreation();
-  const {data: me} = useGetMe();
   const hasAccounts = (accounts ?? []).length > 0;
   const {close} = useCreateTransactionDialog();
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
   const suggestion = useAiSuggestionMutationState((mutation) => mutation.data);
 
-  const createTransactionMutation = useCreateTransaction();
-  const createCategoryMutation = useCreateCategory(me?.householdId);
+  const confirmAiTransactionMutation = useConfirmAiTransaction();
 
   const {
     register,
@@ -40,7 +35,7 @@ export default function ConfirmStep() {
     setValue,
     watch,
     formState: {errors},
-  } = useValidateConfirmTransaction({
+  } = useValidateConfirmAiTransaction({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     accountId: suggestion?.accountId ?? (accounts ?? [])[0]?.id,
   });
@@ -49,50 +44,13 @@ export default function ConfirmStep() {
   const watchedType = watch('type');
   const transactionDate = watch('transactionDate');
 
-  const onSubmit = async (data: CreateTransactionHouseholdDTO) => {
-    let finalCategoryId = data.categoryId;
-
-    // For expense transactions, ensure we have a category (either selected or will be created)
-    const shouldCreateNewCategory = Boolean(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      suggestion?.newCategorySuggested && suggestion.suggestedCategory.newCategoryName && !data.categoryId,
-    );
-
-    if (data.type === 'expense' && !data.categoryId && !shouldCreateNewCategory) {
-      toast.error('Kategorija je obavezna za rashodne transakcije');
-      return;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (shouldCreateNewCategory && suggestion.suggestedCategory.newCategoryName) {
-      try {
-        const newCategory = await createCategoryMutation.mutateAsync({
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          name: suggestion.suggestedCategory.newCategoryName,
-        });
-        finalCategoryId = newCategory.id;
-      } catch {
-        toast.error('Greška pri kreiranju nove kategorije.');
-        resetFlow();
+  const onSubmit = async (data: ConfirmAiTransactionSuggestionHouseholdDTO) => {
+    await confirmAiTransactionMutation.mutateAsync(data, {
+      onSettled: () => {
         close();
-        return;
-      }
-    }
-
-    await createTransactionMutation.mutateAsync(
-      {
-        ...data,
-        categoryId: finalCategoryId,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        description: suggestion?.description ?? data.description,
+        resetFlow();
       },
-      {
-        onSettled: () => {
-          close();
-          resetFlow();
-        },
-      },
-    );
+    });
   };
 
   const getAccountDisplayName = (accountId: string) => {
@@ -103,7 +61,7 @@ export default function ConfirmStep() {
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
 
-  const isProcessing = createTransactionMutation.isPending || createCategoryMutation.isPending;
+  const isProcessing = confirmAiTransactionMutation.isPending;
 
   useEffect(() => {
     if (watchedType === 'income') {
@@ -122,9 +80,16 @@ export default function ConfirmStep() {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       setValue('description', suggestion.description);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      setValue('newCategorySuggested', suggestion.newCategorySuggested);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (suggestion.transactionType !== 'income' && !suggestion.newCategorySuggested) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         setValue('categoryId', suggestion.suggestedCategory.existingCategoryId ?? null);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (suggestion.newCategorySuggested && suggestion.suggestedCategory.newCategoryName) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        setValue('suggestedCategoryName', suggestion.suggestedCategory.newCategoryName);
       }
     }
   }, [suggestion, setValue]);

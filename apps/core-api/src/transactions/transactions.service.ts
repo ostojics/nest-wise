@@ -19,6 +19,7 @@ import {
   AiTransactionJobStatusContract,
   AiTransactionJobStatus,
   AiTransactionSuggestion,
+  ConfirmAiTransactionSuggestionHouseholdDTO,
 } from '@nest-wise/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectQueue} from '@nestjs/bullmq';
@@ -192,6 +193,65 @@ export class TransactionsService {
     };
 
     return suggestion;
+  }
+
+  /**
+   * Confirm an AI transaction suggestion and create the transaction.
+   * If a new category is suggested and no categoryId is provided, creates the category first.
+   * All operations are done in a database transaction for atomicity.
+   */
+  async confirmAiTransactionSuggestion(
+    householdId: string,
+    confirmationData: ConfirmAiTransactionSuggestionHouseholdDTO,
+  ): Promise<Transaction> {
+    const account = await this.accountsService.findAccountById(confirmationData.accountId);
+
+    // Verify account belongs to the household
+    if (account.householdId !== householdId) {
+      throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
+    }
+
+    // Verify sufficient funds for expenses
+    if (confirmationData.type === 'expense' && Number(account.currentBalance) < confirmationData.amount) {
+      throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
+    }
+
+    return await this.dataSource.transaction(async () => {
+      let finalCategoryId = confirmationData.categoryId;
+
+      // Create new category if suggested and no category is selected
+      if (
+        confirmationData.newCategorySuggested &&
+        confirmationData.suggestedCategoryName &&
+        !confirmationData.categoryId
+      ) {
+        const newCategory = await this.categoriesService.createCategoryForHousehold(householdId, {
+          name: confirmationData.suggestedCategoryName,
+        });
+        finalCategoryId = newCategory.id;
+      }
+
+      // Create the transaction
+      const transaction = await this.transactionsRepository.create({
+        description: confirmationData.description,
+        amount: confirmationData.amount,
+        type: confirmationData.type as TransactionType,
+        categoryId: confirmationData.type === 'income' ? null : finalCategoryId,
+        householdId: householdId,
+        accountId: account.id,
+        transactionDate: confirmationData.transactionDate,
+        isReconciled: confirmationData.isReconciled,
+      });
+
+      // Update account balance
+      await this.updateBalance(
+        confirmationData.accountId,
+        confirmationData.amount,
+        confirmationData.type as TransactionType,
+      );
+
+      return transaction;
+    });
   }
 
   async findTransactionById(id: string): Promise<Transaction> {

@@ -7,6 +7,7 @@ import {
   UpdateTransactionDTO,
   AiTransactionJobResponseContract,
   AiTransactionJobStatusContract,
+  ConfirmAiTransactionSuggestionHouseholdDTO,
 } from '@nest-wise/contracts';
 import httpClient from './http-client';
 import {
@@ -51,6 +52,17 @@ export const getAiTransactionSuggestionStatus = async (householdId: string, jobI
   return await httpClient
     .get(`v1/households/${householdId}/transactions/ai/${jobId}`)
     .json<AiTransactionJobStatusContract>();
+};
+
+export const confirmAiTransactionSuggestion = async (
+  householdId: string,
+  confirmation: ConfirmAiTransactionSuggestionHouseholdDTO,
+) => {
+  return await httpClient
+    .post(`v1/households/${householdId}/transactions/ai/confirm`, {
+      json: confirmation,
+    })
+    .json();
 };
 
 export const getNetWorthTrendForHousehold = async (householdId: string) => {
