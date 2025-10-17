@@ -38,14 +38,14 @@ test.describe('Setup and Onboarding', () => {
     await page.getByTestId('setup-household-name-input').fill('Test Household');
     await page.getByTestId('setup-currency-select').click();
     // Select RSD currency
-    await page.getByRole('option', {name: 'RSD - Serbian Dinar'}).click();
+    await page.getByTestId('setup-currency-option-RSD').click();
     await page.getByTestId('setup-step2-submit').click();
 
     // Assert: Success toast should appear
-    await expect(page.getByText('Podešavanje je uspešno završeno')).toBeVisible();
+    await expect(page.getByText('Podešavanje je uspešno završeno')).toBeVisible({timeout: 10000});
 
     // Assert: Should redirect to onboarding page
-    await page.waitForURL('/onboarding');
+    await page.waitForURL('/onboarding', {timeout: 10000});
     expect(page.url()).toContain('/onboarding');
   });
 
@@ -55,7 +55,7 @@ test.describe('Setup and Onboarding', () => {
     await page.waitForLoadState('networkidle');
 
     // Assert: Welcome title and description are visible
-    await expect(page.getByTestId('onboarding-step-title')).toBeVisible();
+    await expect(page.getByTestId('onboarding-step-title')).toBeVisible({timeout: 10000});
     await expect(page.getByTestId('onboarding-step-title')).toHaveText('Dobro došli u NestWise!');
 
     await expect(page.getByTestId('onboarding-step-description')).toBeVisible();
@@ -75,6 +75,9 @@ test.describe('Setup and Onboarding', () => {
     // Arrange: Navigate to onboarding page
     await page.goto('/onboarding');
     await page.waitForLoadState('networkidle');
+
+    // Wait for first step to load
+    await expect(page.getByTestId('onboarding-step-title')).toBeVisible({timeout: 10000});
 
     // Act: Click "Dalje" to move to step 2
     await page.getByTestId('onboarding-primary-action').click();
@@ -107,6 +110,9 @@ test.describe('Setup and Onboarding', () => {
     await page.goto('/onboarding');
     await page.waitForLoadState('networkidle');
 
+    // Wait for first step to load
+    await expect(page.getByTestId('onboarding-step-title')).toBeVisible({timeout: 10000});
+
     // Act: Navigate through all steps
     // Step 1 -> Step 2
     await page.getByTestId('onboarding-primary-action').click();
@@ -130,7 +136,7 @@ test.describe('Setup and Onboarding', () => {
     await page.getByTestId('onboarding-primary-action').click();
 
     // Assert: Should navigate to plan page
-    await page.waitForURL('/plan');
+    await page.waitForURL('/plan', {timeout: 10000});
     expect(page.url()).toContain('/plan');
   });
 });

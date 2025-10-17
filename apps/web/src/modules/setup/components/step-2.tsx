@@ -66,7 +66,11 @@ const Step2 = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {CURRENCIES.map((currency) => (
-                      <SelectItem key={currency.code} value={currency.code}>
+                      <SelectItem
+                        key={currency.code}
+                        value={currency.code}
+                        data-testid={`setup-currency-option-${currency.code}`}
+                      >
                         {currency.name}
                       </SelectItem>
                     ))}
