@@ -1,10 +1,10 @@
 import {Suspense, lazy} from 'react';
 import {AiTransactionCreationProvider, useAiTransactionCreation} from '@/contexts/ai-transaction-creation-context';
 import {Loader2} from 'lucide-react';
+import ProcessingStep from './steps/processing-step';
 
 // Lazy load steps
 const InputStep = lazy(() => import('./steps/input-step'));
-const ProcessingStep = lazy(() => import('./steps/processing-step'));
 const ConfirmStep = lazy(() => import('./steps/confirm-step'));
 
 function AiTransactionCreationContent() {
@@ -25,17 +25,7 @@ function AiTransactionCreationContent() {
           </Suspense>
         );
       case 'processing':
-        return (
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center p-8">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </div>
-            }
-          >
-            <ProcessingStep />
-          </Suspense>
-        );
+        return <ProcessingStep />;
       case 'confirm':
         return (
           <Suspense

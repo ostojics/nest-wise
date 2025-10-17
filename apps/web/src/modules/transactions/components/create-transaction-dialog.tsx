@@ -25,7 +25,7 @@ export function CreateTransactionDialog() {
           <DialogTitle>Zabeleži transakciju</DialogTitle>
         </DialogHeader>
         <DialogDescription className="hidden">Kreiraj transakciju</DialogDescription>
-        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+        <div className="overflow-y-auto flex-1 -mx-6 px-6 pb-2">
           {isManualMode ? <ManualTransactionForm /> : <AiTransactionCreation />}
         </div>
       </DialogContent>
