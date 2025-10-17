@@ -1,44 +1,38 @@
 import React from 'react';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
-
-interface LegendItemPayload {
-  amount?: number;
-  fill?: string;
-  category?: string;
-}
-
-interface LegendItem {
-  color?: string;
-  value?: string | number;
-  payload?: LegendItemPayload;
-}
+import {ChartDataEntry} from '../interfaces/chart-data-entry';
 
 interface CategoryAmountLegendProps {
-  payload?: LegendItem[];
+  data?: ChartDataEntry[];
 }
 
-const CategoryAmountLegend: React.FC<CategoryAmountLegendProps> = ({payload}) => {
+const CategoryAmountLegend: React.FC<CategoryAmountLegendProps> = ({data}) => {
   const {formatBalance} = useFormatBalance();
 
-  if (!payload || payload.length === 0) {
+  if (!data || data.length === 0) {
     return null;
   }
 
   return (
-    <div className="w-full pt-8">
-      <ul className="w-[100%] md:w-[60%] mx-auto space-y-1">
-        {payload.map((entry, index) => {
-          const color = entry.color ?? entry.payload?.fill;
-          const label = String(entry.value ?? entry.payload?.category ?? '');
-          const amount = typeof entry.payload?.amount === 'number' ? entry.payload.amount : undefined;
+    <div className="w-[100%] pt-8 mb-8">
+      <ul className="w-[100%] mx-auto space-y-1">
+        {data.map((entry, index) => {
+          const color = entry.fill;
+          const label = entry.category;
+          const amount = Number(entry.amount);
 
           return (
-            <li key={`legend-item-${index}`} className="flex items-center justify-between gap-3 mb-2">
+            <li
+              key={`legend-item-${index}`}
+              className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 mb-5"
+            >
               <div className="flex items-center gap-2 min-w-0">
                 <span className="h-2 w-2 shrink-0 rounded-[2px]" style={{backgroundColor: color}} />
                 <span className="truncate">{label}</span>
               </div>
-              <span className="text-foreground font-mono font-medium tabular-nums">{formatBalance(amount ?? 0)}</span>
+              <span className="text-foreground font-mono font-medium tabular-nums">
+                {formatBalance(amount)} ({entry.percentage}%)
+              </span>
             </li>
           );
         })}
