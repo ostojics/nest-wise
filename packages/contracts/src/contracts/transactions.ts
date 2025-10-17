@@ -359,7 +359,7 @@ export const getTransactionsQueryHouseholdSchema = z
     type: TransactionTypeEnum.optional(),
     from: z.string().datetime({message: 'Datum mora biti u ISO 8601 formatu'}).optional(),
     to: z.string().datetime({message: 'Datum mora biti u ISO 8601 formatu'}).optional(),
-    q: z.string().optional(),
+    q: z.string().max(255, 'Pretraga može imati najviše 255 karaktera').optional(),
   })
   .strict();
 

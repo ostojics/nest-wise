@@ -87,6 +87,7 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
             search: (prev) => ({
               ...prev,
               sort: serializeSortOption(sort) as TransactionSortField,
+              page: 1,
             }),
             to: '/transactions',
           });
