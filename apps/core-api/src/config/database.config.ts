@@ -50,6 +50,13 @@ export function getConfig(): DatabaseConfig {
       ConvertPrivateTransactionDateToTimestamptz1760208473001,
     ],
     migrationsRun: true,
+    extra: {
+      max: process.env.DB_POOL_MAX ? parseInt(process.env.DB_POOL_MAX, 10) : 15,
+      min: process.env.DB_POOL_MIN ? parseInt(process.env.DB_POOL_MIN, 10) : 2,
+      idleTimeoutMillis: 20000,
+      connectionTimeoutMillis: 10000,
+    },
+    logging: ['warn', 'error'],
   };
 }
 
