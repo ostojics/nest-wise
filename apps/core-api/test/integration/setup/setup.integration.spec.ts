@@ -1,11 +1,8 @@
 import {Test, TestingModule} from '@nestjs/testing';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {ConfigModule, ConfigService} from '@nestjs/config';
 import {DataSource} from 'typeorm';
-import {JwtModule} from '@nestjs/jwt';
 import {ForbiddenException} from '@nestjs/common';
 import {addYears, add} from 'date-fns';
-import {Logger} from 'pino-nestjs';
 import {AuthService} from '../../../src/auth/auth.service';
 import {UsersService} from '../../../src/users/users.service';
 import {UsersRepository} from '../../../src/users/users.repository';
@@ -13,24 +10,21 @@ import {HouseholdsService} from '../../../src/households/households.service';
 import {HouseholdsRepository} from '../../../src/households/households.repository';
 import {LicensesService} from '../../../src/licenses/licenses.service';
 import {LicensesRepository} from '../../../src/licenses/licenses.repository';
-import {AccountsService} from '../../../src/accounts/accounts.service';
-import {CategoriesService} from '../../../src/categories/categories.service';
-import {EmailsService} from '../../../src/emails/emails.service';
 import {User} from '../../../src/users/user.entity';
 import {Household} from '../../../src/households/household.entity';
 import {License} from '../../../src/licenses/license.entity';
-import {Account} from '../../../src/accounts/account.entity';
-import {Category} from '../../../src/categories/categories.entity';
-import {Transaction} from '../../../src/transactions/transaction.entity';
-import {Savings} from '../../../src/savings/savings.entity';
-import {CategoryBudget} from '../../../src/category-budgets/category-budgets.entity';
-import {PrivateTransaction} from '../../../src/private-transactions/private-transactions.entity';
-import {appConfig, AppConfig, AppConfigName} from '../../../src/config/app.config';
-import {databaseConfig, DatabaseConfig, DatabaseConfigName} from '../../../src/config/database.config';
-import {queuesConfig} from '../../../src/config/queues.config';
-import {throttlerConfig} from '../../../src/config/throttler.config';
-import {GlobalConfig} from '../../../src/config/config.interface';
 import {SetupDTO} from '@nest-wise/contracts';
+import {
+  INTEGRATION_TEST_ENTITIES,
+  getConfigModuleConfig,
+  getTypeOrmModuleConfig,
+  getJwtModuleConfig,
+  mockAccountsServiceProvider,
+  mockCategoriesServiceProvider,
+  mockEmailsServiceProvider,
+  mockLoggerProvider,
+  cleanupTestData,
+} from '../test-utils';
 
 describe('Integration - Setup Flow', () => {
   let module: TestingModule;
@@ -41,44 +35,10 @@ describe('Integration - Setup Flow', () => {
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [
-        ConfigModule.forRoot({
-          cache: true,
-          load: [appConfig, throttlerConfig, databaseConfig, queuesConfig],
-        }),
-        TypeOrmModule.forRootAsync({
-          imports: [ConfigModule],
-          inject: [ConfigService],
-          useFactory: (configService: ConfigService<GlobalConfig>) => {
-            const config = configService.getOrThrow<DatabaseConfig>(DatabaseConfigName);
-            return {
-              ...config,
-            };
-          },
-        }),
-        TypeOrmModule.forFeature([
-          User,
-          Household,
-          License,
-          Account,
-          Category,
-          Transaction,
-          Savings,
-          CategoryBudget,
-          PrivateTransaction,
-        ]),
-        JwtModule.registerAsync({
-          useFactory: (configService: ConfigService) => {
-            const appConfig = configService.getOrThrow<AppConfig>(AppConfigName);
-
-            return {
-              secret: appConfig.jwtSecret,
-              signOptions: {expiresIn: '7d'},
-            };
-          },
-          global: true,
-          imports: [ConfigModule],
-          inject: [ConfigService],
-        }),
+        getConfigModuleConfig(),
+        getTypeOrmModuleConfig(),
+        TypeOrmModule.forFeature(INTEGRATION_TEST_ENTITIES),
+        getJwtModuleConfig(),
       ],
       providers: [
         AuthService,
@@ -88,35 +48,10 @@ describe('Integration - Setup Flow', () => {
         HouseholdsRepository,
         LicensesService,
         LicensesRepository,
-        {
-          provide: AccountsService,
-          useValue: {
-            findAccountsByHouseholdId: jest.fn().mockResolvedValue([]),
-          },
-        },
-        {
-          provide: CategoriesService,
-          useValue: {
-            findCategoriesByHouseholdId: jest.fn().mockResolvedValue([]),
-          },
-        },
-        {
-          provide: EmailsService,
-          useValue: {
-            sendEmail: jest.fn().mockResolvedValue(undefined),
-            sendWelcomeEmail: jest.fn().mockResolvedValue(undefined),
-          },
-        },
-        {
-          provide: Logger,
-          useValue: {
-            log: jest.fn(),
-            error: jest.fn(),
-            warn: jest.fn(),
-            debug: jest.fn(),
-            verbose: jest.fn(),
-          },
-        },
+        mockAccountsServiceProvider,
+        mockCategoriesServiceProvider,
+        mockEmailsServiceProvider,
+        mockLoggerProvider,
       ],
     }).compile();
 
@@ -133,9 +68,7 @@ describe('Integration - Setup Flow', () => {
 
   beforeEach(async () => {
     // Clean up test data before each test
-    await dataSource.getRepository(User).createQueryBuilder().delete().execute();
-    await dataSource.getRepository(Household).createQueryBuilder().delete().execute();
-    await dataSource.getRepository(License).createQueryBuilder().delete().execute();
+    await cleanupTestData(dataSource);
   });
 
   describe('Setup Flow', () => {

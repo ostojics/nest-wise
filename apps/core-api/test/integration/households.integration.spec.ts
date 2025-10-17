@@ -1,27 +1,20 @@
 import {Test, TestingModule} from '@nestjs/testing';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {ConfigModule, ConfigService} from '@nestjs/config';
 import {DataSource} from 'typeorm';
+import {addYears} from 'date-fns';
 import {HouseholdsService} from '../../src/households/households.service';
 import {HouseholdsRepository} from '../../src/households/households.repository';
-import {AccountsService} from '../../src/accounts/accounts.service';
-import {CategoriesService} from '../../src/categories/categories.service';
 import {Household} from '../../src/households/household.entity';
-import {Account} from '../../src/accounts/account.entity';
-import {Category} from '../../src/categories/categories.entity';
-import {User} from '../../src/users/user.entity';
-import {Transaction} from '../../src/transactions/transaction.entity';
-import {Savings} from '../../src/savings/savings.entity';
-import {CategoryBudget} from '../../src/category-budgets/category-budgets.entity';
-import {PrivateTransaction} from '../../src/private-transactions/private-transactions.entity';
 import {License} from '../../src/licenses/license.entity';
-import {appConfig} from '../../src/config/app.config';
-import {databaseConfig, DatabaseConfig, DatabaseConfigName} from '../../src/config/database.config';
-import {queuesConfig} from '../../src/config/queues.config';
-import {throttlerConfig} from '../../src/config/throttler.config';
-import {GlobalConfig} from '../../src/config/config.interface';
 import {CreateHouseholdDTO} from '@nest-wise/contracts';
-import {add, addYears} from 'date-fns';
+import {
+  INTEGRATION_TEST_ENTITIES,
+  getConfigModuleConfig,
+  getTypeOrmModuleConfig,
+  mockAccountsServiceProvider,
+  mockCategoriesServiceProvider,
+  cleanupTestData,
+} from './test-utils';
 
 describe('Integration - Households', () => {
   let module: TestingModule;
@@ -31,51 +24,8 @@ describe('Integration - Households', () => {
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          cache: true,
-          load: [appConfig, throttlerConfig, databaseConfig, queuesConfig],
-        }),
-        TypeOrmModule.forRootAsync({
-          imports: [ConfigModule],
-          inject: [ConfigService],
-          useFactory: (configService: ConfigService<GlobalConfig>) => {
-            const config = configService.getOrThrow<DatabaseConfig>(DatabaseConfigName);
-            return {
-              ...config,
-            };
-          },
-        }),
-        TypeOrmModule.forFeature([
-          Household,
-          Account,
-          Category,
-          User,
-          Transaction,
-          Savings,
-          CategoryBudget,
-          PrivateTransaction,
-          License,
-        ]),
-      ],
-      providers: [
-        HouseholdsService,
-        HouseholdsRepository,
-        {
-          provide: AccountsService,
-          useValue: {
-            // Mock AccountsService since we're just testing household CRUD
-            findAccountsByHouseholdId: jest.fn().mockResolvedValue([]),
-          },
-        },
-        {
-          provide: CategoriesService,
-          useValue: {
-            // Mock CategoriesService since we're just testing household CRUD
-            findCategoriesByHouseholdId: jest.fn().mockResolvedValue([]),
-          },
-        },
-      ],
+      imports: [getConfigModuleConfig(), getTypeOrmModuleConfig(), TypeOrmModule.forFeature(INTEGRATION_TEST_ENTITIES)],
+      providers: [HouseholdsService, HouseholdsRepository, mockAccountsServiceProvider, mockCategoriesServiceProvider],
     }).compile();
 
     householdsService = module.get<HouseholdsService>(HouseholdsService);
@@ -99,8 +49,8 @@ describe('Integration - Households', () => {
   });
 
   beforeEach(async () => {
-    // Clean up households from previous tests using query builder
-    await dataSource.getRepository(Household).createQueryBuilder().delete().execute();
+    // Clean up households from previous tests
+    await cleanupTestData(dataSource, [Household]);
   });
 
   describe('Household CRUD Operations', () => {
