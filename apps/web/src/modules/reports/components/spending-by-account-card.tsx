@@ -1,5 +1,5 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader} from '@/components/ui/card';
-import {ChartContainer, ChartLegend, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
+import {ChartContainer, ChartTooltip, ChartTooltipContent} from '@/components/ui/chart';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {IconChartPie} from '@tabler/icons-react';
 import React, {useMemo} from 'react';
@@ -67,11 +67,8 @@ const SpendingByAccountCard = () => {
         {isEmpty ? (
           <div className="text-sm text-muted-foreground text-center py-16">Nema troškova u izabranom periodu.</div>
         ) : (
-          <ChartContainer
-            config={{}}
-            className="mx-auto aspect-square max-h-[28rem] @2xs/card:max-h-[34.375rem] overflow-visible"
-          >
-            <PieChart margin={{top: 30, right: 20, bottom: 20, left: 20}}>
+          <ChartContainer config={{}} className="px-2 mx-auto aspect-square max-h-[28rem] overflow-visible">
+            <PieChart margin={{top: 35, right: 35, bottom: 35, left: 35}}>
               <ChartTooltip
                 cursor={false}
                 content={
@@ -107,12 +104,14 @@ const SpendingByAccountCard = () => {
                   <Cell key={`cell-${index}`} fill={entry.fill} />
                 ))}
               </Pie>
-              <ChartLegend content={<CategoryAmountLegend />} />
             </PieChart>
           </ChartContainer>
         )}
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm pt-4">
+      <CardFooter className="flex-col gap-2 text-sm">
+        <div className="w-full md:w-[75%] lg:w-[60%] xl:w-[50%] mx-auto">
+          <CategoryAmountLegend data={dataWithPercentages} />
+        </div>
         <div className="text-muted-foreground leading-none text-center">
           Ukupni troškovi: {formatBalance(totalSpending)}
         </div>
