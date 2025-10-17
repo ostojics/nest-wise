@@ -7,6 +7,7 @@ import {
   UpdateTransactionDTO,
   AiTransactionJobResponseContract,
   AiTransactionJobStatusContract,
+  ConfirmAiTransactionSuggestionHouseholdDTO,
 } from '@nest-wise/contracts';
 import httpClient from './http-client';
 import {
@@ -17,7 +18,6 @@ import {
   CategorySpendingPointContract,
 } from '@nest-wise/contracts';
 
-// Household-scoped endpoints
 export const getTransactionsForHousehold = async (householdId: string, query: GetTransactionsQueryHouseholdDTO) => {
   return httpClient
     .get<GetTransactionsResponseContract>(`v1/households/${householdId}/transactions`, {
@@ -30,32 +30,41 @@ export const createTransactionForHousehold = async (
   householdId: string,
   transaction: CreateTransactionHouseholdDTO,
 ) => {
-  return await httpClient
+  return httpClient
     .post(`v1/households/${householdId}/transactions`, {
       json: transaction,
     })
     .json();
 };
 
-export const createAiTransactionForHousehold = async (
+export const requestAiTransactionSuggestion = async (
   householdId: string,
   transaction: CreateTransactionAiHouseholdDTO,
 ) => {
-  return await httpClient
+  return httpClient
     .post(`v1/households/${householdId}/transactions/ai`, {
       json: transaction,
     })
     .json<AiTransactionJobResponseContract>();
 };
 
-export const getAiTransactionJobStatus = async (householdId: string, jobId: string) => {
-  return await httpClient
-    .get(`v1/households/${householdId}/transactions/ai/${jobId}`)
-    .json<AiTransactionJobStatusContract>();
+export const getAiTransactionSuggestionStatus = async (householdId: string, jobId: string) => {
+  return httpClient.get(`v1/households/${householdId}/transactions/ai/${jobId}`).json<AiTransactionJobStatusContract>();
+};
+
+export const confirmAiTransactionSuggestion = async (
+  householdId: string,
+  confirmation: ConfirmAiTransactionSuggestionHouseholdDTO,
+) => {
+  return httpClient
+    .post(`v1/households/${householdId}/transactions/ai/confirm`, {
+      json: confirmation,
+    })
+    .json();
 };
 
 export const getNetWorthTrendForHousehold = async (householdId: string) => {
-  return await httpClient
+  return httpClient
     .get(`v1/households/${householdId}/transactions/net-worth-trend`)
     .json<NetWorthTrendPointContract[]>();
 };
@@ -87,7 +96,6 @@ export const getCategoriesSpending = async (householdId: string, dto: GetSpendin
     .json<CategorySpendingPointContract[]>();
 };
 
-// Item-level endpoints (keep these since they operate on individual transactions)
 export const getTransaction = async (id: string) => {
   return httpClient.get(`v1/transactions/${id}`).json();
 };

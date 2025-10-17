@@ -95,6 +95,56 @@ export class CreateTransactionAiSwaggerDTO {
   transactionDate: Date;
 }
 
+export class AiTransactionSuggestionSwaggerDTO {
+  @ApiProperty({
+    description: 'Suggested transaction amount extracted by AI',
+    example: 50.0,
+  })
+  transactionAmount: number;
+
+  @ApiProperty({
+    description: 'Suggested transaction type',
+    enum: ['income', 'expense'],
+    example: 'expense',
+  })
+  transactionType: string;
+
+  @ApiProperty({
+    description: 'Suggested transaction date (ISO 8601 timestamp)',
+    example: '2024-01-15T12:00:00.000Z',
+    format: 'date-time',
+  })
+  transactionDate: string;
+
+  @ApiProperty({
+    description: 'Whether AI suggested creating a new category',
+    example: false,
+  })
+  newCategorySuggested: boolean;
+
+  @ApiProperty({
+    description: 'Suggested category information',
+    type: 'object',
+    properties: {
+      existingCategoryId: {
+        type: 'string',
+        format: 'uuid',
+        description: 'ID of existing category (if selected)',
+        example: 'c3d4e5f6-g7h8-9012-cdef-g34567890123',
+      },
+      newCategoryName: {
+        type: 'string',
+        description: 'Name of new category to create (if suggested)',
+        example: 'Groceries',
+      },
+    },
+  })
+  suggestedCategory: {
+    existingCategoryId?: string;
+    newCategoryName?: string;
+  };
+}
+
 export class UpdateTransactionSwaggerDTO {
   @ApiProperty({
     description: 'UUID of the account to move the transaction to (optional)',

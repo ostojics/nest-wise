@@ -31,7 +31,7 @@ const TransactionDateFromPicker: React.FC<TransactionDateFromPickerProps> = ({cl
     if (!value) return;
 
     void navigate({
-      search: (prev) => ({...prev, from: formatDateForQueryParam(value)}),
+      search: (prev) => ({...prev, from: formatDateForQueryParam(value), page: 1}),
       to: '/transactions',
     });
     setOpen(false);
