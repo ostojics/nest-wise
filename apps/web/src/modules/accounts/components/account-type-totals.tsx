@@ -67,14 +67,18 @@ const AccountTypeTotals = ({accounts, maxInlineItems = 3, className}: AccountTyp
       {inlineItems.map((item, index) => (
         <span key={item.type}>
           {item.label}: <span className="tabular-nums">{formatBalance(item.total)}</span>
-          {index < inlineItems.length - 1 && !hasMoreItems && <span className="mx-1">•</span>}
-          {index < inlineItems.length - 1 && hasMoreItems && <span className="mx-1">•</span>}
+          {index < inlineItems.length - 1 && <span className="mx-1">•</span>}
         </span>
       ))}
       {hasMoreItems && (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-auto p-0 text-sm font-normal hover:bg-transparent">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-auto p-0 text-sm font-normal hover:bg-transparent"
+              aria-label={`Prikaži ${remainingItems.length} dodatnih tipova računa`}
+            >
               +{remainingItems.length}
             </Button>
           </DialogTrigger>
