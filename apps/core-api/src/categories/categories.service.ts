@@ -5,6 +5,9 @@ import {CreateCategoryDTO, UpdateCategoryDTO} from '@nest-wise/contracts';
 
 @Injectable()
 export class CategoriesService {
+  // Limit category catalog size for AI prompts to prevent token bloat
+  private readonly MAX_CATEGORIES_FOR_AI = 40;
+
   constructor(private readonly categoriesRepository: CategoriesRepository) {}
 
   async createCategoryForHousehold(householdId: string, categoryData: CreateCategoryDTO): Promise<Category> {
@@ -35,11 +38,12 @@ export class CategoriesService {
   /**
    * Get a compact category catalog for AI prompts (max 40 categories)
    * Returns a compact string like "Groceries:c1; Utilities:c2; ..."
+   * Limits to 40 categories to keep prompt size manageable (~200-300 tokens)
    */
   async getCategoryPromptCatalog(householdId: string): Promise<string> {
     const categories = await this.categoriesRepository.findByHouseholdId(householdId);
-    // Limit to 40 most relevant categories
-    const limitedCategories = categories.slice(0, 40);
+    // Limit to prevent token bloat in AI prompts
+    const limitedCategories = categories.slice(0, this.MAX_CATEGORIES_FOR_AI);
     return limitedCategories.map((cat) => `${cat.name}:${cat.id}`).join('; ');
   }
 
