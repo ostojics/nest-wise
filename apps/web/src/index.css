@@ -89,7 +89,7 @@
   --sidebar-accent-foreground: oklch(0.2953 0.0555 257.2696);
   --sidebar-border: oklch(0.9176 0.0185 250.5979);
   --sidebar-ring: oklch(0.2811 0.068 256.9555);
-  --font-sans: DM Sans, sans-serif;
+  --font-sans: Inter, sans-serif;
   --font-serif: Lora, serif;
   --font-mono: IBM Plex Mono, monospace;
   --radius: 0.5rem;
