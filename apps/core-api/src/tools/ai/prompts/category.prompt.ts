@@ -4,6 +4,12 @@ interface CategoryPromptArgs {
   currentDate: string;
 }
 
+interface CategoryPromptCompactArgs {
+  categoryCatalog: string;
+  transactionDescription: string;
+  currentDate: string;
+}
+
 export const categoryPromptFactory = ({categories, transactionDescription, currentDate}: CategoryPromptArgs) => {
   const categoriesList = categories.map((cat) => `- **${cat.id}**: ${cat.name}`).join('\n');
 
@@ -181,4 +187,19 @@ Odgovorite **važećim JSON objektom** koji odgovara sledećoj strukturi:
 
 Ako nema odgovarajućih postojećih kategorija, predložite novu.
 `;
+};
+
+/**
+ * Compact prompt factory for faster AI processing
+ * Uses minimal system/user message format with compact category catalog
+ */
+export const categoryPromptFactoryCompact = ({
+  categoryCatalog,
+  transactionDescription,
+  currentDate,
+}: CategoryPromptCompactArgs) => {
+  return {
+    system: `You are a strict JSON generator for transaction classification. Output only JSON matching the provided schema. Extract: transactionType (expense/income), transactionAmount (positive number), transactionDate (ISO 8601, use ${currentDate} if not specified), suggestedCategory (existingCategoryId or newCategoryName), newCategorySuggested (boolean). If income, do not suggest category. Available categories: ${categoryCatalog}`,
+    user: `Transaction description: "${transactionDescription}". Current date: ${currentDate}. Return JSON with transactionType, transactionDescription (cleaned), transactionAmount, transactionDate, suggestedCategory, newCategorySuggested.`,
+  };
 };

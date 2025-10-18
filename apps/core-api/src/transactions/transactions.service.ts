@@ -26,7 +26,7 @@ import {Queue} from 'bullmq';
 import {generateObject} from 'ai';
 import {CategoriesService} from 'src/categories/categories.service';
 import {HouseholdsService} from 'src/households/households.service';
-import {categoryPromptFactory} from 'src/tools/ai/prompts/category.prompt';
+import {categoryPromptFactory, categoryPromptFactoryCompact} from 'src/tools/ai/prompts/category.prompt';
 import {transactionCategoryOutputSchema} from 'src/tools/ai/schemas';
 import {DataSource} from 'typeorm';
 import {AccountsService} from '../accounts/accounts.service';
@@ -37,6 +37,7 @@ import {Logger} from 'pino-nestjs';
 import {Queues} from 'src/common/enums/queues.enum';
 import {AiTransactionJobs} from 'src/common/enums/jobs.enum';
 import {ProcessAiTransactionPayload} from 'src/common/interfaces/ai-transactions.interface';
+import {z} from 'zod';
 
 @Injectable()
 export class TransactionsService {
@@ -203,32 +204,72 @@ export class TransactionsService {
     householdId: string,
     transactionData: CreateTransactionAiHouseholdDTO,
   ): Promise<Transaction> {
-    const account = await this.accountsService.findAccountById(transactionData.accountId);
+    const startTime = Date.now();
+    const timings: Record<string, number> = {};
 
-    // Verify account belongs to the household
+    // Validate account belongs to household (critical security check)
+    const dbFetchStart = Date.now();
+    const account = await this.accountsService.findAccountById(transactionData.accountId);
     if (account.householdId !== householdId) {
       throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
     }
+    timings.accountFetch = Date.now() - dbFetchStart;
 
-    const household = await this.householdsService.findHouseholdById(householdId);
-    const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
+    // Fetch categories in parallel (no need to fetch household entity)
+    const categoryCatalogStart = Date.now();
+    const categoryCatalog = await this.categoriesService.getCategoryPromptCatalog(householdId);
+    timings.categoryCatalog = Date.now() - categoryCatalogStart;
 
-    const {object} = await generateObject({
-      model: openai('gpt-5-nano-2025-08-07'),
-      prompt: categoryPromptFactory({
-        categories,
-        transactionDescription: transactionData.description,
-        currentDate: transactionData.currentDate,
-      }),
-      temperature: 0.1,
-      schema: transactionCategoryOutputSchema,
+    // Build compact prompt with minimal tokens
+    const promptBuildStart = Date.now();
+    const {system, user} = categoryPromptFactoryCompact({
+      categoryCatalog,
+      transactionDescription: transactionData.description,
+      currentDate: transactionData.currentDate,
     });
+    timings.promptBuild = Date.now() - promptBuildStart;
 
+    // Call AI with optimized parameters and timeout
+    const aiCallStart = Date.now();
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), 10000); // 10s timeout
+
+    let object: z.infer<typeof transactionCategoryOutputSchema>;
+    try {
+      const result = await generateObject({
+        model: openai('gpt-4o-mini', {structuredOutputs: true}),
+        messages: [
+          {role: 'system', content: system},
+          {role: 'user', content: user},
+        ],
+        temperature: 0,
+        topP: 1,
+        presencePenalty: 0,
+        frequencyPenalty: 0,
+        maxTokens: 128,
+        maxRetries: 1,
+        schema: transactionCategoryOutputSchema,
+        abortSignal: abortController.signal,
+      });
+      object = result.object;
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new BadRequestException('Obrada transakcije je prekoračila vremensko ograničenje');
+      }
+      throw error;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+    timings.aiCall = Date.now() - aiCallStart;
+
+    // Validate sufficient funds
     if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
       throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
     }
 
-    return await this.dataSource.transaction(async () => {
+    // Create transaction in DB
+    const dbWriteStart = Date.now();
+    const transaction = await this.dataSource.transaction(async () => {
       const isNewCategorySuggested = object.newCategorySuggested;
       let categoryId: string | null = null;
 
@@ -247,7 +288,7 @@ export class TransactionsService {
         amount: object.transactionAmount,
         type: object.transactionType as TransactionType,
         categoryId: object.transactionType === 'income' ? null : categoryId,
-        householdId: household.id,
+        householdId: householdId,
         accountId: account.id,
         transactionDate: object.transactionDate,
         isReconciled: true,
@@ -257,6 +298,18 @@ export class TransactionsService {
 
       return transaction;
     });
+    timings.dbWrite = Date.now() - dbWriteStart;
+
+    // Log performance metrics
+    const totalTime = Date.now() - startTime;
+    this.logger.debug('AI transaction completed', {
+      totalTime,
+      timings,
+      householdId,
+      transactionId: transaction.id,
+    });
+
+    return transaction;
   }
 
   async findTransactionById(id: string): Promise<Transaction> {

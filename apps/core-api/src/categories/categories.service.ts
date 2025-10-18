@@ -32,6 +32,17 @@ export class CategoriesService {
     return await this.categoriesRepository.findByHouseholdId(householdId);
   }
 
+  /**
+   * Get a compact category catalog for AI prompts (max 40 categories)
+   * Returns a compact string like "Groceries:c1; Utilities:c2; ..."
+   */
+  async getCategoryPromptCatalog(householdId: string): Promise<string> {
+    const categories = await this.categoriesRepository.findByHouseholdId(householdId);
+    // Limit to 40 most relevant categories
+    const limitedCategories = categories.slice(0, 40);
+    return limitedCategories.map((cat) => `${cat.name}:${cat.id}`).join('; ');
+  }
+
   async findAllCategories(): Promise<Category[]> {
     return await this.categoriesRepository.findAll();
   }
