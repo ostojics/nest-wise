@@ -63,20 +63,21 @@ const AccountTypeTotals = ({accounts, maxInlineItems = 3, className}: AccountTyp
   const hasMoreItems = remainingItems.length > 0;
 
   return (
-    <div className={cn('flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground', className)}>
-      {inlineItems.map((item, index) => (
-        <span key={item.type}>
-          {item.label}: <span className="tabular-nums">{formatBalance(item.total)}</span>
-          {index < inlineItems.length - 1 && <span className="mx-1">•</span>}
-        </span>
-      ))}
+    <div className={cn('text-sm text-muted-foreground', className)}>
+      <ul className="space-y-1">
+        {inlineItems.map((item) => (
+          <li key={item.type}>
+            {item.label}: <span className="tabular-nums">{formatBalance(item.total)}</span>
+          </li>
+        ))}
+      </ul>
       {hasMoreItems && (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button
               variant="ghost"
               size="sm"
-              className="h-auto p-0 text-sm font-normal hover:bg-transparent"
+              className="mt-1 h-auto p-0 text-sm font-normal hover:bg-transparent"
               aria-label={`Prikaži ${remainingItems.length} dodatnih tipova računa`}
             >
               +{remainingItems.length}
