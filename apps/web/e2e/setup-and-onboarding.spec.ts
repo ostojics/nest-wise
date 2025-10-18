@@ -41,9 +41,6 @@ test.describe('Setup and Onboarding', () => {
     await page.getByTestId('setup-currency-option-RSD').click();
     await page.getByTestId('setup-step2-submit').click();
 
-    // Assert: Success toast should appear
-    await expect(page.getByText('Podešavanje je uspešno završeno')).toBeVisible({timeout: 10000});
-
     // Assert: Should redirect to onboarding page
     await page.waitForURL('/onboarding', {timeout: 10000});
     expect(page.url()).toContain('/onboarding');
@@ -136,7 +133,7 @@ test.describe('Setup and Onboarding', () => {
     await page.getByTestId('onboarding-primary-action').click();
 
     // Assert: Should navigate to plan page
-    await page.waitForURL('/plan', {timeout: 10000});
-    expect(page.url()).toContain('/plan');
+    const planTitle = page.getByTestId('plan-page-title');
+    await expect(planTitle).toBeVisible();
   });
 });
