@@ -12,8 +12,8 @@ const AiBanner = () => {
   }, []);
 
   return (
-    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 border border-primary/20 p-4">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 animate-pulse" />
+    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 via-accent/10 to-chart-3/5 border border-primary/20 p-4">
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-chart-3/5 animate-pulse" />
 
       <div className="relative flex items-center gap-3">
         <div className="relative">
