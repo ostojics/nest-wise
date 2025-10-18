@@ -1,5 +1,6 @@
 import {openai} from '@ai-sdk/openai';
 import {
+  CreateTransactionAiDTO,
   CreateTransactionAiHouseholdDTO,
   CreateTransactionDTO,
   CreateTransactionHouseholdDTO,
@@ -18,8 +19,6 @@ import {
   AiTransactionJobResponseContract,
   AiTransactionJobStatusContract,
   AiTransactionJobStatus,
-  AiTransactionSuggestion,
-  ConfirmAiTransactionSuggestionHouseholdDTO,
 } from '@nest-wise/contracts';
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectQueue} from '@nestjs/bullmq';
@@ -144,21 +143,73 @@ export class TransactionsService {
     return await this.transactionsRepository.getCategoriesSpendingForHousehold(householdId, query);
   }
 
-  /**
-   * Generate an AI transaction suggestion without creating a transaction.
-   * This is used by the background job to return a suggestion that the user can confirm.
-   */
-  async generateAiTransactionSuggestion(
+  async createTransactionAi(transactionData: CreateTransactionAiDTO): Promise<Transaction> {
+    const account = await this.accountsService.findAccountById(transactionData.accountId);
+    const household = await this.householdsService.findHouseholdById(account.householdId);
+    const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
+    const prompt = categoryPromptFactory({
+      categories,
+      transactionDescription: transactionData.description,
+      currentDate: transactionData.currentDate,
+    });
+
+    this.logger.debug('AI Transaction Categorization Prompt', {prompt});
+
+    const {object} = await generateObject({
+      model: openai('gpt-5-nano-2025-08-07'),
+      prompt,
+      temperature: 0.1,
+      schema: transactionCategoryOutputSchema,
+    });
+
+    this.logger.debug('AI Transaction Categorization Result', {object});
+
+    if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
+      throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
+    }
+
+    return await this.dataSource.transaction(async () => {
+      const isNewCategorySuggested = object.newCategorySuggested;
+      let categoryId: string | null = null;
+
+      if (isNewCategorySuggested) {
+        const newCategory = await this.categoriesService.createCategoryForHousehold(household.id, {
+          name: object.suggestedCategory.newCategoryName,
+        });
+
+        categoryId = newCategory.id;
+      } else {
+        categoryId = object.suggestedCategory.existingCategoryId;
+      }
+
+      const transaction = await this.transactionsRepository.create({
+        description: transactionData.description,
+        amount: object.transactionAmount,
+        type: object.transactionType as TransactionType,
+        categoryId: object.transactionType === 'income' ? null : categoryId,
+        householdId: account.householdId,
+        accountId: account.id,
+        transactionDate: object.transactionDate,
+        isReconciled: true,
+      });
+
+      await this.updateBalance(transaction.accountId, transaction.amount, transaction.type);
+
+      return transaction;
+    });
+  }
+
+  async createTransactionAiForHousehold(
     householdId: string,
     transactionData: CreateTransactionAiHouseholdDTO,
-  ): Promise<AiTransactionSuggestion> {
+  ): Promise<Transaction> {
     const account = await this.accountsService.findAccountById(transactionData.accountId);
 
+    // Verify account belongs to the household
     if (account.householdId !== householdId) {
       throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
     }
 
-    this.logger.debug('Generating AI transaction suggestion', {householdId, transactionData});
     const household = await this.householdsService.findHouseholdById(householdId);
     const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
 
@@ -173,90 +224,36 @@ export class TransactionsService {
       schema: transactionCategoryOutputSchema,
     });
 
-    this.logger.debug('AI transaction suggestion generated', {object});
-
     if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
       throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
     }
 
-    this.logger.debug('AI transaction suggestion validation passed', {object});
-
-    // Return suggestion without creating a transaction
-    const suggestion: AiTransactionSuggestion = {
-      accountId: transactionData.accountId,
-      description: object.transactionDescription,
-      transactionAmount: object.transactionAmount,
-      transactionType: object.transactionType,
-      transactionDate: object.transactionDate,
-      newCategorySuggested: object.newCategorySuggested,
-      suggestedCategory: {
-        existingCategoryId: object.suggestedCategory.existingCategoryId || undefined,
-        newCategoryName: object.suggestedCategory.newCategoryName || undefined,
-      },
-    };
-
-    return suggestion;
-  }
-
-  /**
-   * Confirm an AI transaction suggestion and create the transaction.
-   * If a new category is suggested and no categoryId is provided, creates the category first.
-   * All operations are done in a database transaction for atomicity.
-   */
-  async confirmAiTransactionSuggestion(
-    householdId: string,
-    confirmationData: ConfirmAiTransactionSuggestionHouseholdDTO,
-  ): Promise<Transaction> {
-    const account = await this.accountsService.findAccountById(confirmationData.accountId);
-
-    // Verify account belongs to the household
-    if (account.householdId !== householdId) {
-      throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
-    }
-
-    // Verify sufficient funds for expenses
-    if (confirmationData.type === 'expense' && Number(account.currentBalance) < confirmationData.amount) {
-      throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
-    }
-
     return await this.dataSource.transaction(async () => {
-      let finalCategoryId = confirmationData.categoryId;
+      const isNewCategorySuggested = object.newCategorySuggested;
+      let categoryId: string | null = null;
 
-      this.logger.debug('Confirming AI transaction suggestion', {confirmationData, householdId});
-
-      if (
-        confirmationData.newCategorySuggested &&
-        confirmationData.suggestedCategoryName &&
-        !confirmationData.categoryId
-      ) {
+      if (isNewCategorySuggested) {
         const newCategory = await this.categoriesService.createCategoryForHousehold(householdId, {
-          name: confirmationData.suggestedCategoryName,
+          name: object.suggestedCategory.newCategoryName,
         });
-        finalCategoryId = newCategory.id;
+
+        categoryId = newCategory.id;
+      } else {
+        categoryId = object.suggestedCategory.existingCategoryId;
       }
 
-      this.logger.debug('Final category ID determined', {finalCategoryId});
-
       const transaction = await this.transactionsRepository.create({
-        description: confirmationData.description,
-        amount: confirmationData.amount,
-        type: confirmationData.type as TransactionType,
-        categoryId: confirmationData.type === 'income' ? null : finalCategoryId,
-        householdId: householdId,
+        description: object.transactionDescription,
+        amount: object.transactionAmount,
+        type: object.transactionType as TransactionType,
+        categoryId: object.transactionType === 'income' ? null : categoryId,
+        householdId: household.id,
         accountId: account.id,
-        transactionDate: confirmationData.transactionDate,
-        isReconciled: confirmationData.isReconciled,
+        transactionDate: object.transactionDate,
+        isReconciled: true,
       });
 
-      this.logger.debug('Transaction created', {transactionId: transaction.id});
-
-      await this.updateBalance(
-        confirmationData.accountId,
-        confirmationData.amount,
-        confirmationData.type as TransactionType,
-      );
-
-      this.logger.debug('Account balance updated', {accountId: confirmationData.accountId});
+      await this.updateBalance(transaction.accountId, transaction.amount, transaction.type);
 
       return transaction;
     });
@@ -508,7 +505,6 @@ export class TransactionsService {
     const job = await this.aiTransactionsQueue.getJob(jobId);
 
     if (!job) {
-      this.logger.error('AI transaction job not found', {jobId});
       throw new NotFoundException('Posao nije pronađen');
     }
 
@@ -541,7 +537,7 @@ export class TransactionsService {
     this.logger.debug('AI transaction job status fetched', {jobId, status});
 
     if (status === AiTransactionJobStatus.COMPLETED) {
-      response.suggestion = job.returnvalue as AiTransactionSuggestion;
+      response.transaction = job.returnvalue as TransactionContract;
     } else if (status === AiTransactionJobStatus.FAILED) {
       response.error = job.failedReason || 'Obrada transakcije nije uspela';
     }

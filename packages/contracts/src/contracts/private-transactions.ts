@@ -75,7 +75,7 @@ export const getPrivateTransactionsQuerySchema = z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .max(255, 'Pretraga može imati najviše 255 karaktera')
+      .max(2048, 'Pretraga može imati najviše 2048 karaktera')
       .optional(),
     accountId: z
       .string({

@@ -27,7 +27,7 @@ const AccountCombobox: React.FC<AccountComboboxProps> = ({accounts, className}) 
   }, [accounts, search.accountId]);
 
   const handleSelect = (id: string) => {
-    void navigate({search: (prev) => ({...prev, accountId: id, page: 1}), to: '/my-finances'});
+    void navigate({search: (prev) => ({...prev, accountId: id}), to: '/my-finances'});
     setOpen(false);
   };
 
