@@ -74,7 +74,7 @@ export const useCategoryBudgetsTable = (
                 'tabular-nums px-2.5 py-1',
                 negative
                   ? 'bg-destructive text-white'
-                  : 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300',
+                  : 'bg-emerald-100 text-white dark:bg-emerald-900 dark:text-emerald-300',
               )}
               variant={negative ? 'destructive' : 'secondary'}
             >

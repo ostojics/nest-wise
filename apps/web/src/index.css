@@ -162,7 +162,7 @@
 }
 
 .app-toast[data-type='success'] {
-  background-color: var(--chart-5);
+  background-color: #21713e;
   color: #fff;
-  border-color: var(--chart-5);
+  border-color: #21713e;
 }

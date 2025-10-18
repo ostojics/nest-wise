@@ -32,13 +32,11 @@ const AiBanner = () => {
 
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm font-medium bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              NestWise Asistent
-            </span>
+            <span className="text-sm font-medium">NestWise Asistent</span>
             <div className="flex gap-1">
-              <div className="w-1 h-1 bg-chart-3 rounded-full animate-pulse" />
-              <div className="w-1 h-1 bg-chart-3 rounded-full animate-pulse animation-delay-100" />
-              <div className="w-1 h-1 bg-chart-3 rounded-full animate-pulse animation-delay-200" />
+              <div className="w-1 h-1 bg-chart-2 rounded-full animate-pulse" />
+              <div className="w-1 h-1 bg-chart-2 rounded-full animate-pulse animation-delay-100" />
+              <div className="w-1 h-1 bg-chart-2 rounded-full animate-pulse animation-delay-200" />
             </div>
           </div>
           <p className="text-sm text-muted-foreground">Spreman sam da vam pomognem da zabeležite transakciju...</p>
