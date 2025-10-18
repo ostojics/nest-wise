@@ -11,7 +11,7 @@ const querySchema = z.object({
   categoryId: z.string().uuid().optional().catch(undefined),
   from: z.string().datetime().optional().catch(undefined),
   to: z.string().datetime().optional().catch(undefined),
-  q: z.string().max(255).optional().catch(undefined),
+  q: z.string().optional().catch(undefined),
 });
 
 export const Route = createFileRoute('/__pathlessLayout/transactions')({

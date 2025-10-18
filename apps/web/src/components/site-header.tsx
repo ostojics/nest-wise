@@ -1,13 +1,15 @@
 import {mainLinks} from '@/common/constants/main-links';
+import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
 import {SidebarTrigger} from '@/components/ui/sidebar';
 import {CreateTransactionDialog} from '@/modules/transactions/components/create-transaction-dialog';
-import {CreateTransactionDialogProvider} from '@/contexts/create-transaction-dialog-context';
+import {IconReceipt} from '@tabler/icons-react';
 import {useLocation} from '@tanstack/react-router';
-import {useMemo} from 'react';
+import {useMemo, useState} from 'react';
 
 export function SiteHeader() {
   const {pathname} = useLocation();
+  const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
 
   const title = useMemo(() => {
     return mainLinks.find((link) => {
@@ -22,11 +24,18 @@ export function SiteHeader() {
         <Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-4" />
         <h1 className="text-base font-medium">{title}</h1>
         <div className="ml-auto flex items-center gap-2">
-          <CreateTransactionDialogProvider>
-            <CreateTransactionDialog />
-          </CreateTransactionDialogProvider>
+          <Button
+            size="sm"
+            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg border-0 font-medium px-4 py-2"
+            onClick={() => setIsTransactionDialogOpen(true)}
+          >
+            <IconReceipt className="w-4 h-4" />
+            <span>Zabeleži transakciju</span>
+          </Button>
         </div>
       </div>
+
+      <CreateTransactionDialog open={isTransactionDialogOpen} onOpenChange={setIsTransactionDialogOpen} />
     </header>
   );
 }

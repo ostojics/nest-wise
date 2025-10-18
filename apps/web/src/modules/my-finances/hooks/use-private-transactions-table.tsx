@@ -82,7 +82,6 @@ export const usePrivateTransactionsTable = (data: PrivateTransactionContract[]) 
             search: (prev) => ({
               ...prev,
               sort: serializeSortOption(sort) as TPrivateTransactionSortField,
-              page: 1,
             }),
             to: '/my-finances',
           });

@@ -4,33 +4,45 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
-import {useValidateCreateAiTransactionSuggestion} from '@/modules/transactions/hooks/use-validate-create-ai-transaction';
+import {useCreateTransactionAI} from '@/modules/transactions/hooks/use-create-transaction-ai';
 import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
-import AiBanner from '../../components/ai-banner';
-import {AiDescriptionTooltip} from '../../components/ai-description-tooltip';
-import {useAiTransactionCreation} from '@/contexts/ai-transaction-creation-context';
-import {useCreateTransactionDialog} from '@/contexts/create-transaction-dialog-context';
-import {useCreateTransactionAISuggestion} from '../../hooks/use-create-transaction-ai-suggestion';
-import {TransactionModeToggle} from '../../components/transaction-mode-toggle';
+import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/use-validate-create-ai-transaction';
+import AiBanner from './ai-banner';
+import {AiDescriptionTooltip} from './ai-description-tooltip';
+import {AiProcessingStatus} from './ai-processing-status';
 
-export default function InputStep() {
+interface AiTransactionFormProps {
+  onSuccess: () => void;
+  onCancel: () => void;
+}
+
+export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps) {
   const {data: accounts} = useGetHouseholdAccounts();
   const hasAccounts = (accounts ?? []).length > 0;
-  const {setStep} = useAiTransactionCreation();
-  const {close} = useCreateTransactionDialog();
-  const suggestionMutation = useCreateTransactionAISuggestion();
+
+  const createAiTransactionMutation = useCreateTransactionAI();
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: {errors},
-  } = useValidateCreateAiTransactionSuggestion({accountId: (accounts ?? [])[0]?.id});
+  } = useValidateCreateAiTransaction({accountId: (accounts ?? [])[0]?.id});
 
-  const onSubmit = (data: CreateTransactionAiHouseholdDTO) => {
-    setStep('processing');
-    suggestionMutation.mutate(data);
+  const onSubmit = async (data: CreateTransactionAiHouseholdDTO) => {
+    await createAiTransactionMutation.mutateAsync(data, {
+      onSuccess: () => {
+        onSuccess();
+      },
+      onError: () => {
+        onCancel();
+      },
+      onSettled: () => {
+        reset();
+      },
+    });
   };
 
   const getAccountDisplayName = (accountId: string) => {
@@ -41,10 +53,16 @@ export default function InputStep() {
     return `${account.name} (${accountType?.label ?? account.type})`;
   };
 
+  if (createAiTransactionMutation.isPending) {
+    return (
+      <div className="space-y-4">
+        <AiProcessingStatus />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground text-balance">Samo opišite transakciju, AI će uraditi ostalo.</p>
-      <TransactionModeToggle />
       <AiBanner />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
@@ -80,7 +98,7 @@ export default function InputStep() {
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={close}>
+          <Button type="button" variant="outline" onClick={onCancel}>
             Otkaži
           </Button>
           <Button

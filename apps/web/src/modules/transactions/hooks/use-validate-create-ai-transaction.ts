@@ -3,13 +3,11 @@ import {useForm} from 'react-hook-form';
 import {CreateTransactionAiHouseholdDTO, createTransactionAiHouseholdSchema} from '@nest-wise/contracts';
 import {dateAtNoon} from '@/lib/utils';
 
-interface UseValidateCreateAiTransactionSuggestionDefaultValues {
+interface UseValidateCreateAiTransactionDefaultValues {
   accountId?: string;
 }
 
-export const useValidateCreateAiTransactionSuggestion = ({
-  accountId,
-}: UseValidateCreateAiTransactionSuggestionDefaultValues) => {
+export const useValidateCreateAiTransaction = ({accountId}: UseValidateCreateAiTransactionDefaultValues) => {
   return useForm<CreateTransactionAiHouseholdDTO>({
     resolver: zodResolver(createTransactionAiHouseholdSchema),
     defaultValues: {

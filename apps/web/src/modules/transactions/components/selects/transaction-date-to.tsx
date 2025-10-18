@@ -30,7 +30,7 @@ const TransactionDateToPicker: React.FC<TransactionDateToPickerProps> = ({classN
   const handleSelectDate = (value: Date | undefined) => {
     if (!value) return;
 
-    void navigate({search: (prev) => ({...prev, to: formatDateForQueryParam(value), page: 1}), to: '/transactions'});
+    void navigate({search: (prev) => ({...prev, to: formatDateForQueryParam(value)}), to: '/transactions'});
     setOpen(false);
   };
 

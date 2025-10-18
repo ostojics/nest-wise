@@ -27,7 +27,7 @@ const CategoryCombobox: React.FC<CategoryComboboxProps> = ({categories, classNam
   }, [categories, search.categoryId]);
 
   const handleSelect = (id: string) => {
-    void navigate({search: (prev) => ({...prev, categoryId: id, page: 1}), to: '/transactions'});
+    void navigate({search: (prev) => ({...prev, categoryId: id}), to: '/transactions'});
     setOpen(false);
   };
 
