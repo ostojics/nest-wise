@@ -167,6 +167,16 @@ Odgovorite **važećim JSON objektom** koji odgovara sledećoj strukturi:
 - Opis (izlaz - transactionDescription): "Lek za astmu"
 ---
 
+### Primer 12: Dodatan primer
+**Ulaz**: "Tegovi teretana 1500"
+**Izlaz**:
+- Tip: expense (rashod)
+- Iznos: 1500
+- Datum: trenutni datum (ako nije drugačije navedeno)
+- Kategorija: pokušaj mapiranje na postojeću kategoriju "Teretana" (ignoriši dijakritike i velika/mala slova). Ako ne postoji, \`newCategorySuggested = true\` sa nazivom "Teretana".
+- Opis (izlaz - transactionDescription): "Tegovi teretana"
+---
+
 **Analizirajte opis transakcije i vratite JSON odgovor:**
 
 Ako nema odgovarajućih postojećih kategorija, predložite novu.
