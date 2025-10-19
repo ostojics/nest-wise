@@ -12,6 +12,7 @@ import {Transaction} from '../../src/transactions/transaction.entity';
 import {Savings} from '../../src/savings/savings.entity';
 import {CategoryBudget} from '../../src/category-budgets/category-budgets.entity';
 import {PrivateTransaction} from '../../src/private-transactions/private-transactions.entity';
+import {ScheduledTransactionRule} from '../../src/scheduled-transactions/scheduled-transaction-rule.entity';
 import {AccountsService} from '../../src/accounts/accounts.service';
 import {CategoriesService} from '../../src/categories/categories.service';
 import {EmailsService} from '../../src/emails/emails.service';
@@ -34,6 +35,7 @@ export const INTEGRATION_TEST_ENTITIES = [
   Savings,
   CategoryBudget,
   PrivateTransaction,
+  ScheduledTransactionRule,
 ];
 
 /**

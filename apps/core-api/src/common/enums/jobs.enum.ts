@@ -12,3 +12,8 @@ export enum SavingsJobs {
 export enum AiTransactionJobs {
   PROCESS_AI_TRANSACTION = 'process-ai-transaction',
 }
+
+export enum ScheduledTransactionJobs {
+  ORCHESTRATOR = 'orchestrator',
+  CREATE_TRANSACTION = 'create-transaction',
+}

@@ -42,6 +42,7 @@
     "bullmq": "^5.58.0",
     "cookie-parser": "^1.4.7",
     "date-fns": "catalog:",
+    "date-fns-tz": "^3.2.0",
     "helmet": "catalog:",
     "openai": "^6.5.0",
     "pg": "^8.16.3",
