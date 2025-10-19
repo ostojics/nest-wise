@@ -75,9 +75,8 @@ const AccountTypeTotals = ({accounts, maxInlineItems = 3, className}: AccountTyp
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button
-              variant="ghost"
               size="sm"
-              className="mt-1 h-auto p-0 text-sm font-normal hover:bg-transparent"
+              className="mt-2 h-auto p-1 font-normal text-xs"
               aria-label={`Prikaži ${remainingItems.length} dodatnih tipova računa`}
             >
               +{remainingItems.length}
