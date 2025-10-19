@@ -1,6 +1,4 @@
-import {openai} from '@ai-sdk/openai';
 import {
-  CreateTransactionAiDTO,
   CreateTransactionAiHouseholdDTO,
   CreateTransactionDTO,
   CreateTransactionHouseholdDTO,
@@ -20,10 +18,9 @@ import {
   AiTransactionJobStatusContract,
   AiTransactionJobStatus,
 } from '@nest-wise/contracts';
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadGatewayException, BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Queue} from 'bullmq';
-import {generateObject} from 'ai';
 import {CategoriesService} from 'src/categories/categories.service';
 import {HouseholdsService} from 'src/households/households.service';
 import {categoryPromptFactory} from 'src/tools/ai/prompts/category.prompt';
@@ -37,10 +34,13 @@ import {Logger} from 'pino-nestjs';
 import {Queues} from 'src/common/enums/queues.enum';
 import {AiTransactionJobs} from 'src/common/enums/jobs.enum';
 import {ProcessAiTransactionPayload} from 'src/common/interfaces/ai-transactions.interface';
+import OpenAI from 'openai';
+import {zodTextFormat} from 'openai/helpers/zod';
 
 @Injectable()
 export class TransactionsService {
   private readonly CHUNK_SIZE = 100;
+  private readonly openAiClient: OpenAI;
 
   constructor(
     private readonly transactionsRepository: TransactionsRepository,
@@ -50,7 +50,9 @@ export class TransactionsService {
     private readonly dataSource: DataSource,
     private readonly logger: Logger,
     @InjectQueue(Queues.AI_TRANSACTIONS) private readonly aiTransactionsQueue: Queue,
-  ) {}
+  ) {
+    this.openAiClient = new OpenAI();
+  }
 
   async createTransaction(transactionData: CreateTransactionDTO): Promise<Transaction> {
     return await this.dataSource.transaction(async () => {
@@ -143,62 +145,6 @@ export class TransactionsService {
     return await this.transactionsRepository.getCategoriesSpendingForHousehold(householdId, query);
   }
 
-  async createTransactionAi(transactionData: CreateTransactionAiDTO): Promise<Transaction> {
-    const account = await this.accountsService.findAccountById(transactionData.accountId);
-    const household = await this.householdsService.findHouseholdById(account.householdId);
-    const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
-    const prompt = categoryPromptFactory({
-      categories,
-      transactionDescription: transactionData.description,
-      currentDate: transactionData.currentDate,
-    });
-
-    this.logger.debug('AI Transaction Categorization Prompt', {prompt});
-
-    const {object} = await generateObject({
-      model: openai('gpt-5-nano-2025-08-07'),
-      prompt,
-      temperature: 0.1,
-      schema: transactionCategoryOutputSchema,
-    });
-
-    this.logger.debug('AI Transaction Categorization Result', {object});
-
-    if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
-      throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
-    }
-
-    return await this.dataSource.transaction(async () => {
-      const isNewCategorySuggested = object.newCategorySuggested;
-      let categoryId: string | null = null;
-
-      if (isNewCategorySuggested) {
-        const newCategory = await this.categoriesService.createCategoryForHousehold(household.id, {
-          name: object.suggestedCategory.newCategoryName,
-        });
-
-        categoryId = newCategory.id;
-      } else {
-        categoryId = object.suggestedCategory.existingCategoryId;
-      }
-
-      const transaction = await this.transactionsRepository.create({
-        description: transactionData.description,
-        amount: object.transactionAmount,
-        type: object.transactionType as TransactionType,
-        categoryId: object.transactionType === 'income' ? null : categoryId,
-        householdId: account.householdId,
-        accountId: account.id,
-        transactionDate: object.transactionDate,
-        isReconciled: true,
-      });
-
-      await this.updateBalance(transaction.accountId, transaction.amount, transaction.type);
-
-      return transaction;
-    });
-  }
-
   async createTransactionAiForHousehold(
     householdId: string,
     transactionData: CreateTransactionAiHouseholdDTO,
@@ -212,19 +158,34 @@ export class TransactionsService {
 
     const household = await this.householdsService.findHouseholdById(householdId);
     const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
-
-    const {object} = await generateObject({
-      model: openai('gpt-5-nano-2025-08-07'),
-      prompt: categoryPromptFactory({
-        categories,
-        transactionDescription: transactionData.description,
-        currentDate: transactionData.currentDate,
-      }),
-      temperature: 0.1,
-      schema: transactionCategoryOutputSchema,
+    const systemPrompt = categoryPromptFactory({
+      categories,
+      currentDate: transactionData.currentDate,
     });
 
+    const response = await this.openAiClient.responses.parse({
+      model: 'gpt-4o-mini',
+      input: [
+        {role: 'system', content: systemPrompt},
+        {role: 'user', content: transactionData.description},
+      ],
+      max_output_tokens: 256,
+      text: {
+        format: zodTextFormat(transactionCategoryOutputSchema, 'object'),
+      },
+    });
+
+    const object = response.output_parsed;
+    if (!object) {
+      this.logger.error('AI response parsing failed', {response});
+      throw new BadGatewayException('Nije moguće odrediti kategoriju transakcije putem AI');
+    }
+
     if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
+      this.logger.error('Insufficient funds for expense', {
+        accountId: account.id,
+        transactionAmount: object.transactionAmount,
+      });
       throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
     }
 
