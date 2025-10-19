@@ -8,3 +8,12 @@ export const accountTypes = [
   {value: 'cash', label: 'Gotovina', icon: Banknote, description: 'Gotov novac i blagajnički fond'},
   {value: 'other', label: 'Drugo', icon: Package, description: 'Prilagođeni tip računa'},
 ] as const;
+
+export const accountTypePluralLabels: Record<string, string> = {
+  checking: 'Tekući računi',
+  savings: 'Računi za štednju',
+  credit_card: 'Kreditne kartice',
+  investment: 'Investicioni računi',
+  cash: 'Gotovina',
+  other: 'Drugo',
+};
