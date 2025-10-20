@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {AccountContract} from '@nest-wise/contracts';
-import {accountTypes} from '@/common/constants/account-types';
+import {accountTypePluralLabels, accountTypes} from '@/common/constants/account-types';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {Button} from '@/components/ui/button';
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from '@/components/ui/dialog';
@@ -38,7 +38,7 @@ const AccountTypeTotals = ({accounts, maxInlineItems = 3, className}: AccountTyp
     const typeInfo = accountTypes.find((t) => t.value === type);
     return {
       type,
-      label: typeInfo?.label ?? 'Drugo',
+      label: accountTypePluralLabels[type] ?? 'Drugo',
       total,
       Icon: typeInfo?.icon,
     };
@@ -83,7 +83,7 @@ const AccountTypeTotals = ({accounts, maxInlineItems = 3, className}: AccountTyp
             </Button>
           </DialogTrigger>
           <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-md">
-            <DialogHeader>
+            <DialogHeader className="mt-4">
               <DialogTitle>Stanja po tipovima računa</DialogTitle>
             </DialogHeader>
             <div className="space-y-3">
