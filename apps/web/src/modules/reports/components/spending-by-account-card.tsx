@@ -109,7 +109,7 @@ const SpendingByAccountCard = () => {
         )}
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
-        <div className="w-full md:w-[75%] lg:w-[60%] xl:w-[50%] mx-auto">
+        <div className="w-full md:w-[75%] lg:w-[60%] xl:w-[40%] mx-auto">
           <CategoryAmountLegend data={dataWithPercentages} />
         </div>
         <div className="text-muted-foreground leading-none text-center">
