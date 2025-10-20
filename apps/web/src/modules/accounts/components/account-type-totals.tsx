@@ -52,12 +52,10 @@ const AccountTypeTotals = ({accounts, maxInlineItems = 3, className}: AccountTyp
     return a.label.localeCompare(b.label, 'sr');
   });
 
-  // Handle edge case: no accounts
   if (accountTypeTotals.length === 0) {
     return <div className={cn('text-sm text-muted-foreground', className)}>Nema računa</div>;
   }
 
-  // Split into inline and remaining items
   const inlineItems = accountTypeTotals.slice(0, maxInlineItems);
   const remainingItems = accountTypeTotals.slice(maxInlineItems);
   const hasMoreItems = remainingItems.length > 0;
