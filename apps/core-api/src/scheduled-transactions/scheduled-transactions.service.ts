@@ -1,6 +1,5 @@
 import {Injectable, NotFoundException, BadRequestException} from '@nestjs/common';
 import {Logger} from 'pino-nestjs';
-import {ConfigService} from '@nestjs/config';
 import {ScheduledTransactionsRepository} from './scheduled-transactions.repository';
 import {
   ScheduledTransactionRule,
@@ -16,23 +15,16 @@ import {
 } from '@nest-wise/contracts';
 import {AccountsService} from '../accounts/accounts.service';
 import {CategoriesService} from '../categories/categories.service';
-import {AppConfig, AppConfigName} from '../config/app.config';
-import {parseLocalDate, isLocalDateInPast} from './date.util';
+import {parseDateUTC, isDateInPast} from './date.util';
 
 @Injectable()
 export class ScheduledTransactionsService {
-  private readonly appTimezone: string;
-
   constructor(
     private readonly repository: ScheduledTransactionsRepository,
     private readonly accountsService: AccountsService,
     private readonly categoriesService: CategoriesService,
-    private readonly configService: ConfigService,
     private readonly logger: Logger,
-  ) {
-    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
-    this.appTimezone = appConfig.timezone;
-  }
+  ) {}
 
   async createRule(
     householdId: string,
@@ -53,9 +45,9 @@ export class ScheduledTransactionsService {
       }
     }
 
-    // Validate start date is not in the past
-    const startDate = parseLocalDate(data.startDate);
-    if (isLocalDateInPast(startDate, this.appTimezone)) {
+    // Validate start date is not in the past (UTC)
+    const startDate = parseDateUTC(data.startDate);
+    if (isDateInPast(startDate)) {
       throw new BadRequestException('Datum početka ne može biti u prošlosti');
     }
 
@@ -149,8 +141,8 @@ export class ScheduledTransactionsService {
 
     // Validate start date if being changed
     if (data.startDate) {
-      const startDate = parseLocalDate(data.startDate);
-      if (isLocalDateInPast(startDate, this.appTimezone)) {
+      const startDate = parseDateUTC(data.startDate);
+      if (isDateInPast(startDate)) {
         throw new BadRequestException('Datum početka ne može biti u prošlosti');
       }
     }
@@ -159,7 +151,7 @@ export class ScheduledTransactionsService {
       ...data,
       type: data.type ? (data.type as TransactionType) : undefined,
       frequencyType: data.frequencyType ? (data.frequencyType as ScheduledTransactionFrequencyType) : undefined,
-      startDate: data.startDate ? parseLocalDate(data.startDate) : undefined,
+      startDate: data.startDate ? parseDateUTC(data.startDate) : undefined,
     };
 
     const updatedRule = await this.repository.updateRule(id, updateData);

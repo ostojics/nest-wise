@@ -14,21 +14,17 @@ export enum ScheduledTransactionStatus {
 export interface ScheduledTransactionRuleContract {
   id: string;
   householdId: string;
-  createdByUserId: string;
+  userId: string; // User who created this rule
   accountId: string;
   categoryId: string | null;
   type: 'income' | 'expense';
   amount: number;
   description: string | null;
   frequencyType: ScheduledTransactionFrequencyType;
-  dayOfWeek: number | null;
-  dayOfMonth: number | null;
-  startDate: string; // ISO date string (YYYY-MM-DD)
-  postedTimeLocal: string; // Time string (HH:MM:SS)
+  dayOfWeek: number | null; // 0-6 (Sunday-Saturday), required for weekly
+  dayOfMonth: number | null; // 1-31, required for monthly
+  startDate: string; // ISO date string (YYYY-MM-DD) - UTC date when rule becomes active
   status: ScheduledTransactionStatus;
-  lastRunLocalDate: string | null; // ISO date string (YYYY-MM-DD)
-  failureCount: number;
-  lastError: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

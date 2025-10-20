@@ -31,17 +31,17 @@ export class ScheduledTransactionsRepository {
     });
   }
 
-  async findDueRules(todayLocalDate: Date, _timezone: string): Promise<ScheduledTransactionRule[]> {
+  async findDueRules(todayUTC: Date): Promise<ScheduledTransactionRule[]> {
     // Find all active rules where:
     // 1. status = 'active'
-    // 2. start_date <= todayLocalDate
-    // 3. (last_run_local_date IS NULL OR last_run_local_date < todayLocalDate)
+    // 2. start_date <= todayUTC
+    // 3. (last_run_local_date IS NULL OR last_run_local_date < todayUTC)
     const query = this.repository
       .createQueryBuilder('rule')
       .where('rule.status = :status', {status: ScheduledTransactionStatus.ACTIVE})
-      .andWhere('rule.start_date <= :todayLocalDate', {todayLocalDate})
-      .andWhere('(rule.last_run_local_date IS NULL OR rule.last_run_local_date < :todayLocalDate)', {
-        todayLocalDate,
+      .andWhere('rule.start_date <= :todayUTC', {todayUTC})
+      .andWhere('(rule.last_run_local_date IS NULL OR rule.last_run_local_date < :todayUTC)', {
+        todayUTC,
       });
 
     return await query.getMany();
@@ -124,7 +124,7 @@ export class ScheduledTransactionsRepository {
     return {
       id: rule.id,
       householdId: rule.householdId,
-      createdByUserId: rule.createdByUserId,
+      userId: rule.createdByUserId,
       accountId: rule.accountId,
       categoryId: rule.categoryId,
       type: rule.type,
@@ -134,11 +134,7 @@ export class ScheduledTransactionsRepository {
       dayOfWeek: rule.dayOfWeek,
       dayOfMonth: rule.dayOfMonth,
       startDate: rule.startDate.toISOString().split('T')[0],
-      postedTimeLocal: rule.postedTimeLocal,
       status: rule.status,
-      lastRunLocalDate: rule.lastRunLocalDate ? rule.lastRunLocalDate.toISOString().split('T')[0] : null,
-      failureCount: rule.failureCount,
-      lastError: rule.lastError,
       createdAt: rule.createdAt,
       updatedAt: rule.updatedAt,
     };

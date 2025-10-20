@@ -1,55 +1,72 @@
-import {formatInTimeZone, toZonedTime, fromZonedTime} from 'date-fns-tz';
-import {format, parseISO, getDay, getDate, getDaysInMonth} from 'date-fns';
+import {parseISO, getDaysInMonth} from 'date-fns';
 
 /**
- * Get the current local date in the specified timezone as a Date object (midnight UTC representation)
- * @param timezone IANA timezone string (e.g., 'Europe/Belgrade')
- * @returns Date object representing midnight of the current local date
+ * Get the current UTC date at noon as a Date object
+ * @returns Date object representing noon UTC of the current date
  */
-export function getTodayInTimezone(timezone: string): Date {
+export function getTodayAtNoonUTC(): Date {
   const now = new Date();
-  const localDateString = formatInTimeZone(now, timezone, 'yyyy-MM-dd');
-  return parseISO(localDateString);
+  const utcDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0, 0, 0));
+  return utcDate;
 }
 
 /**
- * Convert a local date string (YYYY-MM-DD) to a Date object
- * @param dateString Local date string in ISO format (YYYY-MM-DD)
+ * Get the current UTC date (midnight)
+ * @returns Date object representing midnight UTC of the current date
+ */
+export function getTodayUTC(): Date {
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
+}
+
+/**
+ * Convert a date string (YYYY-MM-DD) to a Date object at noon UTC
+ * @param dateString Date string in ISO format (YYYY-MM-DD)
+ * @returns Date object representing noon UTC of that date
+ */
+export function parseDateAtNoonUTC(dateString: string): Date {
+  const parsed = parseISO(dateString);
+  return new Date(Date.UTC(parsed.getFullYear(), parsed.getMonth(), parsed.getDate(), 12, 0, 0, 0));
+}
+
+/**
+ * Convert a date string (YYYY-MM-DD) to a Date object at midnight UTC
+ * @param dateString Date string in ISO format (YYYY-MM-DD)
  * @returns Date object representing midnight UTC of that date
  */
-export function parseLocalDate(dateString: string): Date {
-  return parseISO(dateString);
+export function parseDateUTC(dateString: string): Date {
+  const parsed = parseISO(dateString);
+  return new Date(Date.UTC(parsed.getFullYear(), parsed.getMonth(), parsed.getDate(), 0, 0, 0, 0));
 }
 
 /**
- * Format a Date object as a local date string (YYYY-MM-DD)
+ * Format a Date object as a UTC date string (YYYY-MM-DD)
  * @param date Date object
- * @returns Local date string in ISO format (YYYY-MM-DD)
+ * @returns UTC date string in ISO format (YYYY-MM-DD)
  */
-export function formatLocalDate(date: Date): string {
-  return format(date, 'yyyy-MM-dd');
+export function formatUTCDate(date: Date): string {
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 /**
- * Get the day of week (0-6, Sunday=0) for a local date in the specified timezone
- * @param localDate Date object representing a local date
- * @param timezone IANA timezone string
+ * Get the day of week (0-6, Sunday=0) for a UTC date
+ * @param date Date object
  * @returns Day of week (0-6)
  */
-export function getDayOfWeekInTimezone(localDate: Date, timezone: string): number {
-  const zonedDate = toZonedTime(localDate, timezone);
-  return getDay(zonedDate);
+export function getDayOfWeekUTC(date: Date): number {
+  return date.getUTCDay();
 }
 
 /**
- * Get the day of month (1-31) for a local date in the specified timezone
- * @param localDate Date object representing a local date
- * @param timezone IANA timezone string
+ * Get the day of month (1-31) for a UTC date
+ * @param date Date object
  * @returns Day of month (1-31)
  */
-export function getDayOfMonthInTimezone(localDate: Date, timezone: string): number {
-  const zonedDate = toZonedTime(localDate, timezone);
-  return getDate(zonedDate);
+export function getDayOfMonthUTC(date: Date): number {
+  return date.getUTCDate();
 }
 
 /**
@@ -65,41 +82,11 @@ export function clampDayOfMonth(year: number, month: number, dayOfMonth: number)
 }
 
 /**
- * Create a timestamp for a local date and time in the specified timezone, converted to UTC
- * @param localDateString Local date string (YYYY-MM-DD)
- * @param localTimeString Local time string (HH:MM:SS or HH:MM)
- * @param timezone IANA timezone string
- * @returns Date object in UTC representing the local datetime
+ * Check if a UTC date has already passed
+ * @param date Date object
+ * @returns True if the UTC date is in the past
  */
-export function createTimestampInTimezone(localDateString: string, localTimeString: string, timezone: string): Date {
-  // Parse time string to get hours and minutes
-  const [hours, minutes] = localTimeString.split(':').map(Number);
-
-  // Create a date string in the format "YYYY-MM-DD HH:MM:SS"
-  const dateTimeString = `${localDateString} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
-
-  // Parse this as a zoned time and convert to UTC
-  const zonedTime = fromZonedTime(dateTimeString, timezone);
-  return zonedTime;
-}
-
-/**
- * Check if a local date has already passed in the timezone
- * @param localDate Date object representing a local date
- * @param timezone IANA timezone string
- * @returns True if the local date is in the past
- */
-export function isLocalDateInPast(localDate: Date, timezone: string): boolean {
-  const today = getTodayInTimezone(timezone);
-  return localDate < today;
-}
-
-/**
- * Compare two local dates for equality
- * @param date1 First date
- * @param date2 Second date
- * @returns True if dates are the same
- */
-export function areLocalDatesEqual(date1: Date, date2: Date): boolean {
-  return formatLocalDate(date1) === formatLocalDate(date2);
+export function isDateInPast(date: Date): boolean {
+  const today = getTodayUTC();
+  return date < today;
 }

@@ -10,7 +10,6 @@ export interface AppConfig {
   webAppUrl: string;
   cookieDomain: string | null;
   logLevel: string;
-  timezone: string;
 }
 
 export const AppConfigName = 'app';
@@ -28,7 +27,6 @@ export function getConfig(): AppConfig {
     webAppUrl: process.env.WEB_APP_URL || '',
     cookieDomain: process.env.COOKIE_DOMAIN || null,
     logLevel: process.env.LOG_LEVEL || 'info',
-    timezone: process.env.APP_TIMEZONE || 'UTC',
   };
 }
 

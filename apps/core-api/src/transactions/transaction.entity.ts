@@ -79,20 +79,6 @@ export class Transaction {
   })
   isReconciled: boolean;
 
-  @Column({
-    type: 'uuid',
-    nullable: true,
-    name: 'scheduled_rule_id',
-  })
-  scheduledRuleId: string | null;
-
-  @Column({
-    type: 'date',
-    nullable: true,
-    name: 'scheduled_local_date',
-  })
-  scheduledLocalDate: Date | null;
-
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at',

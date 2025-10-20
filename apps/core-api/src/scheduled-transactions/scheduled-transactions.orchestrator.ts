@@ -2,24 +2,16 @@ import {Processor, WorkerHost} from '@nestjs/bullmq';
 import {Injectable} from '@nestjs/common';
 import {Job, Queue} from 'bullmq';
 import {InjectQueue} from '@nestjs/bullmq';
-import {ConfigService} from '@nestjs/config';
 import {Logger} from 'pino-nestjs';
 import {Queues} from '../common/enums/queues.enum';
 import {ScheduledTransactionJobs} from '../common/enums/jobs.enum';
 import {ScheduledTransactionsRepository} from './scheduled-transactions.repository';
 import {ScheduledTransactionRule, ScheduledTransactionFrequencyType} from './scheduled-transaction-rule.entity';
-import {
-  getTodayInTimezone,
-  getDayOfWeekInTimezone,
-  getDayOfMonthInTimezone,
-  formatLocalDate,
-  clampDayOfMonth,
-} from './date.util';
-import {AppConfig, AppConfigName} from '../config/app.config';
+import {getTodayUTC, getDayOfWeekUTC, getDayOfMonthUTC, formatUTCDate, clampDayOfMonth} from './date.util';
 
 interface CreateTransactionJobData {
   ruleId: string;
-  localDate: string;
+  executionDate: string;
 }
 
 @Processor(Queues.SCHEDULED_TRANSACTIONS, {
@@ -27,17 +19,12 @@ interface CreateTransactionJobData {
 })
 @Injectable()
 export class ScheduledTransactionsOrchestrator extends WorkerHost {
-  private readonly appTimezone: string;
-
   constructor(
     @InjectQueue(Queues.SCHEDULED_TRANSACTIONS) private readonly queue: Queue,
     private readonly repository: ScheduledTransactionsRepository,
-    private readonly configService: ConfigService,
     private readonly logger: Logger,
   ) {
     super();
-    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
-    this.appTimezone = appConfig.timezone;
   }
 
   async process(job: Job): Promise<void> {
@@ -47,22 +34,20 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost {
   }
 
   private async processOrchestrator(job: Job): Promise<void> {
-    this.logger.debug('Running scheduled transactions orchestrator', {
+    this.logger.debug('Running scheduled transactions orchestrator (UTC)', {
       jobId: job.id,
-      timezone: this.appTimezone,
     });
 
     try {
-      const todayLocalDate = getTodayInTimezone(this.appTimezone);
-      const todayString = formatLocalDate(todayLocalDate);
+      const todayUTC = getTodayUTC();
+      const todayString = formatUTCDate(todayUTC);
 
-      this.logger.debug('Orchestrator evaluating rules for local date', {
+      this.logger.debug('Orchestrator evaluating rules for UTC date', {
         todayString,
-        timezone: this.appTimezone,
       });
 
       // Find all due rules
-      const dueRules = await this.repository.findDueRules(todayLocalDate, this.appTimezone);
+      const dueRules = await this.repository.findDueRules(todayUTC);
 
       this.logger.debug(`Found ${dueRules.length} potentially due rules`, {
         count: dueRules.length,
@@ -72,7 +57,7 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost {
       const jobsToEnqueue: {ruleId: string; jobId: string; data: CreateTransactionJobData}[] = [];
 
       for (const rule of dueRules) {
-        const isDue = this.isRuleDueToday(rule, todayLocalDate);
+        const isDue = this.isRuleDueToday(rule, todayUTC);
 
         if (isDue) {
           const jobId = `run-${rule.id}-${todayString}`;
@@ -81,7 +66,7 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost {
             jobId,
             data: {
               ruleId: rule.id,
-              localDate: todayString,
+              executionDate: todayString,
             },
           });
         }
@@ -111,7 +96,7 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost {
 
         // Update last_run_local_date for all rules that were enqueued
         for (const {ruleId} of jobsToEnqueue) {
-          await this.repository.updateLastRun(ruleId, todayLocalDate);
+          await this.repository.updateLastRun(ruleId, todayUTC);
         }
 
         this.logger.debug('Successfully enqueued transaction jobs and updated last run dates', {
@@ -128,9 +113,9 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost {
     }
   }
 
-  private isRuleDueToday(rule: ScheduledTransactionRule, todayLocalDate: Date): boolean {
-    const todayDayOfWeek = getDayOfWeekInTimezone(todayLocalDate, this.appTimezone);
-    const todayDayOfMonth = getDayOfMonthInTimezone(todayLocalDate, this.appTimezone);
+  private isRuleDueToday(rule: ScheduledTransactionRule, todayUTC: Date): boolean {
+    const todayDayOfWeek = getDayOfWeekUTC(todayUTC);
+    const todayDayOfMonth = getDayOfMonthUTC(todayUTC);
 
     if (String(rule.frequencyType) === String(ScheduledTransactionFrequencyType.WEEKLY)) {
       const isDue = rule.dayOfWeek === todayDayOfWeek;
@@ -144,12 +129,11 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost {
     }
 
     if (String(rule.frequencyType) === String(ScheduledTransactionFrequencyType.MONTHLY)) {
-      // Parse the local date to get year and month
-      const todayString = formatLocalDate(todayLocalDate);
-      const [year, month] = todayString.split('-').map(Number);
+      // Get year and month from UTC date
+      const year = todayUTC.getUTCFullYear();
+      const month = todayUTC.getUTCMonth() + 1;
 
       // Clamp the rule's day of month to the actual days in this month
-
       const clampedDayOfMonth = clampDayOfMonth(year, month, rule.dayOfMonth ?? 1);
       const isDue = clampedDayOfMonth === todayDayOfMonth;
 
