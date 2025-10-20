@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
+import {Textarea} from '@/components/ui/textarea';
 import {queryKeys} from '@/modules/api/query-keys';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {useValidateCreateCategory} from '@/modules/categories/hooks/use-validate-create-category';
@@ -69,11 +70,21 @@ const NewCategoryDialog = () => {
         </DialogHeader>
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
           <form onSubmit={handleSubmit(handleCreateCategory)}>
-            <div className="flex items-center gap-3">
-              <div className="flex flex-col gap-2 w-full">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="new-category-name">Naziv</Label>
                 <Input id="new-category-name" placeholder="npr. Namirnice" {...register('name')} />
                 {errors.name?.message && <FormError error={errors.name.message} />}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="new-category-description">Opis (opciono)</Label>
+                <Textarea
+                  id="new-category-description"
+                  placeholder="npr. Hrana i potrepštine iz supermarketa"
+                  maxLength={500}
+                  {...register('description')}
+                />
+                {errors.description?.message && <FormError error={errors.description.message} />}
               </div>
             </div>
             <DialogFooter className="mt-10">

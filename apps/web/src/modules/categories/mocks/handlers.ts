@@ -6,6 +6,7 @@ const mockCategory1: CategoryContract = {
   id: 'c-1',
   householdId: 'h-1',
   name: 'Groceries',
+  description: null,
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
 };
@@ -14,6 +15,7 @@ const mockCategory2: CategoryContract = {
   id: 'c-2',
   householdId: 'h-1',
   name: 'Utilities',
+  description: null,
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
 };

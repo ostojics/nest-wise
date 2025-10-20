@@ -1,10 +1,15 @@
 interface CategoryPromptArgs {
-  categories: {id: string; name: string}[];
+  categories: {id: string; name: string; description?: string | null}[];
   currentDate: string;
 }
 
 export const categoryPromptFactory = ({categories, currentDate}: CategoryPromptArgs) => {
-  const categoriesList = categories.map((cat) => `- **${cat.id}**: ${cat.name}`).join('\n');
+  const categoriesList = categories
+    .map((cat) => {
+      const description = cat.description ? ` — ${cat.description}` : '';
+      return `- **${cat.id}**: ${cat.name}${description}`;
+    })
+    .join('\n');
 
   return `# Stručnjak za kategorizaciju finansijskih transakcija
 

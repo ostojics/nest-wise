@@ -11,6 +11,7 @@ export const useValidateCreateCategory = ({householdId: _householdId}: UseValida
     resolver: zodResolver(createCategorySchema),
     defaultValues: {
       name: '',
+      description: '',
     },
   });
 };
