@@ -5,11 +5,11 @@ import {IconWallet} from '@tabler/icons-react';
 import {useMemo} from 'react';
 import AvailableBalanceCardSkeleton from './available-balance-card.skeleton';
 import AvailableBalanceCardError from './available-balance-card.error';
+import AccountTypeTotals from '@/modules/accounts/components/account-type-totals';
 
 const AvailableBalanceCard = () => {
   const {data: accounts, isLoading, isError, refetch} = useGetHouseholdAccounts();
   const {formatBalance} = useFormatBalance();
-  const accountCount = accounts?.length ?? 0;
 
   const netWorth = useMemo(() => {
     if (!accounts || accounts.length === 0) return 0;
@@ -40,7 +40,7 @@ const AvailableBalanceCard = () => {
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
         <div className="line-clamp-1 flex gap-2 font-medium items-center">Ukupno raspoloživo stanje</div>
-        <div className="text-muted-foreground">Broj računa: {accountCount}</div>
+        <AccountTypeTotals accounts={accounts ?? []} maxInlineItems={3} />
       </CardFooter>
     </Card>
   );
