@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {Textarea} from '@/components/ui/textarea';
+import {TextareaWithCounter} from '@/components/textarea-with-counter';
 import FormError from '@/components/form-error';
 import {UpdateCategoryDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
@@ -78,13 +78,16 @@ const EditCategoryDialog = ({categoryId, currentName, currentDescription}: EditC
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="edit-category-description">Opis (opciono)</Label>
-                <Textarea
+                <TextareaWithCounter
                   id="edit-category-description"
                   placeholder="npr. Hrana i potrepštine iz supermarketa"
                   maxLength={500}
                   {...register('description')}
                 />
                 {errors.description?.message && <FormError error={errors.description.message} />}
+                <p className="text-xs text-muted-foreground">
+                  Opis transakcije će znatno poboljšati preciznost AI asistenta
+                </p>
               </div>
             </div>
             <DialogFooter className="mt-10">

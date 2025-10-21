@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {Textarea} from '@/components/ui/textarea';
+import {TextareaWithCounter} from '@/components/textarea-with-counter';
 import {queryKeys} from '@/modules/api/query-keys';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 import {useValidateCreateCategory} from '@/modules/categories/hooks/use-validate-create-category';
@@ -78,13 +78,16 @@ const NewCategoryDialog = () => {
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="new-category-description">Opis (opciono)</Label>
-                <Textarea
+                <TextareaWithCounter
                   id="new-category-description"
                   placeholder="npr. Hrana i potrepštine iz supermarketa"
                   maxLength={500}
                   {...register('description')}
                 />
                 {errors.description?.message && <FormError error={errors.description.message} />}
+                <p className="text-xs text-muted-foreground">
+                  Opis transakcije će znatno poboljšati preciznost AI asistenta
+                </p>
               </div>
             </div>
             <DialogFooter className="mt-10">
