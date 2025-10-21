@@ -19,28 +19,28 @@ export function AiProcessingStatus({
   }, []);
 
   return (
-    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-blue-500/10 border border-emerald-200/20 p-6">
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 animate-pulse" />
+    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-chart-3/10 via-primary/10 to-chart-3/5 border border-chart-3/20 p-6">
+      <div className="absolute inset-0 bg-gradient-to-r from-chart-3/5 to-primary/5 animate-pulse" />
 
       <div className="relative flex flex-col items-center gap-4 text-center">
         <div className="relative">
           <div
-            className={`w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center transition-all duration-1000`}
+            className={`w-16 h-16 rounded-full bg-gradient-to-br from-chart-3 to-primary flex items-center justify-center transition-all duration-1000`}
           >
             <Brain className="w-8 h-8 text-white" />
           </div>
 
           {isPulsing && (
             <>
-              <div className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping" />
-              <div className="absolute inset-[-4px] rounded-full bg-teal-500/10 animate-ping animation-delay-200" />
+              <div className="absolute inset-0 rounded-full bg-chart-3/20 animate-ping" />
+              <div className="absolute inset-[-4px] rounded-full bg-primary/10 animate-ping animation-delay-200" />
             </>
           )}
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-center gap-2">
-            <span className="text-base font-medium bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            <span className="text-base font-medium bg-gradient-to-r from-chart-3 to-primary bg-clip-text text-transparent">
               Obrada u toku
             </span>
           </div>

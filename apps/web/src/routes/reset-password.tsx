@@ -19,8 +19,8 @@ function ResetPasswordPage() {
     return (
       <section className="flex items-center justify-center h-screen w-screen">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600">Neispravan link za resetovanje</h1>
-          <p className="text-gray-600 mt-2">Link za resetovanje lozinke je neispravan ili nedostaje.</p>
+          <h1 className="text-2xl font-bold text-destructive">Neispravan link za resetovanje</h1>
+          <p className="text-muted-foreground mt-2">Link za resetovanje lozinke je neispravan ili nedostaje.</p>
         </div>
       </section>
     );

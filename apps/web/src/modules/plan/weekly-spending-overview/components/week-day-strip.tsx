@@ -25,7 +25,7 @@ export default function WeekDayStrip({days}: WeekDayStripProps) {
               key={day.key}
               className={cn(
                 'p-3 cursor-pointer transition-all hover:border-primary/50 min-w-[8rem]',
-                isSelected && 'border-primary bg-primary/5',
+                isSelected && 'border-primary bg-gradient-to-r from-primary/60 to-accent/60',
               )}
               onClick={() => setSelectedDayKey(day.key)}
               role="button"
