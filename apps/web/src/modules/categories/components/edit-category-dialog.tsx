@@ -30,10 +30,12 @@ const EditCategoryDialog = ({categoryId, currentName, currentDescription}: EditC
   const {
     register,
     handleSubmit,
+    watch,
     formState: {errors},
     reset,
   } = useValidateEditCategory({defaultValues: {name: currentName, description: currentDescription ?? ''}});
   const mutation = useEditCategoryName();
+  const watchedCategoryDescription = watch('description');
 
   const handleEditCategory = async (data: UpdateCategoryDTO) => {
     await mutation.mutateAsync(
@@ -65,29 +67,30 @@ const EditCategoryDialog = ({categoryId, currentName, currentDescription}: EditC
         <DialogHeader className="mb-3">
           <DialogTitle>Izmenite kategoriju</DialogTitle>
           <DialogDescription>
-            Promenite naziv ili opis ove kategorije. Ova izmena se primenjuje na sve povezane podatke.
+            Promenite naziv ili opis ove kategorije. Ova izmena se primenjuje na sve povezane podatke. <br /> Opis
+            kategorije će znatno poboljšati preciznost AI asistenta.
           </DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
           <form onSubmit={handleSubmit(handleEditCategory)}>
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-category-name">Naziv kategorije</Label>
+                <Label htmlFor="edit-category-name">
+                  Naziv kategorije <span className="text-red-500">*</span>
+                </Label>
                 <Input id="edit-category-name" type="text" {...register('name')} />
                 {errors.name?.message && <FormError error={errors.name.message} />}
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="edit-category-description">Opis (opciono)</Label>
+                <Label htmlFor="edit-category-description">Opis</Label>
                 <TextareaWithCounter
                   id="edit-category-description"
                   placeholder="npr. Hrana i potrepštine iz supermarketa"
-                  maxLength={500}
+                  maxLength={300}
+                  valueLength={watchedCategoryDescription?.length ?? 0}
                   {...register('description')}
                 />
                 {errors.description?.message && <FormError error={errors.description.message} />}
-                <p className="text-xs text-muted-foreground">
-                  Opis transakcije će znatno poboljšati preciznost AI asistenta
-                </p>
               </div>
             </div>
             <DialogFooter className="mt-10">

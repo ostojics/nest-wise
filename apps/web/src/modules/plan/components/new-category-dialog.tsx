@@ -29,11 +29,13 @@ const NewCategoryDialog = () => {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: {errors},
   } = useValidateCreateCategory({householdId: me?.householdId ?? ''});
   const mutation = useCreateCategory(me?.householdId);
   const client = useQueryClient();
   const search = useSearch({from: '/__pathlessLayout/plan'});
+  const watchedCategoryDescription = watch('description');
 
   const handleCreateCategory = async (data: CreateCategoryDTO) => {
     await mutation.mutateAsync(data, {
@@ -65,29 +67,30 @@ const NewCategoryDialog = () => {
         <DialogHeader className="mb-3">
           <DialogTitle>Kreirajte kategoriju</DialogTitle>
           <DialogDescription className="text-balance">
-            Dodajte kategoriju za planiranje i praćenje svojih troškova.
+            Dodajte kategoriju za planiranje i praćenje svojih troškova. <br /> Opis kategorije će znatno poboljšati
+            preciznost AI asistenta.
           </DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
           <form onSubmit={handleSubmit(handleCreateCategory)}>
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="new-category-name">Naziv</Label>
+                <Label htmlFor="new-category-name">
+                  Naziv <span className="text-red-500">*</span>
+                </Label>
                 <Input id="new-category-name" placeholder="npr. Namirnice" {...register('name')} />
                 {errors.name?.message && <FormError error={errors.name.message} />}
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="new-category-description">Opis (opciono)</Label>
+                <Label htmlFor="new-category-description">Opis</Label>
                 <TextareaWithCounter
                   id="new-category-description"
                   placeholder="npr. Hrana i potrepštine iz supermarketa"
-                  maxLength={500}
+                  maxLength={300}
+                  valueLength={watchedCategoryDescription?.length ?? 0}
                   {...register('description')}
                 />
                 {errors.description?.message && <FormError error={errors.description.message} />}
-                <p className="text-xs text-muted-foreground">
-                  Opis transakcije će znatno poboljšati preciznost AI asistenta
-                </p>
               </div>
             </div>
             <DialogFooter className="mt-10">

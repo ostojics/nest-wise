@@ -22,7 +22,7 @@ export const createCategorySchema = z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .max(500, 'Opis kategorije može imati najviše 500 karaktera')
+      .max(300, 'Opis kategorije može imati najviše 300 karaktera')
       .optional(),
   })
   .strict();
@@ -40,7 +40,7 @@ export const updateCategorySchema = z
       .string({
         invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
       })
-      .max(500, 'Opis kategorije može imati najviše 500 karaktera')
+      .max(300, 'Opis kategorije može imati najviše 300 karaktera')
       .optional(),
   })
   .strict();
@@ -49,7 +49,7 @@ export const categoryResponseSchema = z
   .object({
     id: z.string().uuid(),
     name: z.string(),
-    description: z.string().max(500).nullable(),
+    description: z.string().max(300).nullable(),
     householdId: z.string().uuid(),
     createdAt: z.date(),
     updatedAt: z.date(),
