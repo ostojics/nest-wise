@@ -8,6 +8,14 @@ export class CreateCategorySwaggerDTO {
     maxLength: 100,
   })
   name: string;
+
+  @ApiProperty({
+    description: 'Optional description of the category (max 500 characters)',
+    example: 'Food and household supplies from supermarkets',
+    maxLength: 500,
+    required: false,
+  })
+  description?: string;
 }
 
 export class UpdateCategorySwaggerDTO {
@@ -19,6 +27,14 @@ export class UpdateCategorySwaggerDTO {
     required: false,
   })
   name?: string;
+
+  @ApiProperty({
+    description: 'Optional description of the category (max 500 characters)',
+    example: 'Restaurants, cafes, and dining out',
+    maxLength: 500,
+    required: false,
+  })
+  description?: string;
 }
 
 export class CategoryResponseSwaggerDTO {
@@ -34,6 +50,13 @@ export class CategoryResponseSwaggerDTO {
     example: 'Groceries',
   })
   name: string;
+
+  @ApiProperty({
+    description: 'Optional description of the category (nullable, max 500 characters)',
+    example: 'Food and household supplies from supermarkets',
+    nullable: true,
+  })
+  description: string | null;
 
   @ApiProperty({
     description: 'UUID of the household this category belongs to',

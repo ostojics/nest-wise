@@ -3,6 +3,7 @@ import {z} from 'zod';
 export interface CategoryContract {
   id: string;
   name: string;
+  description: string | null;
   householdId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -17,6 +18,12 @@ export const createCategorySchema = z
       })
       .min(1, 'Naziv kategorije je obavezan')
       .max(100, 'Naziv kategorije može imati najviše 100 karaktera'),
+    description: z
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .max(300, 'Opis kategorije može imati najviše 300 karaktera')
+      .optional(),
   })
   .strict();
 
@@ -29,6 +36,12 @@ export const updateCategorySchema = z
       .min(1, 'Naziv kategorije je obavezan')
       .max(100, 'Naziv kategorije može imati najviše 100 karaktera')
       .optional(),
+    description: z
+      .string({
+        invalid_type_error: 'Neispravna vrednost (mora biti tekst)',
+      })
+      .max(300, 'Opis kategorije može imati najviše 300 karaktera')
+      .optional(),
   })
   .strict();
 
@@ -36,6 +49,7 @@ export const categoryResponseSchema = z
   .object({
     id: z.string().uuid(),
     name: z.string(),
+    description: z.string().max(300).nullable(),
     householdId: z.string().uuid(),
     createdAt: z.date(),
     updatedAt: z.date(),

@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
+import {TextareaWithCounter} from '@/components/textarea-with-counter';
 import FormError from '@/components/form-error';
 import {UpdateCategoryDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
@@ -18,22 +19,25 @@ import {useState} from 'react';
 import {useEditCategoryName} from '../hooks/use-edit-category-name';
 import {useValidateEditCategory} from '../hooks/use-validate-edit-category';
 
-interface EditCategoryNameDialogProps {
+interface EditCategoryDialogProps {
   categoryId: string;
   currentName: string;
+  currentDescription?: string | null;
 }
 
-const EditCategoryNameDialog = ({categoryId, currentName}: EditCategoryNameDialogProps) => {
+const EditCategoryDialog = ({categoryId, currentName, currentDescription}: EditCategoryDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
     register,
     handleSubmit,
+    watch,
     formState: {errors},
     reset,
-  } = useValidateEditCategory({defaultValues: {name: currentName}});
+  } = useValidateEditCategory({defaultValues: {name: currentName, description: currentDescription ?? ''}});
   const mutation = useEditCategoryName();
+  const watchedCategoryDescription = watch('description');
 
-  const handleEditCategoryName = async (data: UpdateCategoryDTO) => {
+  const handleEditCategory = async (data: UpdateCategoryDTO) => {
     await mutation.mutateAsync(
       {id: categoryId, dto: data},
       {
@@ -56,23 +60,37 @@ const EditCategoryNameDialog = ({categoryId, currentName}: EditCategoryNameDialo
     >
       <DialogTrigger asChild>
         <Button size="sm" variant="outline">
-          Preimenuj
+          Izmeni
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="mb-3">
-          <DialogTitle>Preimenujte kategoriju</DialogTitle>
+          <DialogTitle>Izmenite kategoriju</DialogTitle>
           <DialogDescription>
-            Promenite naziv ove kategorije. Ova izmena se primenjuje na sve povezane podatke.
+            Promenite naziv ili opis ove kategorije. Ova izmena se primenjuje na sve povezane podatke. <br /> Opis
+            kategorije će znatno poboljšati preciznost AI asistenta.
           </DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
-          <form onSubmit={handleSubmit(handleEditCategoryName)}>
-            <div className="flex items-center gap-3">
-              <div className="flex flex-col gap-2 flex-1">
-                <Label htmlFor="edit-category-name">Naziv kategorije</Label>
+          <form onSubmit={handleSubmit(handleEditCategory)}>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="edit-category-name">
+                  Naziv kategorije <span className="text-red-500">*</span>
+                </Label>
                 <Input id="edit-category-name" type="text" {...register('name')} />
                 {errors.name?.message && <FormError error={errors.name.message} />}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="edit-category-description">Opis</Label>
+                <TextareaWithCounter
+                  id="edit-category-description"
+                  placeholder="npr. Hrana i potrepštine iz supermarketa"
+                  maxLength={300}
+                  valueLength={watchedCategoryDescription?.length ?? 0}
+                  {...register('description')}
+                />
+                {errors.description?.message && <FormError error={errors.description.message} />}
               </div>
             </div>
             <DialogFooter className="mt-10">
@@ -92,4 +110,4 @@ const EditCategoryNameDialog = ({categoryId, currentName}: EditCategoryNameDialo
   );
 };
 
-export default EditCategoryNameDialog;
+export default EditCategoryDialog;
