@@ -1,12 +1,18 @@
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import {StrictMode} from 'react';
+import {lazy, StrictMode, Suspense} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './app';
 import './index.css';
 import {router} from './router';
-import {PostHogProvider} from 'posthog-js/react';
 import {setDefaultOptions} from 'date-fns';
 import {srLatn} from 'date-fns/locale';
+
+// Lazy load PostHog for non-critical analytics
+const PostHogProvider = lazy(() =>
+  import('posthog-js/react').then((module) => ({
+    default: module.PostHogProvider,
+  })),
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,19 +58,21 @@ enableMocking()
   .finally(() => {
     createRoot(rootElement).render(
       <StrictMode>
-        <PostHogProvider
-          apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
-          options={{
-            api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-            defaults: '2025-05-24',
-            capture_exceptions: true,
-            debug: import.meta.env.DEV,
-          }}
-        >
-          <QueryClientProvider client={queryClient}>
-            <App />
-          </QueryClientProvider>
-        </PostHogProvider>
+        <Suspense fallback={null}>
+          <PostHogProvider
+            apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+            options={{
+              api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+              defaults: '2025-05-24',
+              capture_exceptions: true,
+              debug: import.meta.env.DEV,
+            }}
+          >
+            <QueryClientProvider client={queryClient}>
+              <App />
+            </QueryClientProvider>
+          </PostHogProvider>
+        </Suspense>
       </StrictMode>,
     );
   });

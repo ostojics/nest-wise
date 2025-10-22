@@ -18,7 +18,7 @@ export default defineConfig((env) => ({
     env.mode !== 'test' &&
       process.env.ANALYZE === 'true' &&
       visualizer({
-        open: true,
+        open: false,
         filename: 'dist/stats.html',
         gzipSize: true,
         brotliSize: true,
@@ -38,6 +38,7 @@ export default defineConfig((env) => ({
       },
       workbox: {
         cleanupOutdatedCaches: true,
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB to allow stats.html
       },
       manifest: false,
     }),
@@ -49,7 +50,6 @@ export default defineConfig((env) => ({
   },
   build: {
     target: 'es2022',
-    // Let Vite's automatic code-splitting handle chunking intelligently
-    // The lazy loading we've added will create separate chunks automatically
+    // Let Vite handle chunking automatically with our lazy route imports
   },
 }));
