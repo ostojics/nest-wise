@@ -1,7 +1,7 @@
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import eslintPlugin from '@nabla/vite-plugin-eslint';
-// import {analyzer} from 'vite-bundle-analyzer';
+import {visualizer} from 'rollup-plugin-visualizer';
 import {tanstackRouter} from '@tanstack/router-plugin/vite';
 import tailwindcss from '@tailwindcss/vite';
 import {VitePWA} from 'vite-plugin-pwa';
@@ -15,7 +15,14 @@ export default defineConfig((env) => ({
     }),
     react(),
     env.mode !== 'test' && eslintPlugin(),
-    // analyzer(),
+    env.mode !== 'test' &&
+      process.env.ANALYZE === 'true' &&
+      visualizer({
+        open: true,
+        filename: 'dist/stats.html',
+        gzipSize: true,
+        brotliSize: true,
+      }),
     tailwindcss(),
     VitePWA({
       registerType: 'prompt',
@@ -39,5 +46,10 @@ export default defineConfig((env) => ({
     alias: {
       '@': '/src',
     },
+  },
+  build: {
+    target: 'es2022',
+    // Let Vite's automatic code-splitting handle chunking intelligently
+    // The lazy loading we've added will create separate chunks automatically
   },
 }));
