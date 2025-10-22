@@ -2,7 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index, ManyToO
 import {Household} from 'src/households/household.entity';
 
 @Entity('savings')
-@Index(['householdId', 'month'], {unique: true})
+@Index(['householdId', 'periodYm'], {unique: true})
 export class Savings {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -29,6 +29,15 @@ export class Savings {
     nullable: false,
   })
   month: string;
+
+  @Column({
+    type: 'varchar',
+    length: 7,
+    nullable: false,
+    name: 'period_ym',
+  })
+  @Index()
+  periodYm: string;
 
   @CreateDateColumn({
     type: 'timestamp with time zone',

@@ -47,7 +47,7 @@ export class SavingsRepository {
       FROM months m
       LEFT JOIN savings s
         ON s.household_id = $1
-       AND s.month = to_char(m.month_start, 'Mon')
+       AND s.period_ym = to_char(m.month_start, 'YYYY-MM')
       ORDER BY m.month_start ASC;
       `,
       [householdId],
