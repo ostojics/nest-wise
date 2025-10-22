@@ -4,8 +4,6 @@ import {createRoot} from 'react-dom/client';
 import App from './app';
 import './index.css';
 import {router} from './router';
-import {setDefaultOptions} from 'date-fns';
-import {srLatn} from 'date-fns/locale';
 
 // Lazy load PostHog for non-critical analytics
 const PostHogProvider = lazy(() =>
@@ -28,8 +26,6 @@ declare module '@tanstack/react-router' {
     router: typeof router;
   }
 }
-
-setDefaultOptions({locale: srLatn});
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
