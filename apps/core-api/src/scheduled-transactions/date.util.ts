@@ -1,12 +1,12 @@
-import {startOfDay, setHours, format, getDaysInMonth, isBefore, getDay, getDate} from 'date-fns';
-import {UTCDate} from '@date-fns/utc';
+import {getDaysInMonth, isBefore} from 'date-fns';
 
 /**
  * Get the current UTC date at midnight
- * @returns UTCDate object representing the start of today in UTC
+ * @returns Date object representing the start of today in UTC
  */
 export function getTodayUTC(): Date {
-  return startOfDay(new UTCDate());
+  const now = new Date();
+  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
 }
 
 /**
@@ -15,8 +15,8 @@ export function getTodayUTC(): Date {
  * @returns Date object set to noon UTC of that date
  */
 export function parseDateAtNoonUTC(dateString: string): Date {
-  const utcDate = new UTCDate(dateString);
-  return setHours(startOfDay(utcDate), 12);
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day, 12, 0, 0, 0));
 }
 
 /**
@@ -25,7 +25,8 @@ export function parseDateAtNoonUTC(dateString: string): Date {
  * @returns Date object set to midnight UTC of that date
  */
 export function parseDateUTC(dateString: string): Date {
-  return startOfDay(new UTCDate(dateString));
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
 }
 
 /**
@@ -34,7 +35,10 @@ export function parseDateUTC(dateString: string): Date {
  * @returns UTC date string in ISO format (YYYY-MM-DD)
  */
 export function formatUTCDate(date: Date): string {
-  return format(new UTCDate(date), 'yyyy-MM-dd');
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 /**
@@ -43,7 +47,7 @@ export function formatUTCDate(date: Date): string {
  * @returns Day of week (0-6)
  */
 export function getDayOfWeekUTC(date: Date): number {
-  return getDay(new UTCDate(date));
+  return date.getUTCDay();
 }
 
 /**
@@ -52,7 +56,7 @@ export function getDayOfWeekUTC(date: Date): number {
  * @returns Day of month (1-31)
  */
 export function getDayOfMonthUTC(date: Date): number {
-  return getDate(new UTCDate(date));
+  return date.getUTCDate();
 }
 
 /**
@@ -63,8 +67,8 @@ export function getDayOfMonthUTC(date: Date): number {
  * @returns Clamped day of month
  */
 export function clampDayOfMonth(year: number, month: number, dayOfMonth: number): number {
-  const utcDate = new UTCDate(year, month - 1, 1);
-  const daysInMonth = getDaysInMonth(utcDate);
+  const testDate = new Date(Date.UTC(year, month - 1, 1));
+  const daysInMonth = getDaysInMonth(testDate);
   return Math.min(dayOfMonth, daysInMonth);
 }
 
@@ -74,5 +78,5 @@ export function clampDayOfMonth(year: number, month: number, dayOfMonth: number)
  * @returns True if the UTC date is in the past
  */
 export function isDateInPast(date: Date): boolean {
-  return isBefore(new UTCDate(date), getTodayUTC());
+  return isBefore(date, getTodayUTC());
 }

@@ -94,7 +94,7 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost {
 
         await this.queue.addBulk(jobs);
 
-        // Update last_run_local_date for all rules that were enqueued
+        // Update last_run_date for all rules that were enqueued
         for (const {ruleId} of jobsToEnqueue) {
           await this.repository.updateLastRun(ruleId, todayUTC);
         }

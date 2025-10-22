@@ -35,12 +35,12 @@ export class ScheduledTransactionsRepository {
     // Find all active rules where:
     // 1. status = 'active'
     // 2. start_date <= todayUTC
-    // 3. (last_run_local_date IS NULL OR last_run_local_date < todayUTC)
+    // 3. (last_run_date IS NULL OR last_run_date < todayUTC)
     const query = this.repository
       .createQueryBuilder('rule')
       .where('rule.status = :status', {status: ScheduledTransactionStatus.ACTIVE})
       .andWhere('rule.start_date <= :todayUTC', {todayUTC})
-      .andWhere('(rule.last_run_local_date IS NULL OR rule.last_run_local_date < :todayUTC)', {
+      .andWhere('(rule.last_run_date IS NULL OR rule.last_run_date < :todayUTC)', {
         todayUTC,
       });
 
@@ -107,8 +107,8 @@ export class ScheduledTransactionsRepository {
     return result.affected !== null && result.affected !== undefined && result.affected > 0;
   }
 
-  async updateLastRun(id: string, localDate: Date): Promise<void> {
-    await this.repository.update(id, {lastRunLocalDate: localDate});
+  async updateLastRun(id: string, date: Date): Promise<void> {
+    await this.repository.update(id, {lastRunDate: date});
   }
 
   async incrementFailureCount(id: string, error: string): Promise<void> {

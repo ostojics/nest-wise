@@ -70,7 +70,7 @@ export class ScheduledTransactionsService {
       dayOfWeek: data.dayOfWeek,
       dayOfMonth: data.dayOfMonth,
       startDate,
-      postedTimeLocal: '12:00:00',
+      postedTime: '12:00:00',
       status: ScheduledTransactionStatus.ACTIVE,
     });
 

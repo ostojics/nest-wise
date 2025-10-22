@@ -59,43 +59,37 @@ export class ScheduledTransactionsWorker extends WorkerHost {
 
       // Use a database transaction to ensure atomicity
       await this.dataSource.transaction(async (manager) => {
-        // First, try to insert into executions table for deduplication
+        // First, check if execution already exists for this rule and date
         const executionsRepo = manager.getRepository('scheduled_transaction_executions');
 
-        try {
-          const execution = executionsRepo.create({
+        const existingExecution = await executionsRepo.findOne({
+          where: {
             rule_id: rule.id,
             execution_date: executionDateParsed,
-            transaction_id: null,
-          });
-          await executionsRepo.save(execution);
+          },
+        });
 
-          this.logger.debug('Created execution record', {
+        if (existingExecution) {
+          this.logger.debug('Execution already exists for this rule and date (idempotent retry)', {
+            jobId: job.id,
             ruleId,
             executionDate,
           });
-        } catch (error: unknown) {
-          // Check if this is a unique constraint violation
-          if (
-            error &&
-            typeof error === 'object' &&
-            'code' in error &&
-            error.code === '23505' &&
-            'constraint' in error &&
-            error.constraint === 'scheduled_transaction_executions_unique_idx'
-          ) {
-            // This is expected for idempotent retries - log and treat as success
-            this.logger.debug('Execution already exists for this rule and date (idempotent retry)', {
-              jobId: job.id,
-              ruleId,
-              executionDate,
-            });
-            return; // Do not throw, job succeeds
-          }
-
-          // For other errors, propagate
-          throw error;
+          return; // Job succeeds without creating duplicate
         }
+
+        // Create execution record
+        const execution = executionsRepo.create({
+          rule_id: rule.id,
+          execution_date: executionDateParsed,
+          transaction_id: null,
+        });
+        await executionsRepo.save(execution);
+
+        this.logger.debug('Created execution record', {
+          ruleId,
+          executionDate,
+        });
 
         // Create the transaction
         const transactionData = {

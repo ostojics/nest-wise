@@ -114,9 +114,9 @@ export class ScheduledTransactionRule {
     type: 'time',
     nullable: false,
     default: '12:00:00',
-    name: 'posted_time_local',
+    name: 'posted_time',
   })
-  postedTimeLocal: string;
+  postedTime: string;
 
   @Column({
     type: 'enum',
@@ -130,9 +130,9 @@ export class ScheduledTransactionRule {
   @Column({
     type: 'date',
     nullable: true,
-    name: 'last_run_local_date',
+    name: 'last_run_date',
   })
-  lastRunLocalDate: Date | null;
+  lastRunDate: Date | null;
 
   @Column({
     type: 'int',
