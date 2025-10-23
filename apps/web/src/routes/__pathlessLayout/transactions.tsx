@@ -1,9 +1,7 @@
-import {lazy} from 'react';
+import TransactionsPage from '@/modules/transactions/components/transactions-page';
 import {TransactionSortFieldEnum} from '@nest-wise/contracts';
 import {createFileRoute} from '@tanstack/react-router';
 import z from 'zod';
-
-const TransactionsPage = lazy(() => import('@/modules/transactions/components/transactions-page'));
 
 const querySchema = z.object({
   page: z.coerce.number().min(1).default(1).catch(1),

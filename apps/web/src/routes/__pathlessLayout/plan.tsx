@@ -1,10 +1,8 @@
-import {lazy} from 'react';
+import PlanPage from '@/modules/plan/components/plan-page';
 import {getCategoryBudgetsQueryParamsSchema} from '@nest-wise/contracts';
 import {createFileRoute} from '@tanstack/react-router';
 import {format} from 'date-fns';
 import z from 'zod';
-
-const PlanPage = lazy(() => import('@/modules/plan/components/plan-page'));
 
 const defaultMonthValue = format(new Date(), 'yyyy-MM');
 

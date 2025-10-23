@@ -1,9 +1,7 @@
 import {getStartAndEndOfMonthIso} from '@/lib/utils';
+import SpendingReportPage from '@/modules/reports/components/spending-report-page';
 import {createFileRoute} from '@tanstack/react-router';
-import {lazy} from 'react';
 import z from 'zod';
-
-const SpendingReportPage = lazy(() => import('@/modules/reports/components/spending-report-page'));
 
 const {start, end} = getStartAndEndOfMonthIso();
 const spendingQuerySchema = z.object({
