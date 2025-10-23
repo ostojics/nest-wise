@@ -2,7 +2,12 @@ import {MigrationInterface, QueryRunner} from 'typeorm';
 
 export class DropSavings1761000000000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Drop index first
     await queryRunner.query(`DROP INDEX IF EXISTS savings_household_id_idx;`);
+    // Drop constraints explicitly before dropping the table
+    await queryRunner.query(`ALTER TABLE IF EXISTS savings DROP CONSTRAINT IF EXISTS savings_household_id_fkey;`);
+    await queryRunner.query(`ALTER TABLE IF EXISTS savings DROP CONSTRAINT IF EXISTS savings_household_month_unique;`);
+    // Finally drop the table
     await queryRunner.query(`DROP TABLE IF EXISTS savings;`);
   }
 
