@@ -7,7 +7,6 @@ export function ReportsNav() {
 
   const tabs = [
     {value: '/reports/spending', label: 'Troškovi'},
-    {value: '/reports/savings', label: 'Štednja'},
     {value: '/reports/net-worth', label: 'Ukupni kapital'},
   ];
 
