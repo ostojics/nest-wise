@@ -6,6 +6,7 @@ import './index.css';
 import {router} from './router';
 import {setDefaultOptions} from 'date-fns';
 import {srLatn} from 'date-fns/locale';
+import {Loader2} from 'lucide-react';
 
 // Lazy load PostHog for non-critical analytics
 const PostHogProvider = lazy(() =>
@@ -58,7 +59,13 @@ enableMocking()
   .finally(() => {
     createRoot(rootElement).render(
       <StrictMode>
-        <Suspense fallback={null}>
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center h-screen">
+              <Loader2 className="animate-spin size-4" />
+            </div>
+          }
+        >
           <PostHogProvider
             apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
             options={{
