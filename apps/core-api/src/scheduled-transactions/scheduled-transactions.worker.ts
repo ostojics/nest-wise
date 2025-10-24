@@ -6,9 +6,9 @@ import {Queues} from '../common/enums/queues.enum';
 import {ScheduledTransactionJobs} from '../common/enums/jobs.enum';
 import {ScheduledTransactionsRepository} from './scheduled-transactions.repository';
 import {TransactionsService} from '../transactions/transactions.service';
-import {createDateAtNoonUTC} from './date.util';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 import {DataSource} from 'typeorm';
+import {parseISO} from 'date-fns';
 
 interface CreateTransactionJobData {
   ruleId: string;
@@ -53,9 +53,7 @@ export class ScheduledTransactionsWorker extends WorkerHost {
         throw new Error(`Rule ${ruleId} not found`);
       }
 
-      // Parse execution date (YYYY-MM-DD) to a timestamp at noon UTC
-      const [year, month, day] = executionDate.split('-').map(Number);
-      const transactionDate = createDateAtNoonUTC(year, month, day);
+      const transactionDate = parseISO(executionDate);
 
       // Use a database transaction to ensure atomicity
       await this.dataSource.transaction(async (manager) => {
@@ -116,7 +114,7 @@ export class ScheduledTransactionsWorker extends WorkerHost {
 
         // Update execution record with transaction ID
         await executionsRepo.update(
-          {rule_id: rule.id, execution_date: executionDateParsed},
+          {rule_id: rule.id, execution_date: executionDate},
           {transaction_id: transaction.id},
         );
 

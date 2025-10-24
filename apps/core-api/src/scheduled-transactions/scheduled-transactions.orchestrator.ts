@@ -7,7 +7,8 @@ import {Queues} from '../common/enums/queues.enum';
 import {ScheduledTransactionJobs} from '../common/enums/jobs.enum';
 import {ScheduledTransactionsRepository} from './scheduled-transactions.repository';
 import {ScheduledTransactionRule, ScheduledTransactionFrequencyType} from './scheduled-transaction-rule.entity';
-import {getTodayUTC, getDayOfWeekUTC, getDayOfMonthUTC, formatUTCDate, clampDayOfMonth} from './date.util';
+import {getTodayUTC, getDayOfWeekUTC, getDayOfMonthUTC, clampDayOfMonth} from './date.util';
+import {dateAtNoon} from 'src/lib/utils';
 
 interface CreateTransactionJobData {
   ruleId: string;
@@ -56,7 +57,7 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost implements OnM
 
     try {
       const todayUTC = getTodayUTC();
-      const todayString = formatUTCDate(todayUTC);
+      const todayString = dateAtNoon(todayUTC).toISOString();
 
       this.logger.debug('Orchestrator evaluating rules for UTC date', {
         todayString,
