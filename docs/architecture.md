@@ -73,10 +73,9 @@ graph TD
     A --> G[TransactionsModule]
     A --> H[PrivateTransactionsModule]
     A --> I[CategoryBudgetsModule]
-    A --> J[SavingsModule]
-    A --> K[InvitesModule]
-    A --> L[PoliciesModule]
-    A --> M[EmailsModule]
+    A --> J[InvitesModule]
+    A --> K[PoliciesModule]
+    A --> L[EmailsModule]
 
     N[ConfigModule] --> A
     O[TypeOrmModule] --> A
@@ -95,7 +94,6 @@ graph TD
 - **`transactions`**: Main transaction management with filtering/search
 - **`private-transactions`**: User-scoped private transactions
 - **`category-budgets`**: Monthly budget management per category
-- **`savings`**: Savings calculations and trend reporting
 - **`invites`**: Household member invitation system
 - **`policies`**: Authorization logic for sensitive operations
 - **`emails`**: Email sending service integration
@@ -115,7 +113,6 @@ erDiagram
     Household ||--o{ Category : "1:N"
     Household ||--o{ Transaction : "1:N"
     Household ||--o{ PrivateTransaction : "1:N"
-    Household ||--o{ Savings : "1:N"
     Household ||--o{ CategoryBudget : "1:N"
 
     User ||--o{ Account : "owns 1:N"
@@ -251,7 +248,7 @@ Generated route tree supports the following main areas:
 
 - **Public Routes**: `/login`, `/setup`, `/invites`
 - **Authenticated Routes**: `/accounts`, `/transactions`, `/analytics`, `/members`, `/my-finances`, `/plan`
-- **Reports**: `/reports/net-worth`, `/reports/savings`, `/reports/spending`
+- **Reports**: `/reports/net-worth`, `/reports/spending`
 
 ### State Management
 

@@ -9,7 +9,6 @@ import {License} from '../../src/licenses/license.entity';
 import {Account} from '../../src/accounts/account.entity';
 import {Category} from '../../src/categories/categories.entity';
 import {Transaction} from '../../src/transactions/transaction.entity';
-import {Savings} from '../../src/savings/savings.entity';
 import {CategoryBudget} from '../../src/category-budgets/category-budgets.entity';
 import {PrivateTransaction} from '../../src/private-transactions/private-transactions.entity';
 import {AccountsService} from '../../src/accounts/accounts.service';
@@ -31,7 +30,6 @@ export const INTEGRATION_TEST_ENTITIES = [
   Account,
   Category,
   Transaction,
-  Savings,
   CategoryBudget,
   PrivateTransaction,
 ];

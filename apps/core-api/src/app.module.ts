@@ -21,7 +21,6 @@ import {BullModule} from '@nestjs/bullmq';
 import {queuesConfig, QueuesConfig, QueuesConfigName} from './config/queues.config';
 import {PoliciesModule} from './policies/policies.module';
 import {ScheduleModule} from '@nestjs/schedule';
-import {SavingsModule} from './savings/savings.module';
 import {CategoryBudgetsModule} from './category-budgets/category-budgets.module';
 import {PrivateTransactionsModule} from './private-transactions/private-transactions.module';
 import {InvitesModule} from './invites/invites.module';
@@ -88,7 +87,6 @@ import {LicensesModule} from './licenses/licenses.module';
     TransactionsModule,
     EmailsModule,
     PoliciesModule,
-    SavingsModule,
     CategoryBudgetsModule,
     PrivateTransactionsModule,
     InvitesModule,

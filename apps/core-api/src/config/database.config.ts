@@ -5,7 +5,6 @@ import {Household} from 'src/households/household.entity';
 import {Account} from 'src/accounts/account.entity';
 import {Category} from 'src/categories/categories.entity';
 import {Transaction} from 'src/transactions/transaction.entity';
-import {Savings} from 'src/savings/savings.entity';
 import {CategoryBudget} from 'src/category-budgets/category-budgets.entity';
 import {PrivateTransaction} from 'src/private-transactions/private-transactions.entity';
 import {License} from 'src/licenses/license.entity';
@@ -20,6 +19,7 @@ import {InitPrivateTransactions1758655853118} from 'src/migrations/1758655853118
 import {ConvertTransactionDateToTimestamptz1760208473000} from 'src/migrations/1760208473000-ConvertTransactionDateToTimestamptz';
 import {ConvertPrivateTransactionDateToTimestamptz1760208473001} from 'src/migrations/1760208473001-ConvertPrivateTransactionDateToTimestamptz';
 import {AddCategoryDescription1760998944930} from 'src/migrations/1760998944930-AddCategoryDescription';
+import {DropSavings1761000000000} from 'src/migrations/1761000000000-DropSavings';
 
 export const DatabaseConfigName = 'database';
 
@@ -36,7 +36,7 @@ export function getConfig(): DatabaseConfig {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE ?? 'nestwise_dev',
     ssl: process.env.DB_USE_SSL === 'true',
-    entities: [User, Household, Account, Category, Transaction, Savings, CategoryBudget, PrivateTransaction, License],
+    entities: [User, Household, Account, Category, Transaction, CategoryBudget, PrivateTransaction, License],
     useUTC: true,
     migrations: [
       InitExtensionAndTypes1758655322744,
@@ -50,6 +50,7 @@ export function getConfig(): DatabaseConfig {
       ConvertTransactionDateToTimestamptz1760208473000,
       ConvertPrivateTransactionDateToTimestamptz1760208473001,
       AddCategoryDescription1760998944930,
+      DropSavings1761000000000,
     ],
     migrationsRun: true,
     extra: {
