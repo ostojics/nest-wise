@@ -6,7 +6,7 @@ import {Queues} from '../common/enums/queues.enum';
 import {ScheduledTransactionJobs} from '../common/enums/jobs.enum';
 import {ScheduledTransactionsRepository} from './scheduled-transactions.repository';
 import {TransactionsService} from '../transactions/transactions.service';
-import {parseDateAtNoonUTC, parseDateUTC} from './date.util';
+import {createDateAtNoonUTC} from './date.util';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 import {DataSource} from 'typeorm';
 
@@ -53,9 +53,9 @@ export class ScheduledTransactionsWorker extends WorkerHost {
         throw new Error(`Rule ${ruleId} not found`);
       }
 
-      // Parse execution date - transactions are created at noon UTC
-      const transactionDate = parseDateAtNoonUTC(executionDate);
-      const executionDateParsed = parseDateUTC(executionDate);
+      // Parse execution date (YYYY-MM-DD) to a timestamp at noon UTC
+      const [year, month, day] = executionDate.split('-').map(Number);
+      const transactionDate = createDateAtNoonUTC(year, month, day);
 
       // Use a database transaction to ensure atomicity
       await this.dataSource.transaction(async (manager) => {
@@ -65,7 +65,7 @@ export class ScheduledTransactionsWorker extends WorkerHost {
         const existingExecution = await executionsRepo.findOne({
           where: {
             rule_id: rule.id,
-            execution_date: executionDateParsed,
+            execution_date: transactionDate,
           },
         });
 
@@ -81,7 +81,7 @@ export class ScheduledTransactionsWorker extends WorkerHost {
         // Create execution record
         const execution = executionsRepo.create({
           rule_id: rule.id,
-          execution_date: executionDateParsed,
+          execution_date: transactionDate,
           transaction_id: null,
         });
         await executionsRepo.save(execution);

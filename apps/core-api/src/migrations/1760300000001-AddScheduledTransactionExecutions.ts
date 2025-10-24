@@ -6,7 +6,7 @@ export class AddScheduledTransactionExecutions1760300000001 implements Migration
     await queryRunner.query(`CREATE TABLE scheduled_transaction_executions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   rule_id uuid NOT NULL,
-  execution_date date NOT NULL,
+  execution_date timestamp with time zone NOT NULL,
   transaction_id uuid NULL,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   CONSTRAINT scheduled_transaction_executions_rule_id_fkey FOREIGN KEY (rule_id)

@@ -104,19 +104,11 @@ export class ScheduledTransactionRule {
   dayOfMonth: number | null;
 
   @Column({
-    type: 'date',
+    type: 'timestamp with time zone',
     nullable: false,
     name: 'start_date',
   })
   startDate: Date;
-
-  @Column({
-    type: 'time',
-    nullable: false,
-    default: '12:00:00',
-    name: 'posted_time',
-  })
-  postedTime: string;
 
   @Column({
     type: 'enum',
@@ -128,7 +120,7 @@ export class ScheduledTransactionRule {
   status: ScheduledTransactionStatus;
 
   @Column({
-    type: 'date',
+    type: 'timestamp with time zone',
     nullable: true,
     name: 'last_run_date',
   })

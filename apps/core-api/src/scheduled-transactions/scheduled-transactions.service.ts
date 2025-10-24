@@ -15,7 +15,9 @@ import {
 } from '@nest-wise/contracts';
 import {AccountsService} from '../accounts/accounts.service';
 import {CategoriesService} from '../categories/categories.service';
-import {parseDateUTC, isDateInPast} from './date.util';
+import {UTCDate} from '@date-fns/utc';
+import {setHours, parseISO, startOfDay} from 'date-fns';
+import {isDateInPast} from './date.util';
 
 @Injectable()
 export class ScheduledTransactionsService {
@@ -46,7 +48,8 @@ export class ScheduledTransactionsService {
     }
 
     // Validate start date is not in the past (UTC)
-    const startDate = parseDateUTC(data.startDate);
+    const startDateParsed = parseISO(data.startDate);
+    const startDate = setHours(startOfDay(new UTCDate(startDateParsed)), 12); // Set to noon UTC
     if (isDateInPast(startDate)) {
       throw new BadRequestException('Datum početka ne može biti u prošlosti');
     }
@@ -70,7 +73,6 @@ export class ScheduledTransactionsService {
       dayOfWeek: data.dayOfWeek,
       dayOfMonth: data.dayOfMonth,
       startDate,
-      postedTime: '12:00:00',
       status: ScheduledTransactionStatus.ACTIVE,
     });
 
@@ -140,9 +142,11 @@ export class ScheduledTransactionsService {
     this.validateFrequencyFields(frequencyType, dayOfWeek, dayOfMonth);
 
     // Validate start date if being changed
+    let parsedStartDate: Date | undefined;
     if (data.startDate) {
-      const startDate = parseDateUTC(data.startDate);
-      if (isDateInPast(startDate)) {
+      const startDateParsed = parseISO(data.startDate);
+      parsedStartDate = setHours(startOfDay(new UTCDate(startDateParsed)), 12); // Set to noon UTC
+      if (isDateInPast(parsedStartDate)) {
         throw new BadRequestException('Datum početka ne može biti u prošlosti');
       }
     }
@@ -151,7 +155,7 @@ export class ScheduledTransactionsService {
       ...data,
       type: data.type ? (data.type as TransactionType) : undefined,
       frequencyType: data.frequencyType ? (data.frequencyType as ScheduledTransactionFrequencyType) : undefined,
-      startDate: data.startDate ? parseDateUTC(data.startDate) : undefined,
+      startDate: parsedStartDate,
     };
 
     const updatedRule = await this.repository.updateRule(id, updateData);
