@@ -1,5 +1,5 @@
 import {Processor, WorkerHost} from '@nestjs/bullmq';
-import {Injectable} from '@nestjs/common';
+import {Injectable, OnModuleInit} from '@nestjs/common';
 import {Job, Queue} from 'bullmq';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Logger} from 'pino-nestjs';
@@ -18,13 +18,29 @@ interface CreateTransactionJobData {
   concurrency: 1, // Run orchestrator sequentially
 })
 @Injectable()
-export class ScheduledTransactionsOrchestrator extends WorkerHost {
+export class ScheduledTransactionsOrchestrator extends WorkerHost implements OnModuleInit {
   constructor(
     @InjectQueue(Queues.SCHEDULED_TRANSACTIONS) private readonly queue: Queue,
     private readonly repository: ScheduledTransactionsRepository,
     private readonly logger: Logger,
   ) {
     super();
+  }
+
+  async onModuleInit() {
+    // Set up the daily orchestrator job to run at midnight UTC
+    await this.queue.add(
+      ScheduledTransactionJobs.ORCHESTRATOR,
+      {},
+      {
+        repeat: {
+          pattern: '0 0 * * *', // Daily at midnight UTC
+        },
+        jobId: 'scheduled-transactions-orchestrator',
+      },
+    );
+
+    this.logger.debug('Scheduled transactions orchestrator job registered (daily at midnight UTC)');
   }
 
   async process(job: Job): Promise<void> {
