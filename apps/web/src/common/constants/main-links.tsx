@@ -1,4 +1,4 @@
-import {IconCalendar, IconChartBar, IconReceipt, IconUsers, IconWallet} from '@tabler/icons-react';
+import {IconCalendar, IconCalendarEvent, IconChartBar, IconReceipt, IconUsers, IconWallet} from '@tabler/icons-react';
 import {Landmark} from 'lucide-react';
 
 export const mainLinks = [
@@ -16,6 +16,11 @@ export const mainLinks = [
     title: 'Transakcije',
     url: '/transactions',
     icon: <IconReceipt />,
+  },
+  {
+    title: 'Zakazane transakcije',
+    url: '/scheduled-transactions',
+    icon: <IconCalendarEvent />,
   },
   {
     title: 'Izveštaji',

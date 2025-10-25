@@ -5,6 +5,7 @@ import {
   GetPrivateTransactionsQueryDTO,
   GetTransactionsQueryDTO,
   GetSpendingSummaryQueryHouseholdDTO,
+  GetScheduledTransactionsQueryHouseholdDTO,
 } from '@nest-wise/contracts';
 
 export const queryKeys = {
@@ -45,5 +46,10 @@ export const queryKeys = {
   privateTransactions: {
     key: () => ['private-transactions'],
     all: (search: GetPrivateTransactionsQueryDTO) => ['private-transactions', search],
+  },
+  scheduledTransactions: {
+    key: () => ['scheduled-transactions'],
+    all: (search: GetScheduledTransactionsQueryHouseholdDTO) => ['scheduled-transactions', search],
+    single: (id: string) => ['scheduled-transactions', id],
   },
 };
