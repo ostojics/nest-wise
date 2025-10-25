@@ -16,7 +16,7 @@ interface CreateTransactionJobData {
 }
 
 @Processor(Queues.SCHEDULED_TRANSACTIONS, {
-  concurrency: 1, // Run orchestrator sequentially
+  concurrency: 1,
 })
 @Injectable()
 export class ScheduledTransactionsOrchestrator extends WorkerHost implements OnModuleInit {
@@ -29,7 +29,6 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost implements OnM
   }
 
   async onModuleInit() {
-    // Set up the daily orchestrator job to run at midnight UTC
     await this.queue.add(
       ScheduledTransactionJobs.ORCHESTRATOR,
       {},
@@ -63,7 +62,6 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost implements OnM
         todayString,
       });
 
-      // Find all due rules
       const dueRules = await this.repository.findDueRules(todayUTC);
 
       this.logger.debug(`Found ${dueRules.length} potentially due rules`, {
@@ -94,7 +92,6 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost implements OnM
         todayString,
       });
 
-      // Enqueue all jobs
       if (jobsToEnqueue.length > 0) {
         const jobs = jobsToEnqueue.map(({jobId, data}) => ({
           name: ScheduledTransactionJobs.CREATE_TRANSACTION,
@@ -142,6 +139,7 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost implements OnM
         todayDayOfWeek,
         isDue,
       });
+
       return isDue;
     }
 

@@ -166,7 +166,7 @@ export class ScheduledTransactionsController {
     return {
       id: rule.id,
       householdId: rule.householdId,
-      userId: rule.createdByUserId,
+      userId: rule.createdBy,
       accountId: rule.accountId,
       categoryId: rule.categoryId,
       type: rule.type,
@@ -175,7 +175,7 @@ export class ScheduledTransactionsController {
       frequencyType: rule.frequencyType,
       dayOfWeek: rule.dayOfWeek,
       dayOfMonth: rule.dayOfMonth,
-      startDate: rule.startDate instanceof Date ? rule.startDate.toISOString().split('T')[0] : rule.startDate,
+      startDate: rule.startDate.toISOString(),
       status: rule.status,
       createdAt: rule.createdAt,
       updatedAt: rule.updatedAt,

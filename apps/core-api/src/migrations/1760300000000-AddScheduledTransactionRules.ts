@@ -10,7 +10,7 @@ export class AddScheduledTransactionRules1760300000000 implements MigrationInter
     await queryRunner.query(`CREATE TABLE scheduled_transaction_rules (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   household_id uuid NOT NULL,
-  created_by_user_id uuid NOT NULL,
+  created_by uuid NOT NULL,
   account_id uuid NOT NULL,
   category_id uuid NULL,
   type transaction_type_enum NOT NULL,
@@ -28,7 +28,7 @@ export class AddScheduledTransactionRules1760300000000 implements MigrationInter
   updated_at timestamp with time zone NOT NULL DEFAULT now(),
   CONSTRAINT scheduled_transaction_rules_household_id_fkey FOREIGN KEY (household_id)
     REFERENCES households(id) ON DELETE CASCADE,
-  CONSTRAINT scheduled_transaction_rules_created_by_user_id_fkey FOREIGN KEY (created_by_user_id)
+  CONSTRAINT scheduled_transaction_rules_created_by_fkey FOREIGN KEY (created_by)
     REFERENCES users(id) ON DELETE RESTRICT,
   CONSTRAINT scheduled_transaction_rules_account_id_fkey FOREIGN KEY (account_id)
     REFERENCES accounts(id) ON DELETE RESTRICT,

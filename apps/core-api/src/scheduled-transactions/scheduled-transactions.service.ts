@@ -63,7 +63,7 @@ export class ScheduledTransactionsService {
 
     const rule = await this.repository.create({
       householdId,
-      createdByUserId: userId,
+      createdBy: userId,
       accountId: data.accountId,
       categoryId: data.categoryId,
       type: data.type as TransactionType,

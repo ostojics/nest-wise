@@ -40,9 +40,9 @@ export class ScheduledTransactionRule {
   @Column({
     type: 'uuid',
     nullable: false,
-    name: 'created_by_user_id',
+    name: 'created_by',
   })
-  createdByUserId: string;
+  createdBy: string;
 
   @Column({
     type: 'uuid',
@@ -158,7 +158,7 @@ export class ScheduledTransactionRule {
   household: Household;
 
   @ManyToOne(() => User, {onDelete: 'RESTRICT'})
-  @JoinColumn({name: 'created_by_user_id'})
+  @JoinColumn({name: 'created_by'})
   createdByUser: User;
 
   @ManyToOne(() => Account, {onDelete: 'RESTRICT'})

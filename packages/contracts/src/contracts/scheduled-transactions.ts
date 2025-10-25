@@ -23,7 +23,7 @@ export interface ScheduledTransactionRuleContract {
   frequencyType: ScheduledTransactionFrequencyType;
   dayOfWeek: number | null; // 0-6 (Sunday-Saturday), required for weekly
   dayOfMonth: number | null; // 1-31, required for monthly
-  startDate: string; // ISO date string (YYYY-MM-DD) - UTC date when rule becomes active
+  startDate: string;
   status: ScheduledTransactionStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -98,7 +98,7 @@ export const createScheduledTransactionRuleHouseholdSchema = z
     frequencyType: ScheduledTransactionFrequencyTypeEnum,
     dayOfWeek: z.number().int().min(0).max(6).nullable(),
     dayOfMonth: z.number().int().min(1).max(31).nullable(),
-    startDate: z.string().date(),
+    startDate: z.string().datetime('Početak datuma u mora biti u formatu ISO 8601'),
   })
   .strict()
   .refine(

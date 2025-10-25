@@ -16,7 +16,7 @@ interface CreateTransactionJobData {
 }
 
 @Processor(Queues.SCHEDULED_TRANSACTIONS, {
-  concurrency: 5, // Process multiple transaction creation jobs in parallel
+  concurrency: 5,
 })
 @Injectable()
 export class ScheduledTransactionsWorker extends WorkerHost {
@@ -46,20 +46,16 @@ export class ScheduledTransactionsWorker extends WorkerHost {
     });
 
     try {
-      // Fetch the rule
       const rule = await this.repository.findById(ruleId);
       if (!rule) {
-        this.logger.error('Rule not found', {ruleId});
+        this.logger.error('Rule not found for job', {ruleId, jobId: job.id});
         throw new Error(`Rule ${ruleId} not found`);
       }
 
       const transactionDate = parseISO(executionDate);
 
-      // Use a database transaction to ensure atomicity
       await this.dataSource.transaction(async (manager) => {
-        // First, check if execution already exists for this rule and date
         const executionsRepo = manager.getRepository('scheduled_transaction_executions');
-
         const existingExecution = await executionsRepo.findOne({
           where: {
             rule_id: rule.id,
@@ -142,7 +138,6 @@ export class ScheduledTransactionsWorker extends WorkerHost {
           });
         }
 
-        // Reset failure count on success
         await this.repository.resetFailureCount(rule.id);
       });
     } catch (error) {
@@ -156,10 +151,8 @@ export class ScheduledTransactionsWorker extends WorkerHost {
         stack: error instanceof Error ? error.stack : undefined,
       });
 
-      // Increment failure count
       await this.repository.incrementFailureCount(ruleId, errorMessage);
 
-      // Re-throw to let BullMQ handle retry
       throw error;
     }
   }
