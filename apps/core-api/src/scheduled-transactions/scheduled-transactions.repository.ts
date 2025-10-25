@@ -5,8 +5,8 @@ import {ScheduledTransactionRule, ScheduledTransactionStatus} from './scheduled-
 import {
   GetScheduledTransactionsQueryHouseholdDTO,
   GetScheduledTransactionsResponseContract,
-  ScheduledTransactionRuleContract,
 } from '@nest-wise/contracts';
+import {ScheduledTransactionRulesMapper} from './mappers/scheduled-transaction-rules.mapper';
 
 @Injectable()
 export class ScheduledTransactionsRepository {
@@ -32,10 +32,6 @@ export class ScheduledTransactionsRepository {
   }
 
   async findDueRules(todayUTC: Date): Promise<ScheduledTransactionRule[]> {
-    // Find all active rules where:
-    // 1. status = 'active'
-    // 2. start_date <= todayUTC
-    // 3. (last_run_date IS NULL OR last_run_date < todayUTC)
     const query = this.repository
       .createQueryBuilder('rule')
       .where('rule.status = :status', {status: ScheduledTransactionStatus.ACTIVE})
@@ -87,7 +83,7 @@ export class ScheduledTransactionsRepository {
     const data = await queryBuilder.skip(skip).take(pageSize).getMany();
 
     return {
-      data: data.map((rule) => this.toContract(rule)),
+      data: data.map((rule) => ScheduledTransactionRulesMapper.toContract(rule)),
       meta: {
         totalCount,
         pageSize,
@@ -118,25 +114,5 @@ export class ScheduledTransactionsRepository {
 
   async resetFailureCount(id: string): Promise<void> {
     await this.repository.update(id, {failureCount: 0, lastError: null});
-  }
-
-  private toContract(rule: ScheduledTransactionRule): ScheduledTransactionRuleContract {
-    return {
-      id: rule.id,
-      householdId: rule.householdId,
-      userId: rule.createdBy,
-      accountId: rule.accountId,
-      categoryId: rule.categoryId,
-      type: rule.type,
-      amount: Number(rule.amount),
-      description: rule.description,
-      frequencyType: rule.frequencyType,
-      dayOfWeek: rule.dayOfWeek,
-      dayOfMonth: rule.dayOfMonth,
-      startDate: rule.startDate.toISOString(),
-      status: rule.status,
-      createdAt: rule.createdAt,
-      updatedAt: rule.updatedAt,
-    };
   }
 }

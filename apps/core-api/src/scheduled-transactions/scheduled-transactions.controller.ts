@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import {ApiTags, ApiOperation, ApiResponse} from '@nestjs/swagger';
 import {ScheduledTransactionsService} from './scheduled-transactions.service';
-import {ScheduledTransactionRule} from './scheduled-transaction-rule.entity';
 import {PoliciesService} from '../policies/policies.service';
 import {AuthGuard} from '../common/guards/auth.guard';
 import {CurrentUser} from '../common/decorators/current-user.decorator';
@@ -29,6 +28,7 @@ import {
   updateScheduledTransactionRuleSchema,
   getScheduledTransactionsQueryHouseholdSchema,
 } from '@nest-wise/contracts';
+import {ScheduledTransactionRulesMapper} from './mappers/scheduled-transaction-rules.mapper';
 
 @ApiTags('Scheduled Transactions')
 @Controller({path: 'households/:householdId/scheduled-transactions', version: '1'})
@@ -54,7 +54,7 @@ export class ScheduledTransactionsController {
     }
 
     const rule = await this.scheduledTransactionsService.createRule(householdId, user.sub, body);
-    return this.toContract(rule);
+    return ScheduledTransactionRulesMapper.toContract(rule);
   }
 
   @Get()
@@ -89,7 +89,7 @@ export class ScheduledTransactionsController {
       throw new ForbiddenException('Nemate pristup ovom pravilu');
     }
 
-    return this.toContract(rule);
+    return ScheduledTransactionRulesMapper.toContract(rule);
   }
 
   @Patch(':id')
@@ -108,7 +108,7 @@ export class ScheduledTransactionsController {
     }
 
     const rule = await this.scheduledTransactionsService.updateRule(id, householdId, body);
-    return this.toContract(rule);
+    return ScheduledTransactionRulesMapper.toContract(rule);
   }
 
   @Post(':id/pause')
@@ -125,7 +125,7 @@ export class ScheduledTransactionsController {
     }
 
     const rule = await this.scheduledTransactionsService.pauseRule(id, householdId);
-    return this.toContract(rule);
+    return ScheduledTransactionRulesMapper.toContract(rule);
   }
 
   @Post(':id/resume')
@@ -142,7 +142,7 @@ export class ScheduledTransactionsController {
     }
 
     const rule = await this.scheduledTransactionsService.resumeRule(id, householdId);
-    return this.toContract(rule);
+    return ScheduledTransactionRulesMapper.toContract(rule);
   }
 
   @Delete(':id')
@@ -160,25 +160,5 @@ export class ScheduledTransactionsController {
 
     await this.scheduledTransactionsService.deleteRule(id, householdId);
     return {message: 'Pravilo je uspešno obrisano'};
-  }
-
-  private toContract(rule: ScheduledTransactionRule): ScheduledTransactionRuleContract {
-    return {
-      id: rule.id,
-      householdId: rule.householdId,
-      userId: rule.createdBy,
-      accountId: rule.accountId,
-      categoryId: rule.categoryId,
-      type: rule.type,
-      amount: Number(rule.amount),
-      description: rule.description,
-      frequencyType: rule.frequencyType,
-      dayOfWeek: rule.dayOfWeek,
-      dayOfMonth: rule.dayOfMonth,
-      startDate: rule.startDate.toISOString(),
-      status: rule.status,
-      createdAt: rule.createdAt,
-      updatedAt: rule.updatedAt,
-    };
   }
 }
