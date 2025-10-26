@@ -29,7 +29,7 @@ export const createScheduledTransactionForHousehold = async (
   householdId: string,
   transaction: CreateScheduledTransactionRuleHouseholdDTO,
 ) => {
-  return await httpClient
+  return httpClient
     .post(`v1/households/${householdId}/scheduled-transactions`, {
       json: transaction,
     })

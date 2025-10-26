@@ -29,17 +29,6 @@ export default function Step1Transaction() {
   const watchedCategoryId = watch('categoryId');
   const watchedType = watch('type');
 
-  // Populate form if we have existing data
-  useEffect(() => {
-    if (transactionDetails) {
-      setValue('accountId', transactionDetails.accountId);
-      setValue('categoryId', transactionDetails.categoryId);
-      setValue('type', transactionDetails.type);
-      setValue('amount', transactionDetails.amount);
-      setValue('description', transactionDetails.description);
-    }
-  }, [transactionDetails, setValue]);
-
   const onSubmit = (data: TransactionDetailsFormData) => {
     setTransactionDetails(data);
     setCurrentStep(2);

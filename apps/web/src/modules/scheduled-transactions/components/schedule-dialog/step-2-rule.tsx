@@ -4,19 +4,17 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/c
 import {DatePicker} from '@/components/date-picker';
 import {ScheduleRuleFormData, useValidateScheduleRule} from '../../hooks/use-validate-schedule-rule';
 import {useScheduleDialogContext} from '../../context/schedule-dialog.context';
-import {useCreateScheduledTransaction, useUpdateScheduledTransaction} from '../../hooks/use-scheduled-transactions';
-import {useEffect} from 'react';
+import {useCreateScheduledTransaction} from '../../hooks/use-scheduled-transactions';
 import {cn, dateAtNoon} from '@/lib/utils';
 import {CreateScheduledTransactionRuleHouseholdDTO} from '@nest-wise/contracts';
+import {Loader2} from 'lucide-react';
 
 const dayOfWeekLabels = ['Ned', 'Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub'];
 
 export default function Step2Rule() {
-  const {setCurrentStep, transactionDetails, scheduleRule, setScheduleRule, editingId, resetDialog} =
-    useScheduleDialogContext();
+  const {setCurrentStep, transactionDetails, resetDialog} = useScheduleDialogContext();
 
   const createMutation = useCreateScheduledTransaction();
-  const updateMutation = useUpdateScheduledTransaction();
 
   const {
     handleSubmit,
@@ -30,24 +28,11 @@ export default function Step2Rule() {
   const watchedDayOfMonth = watch('dayOfMonth');
   const watchedStartDate = watch('startDate');
 
-  // Populate form if we have existing data
-  useEffect(() => {
-    if (scheduleRule) {
-      setValue('frequencyType', scheduleRule.frequencyType);
-      setValue('dayOfWeek', scheduleRule.dayOfWeek);
-      setValue('dayOfMonth', scheduleRule.dayOfMonth);
-      setValue('startDate', scheduleRule.startDate);
-    }
-  }, [scheduleRule, setValue]);
-
   const onSubmit = async (data: ScheduleRuleFormData) => {
     if (!transactionDetails) {
       return;
     }
 
-    setScheduleRule(data);
-
-    // Compose the full payload
     const payload: CreateScheduledTransactionRuleHouseholdDTO = {
       accountId: transactionDetails.accountId,
       categoryId: transactionDetails.categoryId,
@@ -60,18 +45,8 @@ export default function Step2Rule() {
       startDate: data.startDate,
     };
 
-    try {
-      if (editingId) {
-        // Update existing
-        await updateMutation.mutateAsync({id: editingId, dto: payload});
-      } else {
-        // Create new
-        await createMutation.mutateAsync(payload);
-      }
-      resetDialog();
-    } catch {
-      // Error is handled in the mutation hooks
-    }
+    await createMutation.mutateAsync(payload);
+    resetDialog();
   };
 
   const handleBack = () => {
@@ -86,7 +61,34 @@ export default function Step2Rule() {
     setValue('dayOfMonth', day);
   };
 
-  const isSubmitting = createMutation.isPending || updateMutation.isPending;
+  const handleChangeFrequency = (value: 'weekly' | 'monthly') => {
+    const DEFAULT_WEEKDAY = 1; // Monday
+    const DEFAULT_MONTH_DAY = 1;
+
+    const applyWeeklyDefaults = () => {
+      setValue('dayOfMonth', null);
+      if (watchedDayOfWeek == null) {
+        setValue('dayOfWeek', DEFAULT_WEEKDAY);
+      }
+    };
+
+    const applyMonthlyDefaults = () => {
+      setValue('dayOfWeek', null);
+      if (watchedDayOfMonth == null) {
+        setValue('dayOfMonth', DEFAULT_MONTH_DAY);
+      }
+    };
+
+    setValue('frequencyType', value);
+
+    if (value === 'weekly') {
+      applyWeeklyDefaults();
+    } else {
+      applyMonthlyDefaults();
+    }
+  };
+
+  const isSubmitting = createMutation.isPending;
 
   return (
     <form onSubmit={(e) => void handleSubmit(onSubmit)(e)} className="space-y-4">
@@ -94,24 +96,7 @@ export default function Step2Rule() {
         <Label htmlFor="frequencyType">
           Frekvencija <span className="text-red-500">*</span>
         </Label>
-        <Select
-          value={watchedFrequency}
-          onValueChange={(value: 'weekly' | 'monthly') => {
-            setValue('frequencyType', value);
-            // Reset day selection when changing frequency
-            if (value === 'weekly') {
-              setValue('dayOfMonth', null);
-              if (watchedDayOfWeek === null) {
-                setValue('dayOfWeek', 1); // Default to Monday
-              }
-            } else {
-              setValue('dayOfWeek', null);
-              if (watchedDayOfMonth === null) {
-                setValue('dayOfMonth', 1);
-              }
-            }
-          }}
-        >
+        <Select value={watchedFrequency} onValueChange={handleChangeFrequency}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Izaberi frekvenciju" />
           </SelectTrigger>
@@ -197,7 +182,7 @@ export default function Step2Rule() {
           Nazad
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Čuvanje...' : editingId ? 'Sačuvaj' : 'Kreiraj'}
+          {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Sačuvaj'}
         </Button>
       </div>
     </form>

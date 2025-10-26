@@ -4,7 +4,6 @@ import {useSearch, useNavigate} from '@tanstack/react-router';
 import {useGetScheduledTransactions} from '../hooks/use-scheduled-transactions';
 import ScheduledTransactionList from '../components/scheduled-transaction-list';
 import ScheduleDialog from '../components/schedule-dialog/schedule-dialog';
-import {ScheduledTransactionRuleContract} from '@nest-wise/contracts';
 
 function ScheduledTransactionsPageContent() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -24,13 +23,6 @@ function ScheduledTransactionsPageContent() {
   };
 
   const handleCreateNew = () => {
-    setDialogOpen(true);
-  };
-
-  const handleEdit = (_transaction: ScheduledTransactionRuleContract) => {
-    // For edit mode, we'll need to pass transaction data to dialog
-    // This would require a more advanced setup with the context
-    // For now, open the dialog - we can enhance later
     setDialogOpen(true);
   };
 
@@ -57,7 +49,8 @@ function ScheduledTransactionsPageContent() {
         currentPage={search.page}
         totalPages={data?.meta.totalPages ?? 1}
         onPageChange={handlePageChange}
-        onEdit={handleEdit}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onEdit={() => {}}
       />
 
       <ScheduleDialog open={dialogOpen} onOpenChange={setDialogOpen} />
