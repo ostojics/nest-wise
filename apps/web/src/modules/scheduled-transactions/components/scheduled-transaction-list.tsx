@@ -48,15 +48,17 @@ export default function ScheduledTransactionList({
 
   return (
     <div className="space-y-4">
-      <Accordion type="single" collapsible className="w-full">
-        {transactions.map((transaction) => (
-          <ScheduledTransactionAccordion
-            key={transaction.id}
-            transaction={transaction}
-            onToggleStatus={() => handleToggleStatus(transaction)}
-          />
-        ))}
-      </Accordion>
+      <div className="rounded-md border bg-card">
+        <Accordion type="single" collapsible className="w-full">
+          {transactions.map((transaction) => (
+            <ScheduledTransactionAccordion
+              key={transaction.id}
+              transaction={transaction}
+              onToggleStatus={() => handleToggleStatus(transaction)}
+            />
+          ))}
+        </Accordion>
+      </div>
 
       {totalPages > 1 && (
         <Pagination>

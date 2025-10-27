@@ -1,7 +1,6 @@
 import {Button} from '@/components/ui/button';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {DatePicker} from '@/components/date-picker';
 import {ScheduleRuleFormData, useValidateScheduleRule} from '../../hooks/use-validate-schedule-rule';
 import {useScheduleDialogContext} from '../../context/schedule-dialog.context';
 import {useCreateScheduledTransaction} from '../../hooks/use-scheduled-transactions';
@@ -26,12 +25,14 @@ export default function Step2Rule() {
   const watchedFrequency = watch('frequencyType');
   const watchedDayOfWeek = watch('dayOfWeek');
   const watchedDayOfMonth = watch('dayOfMonth');
-  const watchedStartDate = watch('startDate');
 
   const onSubmit = async (data: ScheduleRuleFormData) => {
     if (!transactionDetails) {
       return;
     }
+
+    // Use current date at noon as start date
+    const startDate = dateAtNoon(new Date()).toISOString();
 
     const payload: CreateScheduledTransactionRuleHouseholdDTO = {
       accountId: transactionDetails.accountId,
@@ -42,7 +43,7 @@ export default function Step2Rule() {
       frequencyType: data.frequencyType,
       dayOfWeek: data.dayOfWeek,
       dayOfMonth: data.dayOfMonth,
-      startDate: data.startDate,
+      startDate,
     };
 
     await createMutation.mutateAsync(payload);
@@ -158,24 +159,12 @@ export default function Step2Rule() {
               </button>
             ))}
           </div>
+          <p className="text-xs text-muted-foreground">
+            Napomena: Za mesece sa manje dana, transakcija će biti kreirana poslednjeg dana u mesecu.
+          </p>
           {errors.dayOfMonth && <p className="text-sm text-red-500">{errors.dayOfMonth.message}</p>}
         </div>
       )}
-
-      <div className="space-y-2">
-        <Label htmlFor="startDate">
-          Datum početka <span className="text-red-500">*</span>
-        </Label>
-        <DatePicker
-          value={watchedStartDate ? new Date(watchedStartDate) : undefined}
-          onChange={(date: Date | undefined) => {
-            if (date) {
-              setValue('startDate', dateAtNoon(date).toISOString());
-            }
-          }}
-        />
-        {errors.startDate && <p className="text-sm text-red-500">{errors.startDate.message}</p>}
-      </div>
 
       <div className="flex justify-between gap-2 pt-4">
         <Button type="button" variant="outline" onClick={handleBack}>

@@ -82,16 +82,14 @@ export default function Step1Transaction() {
 
       {watchedType === 'expense' && (
         <div className="space-y-2">
-          <Label htmlFor="categoryId">Kategorija</Label>
-          <Select
-            value={watchedCategoryId ?? 'none'}
-            onValueChange={(value) => setValue('categoryId', value === 'none' ? null : value)}
-          >
+          <Label htmlFor="categoryId">
+            Kategorija <span className="text-red-500">*</span>
+          </Label>
+          <Select value={watchedCategoryId ?? ''} onValueChange={(value) => setValue('categoryId', value)}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Izaberi kategoriju" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="none">Bez kategorije</SelectItem>
               {categories?.map((category) => (
                 <SelectItem key={category.id} value={category.id}>
                   {category.name}
@@ -118,15 +116,10 @@ export default function Step1Transaction() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Opis</Label>
-        <Input
-          id="description"
-          type="text"
-          placeholder="Opis transakcije..."
-          {...register('description', {
-            setValueAs: (v: unknown) => (v === '' ? null : (v as string)),
-          })}
-        />
+        <Label htmlFor="description">
+          Opis <span className="text-red-500">*</span>
+        </Label>
+        <Input id="description" type="text" placeholder="Opis transakcije..." {...register('description')} />
         {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
       </div>
 

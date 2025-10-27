@@ -3,6 +3,8 @@ import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
+import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import {
   ScheduledTransactionRuleContract,
   ScheduledTransactionFrequencyType,
@@ -10,7 +12,7 @@ import {
 } from '@nest-wise/contracts';
 import {format} from 'date-fns';
 import {sr} from 'date-fns/locale';
-import {useState} from 'react';
+import {useState, useMemo} from 'react';
 import DeleteScheduledTransactionDialog from './delete-scheduled-transaction-dialog';
 
 interface ScheduledTransactionAccordionProps {
@@ -31,6 +33,17 @@ export default function ScheduledTransactionAccordion({
 }: ScheduledTransactionAccordionProps) {
   const {formatBalance} = useFormatBalance();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const {data: accounts} = useGetHouseholdAccounts();
+  const {data: categories} = useGetHouseholdCategories();
+
+  const accountName = useMemo(() => {
+    return accounts?.find((acc) => acc.id === tx.accountId)?.name ?? tx.accountId;
+  }, [accounts, tx.accountId]);
+
+  const categoryName = useMemo(() => {
+    if (!tx.categoryId) return '-';
+    return categories?.find((cat) => cat.id === tx.categoryId)?.name ?? tx.categoryId;
+  }, [categories, tx.categoryId]);
 
   const isIncome = tx.type === 'income';
   const amount = formatBalance(tx.amount);
@@ -74,13 +87,13 @@ export default function ScheduledTransactionAccordion({
           <div>
             <span className="text-muted-foreground">Račun</span>
             <div>
-              <span className="text-foreground/80">{tx.accountId}</span>
+              <span className="text-foreground/80">{accountName}</span>
             </div>
           </div>
           <div>
             <span className="text-muted-foreground">Kategorija</span>
             <div>
-              <span className="text-foreground/80">{tx.categoryId ?? '-'}</span>
+              <span className="text-foreground/80">{categoryName}</span>
             </div>
           </div>
           <div>

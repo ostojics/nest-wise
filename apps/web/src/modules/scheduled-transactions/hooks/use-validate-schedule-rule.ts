@@ -8,7 +8,6 @@ export const scheduleRuleSchema = z
     frequencyType: z.enum(['weekly', 'monthly'], {message: 'Frekvencija je obavezna'}),
     dayOfWeek: z.number().int().min(0).max(6).nullable(),
     dayOfMonth: z.number().int().min(1).max(31).nullable(),
-    startDate: z.string().datetime({message: 'Datum početka je obavezan'}),
   })
   .refine(
     (data) => {
@@ -45,7 +44,6 @@ export const useValidateScheduleRule = () => {
       frequencyType: 'monthly',
       dayOfWeek: null,
       dayOfMonth: 1,
-      startDate: new Date().toISOString(),
     },
   });
 };
