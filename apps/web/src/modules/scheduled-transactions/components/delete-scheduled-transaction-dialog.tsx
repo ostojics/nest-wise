@@ -26,8 +26,11 @@ export default function DeleteScheduledTransactionDialog({
   const deleteMutation = useDeleteScheduledTransaction();
 
   const handleDelete = async () => {
-    await deleteMutation.mutateAsync(transactionId);
-    onOpenChange(false);
+    await deleteMutation.mutateAsync(transactionId, {
+      onSettled: () => {
+        onOpenChange(false);
+      },
+    });
   };
 
   return (

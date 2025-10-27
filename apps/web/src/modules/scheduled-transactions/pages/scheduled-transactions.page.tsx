@@ -13,7 +13,7 @@ function ScheduledTransactionsPageContent() {
   const search = useSearch({from: '/__pathlessLayout/scheduled-transactions'});
   const navigate = useNavigate();
 
-  const {data, isLoading, isError, error} = useGetScheduledTransactions({
+  const {data, isLoading, isError} = useGetScheduledTransactions({
     page: search.page,
     pageSize: search.pageSize,
   });
@@ -34,7 +34,7 @@ function ScheduledTransactionsPageContent() {
   }
 
   if (isError) {
-    return <ScheduledTransactionsError error={error} />;
+    return <ScheduledTransactionsError />;
   }
 
   return (

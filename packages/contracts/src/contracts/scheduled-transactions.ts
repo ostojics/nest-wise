@@ -181,8 +181,8 @@ export const updateScheduledTransactionRuleSchema = z
 export const getScheduledTransactionsQuerySchema = z
   .object({
     status: ScheduledTransactionStatusEnum.optional(),
-    page: z.number().int().min(1).optional(),
-    pageSize: z.number().int().min(1).max(100).optional(),
+    page: z.coerce.number().min(1).default(1),
+    pageSize: z.coerce.number().min(1).max(100).default(15),
     sort: z.string().optional(),
   })
   .strict();
@@ -190,8 +190,8 @@ export const getScheduledTransactionsQuerySchema = z
 export const getScheduledTransactionsQueryHouseholdSchema = z
   .object({
     status: ScheduledTransactionStatusEnum.optional(),
-    page: z.number().int().min(1).optional(),
-    pageSize: z.number().int().min(1).max(100).optional(),
+    page: z.coerce.number().min(1).default(1),
+    pageSize: z.coerce.number().min(1).max(100).default(15),
     sort: z.string().optional(),
   })
   .strict();

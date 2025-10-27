@@ -14,7 +14,6 @@ import {
   UpdateScheduledTransactionRuleDTO,
   GetScheduledTransactionsQueryHouseholdDTO,
   ErrorResponse,
-  ScheduledTransactionRuleContract,
 } from '@nest-wise/contracts';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
@@ -109,40 +108,11 @@ export const usePauseScheduledTransaction = () => {
       if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
       return pauseScheduledTransactionForHousehold(me.householdId, id);
     },
-    onMutate: async (id) => {
-      // Cancel outgoing refetches
-      await client.cancelQueries({queryKey: queryKeys.scheduledTransactions.key()});
-
-      // Snapshot the previous value
-      const previousData = client.getQueriesData({queryKey: queryKeys.scheduledTransactions.key()});
-
-      // Optimistically update to the new value
-      client.setQueriesData({queryKey: queryKeys.scheduledTransactions.key()}, (old: unknown) => {
-        if (!old || typeof old !== 'object' || !('data' in old) || !Array.isArray(old.data)) {
-          return old;
-        }
-        return {
-          ...old,
-          data: old.data.map((item: ScheduledTransactionRuleContract) =>
-            item.id === id ? {...item, status: 'paused' as const} : item,
-          ),
-        };
-      });
-
-      return {previousData};
-    },
     onSuccess: () => {
       void client.invalidateQueries({queryKey: queryKeys.scheduledTransactions.key()});
       toast.success('Zakazana transakcija je pauzirana');
     },
-    onError: async (error, _id, context) => {
-      // Rollback on error
-      if (context?.previousData) {
-        context.previousData.forEach(([key, data]) => {
-          client.setQueryData(key, data);
-        });
-      }
-
+    onError: async (error, _id) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
@@ -165,40 +135,11 @@ export const useResumeScheduledTransaction = () => {
       if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
       return resumeScheduledTransactionForHousehold(me.householdId, id);
     },
-    onMutate: async (id) => {
-      // Cancel outgoing refetches
-      await client.cancelQueries({queryKey: queryKeys.scheduledTransactions.key()});
-
-      // Snapshot the previous value
-      const previousData = client.getQueriesData({queryKey: queryKeys.scheduledTransactions.key()});
-
-      // Optimistically update to the new value
-      client.setQueriesData({queryKey: queryKeys.scheduledTransactions.key()}, (old: unknown) => {
-        if (!old || typeof old !== 'object' || !('data' in old) || !Array.isArray(old.data)) {
-          return old;
-        }
-        return {
-          ...old,
-          data: old.data.map((item: ScheduledTransactionRuleContract) =>
-            item.id === id ? {...item, status: 'active' as const} : item,
-          ),
-        };
-      });
-
-      return {previousData};
-    },
     onSuccess: () => {
       void client.invalidateQueries({queryKey: queryKeys.scheduledTransactions.key()});
       toast.success('Zakazana transakcija je nastavljena');
     },
-    onError: async (error, _id, context) => {
-      // Rollback on error
-      if (context?.previousData) {
-        context.previousData.forEach(([key, data]) => {
-          client.setQueryData(key, data);
-        });
-      }
-
+    onError: async (error, _id) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
