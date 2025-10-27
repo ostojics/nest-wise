@@ -16,7 +16,6 @@ interface ScheduledTransactionListProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  onEdit: (transaction: ScheduledTransactionRuleContract) => void;
 }
 
 export default function ScheduledTransactionList({
@@ -24,7 +23,6 @@ export default function ScheduledTransactionList({
   currentPage,
   totalPages,
   onPageChange,
-  onEdit,
 }: ScheduledTransactionListProps) {
   const pauseMutation = usePauseScheduledTransaction();
   const resumeMutation = useResumeScheduledTransaction();
@@ -55,7 +53,6 @@ export default function ScheduledTransactionList({
           <ScheduledTransactionAccordion
             key={transaction.id}
             transaction={transaction}
-            onEdit={() => onEdit(transaction)}
             onToggleStatus={() => handleToggleStatus(transaction)}
           />
         ))}

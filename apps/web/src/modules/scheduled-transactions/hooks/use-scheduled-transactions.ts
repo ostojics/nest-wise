@@ -5,6 +5,7 @@ import {
   pauseScheduledTransactionForHousehold,
   resumeScheduledTransactionForHousehold,
   getScheduledTransactionForHousehold,
+  deleteScheduledTransactionForHousehold,
 } from '@/modules/api/scheduled-transactions-api';
 import {queryKeys} from '@/modules/api/query-keys';
 import {useGetMe} from '@/modules/auth/hooks/use-get-me';
@@ -207,6 +208,33 @@ export const useResumeScheduledTransaction = () => {
       }
 
       toast.error('Nastavljanje zakazane transakcije nije uspelo');
+    },
+  });
+};
+
+export const useDeleteScheduledTransaction = () => {
+  const client = useQueryClient();
+  const {data: me} = useGetMe();
+
+  return useMutation({
+    mutationFn: (id: string) => {
+      if (!me?.householdId) throw new Error('ID domaćinstva nije dostupan');
+      return deleteScheduledTransactionForHousehold(me.householdId, id);
+    },
+    onSuccess: () => {
+      void client.invalidateQueries({queryKey: queryKeys.scheduledTransactions.key()});
+      toast.success('Zakazana transakcija je uspešno obrisana');
+    },
+    onError: async (error) => {
+      const typedError = error as HTTPError<ErrorResponse>;
+      const err = await typedError.response.json();
+
+      if (err.message) {
+        toast.error(err.message);
+        return;
+      }
+
+      toast.error('Brisanje zakazane transakcije nije uspelo');
     },
   });
 };

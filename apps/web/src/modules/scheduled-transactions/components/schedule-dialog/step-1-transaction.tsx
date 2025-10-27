@@ -15,7 +15,7 @@ export default function Step1Transaction() {
   const {data: categories} = useGetHouseholdCategories();
   const hasAccounts = (accounts ?? []).length > 0;
 
-  const {setCurrentStep, setTransactionDetails, transactionDetails} = useScheduleDialogContext();
+  const {setCurrentStep, setTransactionDetails} = useScheduleDialogContext();
 
   const {
     register,
@@ -24,7 +24,7 @@ export default function Step1Transaction() {
     watch,
     formState: {errors},
   } = useValidateTransactionDetails({
-    accountId: transactionDetails?.accountId ?? (accounts ?? [])[0]?.id,
+    accountId: (accounts ?? [])[0]?.id,
   });
 
   const watchedCategoryId = watch('categoryId');
@@ -83,12 +83,15 @@ export default function Step1Transaction() {
       {watchedType === 'expense' && (
         <div className="space-y-2">
           <Label htmlFor="categoryId">Kategorija</Label>
-          <Select value={watchedCategoryId ?? ''} onValueChange={(value) => setValue('categoryId', value || null)}>
+          <Select
+            value={watchedCategoryId ?? 'none'}
+            onValueChange={(value) => setValue('categoryId', value === 'none' ? null : value)}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Izaberi kategoriju" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Bez kategorije</SelectItem>
+              <SelectItem value="none">Bez kategorije</SelectItem>
               {categories?.map((category) => (
                 <SelectItem key={category.id} value={category.id}>
                   {category.name}

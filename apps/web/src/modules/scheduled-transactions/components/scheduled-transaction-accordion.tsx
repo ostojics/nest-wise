@@ -10,10 +10,11 @@ import {
 } from '@nest-wise/contracts';
 import {format} from 'date-fns';
 import {sr} from 'date-fns/locale';
+import {useState} from 'react';
+import DeleteScheduledTransactionDialog from './delete-scheduled-transaction-dialog';
 
 interface ScheduledTransactionAccordionProps {
   transaction: ScheduledTransactionRuleContract;
-  onEdit: () => void;
   onToggleStatus: () => void;
 }
 
@@ -26,10 +27,10 @@ const dayOfWeekLabels = ['Nedelja', 'Ponedeljak', 'Utorak', 'Sreda', 'Četvrtak'
 
 export default function ScheduledTransactionAccordion({
   transaction: tx,
-  onEdit,
   onToggleStatus,
 }: ScheduledTransactionAccordionProps) {
   const {formatBalance} = useFormatBalance();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const isIncome = tx.type === 'income';
   const amount = formatBalance(tx.amount);
@@ -119,14 +120,20 @@ export default function ScheduledTransactionAccordion({
           </div>
         </div>
         <div className="pt-3 flex gap-2 justify-end">
-          <Button variant="outline" size="sm" onClick={onEdit}>
-            Izmeni
-          </Button>
           <Button variant="outline" size="sm" onClick={onToggleStatus}>
             {isPaused ? 'Nastavi' : 'Pauziraj'}
           </Button>
+          <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
+            Obriši
+          </Button>
         </div>
       </AccordionContent>
+      <DeleteScheduledTransactionDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        transactionId={tx.id}
+        description={tx.description ?? 'Bez opisa'}
+      />
     </AccordionItem>
   );
 }
