@@ -50,7 +50,6 @@ interface UseValidateTransactionDetailsDefaultValues {
 export const useValidateTransactionDetails = ({accountId}: UseValidateTransactionDetailsDefaultValues = {}) => {
   return useForm<TransactionDetailsFormData>({
     resolver: zodResolver(transactionDetailsSchema),
-    mode: 'onSubmit',
     defaultValues: {
       accountId: accountId ?? '',
       categoryId: null,

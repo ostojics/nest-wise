@@ -3,23 +3,18 @@ import {ScheduleDialogProvider, useScheduleDialogContext} from '../../context/sc
 import Step1Transaction from './step-1-transaction';
 import Step2Rule from './step-2-rule';
 
-interface ScheduleDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-function ScheduleDialogContent({onOpenChange}: {onOpenChange: (open: boolean) => void}) {
-  const {currentStep, resetDialog} = useScheduleDialogContext();
+function ScheduleDialogContent() {
+  const {currentStep, isOpen, setIsOpen, resetDialog} = useScheduleDialogContext();
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       resetDialog();
     }
-    onOpenChange(open);
+    setIsOpen(open);
   };
 
   return (
-    <Dialog open={true} onOpenChange={handleOpenChange}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{currentStep === 1 ? 'Detalji transakcije' : 'Pravilo ponavljanja'}</DialogTitle>
@@ -35,12 +30,17 @@ function ScheduleDialogContent({onOpenChange}: {onOpenChange: (open: boolean) =>
   );
 }
 
+interface ScheduleDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
 export default function ScheduleDialog({open, onOpenChange}: ScheduleDialogProps) {
   if (!open) return null;
 
   return (
-    <ScheduleDialogProvider>
-      <ScheduleDialogContent onOpenChange={onOpenChange} />
+    <ScheduleDialogProvider initialOpen={open}>
+      <ScheduleDialogContent />
     </ScheduleDialogProvider>
   );
 }

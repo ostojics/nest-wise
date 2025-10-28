@@ -7,11 +7,12 @@ import {useCreateScheduledTransaction} from '../../hooks/use-scheduled-transacti
 import {cn, dateAtNoon} from '@/lib/utils';
 import {CreateScheduledTransactionRuleHouseholdDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
+import {useEffect} from 'react';
 
 const dayOfWeekLabels = ['Ned', 'Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub'];
 
 export default function Step2Rule() {
-  const {setCurrentStep, transactionDetails, resetDialog} = useScheduleDialogContext();
+  const {setCurrentStep, transactionDetails, resetDialog, setIsOpen} = useScheduleDialogContext();
 
   const createMutation = useCreateScheduledTransaction();
 
@@ -26,28 +27,51 @@ export default function Step2Rule() {
   const watchedDayOfWeek = watch('dayOfWeek');
   const watchedDayOfMonth = watch('dayOfMonth');
 
+  // Set defaults when frequency changes
+  useEffect(() => {
+    const DEFAULT_WEEKDAY = 1; // Monday
+    const DEFAULT_MONTH_DAY = 1;
+
+    if (watchedFrequency === 'weekly') {
+      setValue('dayOfMonth', null);
+      if (watchedDayOfWeek == null) {
+        setValue('dayOfWeek', DEFAULT_WEEKDAY);
+      }
+    } else if (watchedFrequency === 'monthly') {
+      setValue('dayOfWeek', null);
+      if (watchedDayOfMonth == null) {
+        setValue('dayOfMonth', DEFAULT_MONTH_DAY);
+      }
+    }
+  }, [watchedFrequency, watchedDayOfWeek, watchedDayOfMonth, setValue]);
+
   const onSubmit = async (data: ScheduleRuleFormData) => {
     if (!transactionDetails) {
       return;
     }
 
-    // Use current date at noon as start date
-    const startDate = dateAtNoon(new Date()).toISOString();
+    try {
+      // Use current date at noon as start date
+      const startDate = dateAtNoon(new Date()).toISOString();
 
-    const payload: CreateScheduledTransactionRuleHouseholdDTO = {
-      accountId: transactionDetails.accountId,
-      categoryId: transactionDetails.categoryId,
-      type: transactionDetails.type,
-      amount: transactionDetails.amount,
-      description: transactionDetails.description,
-      frequencyType: data.frequencyType,
-      dayOfWeek: data.dayOfWeek,
-      dayOfMonth: data.dayOfMonth,
-      startDate,
-    };
+      const payload: CreateScheduledTransactionRuleHouseholdDTO = {
+        accountId: transactionDetails.accountId,
+        categoryId: transactionDetails.categoryId,
+        type: transactionDetails.type,
+        amount: transactionDetails.amount,
+        description: transactionDetails.description,
+        frequencyType: data.frequencyType,
+        dayOfWeek: data.dayOfWeek,
+        dayOfMonth: data.dayOfMonth,
+        startDate,
+      };
 
-    await createMutation.mutateAsync(payload);
-    resetDialog();
+      await createMutation.mutateAsync(payload);
+    } finally {
+      // Close dialog regardless of success or failure
+      resetDialog();
+      setIsOpen(false);
+    }
   };
 
   const handleBack = () => {
@@ -63,30 +87,7 @@ export default function Step2Rule() {
   };
 
   const handleChangeFrequency = (value: 'weekly' | 'monthly') => {
-    const DEFAULT_WEEKDAY = 1; // Monday
-    const DEFAULT_MONTH_DAY = 1;
-
-    const applyWeeklyDefaults = () => {
-      setValue('dayOfMonth', null);
-      if (watchedDayOfWeek == null) {
-        setValue('dayOfWeek', DEFAULT_WEEKDAY);
-      }
-    };
-
-    const applyMonthlyDefaults = () => {
-      setValue('dayOfWeek', null);
-      if (watchedDayOfMonth == null) {
-        setValue('dayOfMonth', DEFAULT_MONTH_DAY);
-      }
-    };
-
     setValue('frequencyType', value);
-
-    if (value === 'weekly') {
-      applyWeeklyDefaults();
-    } else {
-      applyMonthlyDefaults();
-    }
   };
 
   const isSubmitting = createMutation.isPending;

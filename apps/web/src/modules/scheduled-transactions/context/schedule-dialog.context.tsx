@@ -6,6 +6,8 @@ interface ScheduleDialogContextValue {
   setCurrentStep: (step: number) => void;
   transactionDetails: TransactionDetailsFormData | null;
   setTransactionDetails: (data: TransactionDetailsFormData) => void;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
   resetDialog: () => void;
 }
 
@@ -21,11 +23,13 @@ export const useScheduleDialogContext = () => {
 
 interface ScheduleDialogProviderProps {
   children: React.ReactNode;
+  initialOpen?: boolean;
 }
 
-export const ScheduleDialogProvider: React.FC<ScheduleDialogProviderProps> = ({children}) => {
+export const ScheduleDialogProvider: React.FC<ScheduleDialogProviderProps> = ({children, initialOpen = true}) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [transactionDetails, setTransactionDetails] = useState<TransactionDetailsFormData | null>(null);
+  const [isOpen, setIsOpen] = useState(initialOpen);
 
   const resetDialog = () => {
     setCurrentStep(1);
@@ -39,6 +43,8 @@ export const ScheduleDialogProvider: React.FC<ScheduleDialogProviderProps> = ({c
         setCurrentStep,
         transactionDetails,
         setTransactionDetails,
+        isOpen,
+        setIsOpen,
         resetDialog,
       }}
     >

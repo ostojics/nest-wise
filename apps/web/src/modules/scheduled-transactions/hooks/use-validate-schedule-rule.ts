@@ -39,7 +39,6 @@ export type ScheduleRuleFormData = z.infer<typeof scheduleRuleSchema>;
 export const useValidateScheduleRule = () => {
   return useForm<ScheduleRuleFormData>({
     resolver: zodResolver(scheduleRuleSchema),
-    mode: 'onSubmit',
     defaultValues: {
       frequencyType: 'monthly',
       dayOfWeek: null,
