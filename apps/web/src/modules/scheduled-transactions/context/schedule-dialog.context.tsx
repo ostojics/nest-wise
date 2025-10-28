@@ -13,14 +13,6 @@ interface ScheduleDialogContextValue {
 
 const ScheduleDialogContext = createContext<ScheduleDialogContextValue | undefined>(undefined);
 
-export const useScheduleDialogContext = () => {
-  const context = useContext(ScheduleDialogContext);
-  if (!context) {
-    throw new Error('useScheduleDialogContext must be used within a ScheduleDialogProvider');
-  }
-  return context;
-};
-
 interface ScheduleDialogProviderProps {
   children: React.ReactNode;
   initialOpen?: boolean;
@@ -51,4 +43,12 @@ export const ScheduleDialogProvider: React.FC<ScheduleDialogProviderProps> = ({c
       {children}
     </ScheduleDialogContext.Provider>
   );
+};
+
+export const useScheduleDialogContext = () => {
+  const context = useContext(ScheduleDialogContext);
+  if (!context) {
+    throw new Error('useScheduleDialogContext must be used within a ScheduleDialogProvider');
+  }
+  return context;
 };

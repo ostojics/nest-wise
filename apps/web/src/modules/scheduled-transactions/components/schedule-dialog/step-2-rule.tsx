@@ -27,21 +27,28 @@ export default function Step2Rule() {
   const watchedDayOfWeek = watch('dayOfWeek');
   const watchedDayOfMonth = watch('dayOfMonth');
 
-  // Set defaults when frequency changes
-  useEffect(() => {
-    const DEFAULT_WEEKDAY = 1; // Monday
-    const DEFAULT_MONTH_DAY = 1;
+  const DEFAULT_WEEKDAY = 1; // Monday
+  const DEFAULT_MONTH_DAY = 1;
 
+  useEffect(() => {
     if (watchedFrequency === 'weekly') {
-      setValue('dayOfMonth', null);
+      if (watchedDayOfMonth != null) {
+        setValue('dayOfMonth', null);
+      }
+
       if (watchedDayOfWeek == null) {
         setValue('dayOfWeek', DEFAULT_WEEKDAY);
       }
-    } else if (watchedFrequency === 'monthly') {
+
+      return;
+    }
+
+    if (watchedDayOfWeek != null) {
       setValue('dayOfWeek', null);
-      if (watchedDayOfMonth == null) {
-        setValue('dayOfMonth', DEFAULT_MONTH_DAY);
-      }
+    }
+
+    if (watchedDayOfMonth == null) {
+      setValue('dayOfMonth', DEFAULT_MONTH_DAY);
     }
   }, [watchedFrequency, watchedDayOfWeek, watchedDayOfMonth, setValue]);
 
@@ -50,28 +57,26 @@ export default function Step2Rule() {
       return;
     }
 
-    try {
-      // Use current date at noon as start date
-      const startDate = dateAtNoon(new Date()).toISOString();
+    const startDate = dateAtNoon(new Date()).toISOString();
 
-      const payload: CreateScheduledTransactionRuleHouseholdDTO = {
-        accountId: transactionDetails.accountId,
-        categoryId: transactionDetails.categoryId,
-        type: transactionDetails.type,
-        amount: transactionDetails.amount,
-        description: transactionDetails.description,
-        frequencyType: data.frequencyType,
-        dayOfWeek: data.dayOfWeek,
-        dayOfMonth: data.dayOfMonth,
-        startDate,
-      };
+    const payload: CreateScheduledTransactionRuleHouseholdDTO = {
+      accountId: transactionDetails.accountId,
+      categoryId: transactionDetails.categoryId,
+      type: transactionDetails.type,
+      amount: transactionDetails.amount,
+      description: transactionDetails.description,
+      frequencyType: data.frequencyType,
+      dayOfWeek: data.dayOfWeek,
+      dayOfMonth: data.dayOfMonth,
+      startDate,
+    };
 
-      await createMutation.mutateAsync(payload);
-    } finally {
-      // Close dialog regardless of success or failure
-      resetDialog();
-      setIsOpen(false);
-    }
+    await createMutation.mutateAsync(payload, {
+      onSettled: () => {
+        resetDialog();
+        setIsOpen(false);
+      },
+    });
   };
 
   const handleBack = () => {

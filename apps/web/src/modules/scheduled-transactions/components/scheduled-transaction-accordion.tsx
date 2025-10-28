@@ -132,8 +132,8 @@ export default function ScheduledTransactionAccordion({
             </div>
           </div>
         </div>
-        <div className="pt-3 flex gap-2 justify-end">
-          <Button variant="outline" size="sm" onClick={onToggleStatus}>
+        <div className="pt-3 flex gap-2 justify-end items-center">
+          <Button variant="outline" size="default" onClick={onToggleStatus}>
             {isPaused ? 'Nastavi' : 'Pauziraj'}
           </Button>
           <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
