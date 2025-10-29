@@ -263,7 +263,7 @@ This monorepo contains a NestJS backend (core API), a React web client, and shar
 #### Backend (apps/core-api)
 
 - Framework: NestJS 11 (TypeORM, Swagger, BullMQ, Throttler, Schedule)
-- Entities: Household, User, Account, Category, Transaction, PrivateTransaction, Savings, CategoryBudget
+- Entities: Household, User, Account, Category, Transaction, PrivateTransaction, CategoryBudget
 - Modules: auth, users, households, accounts, categories, transactions, category-budgets, private-transactions, savings, policies
 - Validation: Zod via a custom ZodValidationPipe; DTOs/schemas live in @nest-wise/contracts
 - Auth: JWT-based, cookie set on login/setup; guard `AuthGuard` protects routes; `@CurrentUser()` provides JwtPayload
@@ -281,7 +281,7 @@ This monorepo contains a NestJS backend (core API), a React web client, and shar
 
 #### Data Model Relations (high-level)
 
-- Household 1—N Users, Accounts, Categories, Transactions, Savings, CategoryBudgets
+- Household 1—N Users, Accounts, Categories, Transactions, CategoryBudgets
 - User N—1 Household; owns many Accounts
 - Account N—1 Household; N—1 User (owner); 1—N Transactions
 - Category N—1 Household; 1—N Transactions

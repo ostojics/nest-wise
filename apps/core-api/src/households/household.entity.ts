@@ -12,7 +12,6 @@ import {User} from 'src/users/user.entity';
 import {Account} from 'src/accounts/account.entity';
 import {Category} from 'src/categories/categories.entity';
 import {Transaction} from 'src/transactions/transaction.entity';
-import {Savings} from 'src/savings/savings.entity';
 import {License} from 'src/licenses/license.entity';
 
 @Entity('households')
@@ -77,9 +76,6 @@ export class Household {
 
   @OneToMany(() => Transaction, (transaction) => transaction.household)
   transactions: Transaction[];
-
-  @OneToMany(() => Savings, (savings) => savings.household)
-  savings: Savings[];
 
   @OneToOne(() => License, (license) => license.household)
   @JoinColumn({name: 'license_id'})

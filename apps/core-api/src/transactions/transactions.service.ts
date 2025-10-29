@@ -163,6 +163,9 @@ export class TransactionsService {
       currentDate: transactionData.currentDate,
     });
 
+    this.logger.debug('AI Category System Prompt', {systemPrompt});
+    this.logger.debug('AI Category User Input', {userInput: transactionData.description});
+
     const response = await this.openAiClient.responses.parse({
       model: 'gpt-4o-mini',
       input: [

@@ -131,7 +131,6 @@ nest-wise/
 ### Planning & Insights
 
 - **Category Budgets**: Monthly budget limits with progress tracking
-- **Savings Tracking**: Automated savings calculations and trends
 - **Reports**: Net worth trends, spending analysis, account summaries
 - **AI Assistance**: Transaction categorization suggestions
 

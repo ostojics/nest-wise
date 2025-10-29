@@ -6,6 +6,7 @@ import {UpdateCategoryDTO} from '@nest-wise/contracts';
 
 interface CreateCategoryData {
   name: string;
+  description?: string;
   householdId: string;
 }
 

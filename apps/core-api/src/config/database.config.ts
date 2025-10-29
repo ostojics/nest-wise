@@ -5,7 +5,6 @@ import {Household} from 'src/households/household.entity';
 import {Account} from 'src/accounts/account.entity';
 import {Category} from 'src/categories/categories.entity';
 import {Transaction} from 'src/transactions/transaction.entity';
-import {Savings} from 'src/savings/savings.entity';
 import {CategoryBudget} from 'src/category-budgets/category-budgets.entity';
 import {PrivateTransaction} from 'src/private-transactions/private-transactions.entity';
 import {License} from 'src/licenses/license.entity';
@@ -22,6 +21,8 @@ import {ConvertPrivateTransactionDateToTimestamptz1760208473001} from 'src/migra
 import {AddScheduledTransactionRules1760300000000} from 'src/migrations/1760300000000-AddScheduledTransactionRules';
 import {AddScheduledTransactionExecutions1760300000001} from 'src/migrations/1760300000001-AddScheduledTransactionExecutions';
 import {ScheduledTransactionRule} from 'src/scheduled-transactions/scheduled-transaction-rule.entity';
+import {AddCategoryDescription1760998944930} from 'src/migrations/1760998944930-AddCategoryDescription';
+import {DropSavings1761000000000} from 'src/migrations/1761000000000-DropSavings';
 
 export const DatabaseConfigName = 'database';
 
@@ -44,7 +45,6 @@ export function getConfig(): DatabaseConfig {
       Account,
       Category,
       Transaction,
-      Savings,
       CategoryBudget,
       PrivateTransaction,
       License,
@@ -62,6 +62,8 @@ export function getConfig(): DatabaseConfig {
       InitPrivateTransactions1758655853118,
       ConvertTransactionDateToTimestamptz1760208473000,
       ConvertPrivateTransactionDateToTimestamptz1760208473001,
+      AddCategoryDescription1760998944930,
+      DropSavings1761000000000,
       AddScheduledTransactionRules1760300000000,
       AddScheduledTransactionExecutions1760300000001,
     ],

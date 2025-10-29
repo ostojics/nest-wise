@@ -69,6 +69,10 @@ export class CategoryBudgetsService {
 
     const mapped: CategoryBudgetWithCurrentAmountContract[] = all.map((b) => ({
       ...b,
+      category: {
+        name: b.category.name,
+        description: b.category.description ?? null,
+      },
       currentAmount: spentByCategory.get(b.categoryId) ?? 0,
     }));
 

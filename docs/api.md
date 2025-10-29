@@ -362,14 +362,6 @@ Content-Type: application/json
 }
 ```
 
-### Savings
-
-#### Get Savings Trend
-
-```http
-GET /v1/households/{householdId}/savings?from=2024-01-01&to=2024-12-31
-```
-
 ### Reports
 
 #### Net Worth Trend

@@ -33,6 +33,12 @@ export class Category {
   })
   name: string;
 
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  description?: string | null;
+
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at',

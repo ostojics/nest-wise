@@ -15,6 +15,7 @@ export class CategoriesService {
 
     return await this.categoriesRepository.create({
       name: categoryData.name,
+      description: categoryData.description,
       householdId,
     });
   }

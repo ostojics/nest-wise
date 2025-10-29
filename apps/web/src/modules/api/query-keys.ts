@@ -39,10 +39,6 @@ export const queryKeys = {
     key: () => ['category-budgets'],
     all: (search: GetCategoryBudgetsQueryParams) => ['category-budgets', search],
   },
-  savings: {
-    trend: () => ['savings-trend'],
-    trendByHousehold: (householdId: string) => ['savings-trend', householdId],
-  },
   privateTransactions: {
     key: () => ['private-transactions'],
     all: (search: GetPrivateTransactionsQueryDTO) => ['private-transactions', search],

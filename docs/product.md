@@ -11,7 +11,7 @@ Managing finances as a couple or shared household presents unique challenges:
 - **Coordination Complexity**: Multiple people need to track income, expenses, and budgets across shared accounts
 - **Visibility vs Privacy**: Need transparency for shared expenses while maintaining privacy for personal transactions
 - **Budget Planning**: Difficulty setting and tracking category-based budgets for household expenses
-- **Financial Insights**: Lack of clear reporting on spending patterns, savings trends, and net worth progression
+- **Financial Insights**: Lack of clear reporting on spending patterns and net worth progression
 - **Account Management**: Complex tracking of multiple accounts, balances, and inter-account transfers
 
 NestWise solves these problems by providing a household-centric approach to financial management with both shared and private transaction capabilities.
@@ -72,12 +72,6 @@ NestWise solves these problems by providing a household-centric approach to fina
 - Track spending against budget targets
 - Visual progress indicators for budget adherence
 
-#### **Savings Tracking**
-
-- Automated savings calculations and trends
-- Monthly savings reporting across time windows
-- Net worth progression tracking
-
 ### Member Management
 
 #### **User Invitations**
@@ -99,7 +93,6 @@ NestWise solves these problems by providing a household-centric approach to fina
 
 - Net worth trend analysis over time
 - Spending analysis by accounts (household-scoped)
-- Savings progression reporting
 - Category-based spending breakdowns
 
 ## Primary User Flows
@@ -133,9 +126,8 @@ NestWise solves these problems by providing a household-centric approach to fina
 ### 5. Financial Analysis
 
 1. **Review Reports**: Analyze net worth trends and spending patterns
-2. **Savings Tracking**: Monitor savings progression over time
-3. **Account Analysis**: Review spending by different accounts
-4. **Category Insights**: Understand spending distribution across categories
+2. **Account Analysis**: Review spending by different accounts
+3. **Category Insights**: Understand spending distribution across categories
 
 ## Value Proposition
 

@@ -7,7 +7,6 @@ export * from './enums';
 export * from './users';
 export * from './errors';
 export * from './category-budgets';
-export * from './savings';
 export * from './private-transactions';
 export * from './help';
 export * from './scheduled-transactions';

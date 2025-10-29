@@ -29,7 +29,6 @@ import { Route as _pathlessLayoutAccountsRouteImport } from './routes/__pathless
 import { Route as _pathlessLayoutAccountSettingsRouteImport } from './routes/__pathlessLayout/account-settings'
 import { Route as _pathlessLayoutReportsRouteRouteImport } from './routes/__pathlessLayout/reports/route'
 import { Route as _pathlessLayoutReportsSpendingRouteImport } from './routes/__pathlessLayout/reports/spending'
-import { Route as _pathlessLayoutReportsSavingsRouteImport } from './routes/__pathlessLayout/reports/savings'
 import { Route as _pathlessLayoutReportsNetWorthRouteImport } from './routes/__pathlessLayout/reports/net-worth'
 
 const SetupRoute = SetupRouteImport.update({
@@ -138,12 +137,6 @@ const _pathlessLayoutReportsSpendingRoute =
     path: '/spending',
     getParentRoute: () => _pathlessLayoutReportsRouteRoute,
   } as any)
-const _pathlessLayoutReportsSavingsRoute =
-  _pathlessLayoutReportsSavingsRouteImport.update({
-    id: '/savings',
-    path: '/savings',
-    getParentRoute: () => _pathlessLayoutReportsRouteRoute,
-  } as any)
 const _pathlessLayoutReportsNetWorthRoute =
   _pathlessLayoutReportsNetWorthRouteImport.update({
     id: '/net-worth',
@@ -171,7 +164,6 @@ export interface FileRoutesByFullPath {
   '/settings': typeof _pathlessLayoutSettingsRoute
   '/transactions': typeof _pathlessLayoutTransactionsRoute
   '/reports/net-worth': typeof _pathlessLayoutReportsNetWorthRoute
-  '/reports/savings': typeof _pathlessLayoutReportsSavingsRoute
   '/reports/spending': typeof _pathlessLayoutReportsSpendingRoute
 }
 export interface FileRoutesByTo {
@@ -194,7 +186,6 @@ export interface FileRoutesByTo {
   '/settings': typeof _pathlessLayoutSettingsRoute
   '/transactions': typeof _pathlessLayoutTransactionsRoute
   '/reports/net-worth': typeof _pathlessLayoutReportsNetWorthRoute
-  '/reports/savings': typeof _pathlessLayoutReportsSavingsRoute
   '/reports/spending': typeof _pathlessLayoutReportsSpendingRoute
 }
 export interface FileRoutesById {
@@ -219,7 +210,6 @@ export interface FileRoutesById {
   '/__pathlessLayout/settings': typeof _pathlessLayoutSettingsRoute
   '/__pathlessLayout/transactions': typeof _pathlessLayoutTransactionsRoute
   '/__pathlessLayout/reports/net-worth': typeof _pathlessLayoutReportsNetWorthRoute
-  '/__pathlessLayout/reports/savings': typeof _pathlessLayoutReportsSavingsRoute
   '/__pathlessLayout/reports/spending': typeof _pathlessLayoutReportsSpendingRoute
 }
 export interface FileRouteTypes {
@@ -244,7 +234,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/transactions'
     | '/reports/net-worth'
-    | '/reports/savings'
     | '/reports/spending'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -267,7 +256,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/transactions'
     | '/reports/net-worth'
-    | '/reports/savings'
     | '/reports/spending'
   id:
     | '__root__'
@@ -291,7 +279,6 @@ export interface FileRouteTypes {
     | '/__pathlessLayout/settings'
     | '/__pathlessLayout/transactions'
     | '/__pathlessLayout/reports/net-worth'
-    | '/__pathlessLayout/reports/savings'
     | '/__pathlessLayout/reports/spending'
   fileRoutesById: FileRoutesById
 }
@@ -449,13 +436,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof _pathlessLayoutReportsSpendingRouteImport
       parentRoute: typeof _pathlessLayoutReportsRouteRoute
     }
-    '/__pathlessLayout/reports/savings': {
-      id: '/__pathlessLayout/reports/savings'
-      path: '/savings'
-      fullPath: '/reports/savings'
-      preLoaderRoute: typeof _pathlessLayoutReportsSavingsRouteImport
-      parentRoute: typeof _pathlessLayoutReportsRouteRoute
-    }
     '/__pathlessLayout/reports/net-worth': {
       id: '/__pathlessLayout/reports/net-worth'
       path: '/net-worth'
@@ -468,14 +448,12 @@ declare module '@tanstack/react-router' {
 
 interface _pathlessLayoutReportsRouteRouteChildren {
   _pathlessLayoutReportsNetWorthRoute: typeof _pathlessLayoutReportsNetWorthRoute
-  _pathlessLayoutReportsSavingsRoute: typeof _pathlessLayoutReportsSavingsRoute
   _pathlessLayoutReportsSpendingRoute: typeof _pathlessLayoutReportsSpendingRoute
 }
 
 const _pathlessLayoutReportsRouteRouteChildren: _pathlessLayoutReportsRouteRouteChildren =
   {
     _pathlessLayoutReportsNetWorthRoute: _pathlessLayoutReportsNetWorthRoute,
-    _pathlessLayoutReportsSavingsRoute: _pathlessLayoutReportsSavingsRoute,
     _pathlessLayoutReportsSpendingRoute: _pathlessLayoutReportsSpendingRoute,
   }
 
