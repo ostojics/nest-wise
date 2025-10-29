@@ -94,7 +94,7 @@ export const createScheduledTransactionRuleHouseholdSchema = z
     categoryId: z.string().uuid().nullable(),
     type: TransactionTypeForScheduledEnum,
     amount: z.number().positive(),
-    description: z.string().max(256).nullable(),
+    description: z.string().min(1).max(256),
     frequencyType: ScheduledTransactionFrequencyTypeEnum,
     dayOfWeek: z.number().int().min(0).max(6).nullable(),
     dayOfMonth: z.number().int().min(1).max(31).nullable(),
@@ -134,6 +134,18 @@ export const createScheduledTransactionRuleHouseholdSchema = z
     },
     {
       message: 'categoryId must be null for income transactions',
+      path: ['categoryId'],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.type === 'expense') {
+        return data.categoryId !== null;
+      }
+      return true;
+    },
+    {
+      message: 'categoryId is required for expense transactions',
       path: ['categoryId'],
     },
   );
@@ -181,8 +193,8 @@ export const updateScheduledTransactionRuleSchema = z
 export const getScheduledTransactionsQuerySchema = z
   .object({
     status: ScheduledTransactionStatusEnum.optional(),
-    page: z.number().int().min(1).optional(),
-    pageSize: z.number().int().min(1).max(100).optional(),
+    page: z.coerce.number().min(1).default(1),
+    pageSize: z.coerce.number().min(1).max(100).default(15),
     sort: z.string().optional(),
   })
   .strict();
@@ -190,8 +202,8 @@ export const getScheduledTransactionsQuerySchema = z
 export const getScheduledTransactionsQueryHouseholdSchema = z
   .object({
     status: ScheduledTransactionStatusEnum.optional(),
-    page: z.number().int().min(1).optional(),
-    pageSize: z.number().int().min(1).max(100).optional(),
+    page: z.coerce.number().min(1).default(1),
+    pageSize: z.coerce.number().min(1).max(100).default(15),
     sort: z.string().optional(),
   })
   .strict();

@@ -103,3 +103,38 @@ export const getStartAndEndOfMonthIso = (): {start: string; end: string} => {
 export const getWeeklyOverviewKey = (date: Date) => {
   return format(date, 'yyyy-MM-dd');
 };
+
+/**
+ * Returns a formatted display name for an account, including the account type label in parentheses.
+ *
+ * @param options - The options object
+ * @param options.accountId - The ID of the account to format
+ * @param options.accounts - Array of account objects to search through
+ * @param options.accountTypes - Array of account type definitions with labels
+ * @returns Formatted string in the format "Account Name (Type Label)" or empty string if account not found
+ *
+ * @example
+ * ```ts
+ * const displayName = getAccountDisplayName({
+ *   accountId: 'abc-123',
+ *   accounts: [{id: 'abc-123', name: 'My Checking', type: 'checking'}],
+ *   accountTypes: [{value: 'checking', label: 'Tekući račun'}]
+ * });
+ * // Returns: "My Checking (Tekući račun)"
+ * ```
+ */
+export const getAccountDisplayName = ({
+  accountId,
+  accounts,
+  accountTypes,
+}: {
+  accountId: string;
+  accounts?: Array<{id: string; name: string; type: string}>;
+  accountTypes: ReadonlyArray<{value: string; label: string}>;
+}): string => {
+  const account = accounts?.find((acc) => acc.id === accountId);
+  if (!account) return '';
+
+  const accountType = accountTypes.find((type) => type.value === account.type);
+  return `${account.name} (${accountType?.label ?? account.type})`;
+};
