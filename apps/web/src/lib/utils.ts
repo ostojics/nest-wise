@@ -129,7 +129,7 @@ export const getAccountDisplayName = ({
   accountTypes,
 }: {
   accountId: string;
-  accounts?: Array<{id: string; name: string; type: string}>;
+  accounts?: ReadonlyArray<{id: string; name: string; type: string}>;
   accountTypes: ReadonlyArray<{value: string; label: string}>;
 }): string => {
   const account = accounts?.find((acc) => acc.id === accountId);
