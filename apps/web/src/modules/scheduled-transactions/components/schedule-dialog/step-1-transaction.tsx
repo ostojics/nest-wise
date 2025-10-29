@@ -9,6 +9,7 @@ import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-hous
 import {TransactionDetailsFormData, useValidateTransactionDetails} from '../../hooks/use-validate-transaction-details';
 import {useScheduleDialogContext} from '../../context/schedule-dialog.context';
 import {useEffect} from 'react';
+import {DialogClose} from '@/components/ui/dialog';
 
 export default function Step1Transaction() {
   const {data: accounts} = useGetHouseholdAccounts();
@@ -124,6 +125,11 @@ export default function Step1Transaction() {
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
+        <DialogClose>
+          <Button variant="outline" type="button">
+            Otkažite
+          </Button>
+        </DialogClose>
         <Button type="submit">Dalje</Button>
       </div>
     </form>

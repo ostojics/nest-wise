@@ -1,7 +1,15 @@
-import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import {ScheduleDialogProvider, useScheduleDialogContext} from '../../context/schedule-dialog.context';
 import Step1Transaction from './step-1-transaction';
 import Step2Rule from './step-2-rule';
+import {Button} from '@/components/ui/button';
 
 function ScheduleDialogContent() {
   const {currentStep, isOpen, setIsOpen, resetDialog} = useScheduleDialogContext();
@@ -10,11 +18,15 @@ function ScheduleDialogContent() {
     if (!open) {
       resetDialog();
     }
+
     setIsOpen(open);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <Button>Zakažite novu transakciju</Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{currentStep === 1 ? 'Detalji transakcije' : 'Pravilo ponavljanja'}</DialogTitle>
@@ -30,16 +42,9 @@ function ScheduleDialogContent() {
   );
 }
 
-interface ScheduleDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-export default function ScheduleDialog({open, onOpenChange}: ScheduleDialogProps) {
-  if (!open) return null;
-
+export default function ScheduleDialog() {
   return (
-    <ScheduleDialogProvider initialOpen={open}>
+    <ScheduleDialogProvider>
       <ScheduleDialogContent />
     </ScheduleDialogProvider>
   );

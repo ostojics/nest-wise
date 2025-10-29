@@ -15,13 +15,12 @@ const ScheduleDialogContext = createContext<ScheduleDialogContextValue | undefin
 
 interface ScheduleDialogProviderProps {
   children: React.ReactNode;
-  initialOpen?: boolean;
 }
 
-export const ScheduleDialogProvider: React.FC<ScheduleDialogProviderProps> = ({children, initialOpen = true}) => {
+export const ScheduleDialogProvider: React.FC<ScheduleDialogProviderProps> = ({children}) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [transactionDetails, setTransactionDetails] = useState<TransactionDetailsFormData | null>(null);
-  const [isOpen, setIsOpen] = useState(initialOpen);
+  const [isOpen, setIsOpen] = useState(false);
 
   const resetDialog = () => {
     setCurrentStep(1);
@@ -50,5 +49,6 @@ export const useScheduleDialogContext = () => {
   if (!context) {
     throw new Error('useScheduleDialogContext must be used within a ScheduleDialogProvider');
   }
+
   return context;
 };

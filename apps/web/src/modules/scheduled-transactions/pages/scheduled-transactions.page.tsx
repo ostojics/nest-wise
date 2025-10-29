@@ -1,6 +1,4 @@
-import {Button} from '@/components/ui/button';
 import TextBanner from '@/components/text-banner';
-import {useState} from 'react';
 import {useSearch, useNavigate} from '@tanstack/react-router';
 import {useGetScheduledTransactions} from '../hooks/use-scheduled-transactions';
 import ScheduledTransactionList from '../components/scheduled-transaction-list';
@@ -9,7 +7,6 @@ import ScheduledTransactionsError from '../components/scheduled-transactions-err
 import ScheduledTransactionsLoading from '../components/scheduled-transactions-loading';
 
 function ScheduledTransactionsPageContent() {
-  const [dialogOpen, setDialogOpen] = useState(false);
   const search = useSearch({from: '/__pathlessLayout/scheduled-transactions'});
   const navigate = useNavigate();
 
@@ -23,10 +20,6 @@ function ScheduledTransactionsPageContent() {
       to: '/scheduled-transactions',
       search: (prev) => ({...prev, page}),
     });
-  };
-
-  const handleCreateNew = () => {
-    setDialogOpen(true);
   };
 
   if (isLoading) {
@@ -44,17 +37,14 @@ function ScheduledTransactionsPageContent() {
         text="Zakazane transakcije omogućavaju automatsko kreiranje ponavljajućih transakcija. Podesite frekvenciju i iznos, a transakcije će biti kreirane po vašem rasporedu."
       />
       <div className="flex items-center gap-2">
-        <Button onClick={handleCreateNew}>Zakažite novu transakciju</Button>
+        <ScheduleDialog />
       </div>
-
       <ScheduledTransactionList
         transactions={data?.data ?? []}
         currentPage={search.page}
         totalPages={data?.meta.totalPages ?? 1}
         onPageChange={handlePageChange}
       />
-
-      <ScheduleDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </section>
   );
 }
