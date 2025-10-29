@@ -81,7 +81,7 @@ export default function ScheduledTransactionAccordion({
           <div>
             <span className="text-muted-foreground">Opis</span>
             <div>
-              <span className="text-foreground/90">{tx.description ?? 'Bez opisa'}</span>
+              <span className="text-foreground/90 truncate">{tx.description ?? 'Bez opisa'}</span>
             </div>
           </div>
           <div>
