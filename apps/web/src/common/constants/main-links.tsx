@@ -17,6 +17,11 @@ export const mainLinks = [
     url: '/transactions',
     icon: <IconReceipt />,
   },
+  // {
+  //   title: 'Zakazane transakcije',
+  //   url: '/scheduled-transactions',
+  //   icon: <IconCalendarEvent />,
+  // },
   {
     title: 'Izveštaji',
     url: '/reports',

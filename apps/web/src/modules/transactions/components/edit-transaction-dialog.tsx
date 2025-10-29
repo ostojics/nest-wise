@@ -5,7 +5,7 @@ import {Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTi
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {dateAtNoon} from '@/lib/utils';
+import {dateAtNoon, getAccountDisplayName} from '@/lib/utils';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import {useUpdateTransaction} from '@/modules/transactions/hooks/use-update-transaction';
@@ -51,14 +51,6 @@ export function EditTransactionDialog({transaction, open, onOpenChange}: EditTra
     );
   };
 
-  const getAccountDisplayName = (accountId: string) => {
-    const account = accounts?.find((acc) => acc.id === accountId);
-    if (!account) return '';
-
-    const accountType = accountTypes.find((type) => type.value === account.type);
-    return `${account.name} (${accountType?.label ?? account.type})`;
-  };
-
   useEffect(() => {
     if (watchedType === 'income') {
       setValue('categoryId', null);
@@ -93,7 +85,7 @@ export function EditTransactionDialog({transaction, open, onOpenChange}: EditTra
                   {hasAccounts &&
                     accounts?.map((account) => (
                       <SelectItem key={account.id} value={account.id}>
-                        {getAccountDisplayName(account.id)}
+                        {getAccountDisplayName({accountId: account.id, accounts, accountTypes})}
                       </SelectItem>
                     ))}
                 </SelectContent>

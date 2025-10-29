@@ -27,6 +27,7 @@ export default [
           case: 'kebabCase',
         },
       ],
+      '@typescript-eslint/array-type': 'off',
     },
   },
 ];

@@ -18,6 +18,9 @@ import {InitTransactions1758655840340} from 'src/migrations/1758655840340-InitTr
 import {InitPrivateTransactions1758655853118} from 'src/migrations/1758655853118-InitPrivateTransactions';
 import {ConvertTransactionDateToTimestamptz1760208473000} from 'src/migrations/1760208473000-ConvertTransactionDateToTimestamptz';
 import {ConvertPrivateTransactionDateToTimestamptz1760208473001} from 'src/migrations/1760208473001-ConvertPrivateTransactionDateToTimestamptz';
+import {AddScheduledTransactionRules1760300000000} from 'src/migrations/1760300000000-AddScheduledTransactionRules';
+import {AddScheduledTransactionExecutions1760300000001} from 'src/migrations/1760300000001-AddScheduledTransactionExecutions';
+import {ScheduledTransactionRule} from 'src/scheduled-transactions/scheduled-transaction-rule.entity';
 import {AddCategoryDescription1760998944930} from 'src/migrations/1760998944930-AddCategoryDescription';
 import {DropSavings1761000000000} from 'src/migrations/1761000000000-DropSavings';
 
@@ -36,7 +39,17 @@ export function getConfig(): DatabaseConfig {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE ?? 'nestwise_dev',
     ssl: process.env.DB_USE_SSL === 'true',
-    entities: [User, Household, Account, Category, Transaction, CategoryBudget, PrivateTransaction, License],
+    entities: [
+      User,
+      Household,
+      Account,
+      Category,
+      Transaction,
+      CategoryBudget,
+      PrivateTransaction,
+      License,
+      ScheduledTransactionRule,
+    ],
     useUTC: true,
     migrations: [
       InitExtensionAndTypes1758655322744,
@@ -51,6 +64,8 @@ export function getConfig(): DatabaseConfig {
       ConvertPrivateTransactionDateToTimestamptz1760208473001,
       AddCategoryDescription1760998944930,
       DropSavings1761000000000,
+      AddScheduledTransactionRules1760300000000,
+      AddScheduledTransactionExecutions1760300000001,
     ],
     migrationsRun: true,
     extra: {

@@ -3,6 +3,7 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
+import {getAccountDisplayName} from '@/lib/utils';
 import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
 import {useCreateTransactionAI} from '@/modules/transactions/hooks/use-create-transaction-ai';
 import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
@@ -45,14 +46,6 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
     });
   };
 
-  const getAccountDisplayName = (accountId: string) => {
-    const account = accounts?.find((acc) => acc.id === accountId);
-    if (!account) return '';
-
-    const accountType = accountTypes.find((type) => type.value === account.type);
-    return `${account.name} (${accountType?.label ?? account.type})`;
-  };
-
   if (createAiTransactionMutation.isPending) {
     return (
       <div className="space-y-4">
@@ -78,7 +71,7 @@ export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps)
               {hasAccounts &&
                 accounts?.map((account) => (
                   <SelectItem key={account.id} value={account.id}>
-                    {getAccountDisplayName(account.id)}
+                    {getAccountDisplayName({accountId: account.id, accounts, accountTypes})}
                   </SelectItem>
                 ))}
             </SelectContent>
