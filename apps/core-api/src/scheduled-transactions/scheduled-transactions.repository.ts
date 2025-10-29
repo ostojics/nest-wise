@@ -47,8 +47,8 @@ export class ScheduledTransactionsRepository {
     householdId: string,
     query: GetScheduledTransactionsQueryHouseholdDTO,
   ): Promise<GetScheduledTransactionsResponseContract> {
-    const page = query.page ?? 1;
-    const pageSize = query.pageSize ?? 30;
+    const page = query.page;
+    const pageSize = query.pageSize;
     const skip = (page - 1) * pageSize;
 
     const queryBuilder = this.repository
