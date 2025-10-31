@@ -1,10 +1,10 @@
-import {test, expect} from '@playwright/test';
+import {test, expect, Page} from '@playwright/test';
 
 const TEST_LICENSE_KEY = '00000000-0000-0000-0000-000000000000';
 
 test.describe('Add Accounts', () => {
   // Setup helper to complete onboarding and get to authenticated state
-  async function completeSetup(page) {
+  async function completeSetup(page: Page) {
     await page.goto(`/setup?license=${TEST_LICENSE_KEY}`);
     await page.waitForLoadState('networkidle');
 
