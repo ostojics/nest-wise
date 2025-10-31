@@ -15,7 +15,7 @@ const mockAccount: AccountContract = {
 };
 
 // Store created accounts for the session
-let createdAccounts: AccountContract[] = [mockAccount];
+const createdAccounts: AccountContract[] = [mockAccount];
 let accountIdCounter = 2;
 
 export const accountHandlers = [
