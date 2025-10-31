@@ -313,7 +313,6 @@ describe('Integration - Accounts', () => {
       // Verify final balance
       updatedAccount = await accountsService.findAccountById(account.id);
       expect(Number(updatedAccount.currentBalance)).toBe(currentBalance);
-      expect(Number(updatedAccount.currentBalance)).toBe(1000 - 200 + 1500);
       expect(Number(updatedAccount.currentBalance)).toBe(2300);
     });
   });

@@ -142,6 +142,7 @@ export async function cleanupTestData(
     | typeof Category
     | typeof CategoryBudget
     | typeof PrivateTransaction
+    | typeof ScheduledTransactionRule
   > = [User, Household, License],
 ) {
   for (const entity of entities) {
