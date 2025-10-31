@@ -1,5 +1,5 @@
 import {http, HttpResponse} from 'msw';
-import type {AccountContract} from '@nest-wise/contracts';
+import type {AccountContract, CreateAccountHouseholdScopedDTO} from '@nest-wise/contracts';
 
 // Mock account data
 const mockAccount: AccountContract = {
@@ -14,10 +14,41 @@ const mockAccount: AccountContract = {
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
 };
 
+// Store created accounts for the session
+let createdAccounts: AccountContract[] = [mockAccount];
+let accountIdCounter = 2;
+
 export const accountHandlers = [
   // GET /v1/households/:id/accounts
   http.get('*/v1/households/:id/accounts', () => {
-    return HttpResponse.json([mockAccount], {
+    return HttpResponse.json(createdAccounts, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }),
+
+  // POST /v1/households/:id/accounts
+  http.post('*/v1/households/:id/accounts', async ({request, params}) => {
+    const body = (await request.json()) as CreateAccountHouseholdScopedDTO;
+    const {id: householdId} = params;
+
+    const newAccount: AccountContract = {
+      id: `a-${accountIdCounter++}`,
+      householdId: householdId as string,
+      name: body.name,
+      type: body.type,
+      initialBalance: body.initialBalance,
+      currentBalance: body.initialBalance,
+      ownerId: body.ownerId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    createdAccounts.push(newAccount);
+
+    return HttpResponse.json(newAccount, {
+      status: 201,
       headers: {
         'Content-Type': 'application/json',
       },
