@@ -19,6 +19,7 @@ import {
   UseGuards,
   Get,
   Param,
+  Query,
   UsePipes,
   Post,
   Body,
@@ -40,6 +41,7 @@ import {
   ApiBadRequestResponse,
   ApiConflictResponse,
   ApiNoContentResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 import {Logger} from 'pino-nestjs';
 import {AccountsService} from 'src/accounts/accounts.service';
@@ -118,6 +120,12 @@ export class HouseholdsController {
     description: 'The unique identifier of the household',
     example: 'b2c3d4e5-f6g7-8901-bcde-f23456789012',
   })
+  @ApiQuery({
+    name: 'active',
+    required: false,
+    type: 'boolean',
+    description: 'Filter accounts by active status (true=active, false=inactive). If omitted, returns all accounts.',
+  })
   @ApiOkResponse({
     type: [AccountResponseSwaggerDTO],
     description: 'Accounts found successfully',
@@ -131,8 +139,12 @@ export class HouseholdsController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard, LicenseGuard)
   @Get(':id/accounts')
-  async getAccountsByHouseholdId(@Param('id') id: string): Promise<AccountContract[]> {
-    return (await this.householdsService.findAccountsByHouseholdId(id)) as AccountContract[];
+  async getAccountsByHouseholdId(
+    @Param('id') id: string,
+    @Query('active') active?: string,
+  ): Promise<AccountContract[]> {
+    const isActive = active === 'true' ? true : active === 'false' ? false : undefined;
+    return (await this.householdsService.findAccountsByHouseholdId(id, {isActive})) as AccountContract[];
   }
 
   @ApiOperation({

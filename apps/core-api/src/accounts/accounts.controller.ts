@@ -1,5 +1,5 @@
 import {EditAccountDTO, editAccountSchema} from '@nest-wise/contracts';
-import {Body, Controller, ForbiddenException, Get, Param, Put, UseGuards, UsePipes} from '@nestjs/common';
+import {Body, Controller, ForbiddenException, Get, Param, Patch, Put, UseGuards, UsePipes} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -91,5 +91,61 @@ export class AccountsController {
     }
 
     return await this.accountsService.updateAccount(id, dto);
+  }
+
+  @ApiOperation({
+    summary: 'Activate an account',
+    description: 'Sets account status to active. User must belong to the account household.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the account',
+  })
+  @ApiOkResponse({
+    type: AccountResponseSwaggerDTO,
+    description: 'Account activated successfully',
+  })
+  @ApiNotFoundResponse({description: 'Account not found'})
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, LicenseGuard)
+  @Patch(':id/activate')
+  async activateAccount(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    const canUpdate = await this.policiesService.canUserUpdateAccount(user.sub, id);
+    if (!canUpdate) {
+      throw new ForbiddenException('Ne možete aktivirati ovaj račun');
+    }
+
+    return await this.accountsService.activateAccount(id);
+  }
+
+  @ApiOperation({
+    summary: 'Deactivate an account',
+    description: 'Sets account status to inactive. User must belong to the account household.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    format: 'uuid',
+    description: 'The unique identifier of the account',
+  })
+  @ApiOkResponse({
+    type: AccountResponseSwaggerDTO,
+    description: 'Account deactivated successfully',
+  })
+  @ApiNotFoundResponse({description: 'Account not found'})
+  @ApiUnauthorizedResponse({description: 'Authentication required'})
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, LicenseGuard)
+  @Patch(':id/deactivate')
+  async deactivateAccount(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    const canUpdate = await this.policiesService.canUserUpdateAccount(user.sub, id);
+    if (!canUpdate) {
+      throw new ForbiddenException('Ne možete deaktivirati ovaj račun');
+    }
+
+    return await this.accountsService.deactivateAccount(id);
   }
 }
