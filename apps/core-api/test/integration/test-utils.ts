@@ -133,7 +133,16 @@ export const mockLoggerProvider = {
  */
 export async function cleanupTestData(
   dataSource: DataSource,
-  entities: Array<typeof User | typeof Household | typeof License> = [User, Household, License],
+  entities: Array<
+    | typeof User
+    | typeof Household
+    | typeof License
+    | typeof Account
+    | typeof Transaction
+    | typeof Category
+    | typeof CategoryBudget
+    | typeof PrivateTransaction
+  > = [User, Household, License],
 ) {
   for (const entity of entities) {
     await dataSource.getRepository(entity).createQueryBuilder().delete().execute();

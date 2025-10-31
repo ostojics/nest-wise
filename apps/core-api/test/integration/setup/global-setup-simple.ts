@@ -47,6 +47,7 @@ export default async function globalSetup(): Promise<void> {
     process.env.JWT_SECRET = 'test-secret';
     process.env.APP_URL = 'http://localhost:8080';
     process.env.WEB_APP_URL = 'http://localhost:5173';
+    process.env.OPENAI_API_KEY = 'dummy-key-for-test';
 
     console.log('✅ Integration test containers started successfully');
     console.log(`PostgreSQL: ${process.env.DB_HOST}:${process.env.DB_PORT}`);
