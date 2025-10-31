@@ -34,7 +34,7 @@ export class AccountsRepository {
   }
 
   async findByHouseholdId(householdId: string, options?: {isActive?: boolean}): Promise<Account[]> {
-    const where: any = {householdId};
+    const where: {householdId: string; isActive?: boolean} = {householdId};
     if (options?.isActive !== undefined) {
       where.isActive = options.isActive;
     }

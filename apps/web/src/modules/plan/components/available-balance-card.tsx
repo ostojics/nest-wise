@@ -14,9 +14,12 @@ const AvailableBalanceCard = () => {
   const netWorth = useMemo(() => {
     if (!accounts || accounts.length === 0) return 0;
 
-    return accounts.reduce((total, account) => {
-      return total + Number(account.currentBalance);
-    }, 0);
+    // Only include active accounts in the calculation
+    return accounts
+      .filter((account) => account.isActive)
+      .reduce((total, account) => {
+        return total + Number(account.currentBalance);
+      }, 0);
   }, [accounts]);
 
   if (isLoading) {
@@ -40,7 +43,7 @@ const AvailableBalanceCard = () => {
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
         <div className="line-clamp-1 flex gap-2 font-medium items-center">Ukupno raspoloživo stanje</div>
-        <AccountTypeTotals accounts={accounts ?? []} maxInlineItems={3} />
+        <AccountTypeTotals accounts={accounts?.filter((account) => account.isActive) ?? []} maxInlineItems={3} />
       </CardFooter>
     </Card>
   );

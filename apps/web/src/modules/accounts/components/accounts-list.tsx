@@ -43,11 +43,36 @@ const AccountsList = () => {
     );
   }
 
+  const activeAccounts = accounts.filter((account) => account.isActive);
+  const inactiveAccounts = accounts.filter((account) => !account.isActive);
+
   return (
-    <div className="mt-6 grid grid-cols-1 @[871px]/list:grid-cols-2 gap-4">
-      {accounts.map((account) => (
-        <Account key={account.id} account={account} />
-      ))}
+    <div className="mt-6 space-y-8">
+      {/* Active Accounts Section */}
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Aktivni računi</h3>
+        {activeAccounts.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Nema aktivnih računa</p>
+        ) : (
+          <div className="grid grid-cols-1 @[871px]/list:grid-cols-2 gap-4">
+            {activeAccounts.map((account) => (
+              <Account key={account.id} account={account} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Inactive Accounts Section */}
+      {inactiveAccounts.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Neaktivni računi</h3>
+          <div className="grid grid-cols-1 @[871px]/list:grid-cols-2 gap-4">
+            {inactiveAccounts.map((account) => (
+              <Account key={account.id} account={account} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

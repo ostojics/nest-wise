@@ -1,5 +1,5 @@
 import {Button} from '@/components/ui/button';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useGetActiveHouseholdAccounts} from '@/modules/accounts/hooks/use-get-active-household-accounts';
 import PrivateTransactionsTableSearch from './private-transactions-table-search';
 import PrivateTransactionDateFromPicker from './selects/transaction-date-from';
 import PrivateTransactionDateToPicker from './selects/transaction-date-to';
@@ -8,7 +8,7 @@ import {useNavigate} from '@tanstack/react-router';
 
 const PrivateTransactionsTableActions = () => {
   const navigate = useNavigate();
-  const {data: accounts} = useGetHouseholdAccounts();
+  const {data: accounts} = useGetActiveHouseholdAccounts();
 
   return (
     <section className="mb-5 @container/transactions-table-actions">

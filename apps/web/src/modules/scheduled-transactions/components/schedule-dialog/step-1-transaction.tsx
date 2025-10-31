@@ -4,7 +4,7 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {getAccountDisplayName} from '@/lib/utils';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useGetActiveHouseholdAccounts} from '@/modules/accounts/hooks/use-get-active-household-accounts';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import {TransactionDetailsFormData, useValidateTransactionDetails} from '../../hooks/use-validate-transaction-details';
 import {useScheduleDialogContext} from '../../context/schedule-dialog.context';
@@ -12,7 +12,7 @@ import {useEffect} from 'react';
 import {DialogClose} from '@/components/ui/dialog';
 
 export default function Step1Transaction() {
-  const {data: accounts} = useGetHouseholdAccounts();
+  const {data: accounts} = useGetActiveHouseholdAccounts();
   const {data: categories} = useGetHouseholdCategories();
   const hasAccounts = (accounts ?? []).length > 0;
 

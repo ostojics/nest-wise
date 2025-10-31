@@ -16,13 +16,13 @@ import {ArrowLeftRight, Loader2, Wallet} from 'lucide-react';
 import {useState} from 'react';
 import {useTransferFundsMutation} from '../hooks/use-transfer-funds-mutation';
 import {useValidateTransferFunds} from '../hooks/use-validate-transfer-funds';
-import {useGetHouseholdAccounts} from '../hooks/use-get-household-accounts';
+import {useGetActiveHouseholdAccounts} from '../hooks/use-get-active-household-accounts';
 import {useGetHouseholdById} from '@/modules/households/hooks/use-get-household-by-id';
 import AccountSelect from './account-select';
 
 const TransferFundsDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const {data: accounts = []} = useGetHouseholdAccounts();
+  const {data: accounts = []} = useGetActiveHouseholdAccounts();
   const {data: household} = useGetHouseholdById();
   const mutation = useTransferFundsMutation({
     householdId: household?.id ?? '',

@@ -1,5 +1,5 @@
 import {Button} from '@/components/ui/button';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useGetActiveHouseholdAccounts} from '@/modules/accounts/hooks/use-get-active-household-accounts';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import AccountCombobox from './selects/account-combobox';
 import CategoryCombobox from './selects/category-combobox';
@@ -10,7 +10,7 @@ import {useNavigate} from '@tanstack/react-router';
 
 const TransactionsTableActions = () => {
   const navigate = useNavigate();
-  const {data: accounts} = useGetHouseholdAccounts();
+  const {data: accounts} = useGetActiveHouseholdAccounts();
   const {data: categories} = useGetHouseholdCategories();
 
   return (
