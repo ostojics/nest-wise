@@ -23,6 +23,7 @@ import {AddScheduledTransactionExecutions1760300000001} from 'src/migrations/176
 import {ScheduledTransactionRule} from 'src/scheduled-transactions/scheduled-transaction-rule.entity';
 import {AddCategoryDescription1760998944930} from 'src/migrations/1760998944930-AddCategoryDescription';
 import {DropSavings1761000000000} from 'src/migrations/1761000000000-DropSavings';
+import {AddAccountIsActive1761949055000} from 'src/migrations/1761949055000-AddAccountIsActive';
 
 export const DatabaseConfigName = 'database';
 
@@ -66,6 +67,7 @@ export function getConfig(): DatabaseConfig {
       DropSavings1761000000000,
       AddScheduledTransactionRules1760300000000,
       AddScheduledTransactionExecutions1760300000001,
+      AddAccountIsActive1761949055000,
     ],
     migrationsRun: true,
     extra: {
