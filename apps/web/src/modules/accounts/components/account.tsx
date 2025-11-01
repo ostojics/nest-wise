@@ -51,7 +51,12 @@ const Account: React.FC<AccountProps> = ({account}) => {
   });
 
   const handleToggleActive = (checked: boolean) => {
-    checked ? activateMutation.mutate() : deactivateMutation.mutate();
+    if (checked) {
+      activateMutation.mutate();
+      return;
+    }
+
+    deactivateMutation.mutate();
   };
 
   return (
