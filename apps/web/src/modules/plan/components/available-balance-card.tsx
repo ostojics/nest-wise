@@ -1,5 +1,5 @@
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useGetActiveHouseholdAccounts} from '@/modules/accounts/hooks/use-get-active-household-accounts';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {IconWallet} from '@tabler/icons-react';
 import {useMemo} from 'react';
@@ -8,18 +8,15 @@ import AvailableBalanceCardError from './available-balance-card.error';
 import AccountTypeTotals from '@/modules/accounts/components/account-type-totals';
 
 const AvailableBalanceCard = () => {
-  const {data: accounts, isLoading, isError, refetch} = useGetHouseholdAccounts();
+  const {data: accounts, isLoading, isError, refetch} = useGetActiveHouseholdAccounts();
   const {formatBalance} = useFormatBalance();
 
   const netWorth = useMemo(() => {
     if (!accounts || accounts.length === 0) return 0;
 
-    // Only include active accounts in the calculation
-    return accounts
-      .filter((account) => account.isActive)
-      .reduce((total, account) => {
-        return total + Number(account.currentBalance);
-      }, 0);
+    return accounts.reduce((total, account) => {
+      return total + Number(account.currentBalance);
+    }, 0);
   }, [accounts]);
 
   if (isLoading) {
@@ -43,7 +40,7 @@ const AvailableBalanceCard = () => {
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
         <div className="line-clamp-1 flex gap-2 font-medium items-center">Ukupno raspoloživo stanje</div>
-        <AccountTypeTotals accounts={accounts?.filter((account) => account.isActive) ?? []} maxInlineItems={3} />
+        <AccountTypeTotals accounts={accounts ?? []} maxInlineItems={3} />
       </CardFooter>
     </Card>
   );

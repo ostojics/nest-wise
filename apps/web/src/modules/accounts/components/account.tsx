@@ -8,10 +8,8 @@ import {accountTypes} from '@/common/constants/account-types';
 import {format} from 'date-fns';
 import {cn} from '@/lib/utils';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
-import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {activateAccount, deactivateAccount} from '@/modules/api/accounts-api';
-import {toast} from 'sonner';
-import {queryKeys} from '@/modules/api/query-keys';
+import {useActivateAccountMutation} from '../hooks/use-activate-account-mutation';
+import {useDeactivateAccountMutation} from '../hooks/use-deactivate-account-mutation';
 import EditAccountDialog from './edit-account-dialog';
 
 interface AccountProps {
@@ -20,7 +18,6 @@ interface AccountProps {
 
 const Account: React.FC<AccountProps> = ({account}) => {
   const {formatBalance} = useFormatBalance();
-  const queryClient = useQueryClient();
   const accountType = accountTypes.find((type) => type.value === account.type);
   const IconComponent = accountType?.icon;
 
@@ -28,27 +25,8 @@ const Account: React.FC<AccountProps> = ({account}) => {
     return format(new Date(date), 'dd.MM.yyyy.');
   };
 
-  const activateMutation = useMutation({
-    mutationFn: () => activateAccount(account.id),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({queryKey: queryKeys.accounts.all()});
-      toast.success('Račun je aktiviran.');
-    },
-    onError: () => {
-      toast.error('Došlo je do greške. Pokušajte ponovo.');
-    },
-  });
-
-  const deactivateMutation = useMutation({
-    mutationFn: () => deactivateAccount(account.id),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({queryKey: queryKeys.accounts.all()});
-      toast.success('Račun je deaktiviran.');
-    },
-    onError: () => {
-      toast.error('Došlo je do greške. Pokušajte ponovo.');
-    },
-  });
+  const activateMutation = useActivateAccountMutation(account.id);
+  const deactivateMutation = useDeactivateAccountMutation(account.id);
 
   const handleToggleActive = (checked: boolean) => {
     if (checked) {
