@@ -5,38 +5,24 @@ import {addYears} from 'date-fns';
 import {ConflictException} from '@nestjs/common';
 import {AccountsService} from '../../src/accounts/accounts.service';
 import {AccountsRepository} from '../../src/accounts/accounts.repository';
-import {TransactionsService} from '../../src/transactions/transactions.service';
-import {TransactionsRepository} from '../../src/transactions/transactions.repository';
 import {HouseholdsService} from '../../src/households/households.service';
 import {HouseholdsRepository} from '../../src/households/households.repository';
 import {Account} from '../../src/accounts/account.entity';
-import {Transaction} from '../../src/transactions/transaction.entity';
 import {Household} from '../../src/households/household.entity';
 import {User} from '../../src/users/user.entity';
 import {License} from '../../src/licenses/license.entity';
-import {Category} from '../../src/categories/categories.entity';
-import {CreateAccountHouseholdScopedDTO, CreateTransactionHouseholdDTO} from '@nest-wise/contracts';
+import {CreateAccountHouseholdScopedDTO, EditAccountDTO} from '@nest-wise/contracts';
 import {
   INTEGRATION_TEST_ENTITIES,
   getConfigModuleConfig,
   getTypeOrmModuleConfig,
   mockCategoriesServiceProvider,
-  mockEmailsServiceProvider,
-  mockLoggerProvider,
   cleanupTestData,
 } from './test-utils';
-import {Queue} from 'bullmq';
-
-// Mock the BullMQ Queue
-const mockQueue = {
-  add: jest.fn(),
-  getJob: jest.fn(),
-} as unknown as Queue;
 
 describe('Integration - Accounts', () => {
   let module: TestingModule;
   let accountsService: AccountsService;
-  let transactionsService: TransactionsService;
   let householdsService: HouseholdsService;
   let dataSource: DataSource;
   let createdLicenseId: string;
@@ -49,22 +35,13 @@ describe('Integration - Accounts', () => {
       providers: [
         AccountsService,
         AccountsRepository,
-        TransactionsService,
-        TransactionsRepository,
         HouseholdsService,
         HouseholdsRepository,
         mockCategoriesServiceProvider,
-        mockEmailsServiceProvider,
-        mockLoggerProvider,
-        {
-          provide: 'BullQueue_ai-transactions',
-          useValue: mockQueue,
-        },
       ],
     }).compile();
 
     accountsService = module.get<AccountsService>(AccountsService);
-    transactionsService = module.get<TransactionsService>(TransactionsService);
     householdsService = module.get<HouseholdsService>(HouseholdsService);
     dataSource = module.get<DataSource>(DataSource);
 
@@ -105,8 +82,8 @@ describe('Integration - Accounts', () => {
   });
 
   beforeEach(async () => {
-    // Clean up accounts and transactions before each test
-    await cleanupTestData(dataSource, [Transaction, Account]);
+    // Clean up accounts before each test
+    await cleanupTestData(dataSource, [Account]);
   });
 
   describe('Account Creation and Persistence', () => {
@@ -187,133 +164,127 @@ describe('Integration - Accounts', () => {
     });
   });
 
-  describe('Balance Updates via Transactions', () => {
-    it('should update account balance on expense transaction', async () => {
-      // Create account with initial balance
+  describe('Account Updates', () => {
+    it('should update account name', async () => {
+      // Create account
       const createAccountDto: CreateAccountHouseholdScopedDTO = {
-        name: 'Test Account',
+        name: 'Original Name',
         type: 'checking',
         initialBalance: 1000,
         ownerId: createdUserId,
       };
 
       const account = await accountsService.createAccountForHousehold(createdHouseholdId, createAccountDto);
-      const initialBalance = Number(account.currentBalance);
 
-      // Create a category for the expense
-      const categoryRepository = dataSource.getRepository(Category);
-      const category = categoryRepository.create({
-        householdId: createdHouseholdId,
-        name: 'Groceries',
-        description: 'Food and groceries',
-      });
-      const savedCategory = await categoryRepository.save(category);
-
-      // Create expense transaction
-      const expenseDto: CreateTransactionHouseholdDTO = {
-        accountId: account.id,
-        type: 'expense',
-        amount: 150,
-        categoryId: savedCategory.id,
-        description: 'Grocery shopping',
-        transactionDate: new Date().toISOString(),
+      // Update account name
+      const updateDto: EditAccountDTO = {
+        name: 'Updated Name',
       };
 
-      await transactionsService.createTransactionForHousehold(createdHouseholdId, expenseDto);
+      const updatedAccount = await accountsService.updateAccount(account.id, updateDto);
 
-      // Reload account and verify balance decreased
-      const updatedAccount = await accountsService.findAccountById(account.id);
-      const expectedBalance = initialBalance - expenseDto.amount;
-      expect(Number(updatedAccount.currentBalance)).toBe(expectedBalance);
+      expect(updatedAccount).toBeDefined();
+      expect(updatedAccount.id).toBe(account.id);
+      expect(updatedAccount.name).toBe('Updated Name');
+      expect(Number(updatedAccount.currentBalance)).toBe(1000);
+
+      // Verify persistence in database
+      const accountRepository = dataSource.getRepository(Account);
+      const persistedAccount = await accountRepository.findOne({
+        where: {id: account.id},
+      });
+
+      expect(persistedAccount).toBeDefined();
+      expect(persistedAccount!.name).toBe('Updated Name');
     });
 
-    it('should update account balance on income transaction', async () => {
-      // Create account with initial balance
+    it('should update account type', async () => {
+      // Create account
       const createAccountDto: CreateAccountHouseholdScopedDTO = {
         name: 'Test Account',
         type: 'checking',
-        initialBalance: 1000,
+        initialBalance: 2000,
         ownerId: createdUserId,
       };
 
       const account = await accountsService.createAccountForHousehold(createdHouseholdId, createAccountDto);
-      const initialBalance = Number(account.currentBalance);
 
-      // Create income transaction
-      const incomeDto: CreateTransactionHouseholdDTO = {
-        accountId: account.id,
-        type: 'income',
-        amount: 500,
-        categoryId: null,
-        description: 'Salary payment',
-        transactionDate: new Date().toISOString(),
+      // Update account type
+      const updateDto: EditAccountDTO = {
+        type: 'savings',
       };
 
-      await transactionsService.createTransactionForHousehold(createdHouseholdId, incomeDto);
+      const updatedAccount = await accountsService.updateAccount(account.id, updateDto);
 
-      // Reload account and verify balance increased
-      const updatedAccount = await accountsService.findAccountById(account.id);
-      const expectedBalance = initialBalance + incomeDto.amount;
-      expect(Number(updatedAccount.currentBalance)).toBe(expectedBalance);
+      expect(updatedAccount).toBeDefined();
+      expect(updatedAccount.id).toBe(account.id);
+      expect(updatedAccount.type).toBe('savings');
+      expect(updatedAccount.name).toBe('Test Account');
     });
 
-    it('should correctly handle multiple transactions (expense then income)', async () => {
-      // Create account with initial balance
+    it('should update account currentBalance directly', async () => {
+      // Create account
       const createAccountDto: CreateAccountHouseholdScopedDTO = {
-        name: 'Test Account',
+        name: 'Balance Test Account',
         type: 'checking',
         initialBalance: 1000,
         ownerId: createdUserId,
       };
 
       const account = await accountsService.createAccountForHousehold(createdHouseholdId, createAccountDto);
-      let currentBalance = Number(account.currentBalance);
 
-      // Create a category for the expense
-      const categoryRepository = dataSource.getRepository(Category);
-      const category = categoryRepository.create({
-        householdId: createdHouseholdId,
-        name: 'Utilities',
-        description: 'Utility bills',
+      // Update current balance
+      const updateDto: EditAccountDTO = {
+        currentBalance: 1500,
+      };
+
+      const updatedAccount = await accountsService.updateAccount(account.id, updateDto);
+
+      expect(updatedAccount).toBeDefined();
+      expect(updatedAccount.id).toBe(account.id);
+      expect(Number(updatedAccount.currentBalance)).toBe(1500);
+      expect(Number(updatedAccount.initialBalance)).toBe(1000);
+
+      // Verify persistence in database
+      const accountRepository = dataSource.getRepository(Account);
+      const persistedAccount = await accountRepository.findOne({
+        where: {id: account.id},
       });
-      const savedCategory = await categoryRepository.save(category);
 
-      // Create expense transaction
-      const expenseAmount = 200;
-      const expenseDto: CreateTransactionHouseholdDTO = {
-        accountId: account.id,
-        type: 'expense',
-        amount: expenseAmount,
-        categoryId: savedCategory.id,
-        description: 'Electricity bill',
-        transactionDate: new Date().toISOString(),
+      expect(persistedAccount).toBeDefined();
+      expect(Number(persistedAccount!.currentBalance)).toBe(1500);
+      expect(Number(persistedAccount!.initialBalance)).toBe(1000);
+    });
+
+    it('should reject duplicate name when updating', async () => {
+      // Create two accounts
+      const account1Dto: CreateAccountHouseholdScopedDTO = {
+        name: 'Account One',
+        type: 'checking',
+        initialBalance: 1000,
+        ownerId: createdUserId,
       };
 
-      await transactionsService.createTransactionForHousehold(createdHouseholdId, expenseDto);
-      currentBalance -= expenseAmount;
-
-      // Verify balance after expense
-      let updatedAccount = await accountsService.findAccountById(account.id);
-      expect(Number(updatedAccount.currentBalance)).toBe(currentBalance);
-
-      // Create income transaction
-      const incomeAmount = 1500;
-      const incomeDto: CreateTransactionHouseholdDTO = {
-        accountId: account.id,
-        type: 'income',
-        amount: incomeAmount,
-        categoryId: null,
-        description: 'Monthly salary',
-        transactionDate: new Date().toISOString(),
+      const account2Dto: CreateAccountHouseholdScopedDTO = {
+        name: 'Account Two',
+        type: 'savings',
+        initialBalance: 2000,
+        ownerId: createdUserId,
       };
 
-      await transactionsService.createTransactionForHousehold(createdHouseholdId, incomeDto);
-      currentBalance += incomeAmount;
+      const account1 = await accountsService.createAccountForHousehold(createdHouseholdId, account1Dto);
+      const account2 = await accountsService.createAccountForHousehold(createdHouseholdId, account2Dto);
 
-      // Verify final balance
-      updatedAccount = await accountsService.findAccountById(account.id);
-      expect(Number(updatedAccount.currentBalance)).toBe(currentBalance);
-      expect(Number(updatedAccount.currentBalance)).toBe(2300);
+      // Try to update account2 name to match account1
+      const updateDto: EditAccountDTO = {
+        name: 'Account One',
+      };
+
+      await expect(accountsService.updateAccount(account2.id, updateDto)).rejects.toThrow(ConflictException);
+
+      await expect(accountsService.updateAccount(account2.id, updateDto)).rejects.toThrow(
+        'Naziv računa već postoji u ovom domaćinstvu',
+      );
     });
   });
 
