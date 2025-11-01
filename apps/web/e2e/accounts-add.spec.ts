@@ -1,39 +1,8 @@
-import {test, expect, Page} from '@playwright/test';
-
-const TEST_LICENSE_KEY = '00000000-0000-0000-0000-000000000000';
+import {test, expect} from '@playwright/test';
 
 test.describe('Add Accounts', () => {
-  // Setup helper to complete onboarding and get to authenticated state
-  async function completeSetup(page: Page) {
-    await page.goto(`/setup?license=${TEST_LICENSE_KEY}`);
-    await page.waitForLoadState('networkidle');
-
-    // Complete step 1 - User form
-    await page.getByTestId('setup-username-input').fill('testuser');
-    await page.getByTestId('setup-email-input').fill('test@example.com');
-    await page.getByTestId('setup-password-input').fill('Password123!');
-    await page.getByTestId('setup-confirm-password-input').fill('Password123!');
-    await page.getByTestId('setup-step1-submit').click();
-
-    // Wait for step 2 to be visible
-    await expect(page.getByTestId('setup-household-name-input')).toBeVisible();
-
-    // Complete step 2 - Household form
-    await page.getByTestId('setup-household-name-input').fill('Test Household');
-    await page.getByTestId('setup-currency-select').click();
-    // Select RSD currency
-    await page.getByTestId('setup-currency-option-RSD').click();
-    await page.getByTestId('setup-step2-submit').click();
-
-    // Wait for onboarding page to load
-    await page.waitForURL('/onboarding', {timeout: 10000});
-  }
-
   test('user adds single account (happy path)', async ({page}) => {
-    // Arrange: Complete setup to get authenticated session
-    await completeSetup(page);
-
-    // Navigate to Accounts page via sidebar
+    // Arrange: Navigate to Accounts page (MSW mocks authenticated state)
     await page.goto('/accounts');
     await page.waitForLoadState('networkidle');
 
@@ -78,10 +47,7 @@ test.describe('Add Accounts', () => {
   });
 
   test('user adds multiple accounts', async ({page}) => {
-    // Arrange: Complete setup to get authenticated session
-    await completeSetup(page);
-
-    // Navigate to Accounts page
+    // Arrange: Navigate to Accounts page (MSW mocks authenticated state)
     await page.goto('/accounts');
     await page.waitForLoadState('networkidle');
 
