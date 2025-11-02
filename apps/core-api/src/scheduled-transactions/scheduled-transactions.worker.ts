@@ -9,6 +9,9 @@ import {TransactionsService} from '../transactions/transactions.service';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 import {DataSource} from 'typeorm';
 import {parseISO} from 'date-fns';
+import {ScheduledTransactionExecution} from './scheduled-transaction-execution.entity';
+import {Account} from 'src/accounts/account.entity';
+import {Transaction} from 'src/transactions/transaction.entity';
 
 interface CreateTransactionJobData {
   ruleId: string;
@@ -55,7 +58,7 @@ export class ScheduledTransactionsWorker extends WorkerHost {
       const transactionDate = parseISO(executionDate);
 
       await this.dataSource.transaction(async (manager) => {
-        const executionsRepo = manager.getRepository('scheduled_transaction_executions');
+        const executionsRepo = manager.getRepository(ScheduledTransactionExecution);
         const existingExecution = await executionsRepo.findOne({
           where: {
             ruleId: rule.id,
@@ -97,7 +100,7 @@ export class ScheduledTransactionsWorker extends WorkerHost {
           isReconciled: false,
         };
 
-        const transactionsRepo = manager.getRepository('transactions');
+        const transactionsRepo = manager.getRepository(Transaction);
         const transaction = transactionsRepo.create(transactionData) as {id: string};
         await transactionsRepo.save(transaction);
 
@@ -109,11 +112,10 @@ export class ScheduledTransactionsWorker extends WorkerHost {
         });
 
         // Update execution record with transaction ID
-        execution.transactionId = transaction.id;
-        await executionsRepo.save(execution);
+        await executionsRepo.update({ruleId: rule.id, executionDate: transactionDate}, {transactionId: transaction.id});
 
         // Update account balance
-        const accountsRepo = manager.getRepository('accounts');
+        const accountsRepo = manager.getRepository(Account);
         const account = (await accountsRepo.findOne({where: {id: rule.accountId}})) as {
           id: string;
           currentBalance: string | number;
