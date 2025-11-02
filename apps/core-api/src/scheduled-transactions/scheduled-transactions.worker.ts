@@ -58,8 +58,8 @@ export class ScheduledTransactionsWorker extends WorkerHost {
         const executionsRepo = manager.getRepository('scheduled_transaction_executions');
         const existingExecution = await executionsRepo.findOne({
           where: {
-            rule_id: rule.id,
-            execution_date: transactionDate,
+            ruleId: rule.id,
+            executionDate: transactionDate,
           },
         });
 
@@ -74,9 +74,9 @@ export class ScheduledTransactionsWorker extends WorkerHost {
 
         // Create execution record
         const execution = executionsRepo.create({
-          rule_id: rule.id,
-          execution_date: transactionDate,
-          transaction_id: null,
+          ruleId: rule.id,
+          executionDate: transactionDate,
+          transactionId: null,
         });
         await executionsRepo.save(execution);
 
@@ -109,10 +109,8 @@ export class ScheduledTransactionsWorker extends WorkerHost {
         });
 
         // Update execution record with transaction ID
-        await executionsRepo.update(
-          {rule_id: rule.id, execution_date: executionDate},
-          {transaction_id: transaction.id},
-        );
+        execution.transactionId = transaction.id;
+        await executionsRepo.save(execution);
 
         // Update account balance
         const accountsRepo = manager.getRepository('accounts');
