@@ -40,7 +40,7 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost implements OnM
       },
     );
 
-    this.logger.debug('Scheduled transactions orchestrator job registered (daily at midnight UTC)');
+    this.logger.debug('Scheduled transactions orchestrator job registered');
   }
 
   async process(job: Job): Promise<void> {
