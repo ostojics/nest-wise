@@ -23,6 +23,7 @@ import {AddScheduledTransactionExecutions1760300000001} from 'src/migrations/176
 import {ScheduledTransactionRule} from 'src/scheduled-transactions/scheduled-transaction-rule.entity';
 import {AddCategoryDescription1760998944930} from 'src/migrations/1760998944930-AddCategoryDescription';
 import {DropSavings1761000000000} from 'src/migrations/1761000000000-DropSavings';
+import {ScheduledTransactionExecution} from 'src/scheduled-transactions/scheduled-transaction-execution.entity';
 
 export const DatabaseConfigName = 'database';
 
@@ -49,6 +50,7 @@ export function getConfig(): DatabaseConfig {
       PrivateTransaction,
       License,
       ScheduledTransactionRule,
+      ScheduledTransactionExecution,
     ],
     useUTC: true,
     migrations: [
