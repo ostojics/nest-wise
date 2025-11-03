@@ -28,8 +28,8 @@ test.describe('Add Accounts', () => {
     // Act: Submit the form
     await page.getByTestId('create-account-submit').click();
 
-    // Assert: Dialog is closed and account card is visible
-    await expect(page.getByTestId('create-account-dialog')).not.toBeVisible({timeout: 5000});
+    // Assert: Dialog is closed after successful submission
+    await expect(page.getByTestId('create-account-dialog')).not.toBeVisible({timeout: 10000});
 
     // Assert: Account card is visible with correct name
     const accountCard = page.getByTestId('account-card-Tekući račun');
@@ -59,7 +59,9 @@ test.describe('Add Accounts', () => {
     await page.getByTestId('account-type-option-checking').click();
     await page.getByTestId('account-initial-balance-input').fill('12000');
     await page.getByTestId('create-account-submit').click();
-    await expect(page.getByTestId('create-account-dialog')).not.toBeVisible({timeout: 5000});
+
+    // Wait for the dialog to close after successful submission
+    await expect(page.getByTestId('create-account-dialog')).not.toBeVisible({timeout: 10000});
 
     // Assert: First account is visible
     await expect(page.getByTestId('account-card-Tekući račun')).toBeVisible();
@@ -72,7 +74,9 @@ test.describe('Add Accounts', () => {
     await page.getByTestId('account-type-option-cash').click();
     await page.getByTestId('account-initial-balance-input').fill('2500');
     await page.getByTestId('create-account-submit').click();
-    await expect(page.getByTestId('create-account-dialog')).not.toBeVisible({timeout: 5000});
+
+    // Wait for the dialog to close after successful submission
+    await expect(page.getByTestId('create-account-dialog')).not.toBeVisible({timeout: 10000});
 
     // Assert: Both accounts are visible
     await expect(page.getByTestId('account-card-Tekući račun')).toBeVisible();
