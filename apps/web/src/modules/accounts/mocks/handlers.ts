@@ -15,13 +15,15 @@ const mockAccount: AccountContract = {
 };
 
 // Store created accounts for the session
-const createdAccounts: AccountContract[] = [mockAccount];
+const createdAccounts: AccountContract[] = [];
 let accountIdCounter = 2;
 
 export const accountHandlers = [
   // GET /v1/households/:id/accounts
   http.get('*/v1/households/:id/accounts', () => {
-    return HttpResponse.json(createdAccounts, {
+    // Always include the default mock account plus any created accounts
+    const allAccounts = [mockAccount, ...createdAccounts];
+    return HttpResponse.json(allAccounts, {
       headers: {
         'Content-Type': 'application/json',
       },
