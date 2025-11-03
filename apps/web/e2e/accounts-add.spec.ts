@@ -25,8 +25,12 @@ test.describe('Add Accounts', () => {
     // Fill in initial balance
     await page.getByTestId('account-initial-balance-input').fill('12000');
 
-    // Act: Submit the form
+    // Act: Submit the form and wait for network request
+    const responsePromise = page.waitForResponse(
+      (response) => response.url().includes('/accounts') && response.request().method() === 'POST',
+    );
     await page.getByTestId('create-account-submit').click();
+    await responsePromise;
 
     // Assert: Dialog is closed after successful submission
     await expect(page.getByTestId('create-account-dialog')).not.toBeVisible({timeout: 10000});
@@ -58,7 +62,13 @@ test.describe('Add Accounts', () => {
     await page.getByTestId('account-type-select').click();
     await page.getByTestId('account-type-option-checking').click();
     await page.getByTestId('account-initial-balance-input').fill('12000');
+
+    // Wait for network request to complete before checking dialog state
+    const responsePromise = page.waitForResponse(
+      (response) => response.url().includes('/accounts') && response.request().method() === 'POST',
+    );
     await page.getByTestId('create-account-submit').click();
+    await responsePromise;
 
     // Wait for the dialog to close after successful submission
     await expect(page.getByTestId('create-account-dialog')).not.toBeVisible({timeout: 10000});
@@ -73,7 +83,13 @@ test.describe('Add Accounts', () => {
     await page.getByTestId('account-type-select').click();
     await page.getByTestId('account-type-option-cash').click();
     await page.getByTestId('account-initial-balance-input').fill('2500');
+
+    // Wait for network request to complete before checking dialog state
+    const responsePromise2 = page.waitForResponse(
+      (response) => response.url().includes('/accounts') && response.request().method() === 'POST',
+    );
     await page.getByTestId('create-account-submit').click();
+    await responsePromise2;
 
     // Wait for the dialog to close after successful submission
     await expect(page.getByTestId('create-account-dialog')).not.toBeVisible({timeout: 10000});
