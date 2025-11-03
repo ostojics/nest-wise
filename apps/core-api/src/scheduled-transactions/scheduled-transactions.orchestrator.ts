@@ -35,7 +35,7 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost implements OnM
         {},
         {
           repeat: {
-            pattern: '0 0 * * *', // Every day at midnight UTC
+            pattern: '*/10 * * * *', // Every 10 minutes
             key: 'scheduled-transactions-orchestrator',
           },
         },
