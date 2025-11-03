@@ -10,6 +10,7 @@ const mockAccount: AccountContract = {
   initialBalance: 150000,
   currentBalance: 150000, // $1500.00
   ownerId: 'u-1',
+  isActive: true,
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
 };

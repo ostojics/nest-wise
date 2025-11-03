@@ -68,6 +68,13 @@ export class Account {
   })
   currentBalance: number;
 
+  @Column({
+    type: 'boolean',
+    name: 'is_active',
+    default: true,
+  })
+  isActive: boolean;
+
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at',

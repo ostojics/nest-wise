@@ -24,6 +24,7 @@ export class AccountsRepository {
         'type',
         'initialBalance',
         'currentBalance',
+        'isActive',
         'createdAt',
         'updatedAt',
         'ownerId',
@@ -32,8 +33,12 @@ export class AccountsRepository {
     });
   }
 
-  async findByHouseholdId(householdId: string): Promise<Account[]> {
-    return await this.accountRepository.find({where: {householdId}});
+  async findByHouseholdId(householdId: string, options?: {isActive?: boolean}): Promise<Account[]> {
+    const where: {householdId: string; isActive?: boolean} = {householdId};
+    if (options?.isActive !== undefined) {
+      where.isActive = options.isActive;
+    }
+    return await this.accountRepository.find({where});
   }
 
   async findAll(): Promise<Account[]> {

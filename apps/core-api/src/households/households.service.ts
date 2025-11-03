@@ -76,13 +76,13 @@ export class HouseholdsService {
     }
   }
 
-  async findAccountsByHouseholdId(householdId: string): Promise<Account[]> {
+  async findAccountsByHouseholdId(householdId: string, options?: {isActive?: boolean}): Promise<Account[]> {
     const household = await this.householdsRepository.findById(householdId);
     if (!household) {
       throw new NotFoundException('Household not found');
     }
 
-    return await this.accountsService.findAccountsByHouseholdId(householdId);
+    return await this.accountsService.findAccountsByHouseholdId(householdId, options);
   }
 
   async findCategoriesByHouseholdId(householdId: string): Promise<Category[]> {

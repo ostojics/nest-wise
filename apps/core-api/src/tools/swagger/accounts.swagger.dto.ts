@@ -47,6 +47,12 @@ export class AccountResponseSwaggerDTO {
   householdId: string;
 
   @ApiProperty({
+    description: 'Account active status',
+    example: true,
+  })
+  isActive: boolean;
+
+  @ApiProperty({
     description: 'Creation timestamp',
     example: '2024-01-01T12:00:00.000Z',
   })
