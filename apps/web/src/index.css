@@ -131,6 +131,7 @@
   animation-delay: 200ms;
 }
 
+/* Temporary !important for toast colors */
 .app-toast[data-type='error'] {
   background-color: var(--destructive) !important;
   color: #fff !important;
