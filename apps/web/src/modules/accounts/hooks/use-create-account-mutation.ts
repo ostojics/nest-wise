@@ -7,10 +7,9 @@ import {HTTPError} from 'ky';
 
 interface UseCreateAccountMutationProps {
   householdId: string;
-  closeDialog: () => void;
 }
 
-export const useCreateAccountMutation = ({householdId, closeDialog}: UseCreateAccountMutationProps) => {
+export const useCreateAccountMutation = ({householdId}: UseCreateAccountMutationProps) => {
   const client = useQueryClient();
 
   return useMutation({
@@ -18,7 +17,6 @@ export const useCreateAccountMutation = ({householdId, closeDialog}: UseCreateAc
     onSuccess: () => {
       void client.invalidateQueries({queryKey: queryKeys.accounts.all()});
       toast.success('Račun je uspešno kreiran');
-      closeDialog();
     },
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;

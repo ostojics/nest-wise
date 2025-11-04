@@ -28,7 +28,6 @@ const CreateAccount = () => {
   const [isOpen, setIsOpen] = useState(false);
   const mutation = useCreateAccountMutation({
     householdId: household?.id ?? '',
-    closeDialog: () => setIsOpen(false),
   });
 
   const {
@@ -44,6 +43,7 @@ const CreateAccount = () => {
     mutation.mutate(data, {
       onSettled: () => {
         reset();
+        setIsOpen(false);
       },
     });
   };

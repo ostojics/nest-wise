@@ -3,10 +3,10 @@ import type {UserContract} from '@nest-wise/contracts';
 
 // Mock user data
 const mockUser: UserContract = {
-  id: 'u-1',
-  householdId: 'h-1',
+  id: '550e8400-e29b-41d4-a716-446655440001',
+  householdId: '550e8400-e29b-41d4-a716-446655440002',
   household: {
-    id: 'h-1',
+    id: '550e8400-e29b-41d4-a716-446655440002',
     name: 'Test Household',
     currencyCode: 'USD',
     monthlyBudget: 100000, // $1000.00

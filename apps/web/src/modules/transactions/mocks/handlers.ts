@@ -5,13 +5,13 @@ import {mockCategory1, mockCategory2} from '../../categories/mocks/handlers';
 
 // Mock account data (reused from accounts module)
 const mockAccount: AccountContract = {
-  id: 'a-1',
-  householdId: 'h-1',
+  id: '550e8400-e29b-41d4-a716-446655440003',
+  householdId: '550e8400-e29b-41d4-a716-446655440002',
   name: 'Checking Account',
   type: 'checking',
   initialBalance: 150000,
   currentBalance: 150000, // $1500.00
-  ownerId: 'u-1',
+  ownerId: '550e8400-e29b-41d4-a716-446655440001',
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
 };
@@ -19,10 +19,10 @@ const mockAccount: AccountContract = {
 // Mock transaction data
 const mockTransactions: TransactionContract[] = [
   {
-    id: 't-1',
-    householdId: 'h-1',
-    accountId: 'a-1',
-    categoryId: 'c-1',
+    id: '550e8400-e29b-41d4-a716-446655440006',
+    householdId: '550e8400-e29b-41d4-a716-446655440002',
+    accountId: '550e8400-e29b-41d4-a716-446655440003',
+    categoryId: '550e8400-e29b-41d4-a716-446655440004',
     amount: 25000, // $250.00
     type: TransactionType.EXPENSE,
     description: 'Grocery shopping',
@@ -34,10 +34,10 @@ const mockTransactions: TransactionContract[] = [
     category: mockCategory1,
   },
   {
-    id: 't-2',
-    householdId: 'h-1',
-    accountId: 'a-1',
-    categoryId: 'c-2',
+    id: '550e8400-e29b-41d4-a716-446655440007',
+    householdId: '550e8400-e29b-41d4-a716-446655440002',
+    accountId: '550e8400-e29b-41d4-a716-446655440003',
+    categoryId: '550e8400-e29b-41d4-a716-446655440005',
     amount: 15000, // $150.00
     type: TransactionType.EXPENSE,
     description: 'Utility bill',
