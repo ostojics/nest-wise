@@ -36,8 +36,8 @@ export class AccountsService {
     return account;
   }
 
-  async findAccountsByHouseholdId(householdId: string): Promise<Account[]> {
-    return await this.accountsRepository.findByHouseholdId(householdId);
+  async findAccountsByHouseholdId(householdId: string, options?: {isActive?: boolean}): Promise<Account[]> {
+    return await this.accountsRepository.findByHouseholdId(householdId, options);
   }
 
   async findAllAccounts(): Promise<Account[]> {
@@ -73,6 +73,34 @@ export class AccountsService {
     if (!deleted) {
       throw new NotFoundException('Račun nije pronađen');
     }
+  }
+
+  async activateAccount(id: string): Promise<Account> {
+    const existingAccount = await this.accountsRepository.findById(id);
+    if (!existingAccount) {
+      throw new NotFoundException('Račun nije pronađen');
+    }
+
+    const updatedAccount = await this.accountsRepository.update(id, {isActive: true});
+    if (!updatedAccount) {
+      throw new NotFoundException('Račun nije pronađen');
+    }
+
+    return updatedAccount;
+  }
+
+  async deactivateAccount(id: string): Promise<Account> {
+    const existingAccount = await this.accountsRepository.findById(id);
+    if (!existingAccount) {
+      throw new NotFoundException('Račun nije pronađen');
+    }
+
+    const updatedAccount = await this.accountsRepository.update(id, {isActive: false});
+    if (!updatedAccount) {
+      throw new NotFoundException('Račun nije pronađen');
+    }
+
+    return updatedAccount;
   }
 
   // Household-scoped version that validates accounts belong to the specified household

@@ -4,7 +4,7 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {getAccountDisplayName} from '@/lib/utils';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useGetActiveHouseholdAccounts} from '@/modules/accounts/hooks/use-get-active-household-accounts';
 import {useCreateTransactionAI} from '@/modules/transactions/hooks/use-create-transaction-ai';
 import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
 import {useValidateCreateAiTransaction} from '@/modules/transactions/hooks/use-validate-create-ai-transaction';
@@ -18,7 +18,7 @@ interface AiTransactionFormProps {
 }
 
 export function AiTransactionForm({onSuccess, onCancel}: AiTransactionFormProps) {
-  const {data: accounts} = useGetHouseholdAccounts();
+  const {data: accounts} = useGetActiveHouseholdAccounts();
   const hasAccounts = (accounts ?? []).length > 0;
 
   const createAiTransactionMutation = useCreateTransactionAI();

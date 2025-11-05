@@ -5,7 +5,7 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {dateAtNoon, getAccountDisplayName} from '@/lib/utils';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useGetActiveHouseholdAccounts} from '@/modules/accounts/hooks/use-get-active-household-accounts';
 import {useGetHouseholdCategories} from '@/modules/categories/hooks/use-get-household-categories';
 import {useCreateTransaction} from '@/modules/transactions/hooks/use-create-transaction';
 import {useValidateCreateTransaction} from '@/modules/transactions/hooks/use-validate-create-transaction';
@@ -19,7 +19,7 @@ interface ManualTransactionFormProps {
 }
 
 export function ManualTransactionForm({onSuccess, onCancel}: ManualTransactionFormProps) {
-  const {data: accounts} = useGetHouseholdAccounts();
+  const {data: accounts} = useGetActiveHouseholdAccounts();
   const {data: categories} = useGetHouseholdCategories();
   const hasAccounts = (accounts ?? []).length > 0;
 

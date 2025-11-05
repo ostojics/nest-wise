@@ -5,8 +5,13 @@ export const getHouseholdById = (id: string) => {
   return httpClient.get(`v1/households/${id}`).json<HouseholdContract>();
 };
 
-export const getHouseholdAccounts = (householdId: string) => {
-  return httpClient.get(`v1/households/${householdId}/accounts`).json<AccountContract[]>();
+export const getHouseholdAccounts = (householdId: string, opts?: {active?: boolean}) => {
+  const searchParams = opts?.active !== undefined ? new URLSearchParams({active: String(opts.active)}) : undefined;
+  return httpClient.get(`v1/households/${householdId}/accounts`, {searchParams}).json<AccountContract[]>();
+};
+
+export const getActiveHouseholdAccounts = (householdId: string) => {
+  return getHouseholdAccounts(householdId, {active: true});
 };
 
 export const getHouseholdCategories = (householdId: string) => {

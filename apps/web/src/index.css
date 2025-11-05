@@ -131,14 +131,15 @@
   animation-delay: 200ms;
 }
 
+/* Temporary !important for toast colors */
 .app-toast[data-type='error'] {
-  background-color: var(--destructive);
-  color: #fff;
-  border-color: var(--destructive);
+  background-color: var(--destructive) !important;
+  color: #fff !important;
+  border-color: var(--destructive) !important;
 }
 
 .app-toast[data-type='success'] {
-  background-color: var(--chart-5);
-  color: #fff;
-  border-color: var(--chart-5);
+  background-color: var(--chart-5) !important;
+  color: #fff !important;
+  border-color: var(--chart-5) !important;
 }

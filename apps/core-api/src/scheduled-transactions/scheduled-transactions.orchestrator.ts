@@ -29,18 +29,25 @@ export class ScheduledTransactionsOrchestrator extends WorkerHost implements OnM
   }
 
   async onModuleInit() {
-    await this.queue.add(
-      ScheduledTransactionJobs.ORCHESTRATOR,
-      {},
-      {
-        repeat: {
-          pattern: '0 0 * * *', // Daily at midnight UTC
+    try {
+      await this.queue.add(
+        ScheduledTransactionJobs.ORCHESTRATOR,
+        {},
+        {
+          repeat: {
+            pattern: '*/10 * * * *', // Every 10 minutes
+            key: 'scheduled-transactions-orchestrator',
+          },
         },
-        jobId: 'scheduled-transactions-orchestrator',
-      },
-    );
+      );
 
-    this.logger.debug('Scheduled transactions orchestrator job registered (daily at midnight UTC)');
+      this.logger.debug('Scheduled transactions orchestrator job registered');
+    } catch (error) {
+      this.logger.error('Failed to register scheduled transactions orchestrator job', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      });
+    }
   }
 
   async process(job: Job): Promise<void> {

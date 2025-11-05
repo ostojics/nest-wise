@@ -2,6 +2,7 @@ import {Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {BullModule} from '@nestjs/bullmq';
 import {ScheduledTransactionRule} from './scheduled-transaction-rule.entity';
+import {ScheduledTransactionExecution} from './scheduled-transaction-execution.entity';
 import {ScheduledTransactionsRepository} from './scheduled-transactions.repository';
 import {ScheduledTransactionsService} from './scheduled-transactions.service';
 import {ScheduledTransactionsController} from './scheduled-transactions.controller';
@@ -15,7 +16,7 @@ import {PoliciesModule} from '../policies/policies.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ScheduledTransactionRule]),
+    TypeOrmModule.forFeature([ScheduledTransactionRule, ScheduledTransactionExecution]),
     BullModule.registerQueue({
       name: Queues.SCHEDULED_TRANSACTIONS,
     }),

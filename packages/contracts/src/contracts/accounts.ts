@@ -14,6 +14,7 @@ export interface AccountContract {
   currentBalance: number;
   ownerId: string;
   householdId: string;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -93,3 +94,14 @@ export const transferFundsSchema = z
   });
 
 export type TransferFundsDTO = z.infer<typeof transferFundsSchema>;
+
+export const updateAccountActivationSchema = z
+  .object({
+    isActive: z.boolean({
+      required_error: 'Status aktivnosti je obavezan',
+      invalid_type_error: 'Neispravna vrednost (mora biti logička vrednost)',
+    }),
+  })
+  .strict();
+
+export type UpdateAccountActivationDTO = z.infer<typeof updateAccountActivationSchema>;

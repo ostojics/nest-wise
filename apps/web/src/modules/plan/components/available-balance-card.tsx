@@ -1,5 +1,5 @@
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
-import {useGetHouseholdAccounts} from '@/modules/accounts/hooks/use-get-household-accounts';
+import {useGetActiveHouseholdAccounts} from '@/modules/accounts/hooks/use-get-active-household-accounts';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {IconWallet} from '@tabler/icons-react';
 import {useMemo} from 'react';
@@ -8,7 +8,7 @@ import AvailableBalanceCardError from './available-balance-card.error';
 import AccountTypeTotals from '@/modules/accounts/components/account-type-totals';
 
 const AvailableBalanceCard = () => {
-  const {data: accounts, isLoading, isError, refetch} = useGetHouseholdAccounts();
+  const {data: accounts, isLoading, isError, refetch} = useGetActiveHouseholdAccounts();
   const {formatBalance} = useFormatBalance();
 
   const netWorth = useMemo(() => {

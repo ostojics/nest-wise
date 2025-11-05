@@ -27,3 +27,11 @@ export const transferFundsForHousehold = (householdId: string, dto: TransferFund
     })
     .json();
 };
+
+export const activateAccount = (id: string) => {
+  return httpClient.patch(`v1/accounts/${id}/activate`).json();
+};
+
+export const deactivateAccount = (id: string) => {
+  return httpClient.patch(`v1/accounts/${id}/deactivate`).json();
+};
