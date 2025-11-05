@@ -34,7 +34,7 @@ function ScheduledTransactionsPageContent() {
     <section className="p-4 space-y-4">
       <TextBanner
         aria-label="Zakazane transakcije"
-        text="Zakazane transakcije omogućavaju automatsko kreiranje ponavljajućih transakcija. Podesite frekvenciju i iznos, a transakcije će biti kreirane po vašem rasporedu."
+        text="Zakazane transakcije omogućavaju kreiranje ponavljajućih transakcija. Podesite frekvenciju i iznos, a transakcije će biti kreirane po vašem rasporedu."
       />
       <div className="flex items-center gap-2">
         <ScheduleDialog />
