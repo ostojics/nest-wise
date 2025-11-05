@@ -43,6 +43,7 @@ const Account: React.FC<AccountProps> = ({account}) => {
         '@container/account-card hover:shadow-md transition-shadow duration-200',
         !account.isActive && 'opacity-60',
       )}
+      data-testid={`account-card-${account.name}`}
     >
       <CardHeader>
         <div className="flex flex-col items-start gap-3 md:gap-0 md:flex-row md:items-center justify-between">
@@ -53,7 +54,9 @@ const Account: React.FC<AccountProps> = ({account}) => {
               </div>
             )}
             <div>
-              <CardTitle className="text-md font-semibold">{account.name}</CardTitle>
+              <CardTitle className="text-md font-semibold" data-testid="account-name">
+                {account.name}
+              </CardTitle>
               <CardDescription className="text-sm text-muted-foreground">
                 {accountType?.label ?? account.type}
               </CardDescription>
@@ -80,6 +83,7 @@ const Account: React.FC<AccountProps> = ({account}) => {
               'text-right font-semibold tabular-nums',
               account.currentBalance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
             )}
+            data-testid="account-balance"
           >
             {formatBalance(account.currentBalance)}
           </div>

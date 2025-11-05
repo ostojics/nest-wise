@@ -3,8 +3,8 @@ import type {CategoryContract} from '@nest-wise/contracts';
 
 // Mock category data
 const mockCategory1: CategoryContract = {
-  id: 'c-1',
-  householdId: 'h-1',
+  id: '550e8400-e29b-41d4-a716-446655440004',
+  householdId: '550e8400-e29b-41d4-a716-446655440002',
   name: 'Groceries',
   description: null,
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
@@ -12,8 +12,8 @@ const mockCategory1: CategoryContract = {
 };
 
 const mockCategory2: CategoryContract = {
-  id: 'c-2',
-  householdId: 'h-1',
+  id: '550e8400-e29b-41d4-a716-446655440005',
+  householdId: '550e8400-e29b-41d4-a716-446655440002',
   name: 'Utilities',
   description: null,
   createdAt: new Date('2024-01-01T00:00:00.000Z'),

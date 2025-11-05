@@ -3,7 +3,7 @@ import type {HouseholdContract} from '@nest-wise/contracts';
 
 // Mock household data
 const mockHousehold: HouseholdContract = {
-  id: 'h-1',
+  id: '550e8400-e29b-41d4-a716-446655440002',
   name: 'Test Household',
   currencyCode: 'USD',
   monthlyBudget: 100000, // $1000.00

@@ -28,7 +28,6 @@ const CreateAccount = () => {
   const [isOpen, setIsOpen] = useState(false);
   const mutation = useCreateAccountMutation({
     householdId: household?.id ?? '',
-    closeDialog: () => setIsOpen(false),
   });
 
   const {
@@ -44,6 +43,7 @@ const CreateAccount = () => {
     mutation.mutate(data, {
       onSettled: () => {
         reset();
+        setIsOpen(false);
       },
     });
   };
@@ -65,12 +65,12 @@ const CreateAccount = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button>
+        <Button data-testid="create-account-button">
           <PlusIcon className="w-4 h-4" />
           Dodaj račun
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col" data-testid="create-account-dialog">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Wallet className="w-5 h-5" />
@@ -92,6 +92,7 @@ const CreateAccount = () => {
                 {...register('name')}
                 placeholder="npr. Tekući račun, Fond za hitne slučajeve"
                 className="w-full"
+                data-testid="account-name-input"
               />
               {errors.name && <FormError error={errors.name.message ?? 'Neispravan naziv računa'} />}
             </div>
@@ -99,13 +100,18 @@ const CreateAccount = () => {
             <div className="space-y-3">
               <Label className="text-sm font-medium">Tip računa</Label>
               <Select value={selectedType} onValueChange={handleTypeChange}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full" data-testid="account-type-select">
                   <SelectValue placeholder="Izaberite tip računa" />
                 </SelectTrigger>
                 <SelectContent>
                   {accountTypes.map((type) => {
                     return (
-                      <SelectItem key={type.value} value={type.value} className="cursor-pointer">
+                      <SelectItem
+                        key={type.value}
+                        value={type.value}
+                        className="cursor-pointer"
+                        data-testid={`account-type-option-${type.value}`}
+                      >
                         <div className="flex items-center gap-2">
                           <div className="flex flex-col">
                             <span className="font-medium">{type.label}</span>
@@ -131,6 +137,7 @@ const CreateAccount = () => {
                   step="0.01"
                   {...register('initialBalance')}
                   placeholder="0,00"
+                  data-testid="account-initial-balance-input"
                 />
               </div>
               {errors.initialBalance && <FormError error={errors.initialBalance.message ?? ''} />}
@@ -145,7 +152,7 @@ const CreateAccount = () => {
                   Otkaži
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={mutation.isPending}>
+              <Button type="submit" disabled={mutation.isPending} data-testid="create-account-submit">
                 {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Kreiraj račun'}
               </Button>
             </div>
