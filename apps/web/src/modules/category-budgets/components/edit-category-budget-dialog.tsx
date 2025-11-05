@@ -60,11 +60,16 @@ const EditCategoryBudgetDialog = ({
       }}
     >
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" disabled={!enableTrigger}>
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={!enableTrigger}
+          data-testid={`edit-budget-button-${categoryBudgetId}`}
+        >
           Dodeli
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] flex flex-col">
+      <DialogContent className="max-h-[90vh] flex flex-col" data-testid="edit-budget-dialog">
         <DialogHeader className="mb-3">
           <DialogTitle>Dodeli planirani iznos</DialogTitle>
           <DialogDescription>
@@ -81,6 +86,7 @@ const EditCategoryBudgetDialog = ({
                   type="number"
                   inputMode="decimal"
                   step="0.01"
+                  data-testid="planned-amount-input"
                   {...register('plannedAmount')}
                 />
                 {errors.plannedAmount?.message && <FormError error={errors.plannedAmount.message} />}
@@ -92,7 +98,7 @@ const EditCategoryBudgetDialog = ({
                   Otkaži
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={mutation.isPending}>
+              <Button type="submit" disabled={mutation.isPending} data-testid="edit-budget-submit">
                 {mutation.isPending ? <Loader2 className="size-4 animate-spin" /> : 'Sačuvaj'}
               </Button>
             </DialogFooter>
