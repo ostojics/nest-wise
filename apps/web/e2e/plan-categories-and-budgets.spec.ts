@@ -92,23 +92,16 @@ test.describe('Plan - Categories & Budgets', () => {
     // Assert: Edit budget dialog opens
     await expect(page.getByTestId('edit-budget-dialog')).toBeVisible();
 
-    // Act: Fill in new planned amount
-    const plannedAmountInput = page.getByTestId('planned-amount-input');
-    await plannedAmountInput.waitFor({state: 'visible'});
-    await plannedAmountInput.click();
-    await plannedAmountInput.press('Control+A');
-    await plannedAmountInput.type('50000');
+    // Act: Fill in new planned amount (fill automatically clears the input)
+    await page.getByTestId('planned-amount-input').fill('50000');
 
-    // Act: Submit the form and wait for network request
-    const submitButton = page.getByTestId('edit-budget-submit');
-    await submitButton.waitFor({state: 'visible'});
-    await submitButton.click();
-
-    // Wait for response
-    await page.waitForResponse(
+    // Act: Submit the form - use force click to bypass stability issues due to validation re-renders
+    const responsePromise = page.waitForResponse(
       (response) => response.url().includes('/category-budgets/') && response.request().method() === 'PATCH',
       {timeout: 10000},
     );
+    await page.getByTestId('edit-budget-submit').click({force: true});
+    await responsePromise;
 
     // Assert: Success toast message appears
     await expect(page.getByText('Budžet kategorije je uspešno ažuriran')).toBeVisible();
@@ -145,22 +138,15 @@ test.describe('Plan - Categories & Budgets', () => {
     await editButton.click();
     await expect(page.getByTestId('edit-budget-dialog')).toBeVisible();
 
-    // Act: Set plannedAmount to 15000
-    const plannedAmountInput = page.getByTestId('planned-amount-input');
-    await plannedAmountInput.waitFor({state: 'visible'});
-    await plannedAmountInput.click();
-    await plannedAmountInput.press('Control+A');
-    await plannedAmountInput.type('15000');
+    // Act: Set plannedAmount to 15000 (fill automatically clears the input)
+    await page.getByTestId('planned-amount-input').fill('15000');
 
-    const submitButton = page.getByTestId('edit-budget-submit');
-    await submitButton.waitFor({state: 'visible'});
-    await submitButton.click();
-
-    // Wait for response
-    await page.waitForResponse(
+    const responsePromise = page.waitForResponse(
       (response) => response.url().includes('/category-budgets/') && response.request().method() === 'PATCH',
       {timeout: 10000},
     );
+    await page.getByTestId('edit-budget-submit').click({force: true});
+    await responsePromise;
 
     // Assert: Budget is updated; toast confirms success
     await expect(page.getByText('Budžet kategorije je uspešno ažuriran')).toBeVisible();
