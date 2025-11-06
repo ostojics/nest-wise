@@ -2,6 +2,12 @@ import {http, HttpResponse} from 'msw';
 import {mockCategory1, mockCategory2, createdCategories} from '../../categories/mocks/handlers';
 import type {CategoryBudgetWithCurrentAmountContract, EditCategoryBudgetDTO} from '@nest-wise/contracts';
 
+// Get current month in YYYY-MM format for mock data
+const getCurrentMonth = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+};
+
 // In-memory storage for category budgets
 const mockBudgets: CategoryBudgetWithCurrentAmountContract[] = [
   {
@@ -10,7 +16,7 @@ const mockBudgets: CategoryBudgetWithCurrentAmountContract[] = [
     categoryId: '550e8400-e29b-41d4-a716-446655440004',
     plannedAmount: 30000, // $300.00
     currentAmount: 25000, // $250.00 (Groceries spending)
-    month: '2024-01',
+    month: getCurrentMonth(),
     category: mockCategory1,
     createdAt: new Date('2024-01-01T00:00:00.000Z'),
     updatedAt: new Date('2024-01-01T00:00:00.000Z'),
@@ -21,7 +27,7 @@ const mockBudgets: CategoryBudgetWithCurrentAmountContract[] = [
     categoryId: '550e8400-e29b-41d4-a716-446655440005',
     plannedAmount: 20000, // $200.00
     currentAmount: 15000, // $150.00 (Utilities spending)
-    month: '2024-01',
+    month: getCurrentMonth(),
     category: mockCategory2,
     createdAt: new Date('2024-01-01T00:00:00.000Z'),
     updatedAt: new Date('2024-01-01T00:00:00.000Z'),
@@ -32,7 +38,7 @@ export const categoryBudgetHandlers = [
   // GET /v1/households/:id/category-budgets (for category budgets list)
   http.get('*/v1/households/:id/category-budgets', ({request}) => {
     const url = new URL(request.url);
-    const month = url.searchParams.get('month') ?? '2024-01';
+    const month = url.searchParams.get('month') ?? getCurrentMonth();
 
     // Auto-create budgets for any newly created categories
     const allCategories = [mockCategory1, mockCategory2, ...createdCategories];

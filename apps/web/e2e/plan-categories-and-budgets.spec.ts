@@ -95,13 +95,14 @@ test.describe('Plan - Categories & Budgets', () => {
     // Act: Fill in new planned amount (fill automatically clears the input)
     await page.getByTestId('planned-amount-input').fill('50000');
 
-    // Act: Submit the form - use force click to bypass stability issues due to validation re-renders
-    const responsePromise = page.waitForResponse(
-      (response) => response.url().includes('/category-budgets/') && response.request().method() === 'PATCH',
-      {timeout: 10000},
-    );
-    await page.getByTestId('edit-budget-submit').click({force: true});
-    await responsePromise;
+    // Act: Submit the form and wait for network request
+    await Promise.all([
+      page.waitForResponse(
+        (response) => response.url().includes('/category-budgets/') && response.request().method() === 'PATCH',
+        {timeout: 10000},
+      ),
+      page.getByTestId('edit-budget-submit').click({force: true}),
+    ]);
 
     // Assert: Success toast message appears
     await expect(page.getByText('Budžet kategorije je uspešno ažuriran')).toBeVisible();
