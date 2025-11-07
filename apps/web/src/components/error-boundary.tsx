@@ -1,7 +1,7 @@
 import {useRouter} from '@tanstack/react-router';
 import {Button} from '@/components/ui/button';
 
-export function DefaultErrorComponent({error, reset}: {error: Error; reset: () => void}) {
+export function DefaultErrorComponent({reset}: {error: Error; reset: () => void}) {
   const router = useRouter();
 
   return (
