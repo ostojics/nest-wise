@@ -4,9 +4,12 @@ import {toast} from 'sonner';
 import {queryKeys} from '@/modules/api/query-keys';
 import {HTTPError} from 'ky';
 import {ErrorResponse} from '@nest-wise/contracts';
+import posthog from 'posthog-js';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 export const useActivateAccountMutation = (accountId: string) => {
   const queryClient = useQueryClient();
+  const {data: me} = useGetMe();
 
   return useMutation({
     mutationFn: () => activateAccount(accountId),
@@ -17,6 +20,17 @@ export const useActivateAccountMutation = (accountId: string) => {
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'useActivateAccountMutation',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+          accountId,
+        },
+      });
 
       if (err.message) {
         toast.error(err.message);

@@ -5,6 +5,8 @@ import {useQueryClient} from '@tanstack/react-query';
 import {queryKeys} from '@/modules/api/query-keys';
 import {HTTPError} from 'ky';
 import {ErrorResponse, TransferFundsDTO} from '@nest-wise/contracts';
+import posthog from 'posthog-js';
+import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 interface UseTransferFundsMutationProps {
   householdId: string;
@@ -12,6 +14,7 @@ interface UseTransferFundsMutationProps {
 
 export const useTransferFundsMutation = ({householdId}: UseTransferFundsMutationProps) => {
   const queryClient = useQueryClient();
+  const {data: me} = useGetMe();
 
   return useMutation({
     mutationFn: (dto: TransferFundsDTO) => transferFundsForHousehold(householdId, dto),
@@ -22,6 +25,16 @@ export const useTransferFundsMutation = ({householdId}: UseTransferFundsMutation
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'useTransferFundsMutation',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
+      });
 
       if (err.message) {
         toast.error(err.message);
