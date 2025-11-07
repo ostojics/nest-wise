@@ -1,5 +1,6 @@
 import {isPublicRoute} from '@/lib/utils';
 import ky from 'ky';
+import posthog from 'posthog-js';
 
 const httpClient = ky.create({
   prefixUrl: import.meta.env.VITE_API_URL as string,
@@ -13,6 +14,21 @@ const extended = httpClient.extend({
         if (isPublicRoute(window.location.pathname)) return response;
 
         const {status} = response;
+
+        // Log HTTP errors to PostHog
+        if (!response.ok) {
+          posthog.captureException(new Error(`HTTP ${status}: ${response.url}`), {
+            context: {
+              feature: 'ApiClient',
+            },
+            meta: {
+              status,
+              url: response.url,
+              method: _request.method,
+            },
+          });
+        }
+
         if (status === 401 || status === 403) {
           window.location.href = '/login';
         }
