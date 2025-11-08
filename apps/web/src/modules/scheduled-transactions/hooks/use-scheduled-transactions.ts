@@ -68,6 +68,10 @@ export const useCreateScheduledTransaction = () => {
         context: {
           feature: 'scheduled_transaction_create',
         },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
       });
 
       if (err.message) {
@@ -102,6 +106,10 @@ export const useUpdateScheduledTransaction = () => {
       posthog.captureException(error, {
         context: {
           feature: 'scheduled_transaction_update',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
         },
       });
 
@@ -138,6 +146,10 @@ export const usePauseScheduledTransaction = () => {
         context: {
           feature: 'scheduled_transaction_pause',
         },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
       });
 
       if (err.message) {
@@ -173,6 +185,10 @@ export const useResumeScheduledTransaction = () => {
         context: {
           feature: 'scheduled_transaction_resume',
         },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
       });
 
       if (err.message) {
@@ -207,6 +223,10 @@ export const useDeleteScheduledTransaction = () => {
       posthog.captureException(error, {
         context: {
           feature: 'scheduled_transaction_delete',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
         },
       });
 

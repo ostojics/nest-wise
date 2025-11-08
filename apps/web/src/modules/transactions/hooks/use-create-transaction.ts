@@ -29,6 +29,10 @@ export const useCreateTransaction = () => {
         context: {
           feature: 'transaction_create',
         },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
       });
 
       if (err.message) {
