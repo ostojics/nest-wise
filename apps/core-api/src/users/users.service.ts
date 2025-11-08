@@ -11,6 +11,7 @@ import {JwtService} from '@nestjs/jwt';
 import {Logger} from 'pino-nestjs';
 import {ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
+import {PosthogService} from 'src/lib/posthog/posthog.service';
 
 @Injectable()
 export class UsersService {
@@ -21,6 +22,7 @@ export class UsersService {
     private readonly jwtService: JwtService,
     private readonly logger: Logger,
     private readonly configService: ConfigService,
+    private readonly posthogService: PosthogService,
   ) {}
 
   async createUser(userData: CreateUserDTO & {isHouseholdAuthor?: boolean}): Promise<User> {
@@ -128,6 +130,16 @@ export class UsersService {
       username: dto.username,
       password: dto.password,
       householdId: payload.sub,
+    });
+
+    // Track user joining household
+    this.posthogService.capture({
+      distinctId: user.id,
+      event: 'user_joined_household',
+      properties: {
+        user_id: user.id,
+        household_id: payload.sub,
+      },
     });
 
     const jwt = await this.craftJwt(user.id, user.email);

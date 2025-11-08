@@ -45,7 +45,7 @@ export class AuthService {
 
       await this.licensesService.markLicenseAsUsed(license.id);
 
-      // Track household creation and user signup
+      // Track household creation and user account creation
       this.posthogService.capture({
         distinctId: user.id,
         event: 'household_created',
@@ -58,17 +58,9 @@ export class AuthService {
 
       this.posthogService.capture({
         distinctId: user.id,
-        event: 'user_signup',
+        event: 'user_account_created',
         properties: {
-          email: user.email,
-          signup_method: 'email',
-        },
-      });
-
-      this.posthogService.capture({
-        distinctId: user.id,
-        event: 'setup_completed',
-        properties: {
+          user_id: user.id,
           household_id: household.id,
         },
       });
@@ -94,16 +86,6 @@ export class AuthService {
     if (!user || !passwordIsValid) {
       throw new UnauthorizedException('Neispravni kredencijali');
     }
-
-    // Track user login
-    this.posthogService.capture({
-      distinctId: user.id,
-      event: 'user_login',
-      properties: {
-        email: user.email,
-        login_method: 'email',
-      },
-    });
 
     const token = await this.craftJwt(user.id, user.email);
 

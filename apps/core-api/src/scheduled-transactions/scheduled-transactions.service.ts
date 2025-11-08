@@ -18,7 +18,6 @@ import {CategoriesService} from '../categories/categories.service';
 import {UTCDate} from '@date-fns/utc';
 import {setHours, parseISO, startOfDay} from 'date-fns';
 import {isDateInPast} from './date.util';
-import {PosthogService} from 'src/lib/posthog/posthog.service';
 
 @Injectable()
 export class ScheduledTransactionsService {
@@ -27,7 +26,6 @@ export class ScheduledTransactionsService {
     private readonly accountsService: AccountsService,
     private readonly categoriesService: CategoriesService,
     private readonly logger: Logger,
-    private readonly posthogService: PosthogService,
   ) {}
 
   async createRule(
@@ -82,18 +80,6 @@ export class ScheduledTransactionsService {
       ruleId: rule.id,
       householdId,
       userId,
-    });
-
-    // Track scheduled rule creation
-    this.posthogService.capture({
-      distinctId: userId,
-      event: 'scheduled_rule_created',
-      properties: {
-        household_id: householdId,
-        rule_id: rule.id,
-        frequency_type: rule.frequencyType,
-        status: rule.status,
-      },
     });
 
     return rule;
@@ -182,7 +168,7 @@ export class ScheduledTransactionsService {
     return updatedRule;
   }
 
-  async pauseRule(id: string, householdId: string, userId?: string): Promise<ScheduledTransactionRule> {
+  async pauseRule(id: string, householdId: string): Promise<ScheduledTransactionRule> {
     const rule = await this.findRuleById(id);
 
     if (rule.householdId !== householdId) {
@@ -200,21 +186,10 @@ export class ScheduledTransactionsService {
 
     this.logger.debug(`Paused scheduled transaction rule ${id}`, {ruleId: id, householdId});
 
-    // Track status change
-    this.posthogService.capture({
-      distinctId: userId ?? rule.createdBy,
-      event: 'scheduled_rule_status_changed',
-      properties: {
-        household_id: householdId,
-        rule_id: id,
-        new_status: ScheduledTransactionStatus.PAUSED,
-      },
-    });
-
     return updatedRule;
   }
 
-  async resumeRule(id: string, householdId: string, userId?: string): Promise<ScheduledTransactionRule> {
+  async resumeRule(id: string, householdId: string): Promise<ScheduledTransactionRule> {
     const rule = await this.findRuleById(id);
 
     if (rule.householdId !== householdId) {
@@ -231,17 +206,6 @@ export class ScheduledTransactionsService {
     }
 
     this.logger.debug(`Resumed scheduled transaction rule ${id}`, {ruleId: id, householdId});
-
-    // Track status change
-    this.posthogService.capture({
-      distinctId: userId ?? rule.createdBy,
-      event: 'scheduled_rule_status_changed',
-      properties: {
-        household_id: householdId,
-        rule_id: id,
-        new_status: ScheduledTransactionStatus.ACTIVE,
-      },
-    });
 
     return updatedRule;
   }

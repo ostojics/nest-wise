@@ -6,7 +6,6 @@ import {Account} from 'src/accounts/account.entity';
 import type {CreateHouseholdDTO, UpdateHouseholdDTO} from '@nest-wise/contracts';
 import {CategoriesService} from 'src/categories/categories.service';
 import {Category} from 'src/categories/categories.entity';
-import {PosthogService} from 'src/lib/posthog/posthog.service';
 
 @Injectable()
 export class HouseholdsService {
@@ -14,7 +13,6 @@ export class HouseholdsService {
     private readonly householdsRepository: HouseholdsRepository,
     private readonly accountsService: AccountsService,
     private readonly categoriesService: CategoriesService,
-    private readonly posthogService: PosthogService,
   ) {}
 
   async createHousehold(householdData: CreateHouseholdDTO & {licenseId: string}): Promise<Household> {

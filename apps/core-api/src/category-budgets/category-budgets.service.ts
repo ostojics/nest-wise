@@ -11,7 +11,6 @@ import {endOfMonth, format, isBefore, startOfMonth} from 'date-fns';
 import {TransactionsService} from 'src/transactions/transactions.service';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
 import {UTCDate} from '@date-fns/utc';
-import {PosthogService} from 'src/lib/posthog/posthog.service';
 
 @Injectable()
 export class CategoryBudgetsService {
@@ -20,7 +19,6 @@ export class CategoryBudgetsService {
     private readonly categoriesService: CategoriesService,
     private readonly categoryBudgetsRepository: CategoryBudgetsRepository,
     private readonly transactionsService: TransactionsService,
-    private readonly posthogService: PosthogService,
   ) {}
 
   async getCategoryBudgetsForMonth(userId: string, month: string): Promise<CategoryBudgetWithCurrentAmountContract[]> {
@@ -90,7 +88,7 @@ export class CategoryBudgetsService {
     return budget as CategoryBudgetContract;
   }
 
-  async updateCategoryBudget(id: string, dto: EditCategoryBudgetDTO, userId?: string): Promise<CategoryBudgetContract> {
+  async updateCategoryBudget(id: string, dto: EditCategoryBudgetDTO): Promise<CategoryBudgetContract> {
     const categoryBudget = await this.findCategoryBudgetById(id);
     const currentDate = new UTCDate();
     const categoryBudgetMonth = new UTCDate(categoryBudget.month);
@@ -105,19 +103,6 @@ export class CategoryBudgetsService {
     if (!updated) {
       throw new NotFoundException('Budžet kategorije nije pronađen');
     }
-
-    // Track budget update
-    this.posthogService.capture({
-      distinctId: userId ?? 'system',
-      event: 'budget_created',
-      properties: {
-        household_id: updated.householdId,
-        budget_id: updated.id,
-        category_id: updated.categoryId,
-        amount: updated.plannedAmount.toString(),
-        month: updated.month,
-      },
-    });
 
     return updated as CategoryBudgetContract;
   }

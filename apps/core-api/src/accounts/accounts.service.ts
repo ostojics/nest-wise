@@ -3,14 +3,12 @@ import {BadRequestException, ConflictException, Injectable, NotFoundException} f
 import {Account} from './account.entity';
 import {AccountsRepository} from './accounts.repository';
 import {DataSource} from 'typeorm';
-import {PosthogService} from 'src/lib/posthog/posthog.service';
 
 @Injectable()
 export class AccountsService {
   constructor(
     private readonly accountsRepository: AccountsRepository,
     private readonly dataSource: DataSource,
-    private readonly posthogService: PosthogService,
   ) {}
 
   // Household-scoped version where householdId comes from path parameter
@@ -20,7 +18,7 @@ export class AccountsService {
       throw new ConflictException('Naziv računa već postoji u ovom domaćinstvu');
     }
 
-    const account = await this.accountsRepository.create({
+    return await this.accountsRepository.create({
       name: accountData.name,
       type: accountData.type,
       initialBalance: accountData.initialBalance,
@@ -28,21 +26,6 @@ export class AccountsService {
       ownerId: accountData.ownerId,
       householdId: householdId,
     });
-
-    // Track account creation
-    this.posthogService.capture({
-      distinctId: accountData.ownerId,
-      event: 'account_created',
-      properties: {
-        household_id: householdId,
-        account_id: account.id,
-        account_type: account.type,
-        account_name: account.name,
-        initial_balance: account.currentBalance.toString(),
-      },
-    });
-
-    return account;
   }
 
   async findAccountById(id: string): Promise<Account> {
@@ -103,17 +86,6 @@ export class AccountsService {
       throw new NotFoundException('Račun nije pronađen');
     }
 
-    // Track account status change
-    this.posthogService.capture({
-      distinctId: updatedAccount.ownerId,
-      event: 'account_status_changed',
-      properties: {
-        household_id: updatedAccount.householdId,
-        account_id: updatedAccount.id,
-        new_status: true,
-      },
-    });
-
     return updatedAccount;
   }
 
@@ -127,17 +99,6 @@ export class AccountsService {
     if (!updatedAccount) {
       throw new NotFoundException('Račun nije pronađen');
     }
-
-    // Track account status change
-    this.posthogService.capture({
-      distinctId: updatedAccount.ownerId,
-      event: 'account_status_changed',
-      properties: {
-        household_id: updatedAccount.householdId,
-        account_id: updatedAccount.id,
-        new_status: false,
-      },
-    });
 
     return updatedAccount;
   }
