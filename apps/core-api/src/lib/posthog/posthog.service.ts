@@ -56,13 +56,11 @@ export class PosthogService implements OnModuleInit {
     }
 
     try {
-      this.client.capture({
-        distinctId,
-        event: '$exception',
+      this.client.captureException(error, distinctId, {
         properties: {
-          $exception_message: error.message,
-          $exception_type: error.name,
-          $exception_stack: error.stack,
+          exception_message: error.message,
+          exception_type: error.name,
+          exception_stack: error.stack,
           ...metadata,
         },
       });
