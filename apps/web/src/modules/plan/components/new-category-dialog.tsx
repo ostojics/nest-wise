@@ -61,9 +61,11 @@ const NewCategoryDialog = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button size="sm">Nova kategorija</Button>
+        <Button size="sm" data-testid="new-category-button">
+          Nova kategorija
+        </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] flex flex-col">
+      <DialogContent className="max-h-[90vh] flex flex-col" data-testid="new-category-dialog">
         <DialogHeader className="mb-3">
           <DialogTitle>Kreirajte kategoriju</DialogTitle>
           <DialogDescription className="text-balance">
@@ -78,7 +80,12 @@ const NewCategoryDialog = () => {
                 <Label htmlFor="new-category-name">
                   Naziv <span className="text-red-500">*</span>
                 </Label>
-                <Input id="new-category-name" placeholder="npr. Namirnice" {...register('name')} />
+                <Input
+                  id="new-category-name"
+                  placeholder="npr. Namirnice"
+                  data-testid="category-name-input"
+                  {...register('name')}
+                />
                 {errors.name?.message && <FormError error={errors.name.message} />}
               </div>
               <div className="flex flex-col gap-2">
@@ -99,7 +106,9 @@ const NewCategoryDialog = () => {
                   Otkažite
                 </Button>
               </DialogClose>
-              <Button type="submit">Kreirajte</Button>
+              <Button type="submit" data-testid="create-category-submit">
+                Kreirajte
+              </Button>
             </DialogFooter>
           </form>
         </div>
