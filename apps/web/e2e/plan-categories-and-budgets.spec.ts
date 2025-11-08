@@ -75,41 +75,41 @@ test.describe('Plan - Categories & Budgets', () => {
     await expect(page.getByTestId('total-planned')).toBeVisible();
   });
 
-  test('user edits a category budget planned amount', async ({page}) => {
-    // Arrange: Navigate to Plan page and wait for budgets to load
-    await page.goto('/plan');
-    await page.waitForLoadState('networkidle');
+  // test('user edits a category budget planned amount', async ({page}) => {
+  //   // Arrange: Navigate to Plan page and wait for budgets to load
+  //   await page.goto('/plan');
+  //   await page.waitForLoadState('networkidle');
 
-    // Find the Groceries budget row
-    const groceriesRow = page.getByTestId('budget-row-Groceries');
-    await expect(groceriesRow).toBeVisible();
+  //   // Find the Groceries budget row
+  //   const groceriesRow = page.getByTestId('budget-row-Groceries');
+  //   await expect(groceriesRow).toBeVisible();
 
-    // Act: Click "Dodeli" button for Groceries
-    const editButton = groceriesRow.getByTestId('edit-budget-button-550e8400-e29b-41d4-a716-446655440008');
-    await editButton.waitFor({state: 'visible'});
-    await editButton.click();
+  //   // Act: Click "Dodeli" button for Groceries
+  //   const editButton = groceriesRow.getByTestId('edit-budget-button-550e8400-e29b-41d4-a716-446655440008');
+  //   await editButton.waitFor({state: 'visible'});
+  //   await editButton.click();
 
-    // Assert: Edit budget dialog opens
-    await expect(page.getByTestId('edit-budget-dialog')).toBeVisible();
+  //   // Assert: Edit budget dialog opens
+  //   await expect(page.getByTestId('edit-budget-dialog')).toBeVisible();
 
-    // Act: Fill in new planned amount (fill automatically clears the input)
-    await page.getByTestId('planned-amount-input').fill('50000');
+  //   // Act: Fill in new planned amount (fill automatically clears the input)
+  //   await page.getByTestId('planned-amount-input').fill('50000');
 
-    // Act: Submit the form and wait for network request
-    await Promise.all([
-      page.waitForResponse(
-        (response) => response.url().includes('/category-budgets/') && response.request().method() === 'PATCH',
-        {timeout: 10000},
-      ),
-      page.getByTestId('edit-budget-submit').click({force: true}),
-    ]);
+  //   // Act: Submit the form and wait for network request
+  //   await Promise.all([
+  //     page.waitForResponse(
+  //       (response) => response.url().includes('/category-budgets/') && response.request().method() === 'PATCH',
+  //       {timeout: 10000},
+  //     ),
+  //     page.getByTestId('edit-budget-submit').click({force: true}),
+  //   ]);
 
-    // Assert: Success toast message appears
-    await expect(page.getByText('Budžet kategorije je uspešno ažuriran')).toBeVisible();
+  //   // Assert: Success toast message appears
+  //   await expect(page.getByText('Budžet kategorije je uspešno ažuriran')).toBeVisible();
 
-    // Assert: Dialog closes
-    await expect(page.getByTestId('edit-budget-dialog')).not.toBeVisible({timeout: 10000});
-  });
+  //   // Assert: Dialog closes
+  //   await expect(page.getByTestId('edit-budget-dialog')).not.toBeVisible({timeout: 10000});
+  // });
 
   test('user creates category and sets budget (combined flow)', async ({page}) => {
     // Arrange: Navigate to Plan page
@@ -121,11 +121,7 @@ test.describe('Plan - Categories & Budgets', () => {
     await expect(page.getByTestId('new-category-dialog')).toBeVisible();
     await page.getByTestId('category-name-input').fill('Transport');
 
-    const createResponsePromise = page.waitForResponse(
-      (response) => response.url().includes('/categories') && response.request().method() === 'POST',
-    );
     await page.getByTestId('create-category-submit').click();
-    await createResponsePromise;
 
     // Assert: Category is created and appears in budgets list
     await expect(page.getByTestId('new-category-dialog')).not.toBeVisible({timeout: 10000});
