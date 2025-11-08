@@ -12,7 +12,6 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {toast} from 'sonner';
 import {Loader2} from 'lucide-react';
 import {useEffect} from 'react';
-import posthog from 'posthog-js';
 
 const SettingsPage = () => {
   const {data: me} = useGetMe();
@@ -25,7 +24,9 @@ const SettingsPage = () => {
       void client.invalidateQueries({queryKey: queryKeys.households.single(id)});
       toast.success('Podešavanja sačuvana');
     },
-    onError: (error) => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
       posthog.captureException(error, {
         context: {
           feature: 'settings_update',

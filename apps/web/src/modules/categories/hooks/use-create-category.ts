@@ -4,7 +4,6 @@ import {ErrorResponse, CreateCategoryDTO} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
-import posthog from 'posthog-js';
 
 export const useCreateCategory = (householdId?: string) => {
   const client = useQueryClient();
@@ -25,6 +24,8 @@ export const useCreateCategory = (householdId?: string) => {
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
+
+      const {default: posthog} = await import('posthog-js');
 
       posthog.captureException(error, {
         context: {

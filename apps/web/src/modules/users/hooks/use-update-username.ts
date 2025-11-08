@@ -2,7 +2,6 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {updateUsername} from '@/modules/api/users-api';
 import {UpdateUsernameDTO} from '@nest-wise/contracts';
 import {toast} from 'sonner';
-import posthog from 'posthog-js';
 
 export const useUpdateUsername = () => {
   const queryClient = useQueryClient();
@@ -13,7 +12,9 @@ export const useUpdateUsername = () => {
       toast.success('Korisničko ime je izmenjeno');
       void queryClient.invalidateQueries({refetchType: 'all'});
     },
-    onError: (error) => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
       posthog.captureException(error, {
         context: {
           feature: 'user_update_username',

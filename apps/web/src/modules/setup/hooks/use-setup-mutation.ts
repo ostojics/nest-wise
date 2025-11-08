@@ -3,7 +3,6 @@ import {queryKeys} from '@/modules/api/query-keys';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {useNavigate} from '@tanstack/react-router';
 import {toast} from 'sonner';
-import posthog from 'posthog-js';
 
 export const useSetupMutation = () => {
   const navigate = useNavigate();
@@ -16,7 +15,9 @@ export const useSetupMutation = () => {
       void navigate({to: '/onboarding', reloadDocument: true});
       toast.success('Podešavanje je uspešno završeno');
     },
-    onError: (error) => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
       posthog.captureException(error, {
         context: {
           feature: 'setup',

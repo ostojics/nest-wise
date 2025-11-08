@@ -2,7 +2,6 @@ import {useMutation} from '@tanstack/react-query';
 import {requestEmailChange} from '@/modules/api/users-api';
 import {RequestEmailChangeDTO} from '@nest-wise/contracts';
 import {toast} from 'sonner';
-import posthog from 'posthog-js';
 
 export const useRequestEmailChange = () => {
   return useMutation({
@@ -10,7 +9,9 @@ export const useRequestEmailChange = () => {
     onSuccess: () => {
       toast.success('Poslali smo Vam link za potvrdu na novu e‑poštu');
     },
-    onError: (error) => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
       posthog.captureException(error, {
         context: {
           feature: 'user_request_email_change',

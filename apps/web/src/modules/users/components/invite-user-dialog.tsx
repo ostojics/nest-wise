@@ -18,7 +18,6 @@ import {useState} from 'react';
 import {toast} from 'sonner';
 import {useInviteUserToHousehold} from '../hooks/use-invite-user';
 import {useValidateInviteUser} from '../hooks/use-validate-invite-user';
-import posthog from 'posthog-js';
 
 const InviteUserDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +36,8 @@ const InviteUserDialog = () => {
       onError: async (error) => {
         const typedError = error as HTTPError<ErrorResponse>;
         const err = await typedError.response.json();
+
+        const {default: posthog} = await import('posthog-js');
 
         posthog.captureException(error, {
           context: {

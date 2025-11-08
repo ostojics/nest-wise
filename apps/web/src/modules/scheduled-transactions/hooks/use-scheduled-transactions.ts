@@ -18,7 +18,6 @@ import {
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
-import posthog from 'posthog-js';
 
 export const useGetScheduledTransactions = (query: GetScheduledTransactionsQueryHouseholdDTO) => {
   const {data: me} = useGetMe();
@@ -63,6 +62,8 @@ export const useCreateScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
+      const {default: posthog} = await import('posthog-js');
+
       posthog.captureException(error, {
         context: {
           feature: 'scheduled_transaction_create',
@@ -95,6 +96,8 @@ export const useUpdateScheduledTransaction = () => {
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
+
+      const {default: posthog} = await import('posthog-js');
 
       posthog.captureException(error, {
         context: {
@@ -129,6 +132,8 @@ export const usePauseScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
+      const {default: posthog} = await import('posthog-js');
+
       posthog.captureException(error, {
         context: {
           feature: 'scheduled_transaction_pause',
@@ -162,6 +167,8 @@ export const useResumeScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
+      const {default: posthog} = await import('posthog-js');
+
       posthog.captureException(error, {
         context: {
           feature: 'scheduled_transaction_resume',
@@ -194,6 +201,8 @@ export const useDeleteScheduledTransaction = () => {
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
+
+      const {default: posthog} = await import('posthog-js');
 
       posthog.captureException(error, {
         context: {

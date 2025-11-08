@@ -5,7 +5,6 @@ import {useQueryClient} from '@tanstack/react-query';
 import {queryKeys} from '@/modules/api/query-keys';
 import {HTTPError} from 'ky';
 import {ErrorResponse, TransferFundsDTO} from '@nest-wise/contracts';
-import posthog from 'posthog-js';
 
 interface UseTransferFundsMutationProps {
   householdId: string;
@@ -23,6 +22,8 @@ export const useTransferFundsMutation = ({householdId}: UseTransferFundsMutation
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
+
+      const {default: posthog} = await import('posthog-js');
 
       posthog.captureException(error, {
         context: {

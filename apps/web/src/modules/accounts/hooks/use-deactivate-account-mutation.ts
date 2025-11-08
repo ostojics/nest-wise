@@ -4,7 +4,6 @@ import {toast} from 'sonner';
 import {queryKeys} from '@/modules/api/query-keys';
 import {ErrorResponse} from '@nest-wise/contracts';
 import {HTTPError} from 'ky';
-import posthog from 'posthog-js';
 
 export const useDeactivateAccountMutation = (accountId: string) => {
   const queryClient = useQueryClient();
@@ -18,6 +17,8 @@ export const useDeactivateAccountMutation = (accountId: string) => {
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
+
+      const {default: posthog} = await import('posthog-js');
 
       posthog.captureException(error, {
         context: {

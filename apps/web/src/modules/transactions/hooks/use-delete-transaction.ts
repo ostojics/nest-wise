@@ -1,7 +1,6 @@
 import {deleteTransaction} from '@/modules/api/transactions-api';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {toast} from 'sonner';
-import posthog from 'posthog-js';
 
 export const useDeleteTransaction = () => {
   const client = useQueryClient();
@@ -12,7 +11,9 @@ export const useDeleteTransaction = () => {
       await client.invalidateQueries();
       toast.success('Transakcija je obrisana');
     },
-    onError: (error) => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
       posthog.captureException(error, {
         context: {
           feature: 'transaction_delete',
