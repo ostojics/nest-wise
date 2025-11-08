@@ -21,7 +21,7 @@ export const useEditCategoryBudget = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useEditCategoryBudget',
+          feature: 'category_budget_edit',
         },
       });
 

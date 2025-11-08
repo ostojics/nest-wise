@@ -22,7 +22,7 @@ export const useUpdateHousehold = () => {
     onError: (error) => {
       posthog.captureException(error, {
         context: {
-          feature: 'useUpdateHousehold',
+          feature: 'household_update',
         },
       });
 

@@ -65,7 +65,7 @@ export const useCreateScheduledTransaction = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useCreateScheduledTransaction',
+          feature: 'scheduled_transaction_create',
         },
       });
 
@@ -98,7 +98,7 @@ export const useUpdateScheduledTransaction = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useUpdateScheduledTransaction',
+          feature: 'scheduled_transaction_update',
         },
       });
 
@@ -131,7 +131,7 @@ export const usePauseScheduledTransaction = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'usePauseScheduledTransaction',
+          feature: 'scheduled_transaction_pause',
         },
       });
 
@@ -164,7 +164,7 @@ export const useResumeScheduledTransaction = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useResumeScheduledTransaction',
+          feature: 'scheduled_transaction_resume',
         },
       });
 
@@ -197,7 +197,7 @@ export const useDeleteScheduledTransaction = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useDeleteScheduledTransaction',
+          feature: 'scheduled_transaction_delete',
         },
       });
 

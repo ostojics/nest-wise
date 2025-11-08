@@ -17,7 +17,7 @@ export const useSendHelp = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useSendHelp',
+          feature: 'email_send_help',
         },
       });
 

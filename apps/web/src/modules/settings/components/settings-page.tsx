@@ -28,7 +28,7 @@ const SettingsPage = () => {
     onError: (error) => {
       posthog.captureException(error, {
         context: {
-          feature: 'SettingsPage',
+          feature: 'settings_update',
         },
       });
 

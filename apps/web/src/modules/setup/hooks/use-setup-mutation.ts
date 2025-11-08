@@ -19,7 +19,7 @@ export const useSetupMutation = () => {
     onError: (error) => {
       posthog.captureException(error, {
         context: {
-          feature: 'useSetupMutation',
+          feature: 'setup',
         },
       });
 

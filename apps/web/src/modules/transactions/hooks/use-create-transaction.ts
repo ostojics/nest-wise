@@ -26,7 +26,7 @@ export const useCreateTransaction = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useCreateTransaction',
+          feature: 'transaction_create',
         },
       });
 

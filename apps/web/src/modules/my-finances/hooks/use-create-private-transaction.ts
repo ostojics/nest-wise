@@ -20,7 +20,7 @@ export const useCreatePrivateTransaction = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useCreatePrivateTransaction',
+          feature: 'private_transaction_create',
         },
       });
 

@@ -20,7 +20,7 @@ export const useDeleteCategory = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useDeleteCategory',
+          feature: 'category_delete',
         },
       });
 

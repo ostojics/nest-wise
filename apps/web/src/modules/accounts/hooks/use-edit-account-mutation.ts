@@ -20,7 +20,7 @@ export const useEditAccountMutation = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useEditAccountMutation',
+          feature: 'account_edit',
         },
       });
 

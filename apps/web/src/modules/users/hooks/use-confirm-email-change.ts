@@ -16,7 +16,7 @@ export const useConfirmEmailChange = () => {
     onError: (error) => {
       posthog.captureException(error, {
         context: {
-          feature: 'useConfirmEmailChange',
+          feature: 'user_confirm_email_change',
         },
       });
 

@@ -16,7 +16,7 @@ export const useUpdateUsername = () => {
     onError: (error) => {
       posthog.captureException(error, {
         context: {
-          feature: 'useUpdateUsername',
+          feature: 'user_update_username',
         },
       });
 

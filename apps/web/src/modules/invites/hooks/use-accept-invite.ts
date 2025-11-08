@@ -24,7 +24,7 @@ export const useAcceptInvite = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useAcceptInvite',
+          feature: 'invite_accept',
         },
       });
 

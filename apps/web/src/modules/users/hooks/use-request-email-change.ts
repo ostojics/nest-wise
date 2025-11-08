@@ -13,7 +13,7 @@ export const useRequestEmailChange = () => {
     onError: (error) => {
       posthog.captureException(error, {
         context: {
-          feature: 'useRequestEmailChange',
+          feature: 'user_request_email_change',
         },
       });
 

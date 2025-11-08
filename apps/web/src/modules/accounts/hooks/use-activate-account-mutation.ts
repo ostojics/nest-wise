@@ -21,7 +21,7 @@ export const useActivateAccountMutation = (accountId: string) => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useActivateAccountMutation',
+          feature: 'account_activate',
         },
       });
 

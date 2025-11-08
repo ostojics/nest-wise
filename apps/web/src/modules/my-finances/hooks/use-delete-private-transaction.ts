@@ -22,7 +22,7 @@ export const useDeletePrivateTransaction = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useDeletePrivateTransaction',
+          feature: 'private_transaction_delete',
         },
       });
 

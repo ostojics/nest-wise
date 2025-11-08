@@ -23,7 +23,7 @@ export const useEditCategoryName = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useEditCategoryName',
+          feature: 'category_edit',
         },
       });
 

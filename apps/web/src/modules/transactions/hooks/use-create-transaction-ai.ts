@@ -49,7 +49,7 @@ export const useCreateTransactionAI = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useCreateTransactionAI',
+          feature: 'transaction_create_ai',
         },
       });
 

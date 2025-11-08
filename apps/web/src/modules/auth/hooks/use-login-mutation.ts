@@ -18,7 +18,7 @@ export const useLoginMutation = () => {
     onError: (error) => {
       posthog.captureException(error, {
         context: {
-          feature: 'useLoginMutation',
+          feature: 'auth_login',
         },
       });
 

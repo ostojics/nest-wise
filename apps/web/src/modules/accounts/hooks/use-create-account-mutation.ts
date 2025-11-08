@@ -25,7 +25,7 @@ export const useCreateAccountMutation = ({householdId}: UseCreateAccountMutation
 
       posthog.captureException(error, {
         context: {
-          feature: 'useCreateAccountMutation',
+          feature: 'account_create',
         },
       });
 

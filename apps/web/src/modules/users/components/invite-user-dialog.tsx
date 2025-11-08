@@ -40,7 +40,7 @@ const InviteUserDialog = () => {
 
         posthog.captureException(error, {
           context: {
-            feature: 'InviteUserDialog',
+            feature: 'invite_user',
           },
         });
 

@@ -15,7 +15,7 @@ export const useDeleteTransaction = () => {
     onError: (error) => {
       posthog.captureException(error, {
         context: {
-          feature: 'useDeleteTransaction',
+          feature: 'transaction_delete',
         },
       });
 

@@ -26,7 +26,7 @@ export const useTransferFundsMutation = ({householdId}: UseTransferFundsMutation
 
       posthog.captureException(error, {
         context: {
-          feature: 'useTransferFundsMutation',
+          feature: 'account_transfer_funds',
         },
       });
 

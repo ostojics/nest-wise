@@ -28,7 +28,7 @@ export const useCreateCategory = (householdId?: string) => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useCreateCategory',
+          feature: 'category_create',
         },
       });
 

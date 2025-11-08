@@ -16,7 +16,7 @@ export const useForgotPassword = () => {
     onError: (error) => {
       posthog.captureException(error, {
         context: {
-          feature: 'useForgotPassword',
+          feature: 'auth_forgot_password',
         },
       });
 

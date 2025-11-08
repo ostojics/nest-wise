@@ -22,7 +22,7 @@ export const useLogOut = () => {
 
       posthog.captureException(error, {
         context: {
-          feature: 'useLogOut',
+          feature: 'auth_logout',
         },
       });
 
