@@ -11,7 +11,15 @@ export const useDeleteTransaction = () => {
       await client.invalidateQueries();
       toast.success('Transakcija je obrisana');
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'transaction_delete',
+        },
+      });
+
       toast.error('Brisanje transakcije nije uspelo');
     },
   });

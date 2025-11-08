@@ -46,6 +46,18 @@ export const useCreateTransactionAI = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'transaction_create_ai',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
+      });
+
       if (err.message) {
         toast.error(err.message);
         return;

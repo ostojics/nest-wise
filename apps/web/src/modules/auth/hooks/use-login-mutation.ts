@@ -14,7 +14,15 @@ export const useLoginMutation = () => {
       await client.invalidateQueries({queryKey: [queryKeys.me]});
       await navigate({to: '/plan', reloadDocument: true});
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'auth_login',
+        },
+      });
+
       toast.error('Kredencijali nisu ispravni');
     },
   });

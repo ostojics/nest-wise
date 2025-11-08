@@ -12,7 +12,15 @@ export const useConfirmEmailChange = () => {
       toast.success('E‑pošta je uspešno promenjena');
       void queryClient.invalidateQueries({refetchType: 'all'});
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'user_confirm_email_change',
+        },
+      });
+
       toast.error('Greška pri potvrdi promene e‑pošte');
     },
   });

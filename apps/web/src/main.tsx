@@ -7,6 +7,8 @@ import {router} from './router';
 import {setDefaultOptions} from 'date-fns';
 import {srLatn} from 'date-fns/locale';
 import {Loader2} from 'lucide-react';
+import {ErrorBoundary} from 'react-error-boundary';
+import {DefaultErrorComponent} from './components/error-boundary';
 
 // Lazy load PostHog for non-critical analytics
 const PostHogProvider = lazy(() =>
@@ -75,9 +77,11 @@ enableMocking()
               debug: import.meta.env.DEV,
             }}
           >
-            <QueryClientProvider client={queryClient}>
-              <App />
-            </QueryClientProvider>
+            <ErrorBoundary FallbackComponent={DefaultErrorComponent}>
+              <QueryClientProvider client={queryClient}>
+                <App />
+              </QueryClientProvider>
+            </ErrorBoundary>
           </PostHogProvider>
         </Suspense>
       </StrictMode>,

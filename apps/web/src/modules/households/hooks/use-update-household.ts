@@ -18,7 +18,15 @@ export const useUpdateHousehold = () => {
       void client.invalidateQueries({queryKey: queryKeys.households.single(id)});
       toast.success('Domaćinstvo je uspešno ažurirano');
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'household_update',
+        },
+      });
+
       toast.error('Ažuriranje domaćinstva nije uspelo');
     },
   });

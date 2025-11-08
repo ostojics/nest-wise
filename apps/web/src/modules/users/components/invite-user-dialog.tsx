@@ -37,6 +37,14 @@ const InviteUserDialog = () => {
         const typedError = error as HTTPError<ErrorResponse>;
         const err = await typedError.response.json();
 
+        const {default: posthog} = await import('posthog-js');
+
+        posthog.captureException(error, {
+          context: {
+            feature: 'invite_user',
+          },
+        });
+
         if (err.message) {
           setError('email', {message: err.message});
           return;

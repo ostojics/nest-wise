@@ -15,7 +15,15 @@ export const useSetupMutation = () => {
       void navigate({to: '/onboarding', reloadDocument: true});
       toast.success('Podešavanje je uspešno završeno');
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'setup',
+        },
+      });
+
       toast.error('Podešavanje nije uspelo');
     },
   });

@@ -12,7 +12,15 @@ export const useUpdateTransaction = () => {
       await client.invalidateQueries({refetchType: 'all'});
       toast.success('Transakcija je izmenjena');
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'transaction_update',
+        },
+      });
+
       toast.error('Izmena transakcije nije uspela');
     },
   });

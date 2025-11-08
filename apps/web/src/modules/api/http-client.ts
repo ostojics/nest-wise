@@ -13,6 +13,7 @@ const extended = httpClient.extend({
         if (isPublicRoute(window.location.pathname)) return response;
 
         const {status} = response;
+
         if (status === 401 || status === 403) {
           window.location.href = '/login';
         }

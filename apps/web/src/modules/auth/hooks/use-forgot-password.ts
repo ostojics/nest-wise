@@ -12,7 +12,15 @@ export const useForgotPassword = () => {
       toast.success('Ukoliko nalog postoji, poslat je email za resetovanje lozinke');
       await navigate({to: '/login'});
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'auth_forgot_password',
+        },
+      });
+
       toast.error('Došlo je do greške prilikom obrade zahteva. Pokušajte ponovo.');
     },
   });

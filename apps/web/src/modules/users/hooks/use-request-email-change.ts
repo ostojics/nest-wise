@@ -9,7 +9,15 @@ export const useRequestEmailChange = () => {
     onSuccess: () => {
       toast.success('Poslali smo Vam link za potvrdu na novu e‑poštu');
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'user_request_email_change',
+        },
+      });
+
       toast.error('Greška pri slanju potvrde');
     },
   });

@@ -12,7 +12,15 @@ export const useUpdateUsername = () => {
       toast.success('Korisničko ime je izmenjeno');
       void queryClient.invalidateQueries({refetchType: 'all'});
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'user_update_username',
+        },
+      });
+
       toast.error('Greška pri izmeni korisničkog imena');
     },
   });

@@ -62,6 +62,18 @@ export const useCreateScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'scheduled_transaction_create',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
+      });
+
       if (err.message) {
         toast.error(err.message);
         return;
@@ -88,6 +100,18 @@ export const useUpdateScheduledTransaction = () => {
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
+
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'scheduled_transaction_update',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
+      });
 
       if (err.message) {
         toast.error(err.message);
@@ -116,6 +140,18 @@ export const usePauseScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'scheduled_transaction_pause',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
+      });
+
       if (err.message) {
         toast.error(err.message);
         return;
@@ -143,6 +179,18 @@ export const useResumeScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'scheduled_transaction_resume',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
+      });
+
       if (err.message) {
         toast.error(err.message);
         return;
@@ -169,6 +217,18 @@ export const useDeleteScheduledTransaction = () => {
     onError: async (error) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
+
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'scheduled_transaction_delete',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
+      });
 
       if (err.message) {
         toast.error(err.message);

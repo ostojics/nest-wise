@@ -23,6 +23,14 @@ export const useTransferFundsMutation = ({householdId}: UseTransferFundsMutation
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'account_transfer_funds',
+        },
+      });
+
       if (err.message) {
         toast.error(err.message);
         return;

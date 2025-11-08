@@ -25,6 +25,14 @@ export const useCreateCategory = (householdId?: string) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'category_create',
+        },
+      });
+
       if (err.message) {
         toast.error(err.message);
         return;

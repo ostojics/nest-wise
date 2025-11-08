@@ -24,7 +24,19 @@ const SettingsPage = () => {
       void client.invalidateQueries({queryKey: queryKeys.households.single(id)});
       toast.success('Podešavanja sačuvana');
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'settings_update',
+        },
+        meta: {
+          householdId: me?.householdId,
+          userId: me?.id,
+        },
+      });
+
       toast.error('Ažuriranje podešavanja nije uspelo');
     },
   });

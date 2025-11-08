@@ -12,7 +12,15 @@ export const useResetPassword = () => {
       toast.success('Lozinka je uspešno resetovana.');
       await navigate({to: '/login'});
     },
-    onError: () => {
+    onError: async (error) => {
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'auth_reset_password',
+        },
+      });
+
       toast.error('Nevažeći ili istekao token. Pokušajte ponovo.');
     },
   });

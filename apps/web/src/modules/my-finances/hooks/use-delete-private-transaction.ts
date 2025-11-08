@@ -19,6 +19,14 @@ export const useDeletePrivateTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
+      const {default: posthog} = await import('posthog-js');
+
+      posthog.captureException(error, {
+        context: {
+          feature: 'private_transaction_delete',
+        },
+      });
+
       if (err.message) {
         toast.error(err.message);
         return;
