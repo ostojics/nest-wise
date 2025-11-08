@@ -51,10 +51,6 @@ export const useCreateTransactionAI = () => {
         context: {
           feature: 'useCreateTransactionAI',
         },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
-        },
       });
 
       if (err.message) {

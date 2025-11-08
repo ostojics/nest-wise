@@ -19,12 +19,10 @@ import {toast} from 'sonner';
 import {useInviteUserToHousehold} from '../hooks/use-invite-user';
 import {useValidateInviteUser} from '../hooks/use-validate-invite-user';
 import posthog from 'posthog-js';
-import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 const InviteUserDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const mutation = useInviteUserToHousehold();
-  const {data: me} = useGetMe();
   const {
     register,
     handleSubmit,
@@ -43,10 +41,6 @@ const InviteUserDialog = () => {
         posthog.captureException(error, {
           context: {
             feature: 'InviteUserDialog',
-          },
-          meta: {
-            householdId: me?.householdId,
-            userId: me?.id,
           },
         });
 

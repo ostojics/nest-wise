@@ -5,11 +5,9 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
 import posthog from 'posthog-js';
-import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 export const useCreateCategory = (householdId?: string) => {
   const client = useQueryClient();
-  const {data: me} = useGetMe();
 
   return useMutation({
     mutationFn: (data: CreateCategoryDTO) => {
@@ -31,10 +29,6 @@ export const useCreateCategory = (householdId?: string) => {
       posthog.captureException(error, {
         context: {
           feature: 'useCreateCategory',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
         },
       });
 

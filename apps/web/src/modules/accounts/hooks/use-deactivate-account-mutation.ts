@@ -5,11 +5,9 @@ import {queryKeys} from '@/modules/api/query-keys';
 import {ErrorResponse} from '@nest-wise/contracts';
 import {HTTPError} from 'ky';
 import posthog from 'posthog-js';
-import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 export const useDeactivateAccountMutation = (accountId: string) => {
   const queryClient = useQueryClient();
-  const {data: me} = useGetMe();
 
   return useMutation({
     mutationFn: () => deactivateAccount(accountId),
@@ -24,11 +22,6 @@ export const useDeactivateAccountMutation = (accountId: string) => {
       posthog.captureException(error, {
         context: {
           feature: 'useDeactivateAccountMutation',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
-          accountId,
         },
       });
 

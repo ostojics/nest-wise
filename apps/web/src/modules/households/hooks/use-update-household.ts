@@ -4,7 +4,6 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {toast} from 'sonner';
 import {UpdateHouseholdDTO} from '@nest-wise/contracts';
 import posthog from 'posthog-js';
-import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 interface UpdateHouseholdParams {
   id: string;
@@ -13,7 +12,6 @@ interface UpdateHouseholdParams {
 
 export const useUpdateHousehold = () => {
   const client = useQueryClient();
-  const {data: me} = useGetMe();
 
   return useMutation({
     mutationFn: ({id, data}: UpdateHouseholdParams) => updateHousehold(id, data),
@@ -25,10 +23,6 @@ export const useUpdateHousehold = () => {
       posthog.captureException(error, {
         context: {
           feature: 'useUpdateHousehold',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
         },
       });
 

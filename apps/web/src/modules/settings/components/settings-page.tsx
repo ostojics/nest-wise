@@ -30,10 +30,6 @@ const SettingsPage = () => {
         context: {
           feature: 'SettingsPage',
         },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
-        },
       });
 
       toast.error('Ažuriranje podešavanja nije uspelo');

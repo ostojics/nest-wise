@@ -3,11 +3,8 @@ import {requestEmailChange} from '@/modules/api/users-api';
 import {RequestEmailChangeDTO} from '@nest-wise/contracts';
 import {toast} from 'sonner';
 import posthog from 'posthog-js';
-import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 export const useRequestEmailChange = () => {
-  const {data: me} = useGetMe();
-
   return useMutation({
     mutationFn: (dto: RequestEmailChangeDTO) => requestEmailChange(dto),
     onSuccess: () => {
@@ -17,10 +14,6 @@ export const useRequestEmailChange = () => {
       posthog.captureException(error, {
         context: {
           feature: 'useRequestEmailChange',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
         },
       });
 

@@ -3,11 +3,9 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {toast} from 'sonner';
 import {UpdateTransactionDTO} from '@nest-wise/contracts';
 import posthog from 'posthog-js';
-import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 export const useUpdateTransaction = () => {
   const client = useQueryClient();
-  const {data: me} = useGetMe();
 
   return useMutation({
     mutationFn: ({id, dto}: {id: string; dto: UpdateTransactionDTO}) => updateTransaction(id, dto),
@@ -19,10 +17,6 @@ export const useUpdateTransaction = () => {
       posthog.captureException(error, {
         context: {
           feature: 'useUpdateTransaction',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
         },
       });
 

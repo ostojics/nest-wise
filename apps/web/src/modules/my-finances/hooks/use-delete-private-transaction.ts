@@ -4,11 +4,9 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
 import posthog from 'posthog-js';
-import {useGetMe} from '@/modules/auth/hooks/use-get-me';
 
 export const useDeletePrivateTransaction = () => {
   const client = useQueryClient();
-  const {data: me} = useGetMe();
 
   return useMutation({
     mutationFn: async (id: string) => deletePrivateTransaction(id),
@@ -25,10 +23,6 @@ export const useDeletePrivateTransaction = () => {
       posthog.captureException(error, {
         context: {
           feature: 'useDeletePrivateTransaction',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
         },
       });
 
