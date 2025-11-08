@@ -40,6 +40,7 @@ import {
 } from 'src/tools/swagger/auth.swagger.dto';
 import {setAuthCookie} from 'src/lib/cookies/setAuthCookie';
 import {clearAuthCookie} from 'src/lib/cookies/clearAuthCookie';
+import {PosthogService} from 'src/lib/posthog/posthog.service';
 
 @ApiTags('Authentication')
 @Controller({
@@ -50,6 +51,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
+    private readonly posthogService: PosthogService,
   ) {}
 
   @ApiOperation({
@@ -88,14 +90,23 @@ export class AuthController {
   @Post('setup')
   @UsePipes(new ZodValidationPipe(setupSchema as ZodSchema))
   async setup(@Body() dto: SetupDTO, @Res({passthrough: true}) res: Response) {
-    const result = await this.authService.setup(dto);
-    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
+    try {
+      const result = await this.authService.setup(dto);
+      const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
 
-    setAuthCookie(res, result.accessToken, appConfig);
+      setAuthCookie(res, result.accessToken, appConfig);
 
-    return {
-      message: 'Setup completed successfully',
-    };
+      return {
+        message: 'Setup completed successfully',
+      };
+    } catch (error) {
+      this.posthogService.captureException(error as Error, 'system', {
+        endpoint: 'POST /auth/setup',
+        household_name: dto.household.name,
+        user_email: dto.user.email,
+      });
+      throw error;
+    }
   }
 
   @ApiOperation({
@@ -129,14 +140,22 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(loginSchema as ZodSchema))
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDTO, @Res({passthrough: true}) res: Response) {
-    const result = await this.authService.loginUser(dto);
-    const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
+    try {
+      const result = await this.authService.loginUser(dto);
+      const appConfig = this.configService.getOrThrow<AppConfig>(AppConfigName);
 
-    setAuthCookie(res, result.accessToken, appConfig);
+      setAuthCookie(res, result.accessToken, appConfig);
 
-    return {
-      message: 'Logged in successfully',
-    };
+      return {
+        message: 'Logged in successfully',
+      };
+    } catch (error) {
+      this.posthogService.captureException(error as Error, 'anonymous', {
+        endpoint: 'POST /auth/login',
+        email: dto.email,
+      });
+      throw error;
+    }
   }
 
   @ApiOperation({
@@ -169,7 +188,14 @@ export class AuthController {
   @Get('me')
   @UseGuards(AuthGuard)
   async me(@CurrentUser() user: JwtPayload): Promise<UserContract> {
-    return (await this.authService.getUserById(user.sub)) as UserContract;
+    try {
+      return (await this.authService.getUserById(user.sub)) as UserContract;
+    } catch (error) {
+      this.posthogService.captureException(error as Error, user.sub, {
+        endpoint: 'GET /auth/me',
+      });
+      throw error;
+    }
   }
 
   @ApiOperation({
@@ -199,10 +225,18 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(forgotPasswordSchema as ZodSchema))
   @HttpCode(HttpStatus.OK)
   async forgotPassword(@Body() dto: ForgotPasswordDTO) {
-    await this.authService.forgotPassword(dto);
-    return {
-      message: 'If an account exists, an email has been sent',
-    };
+    try {
+      await this.authService.forgotPassword(dto);
+      return {
+        message: 'If an account exists, an email has been sent',
+      };
+    } catch (error) {
+      this.posthogService.captureException(error as Error, 'anonymous', {
+        endpoint: 'POST /auth/forgot-password',
+        email: dto.email,
+      });
+      throw error;
+    }
   }
 
   @ApiOperation({
@@ -237,9 +271,16 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(resetPasswordSchema as ZodSchema))
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() dto: ResetPasswordDTO) {
-    await this.authService.resetPassword(dto);
-    return {
-      message: 'Password reset successful',
-    };
+    try {
+      await this.authService.resetPassword(dto);
+      return {
+        message: 'Password reset successful',
+      };
+    } catch (error) {
+      this.posthogService.captureException(error as Error, 'anonymous', {
+        endpoint: 'POST /auth/reset-password',
+      });
+      throw error;
+    }
   }
 }

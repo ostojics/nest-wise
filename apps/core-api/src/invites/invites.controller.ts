@@ -10,6 +10,7 @@ import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {ConfigService} from '@nestjs/config';
 import {AuthSuccessResponseSwaggerDTO} from 'src/tools/swagger/auth.swagger.dto';
 import {setAuthCookie} from 'src/lib/cookies/setAuthCookie';
+import {PosthogService} from 'src/lib/posthog/posthog.service';
 
 @ApiTags('Invites')
 @Controller({
@@ -21,6 +22,7 @@ export class InvitesController {
     private readonly usersService: UsersService,
     private readonly logger: Logger,
     private readonly configService: ConfigService,
+    private readonly posthogService: PosthogService,
   ) {}
 
   @ApiOperation({
@@ -52,6 +54,10 @@ export class InvitesController {
         message: 'Invite accepted successfully',
       };
     } catch (error) {
+      this.posthogService.captureException(error as Error, 'anonymous', {
+        endpoint: 'POST /invites/accept',
+        email: body.email,
+      });
       this.logger.error('Failed to accept invite', error);
       throw error;
     }
