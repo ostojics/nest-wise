@@ -15,10 +15,12 @@ import {ScheduledTransactionRule} from '../../src/scheduled-transactions/schedul
 import {AccountsService} from '../../src/accounts/accounts.service';
 import {CategoriesService} from '../../src/categories/categories.service';
 import {EmailsService} from '../../src/emails/emails.service';
+import {PosthogService} from '../../src/lib/posthog/posthog.service';
 import {appConfig, AppConfig, AppConfigName} from '../../src/config/app.config';
 import {databaseConfig, DatabaseConfig, DatabaseConfigName} from '../../src/config/database.config';
 import {queuesConfig} from '../../src/config/queues.config';
 import {throttlerConfig} from '../../src/config/throttler.config';
+import {posthogConfig} from '../../src/config/posthog.config';
 import {GlobalConfig} from '../../src/config/config.interface';
 
 /**
@@ -42,7 +44,7 @@ export const INTEGRATION_TEST_ENTITIES = [
 export function getConfigModuleConfig() {
   return ConfigModule.forRoot({
     cache: true,
-    load: [appConfig, throttlerConfig, databaseConfig, queuesConfig],
+    load: [appConfig, throttlerConfig, databaseConfig, queuesConfig, posthogConfig],
   });
 }
 
@@ -123,6 +125,19 @@ export const mockLoggerProvider = {
     warn: jest.fn(),
     debug: jest.fn(),
     verbose: jest.fn(),
+  },
+};
+
+/**
+ * Mock PosthogService provider for integration tests
+ * PostHog is disabled in test environment to avoid sending analytics during tests
+ */
+export const mockPosthogServiceProvider = {
+  provide: PosthogService,
+  useValue: {
+    capture: jest.fn(),
+    captureException: jest.fn(),
+    shutdown: jest.fn().mockResolvedValue(undefined),
   },
 };
 

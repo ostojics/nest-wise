@@ -13,6 +13,7 @@ import {
   getTypeOrmModuleConfig,
   mockAccountsServiceProvider,
   mockCategoriesServiceProvider,
+  mockPosthogServiceProvider,
   cleanupTestData,
 } from './test-utils';
 
@@ -25,7 +26,13 @@ describe('Integration - Households', () => {
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [getConfigModuleConfig(), getTypeOrmModuleConfig(), TypeOrmModule.forFeature(INTEGRATION_TEST_ENTITIES)],
-      providers: [HouseholdsService, HouseholdsRepository, mockAccountsServiceProvider, mockCategoriesServiceProvider],
+      providers: [
+        HouseholdsService,
+        HouseholdsRepository,
+        mockAccountsServiceProvider,
+        mockCategoriesServiceProvider,
+        mockPosthogServiceProvider,
+      ],
     }).compile();
 
     householdsService = module.get<HouseholdsService>(HouseholdsService);
