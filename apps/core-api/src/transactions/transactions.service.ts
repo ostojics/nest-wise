@@ -36,6 +36,7 @@ import {AiTransactionJobs} from 'src/common/enums/jobs.enum';
 import {ProcessAiTransactionPayload} from 'src/common/interfaces/ai-transactions.interface';
 import OpenAI from 'openai';
 import {zodTextFormat} from 'openai/helpers/zod';
+import {PosthogService} from 'src/lib/posthog/posthog.service';
 
 @Injectable()
 export class TransactionsService {
@@ -50,6 +51,7 @@ export class TransactionsService {
     private readonly dataSource: DataSource,
     private readonly logger: Logger,
     @InjectQueue(Queues.AI_TRANSACTIONS) private readonly aiTransactionsQueue: Queue,
+    private readonly posthogService: PosthogService,
   ) {
     this.openAiClient = new OpenAI();
   }
@@ -81,6 +83,7 @@ export class TransactionsService {
   async createTransactionForHousehold(
     householdId: string,
     transactionData: CreateTransactionHouseholdDTO,
+    userId?: string,
   ): Promise<Transaction> {
     return await this.dataSource.transaction(async () => {
       const account = await this.accountsService.findAccountById(transactionData.accountId);
@@ -108,6 +111,19 @@ export class TransactionsService {
         transactionData.amount,
         transactionData.type as TransactionType,
       );
+
+      // Track transaction creation
+      this.posthogService.capture({
+        distinctId: userId ?? account.ownerId,
+        event: 'transaction_created',
+        properties: {
+          household_id: householdId,
+          transaction_id: transaction.id,
+          transaction_type: transaction.type,
+          amount: transaction.amount.toString(),
+          category_id: transaction.categoryId,
+        },
+      });
 
       return transaction;
     });

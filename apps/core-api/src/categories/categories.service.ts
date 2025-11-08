@@ -2,22 +2,43 @@ import {Injectable, ConflictException, NotFoundException} from '@nestjs/common';
 import {CategoriesRepository} from './categories.repository';
 import {Category} from './categories.entity';
 import {CreateCategoryDTO, UpdateCategoryDTO} from '@nest-wise/contracts';
+import {PosthogService} from 'src/lib/posthog/posthog.service';
 
 @Injectable()
 export class CategoriesService {
-  constructor(private readonly categoriesRepository: CategoriesRepository) {}
+  constructor(
+    private readonly categoriesRepository: CategoriesRepository,
+    private readonly posthogService: PosthogService,
+  ) {}
 
-  async createCategoryForHousehold(householdId: string, categoryData: CreateCategoryDTO): Promise<Category> {
+  async createCategoryForHousehold(
+    householdId: string,
+    categoryData: CreateCategoryDTO,
+    userId?: string,
+  ): Promise<Category> {
     const nameExists = await this.categoriesRepository.nameExistsForHousehold(categoryData.name, householdId);
     if (nameExists) {
       throw new ConflictException('Naziv kategorije već postoji u ovom domaćinstvu');
     }
 
-    return await this.categoriesRepository.create({
+    const category = await this.categoriesRepository.create({
       name: categoryData.name,
       description: categoryData.description,
       householdId,
     });
+
+    // Track category creation
+    this.posthogService.capture({
+      distinctId: userId ?? 'system',
+      event: 'category_created',
+      properties: {
+        household_id: householdId,
+        category_id: category.id,
+        category_name: category.name,
+      },
+    });
+
+    return category;
   }
 
   async findCategoryById(id: string): Promise<Category> {

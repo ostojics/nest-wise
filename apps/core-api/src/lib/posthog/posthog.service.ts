@@ -43,7 +43,7 @@ export class PosthogService implements OnModuleInit {
       this.client.capture({
         distinctId: params.distinctId,
         event: params.event,
-        properties: params.properties || {},
+        properties: params.properties ?? {},
       });
     } catch (error) {
       this.logger.error('Failed to capture PostHog event', error);
