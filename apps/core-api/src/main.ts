@@ -16,6 +16,7 @@ async function bootstrap() {
   const {webAppUrl} = configService.getOrThrow<AppConfig>(AppConfigName);
 
   app.useLogger(app.get(Logger));
+  app.enableShutdownHooks();
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: VERSION_NEUTRAL,
