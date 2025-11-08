@@ -100,7 +100,7 @@ export class AuthController {
         message: 'Setup completed successfully',
       };
     } catch (error) {
-      this.posthogService.captureException(error as Error, 'system', {
+      this.posthogService.captureException(error as Error, 'backend-core', {
         endpoint: 'POST /auth/setup',
         household_name: dto.household.name,
         user_email: dto.user.email,
@@ -150,7 +150,7 @@ export class AuthController {
         message: 'Logged in successfully',
       };
     } catch (error) {
-      this.posthogService.captureException(error as Error, 'anonymous', {
+      this.posthogService.captureException(error as Error, 'backend-core', {
         endpoint: 'POST /auth/login',
         email: dto.email,
       });
@@ -231,7 +231,7 @@ export class AuthController {
         message: 'If an account exists, an email has been sent',
       };
     } catch (error) {
-      this.posthogService.captureException(error as Error, 'anonymous', {
+      this.posthogService.captureException(error as Error, 'backend-core', {
         endpoint: 'POST /auth/forgot-password',
         email: dto.email,
       });
@@ -277,7 +277,7 @@ export class AuthController {
         message: 'Password reset successful',
       };
     } catch (error) {
-      this.posthogService.captureException(error as Error, 'anonymous', {
+      this.posthogService.captureException(error as Error, 'backend-core', {
         endpoint: 'POST /auth/reset-password',
       });
       throw error;

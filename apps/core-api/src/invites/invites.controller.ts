@@ -54,7 +54,7 @@ export class InvitesController {
         message: 'Invite accepted successfully',
       };
     } catch (error) {
-      this.posthogService.captureException(error as Error, 'anonymous', {
+      this.posthogService.captureException(error as Error, 'backend-core', {
         endpoint: 'POST /invites/accept',
         email: body.email,
       });
