@@ -29,6 +29,7 @@ import {LicensesModule} from './licenses/licenses.module';
 import {ScheduledTransactionsModule} from './scheduled-transactions/scheduled-transactions.module';
 import {PosthogModule} from './lib/posthog/posthog.module';
 import {ShutdownModule} from './lib/shutdown/shutdown.module';
+import {UserPreferencesModule} from './user-preferences/user-preferences.module';
 
 @Module({
   imports: [
@@ -101,6 +102,7 @@ import {ShutdownModule} from './lib/shutdown/shutdown.module';
     InvitesModule,
     LicensesModule,
     ScheduledTransactionsModule,
+    UserPreferencesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

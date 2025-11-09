@@ -8,6 +8,7 @@ import {Transaction} from 'src/transactions/transaction.entity';
 import {CategoryBudget} from 'src/category-budgets/category-budgets.entity';
 import {PrivateTransaction} from 'src/private-transactions/private-transactions.entity';
 import {License} from 'src/licenses/license.entity';
+import {UserPreference} from 'src/user-preferences/user-preference.entity';
 import {InitExtensionAndTypes1758655322744} from 'src/migrations/1758655322744-InitExtensionAndTypes';
 import {InitLicensesAndHouseholds1758655441347} from 'src/migrations/1758655441347-InitLicensesAndHouseholds';
 import {InitUsers1758655573420} from 'src/migrations/1758655573420-InitUsers';
@@ -24,6 +25,7 @@ import {ScheduledTransactionRule} from 'src/scheduled-transactions/scheduled-tra
 import {AddCategoryDescription1760998944930} from 'src/migrations/1760998944930-AddCategoryDescription';
 import {DropSavings1761000000000} from 'src/migrations/1761000000000-DropSavings';
 import {AddAccountIsActive1761949055000} from 'src/migrations/1761949055000-AddAccountIsActive';
+import {AddUserPreferences1762000000000} from 'src/migrations/1762000000000-AddUserPreferences';
 import {ScheduledTransactionExecution} from 'src/scheduled-transactions/scheduled-transaction-execution.entity';
 
 export const DatabaseConfigName = 'database';
@@ -52,6 +54,7 @@ export function getConfig(): DatabaseConfig {
       License,
       ScheduledTransactionRule,
       ScheduledTransactionExecution,
+      UserPreference,
     ],
     useUTC: true,
     migrations: [
@@ -70,6 +73,7 @@ export function getConfig(): DatabaseConfig {
       AddScheduledTransactionRules1760300000000,
       AddScheduledTransactionExecutions1760300000001,
       AddAccountIsActive1761949055000,
+      AddUserPreferences1762000000000,
     ],
     migrationsRun: true,
     extra: {

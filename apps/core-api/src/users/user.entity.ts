@@ -8,9 +8,11 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import {Household} from 'src/households/household.entity';
 import {Account} from 'src/accounts/account.entity';
+import {UserPreference} from 'src/user-preferences/user-preference.entity';
 
 @Entity('users')
 export class User {
@@ -79,4 +81,7 @@ export class User {
 
   @OneToMany(() => Account, (account) => account.owner)
   accounts: Account[];
+
+  @OneToOne(() => UserPreference, (userPreference) => userPreference.user)
+  userPreference: UserPreference;
 }

@@ -48,4 +48,7 @@ export const queryKeys = {
     all: (search: GetScheduledTransactionsQueryHouseholdDTO) => ['scheduled-transactions', search],
     single: (id: string) => ['scheduled-transactions', id],
   },
+  userPreferences: {
+    all: () => ['user-preferences'] as const,
+  },
 };
