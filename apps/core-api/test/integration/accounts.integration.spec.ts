@@ -17,6 +17,7 @@ import {
   getConfigModuleConfig,
   getTypeOrmModuleConfig,
   mockCategoriesServiceProvider,
+  mockPosthogServiceProvider,
   cleanupTestData,
 } from './test-utils';
 
@@ -38,6 +39,7 @@ describe('Integration - Accounts', () => {
         HouseholdsService,
         HouseholdsRepository,
         mockCategoriesServiceProvider,
+        mockPosthogServiceProvider,
       ],
     }).compile();
 

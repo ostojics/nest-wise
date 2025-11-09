@@ -23,6 +23,7 @@ import {
   mockCategoriesServiceProvider,
   mockEmailsServiceProvider,
   mockLoggerProvider,
+  mockPosthogServiceProvider,
   cleanupTestData,
 } from '../test-utils';
 
@@ -52,6 +53,7 @@ describe('Integration - Setup Flow', () => {
         mockCategoriesServiceProvider,
         mockEmailsServiceProvider,
         mockLoggerProvider,
+        mockPosthogServiceProvider,
       ],
     }).compile();
 

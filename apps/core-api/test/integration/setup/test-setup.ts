@@ -6,5 +6,10 @@ if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = 'test';
 }
 
+// Disable PostHog in test environment
+if (!process.env.POSTHOG_ENABLED) {
+  process.env.POSTHOG_ENABLED = 'false';
+}
+
 // Increase timeout for individual tests to handle container startup
 jest.setTimeout(30000);

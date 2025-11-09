@@ -8,6 +8,7 @@ import {ThrottlerModule} from '@nestjs/throttler';
 import {throttlerConfig, throttlerFactory} from './config/throttler.config';
 import {AppConfig, appConfig, AppConfigName} from './config/app.config';
 import {DatabaseConfig, databaseConfig, DatabaseConfigName} from './config/database.config';
+import {posthogConfig} from './config/posthog.config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {GlobalConfig} from './config/config.interface';
 import {UsersModule} from './users/users.module';
@@ -26,10 +27,15 @@ import {PrivateTransactionsModule} from './private-transactions/private-transact
 import {InvitesModule} from './invites/invites.module';
 import {LicensesModule} from './licenses/licenses.module';
 import {ScheduledTransactionsModule} from './scheduled-transactions/scheduled-transactions.module';
+import {PosthogModule} from './lib/posthog/posthog.module';
+import {ShutdownModule} from './lib/shutdown/shutdown.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({cache: true, load: [appConfig, throttlerConfig, databaseConfig, queuesConfig]}),
+    ConfigModule.forRoot({
+      cache: true,
+      load: [appConfig, throttlerConfig, databaseConfig, queuesConfig, posthogConfig],
+    }),
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -80,6 +86,8 @@ import {ScheduledTransactionsModule} from './scheduled-transactions/scheduled-tr
       },
     }),
     ScheduleModule.forRoot(),
+    PosthogModule,
+    ShutdownModule,
     AuthModule,
     UsersModule,
     HouseholdsModule,

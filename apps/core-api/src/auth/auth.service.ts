@@ -9,6 +9,7 @@ import {HouseholdsService} from 'src/households/households.service';
 import {LicensesService} from 'src/licenses/licenses.service';
 import {DataSource} from 'typeorm';
 import {EmailsService} from 'src/emails/emails.service';
+import {PosthogService} from 'src/lib/posthog/posthog.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly dataSource: DataSource,
     private readonly emailsService: EmailsService,
+    private readonly posthogService: PosthogService,
   ) {}
 
   async setup(dto: SetupDTO) {
@@ -42,6 +44,26 @@ export class AuthService {
       });
 
       await this.licensesService.markLicenseAsUsed(license.id);
+
+      // Track household creation and user account creation
+      this.posthogService.capture({
+        distinctId: user.id,
+        event: 'household_created',
+        properties: {
+          household_id: household.id,
+          household_name: household.name,
+          currency: household.currencyCode,
+        },
+      });
+
+      this.posthogService.capture({
+        distinctId: user.id,
+        event: 'user_account_created',
+        properties: {
+          user_id: user.id,
+          household_id: household.id,
+        },
+      });
 
       const token = await this.craftJwt(user.id, user.email);
 
