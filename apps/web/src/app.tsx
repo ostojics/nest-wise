@@ -5,34 +5,11 @@ import {router} from './router';
 import {useGetMe} from './modules/auth/hooks/use-get-me';
 import {Loader2} from 'lucide-react';
 import {PwaUpdater} from './pwa/pwa-updater';
-import {useGetUserPreferences} from './modules/user-preferences/hooks/use-get-user-preferences';
-import {useLogOut} from './modules/auth/hooks/use-log-out';
-import {useEffect, useRef, useCallback} from 'react';
+import {useAutomaticLogout} from './modules/user-preferences/hooks/use-automatic-logout';
 
 const App = () => {
   const {data, isLoading, isError} = useGetMe();
-  const {data: userPreferences} = useGetUserPreferences();
-  const {mutate: logout} = useLogOut();
-  const automaticLogoutRef = useRef(false);
-
-  // Update ref when preferences change
-  useEffect(() => {
-    automaticLogoutRef.current = userPreferences?.automaticLogout === true;
-  }, [userPreferences?.automaticLogout]);
-
-  // Create a stable logout callback
-  const handleLogout = useCallback(() => {
-    logout();
-  }, [logout]);
-
-  // Cleanup on unmount - call logout if automatic logout is enabled
-  useEffect(() => {
-    return () => {
-      if (automaticLogoutRef.current) {
-        handleLogout();
-      }
-    };
-  }, [handleLogout]);
+  useAutomaticLogout();
 
   if (isLoading)
     return (
