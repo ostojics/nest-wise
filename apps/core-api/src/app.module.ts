@@ -29,6 +29,7 @@ import {LicensesModule} from './licenses/licenses.module';
 import {ScheduledTransactionsModule} from './scheduled-transactions/scheduled-transactions.module';
 import {PosthogModule} from './lib/posthog/posthog.module';
 import {ShutdownModule} from './lib/shutdown/shutdown.module';
+import {BudgetAllocationModule} from './budget-allocation/budget-allocation.module';
 
 @Module({
   imports: [
@@ -101,6 +102,7 @@ import {ShutdownModule} from './lib/shutdown/shutdown.module';
     InvitesModule,
     LicensesModule,
     ScheduledTransactionsModule,
+    BudgetAllocationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

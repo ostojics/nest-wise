@@ -25,6 +25,8 @@ import {AddCategoryDescription1760998944930} from 'src/migrations/1760998944930-
 import {DropSavings1761000000000} from 'src/migrations/1761000000000-DropSavings';
 import {AddAccountIsActive1761949055000} from 'src/migrations/1761949055000-AddAccountIsActive';
 import {ScheduledTransactionExecution} from 'src/scheduled-transactions/scheduled-transaction-execution.entity';
+import {BudgetAllocation} from 'src/budget-allocation/budget-allocation.entity';
+import {AddBudgetAllocations1762000000000} from 'src/migrations/1762000000000-AddBudgetAllocations';
 
 export const DatabaseConfigName = 'database';
 
@@ -52,6 +54,7 @@ export function getConfig(): DatabaseConfig {
       License,
       ScheduledTransactionRule,
       ScheduledTransactionExecution,
+      BudgetAllocation,
     ],
     useUTC: true,
     migrations: [
@@ -70,6 +73,7 @@ export function getConfig(): DatabaseConfig {
       AddScheduledTransactionRules1760300000000,
       AddScheduledTransactionExecutions1760300000001,
       AddAccountIsActive1761949055000,
+      AddBudgetAllocations1762000000000,
     ],
     migrationsRun: true,
     extra: {
