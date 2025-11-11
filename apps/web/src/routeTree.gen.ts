@@ -24,6 +24,7 @@ import { Route as _pathlessLayoutScheduledTransactionsRouteImport } from './rout
 import { Route as _pathlessLayoutPlanRouteImport } from './routes/__pathlessLayout/plan'
 import { Route as _pathlessLayoutMyFinancesRouteImport } from './routes/__pathlessLayout/my-finances'
 import { Route as _pathlessLayoutMembersRouteImport } from './routes/__pathlessLayout/members'
+import { Route as _pathlessLayoutBudgetAllocationRouteImport } from './routes/__pathlessLayout/budget-allocation'
 import { Route as _pathlessLayoutAnalyticsRouteImport } from './routes/__pathlessLayout/analytics'
 import { Route as _pathlessLayoutAccountsRouteImport } from './routes/__pathlessLayout/accounts'
 import { Route as _pathlessLayoutAccountSettingsRouteImport } from './routes/__pathlessLayout/account-settings'
@@ -108,6 +109,12 @@ const _pathlessLayoutMembersRoute = _pathlessLayoutMembersRouteImport.update({
   path: '/members',
   getParentRoute: () => _pathlessLayoutRouteRoute,
 } as any)
+const _pathlessLayoutBudgetAllocationRoute =
+  _pathlessLayoutBudgetAllocationRouteImport.update({
+    id: '/budget-allocation',
+    path: '/budget-allocation',
+    getParentRoute: () => _pathlessLayoutRouteRoute,
+  } as any)
 const _pathlessLayoutAnalyticsRoute =
   _pathlessLayoutAnalyticsRouteImport.update({
     id: '/analytics',
@@ -157,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/account-settings': typeof _pathlessLayoutAccountSettingsRoute
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
+  '/budget-allocation': typeof _pathlessLayoutBudgetAllocationRoute
   '/members': typeof _pathlessLayoutMembersRoute
   '/my-finances': typeof _pathlessLayoutMyFinancesRoute
   '/plan': typeof _pathlessLayoutPlanRoute
@@ -179,6 +187,7 @@ export interface FileRoutesByTo {
   '/account-settings': typeof _pathlessLayoutAccountSettingsRoute
   '/accounts': typeof _pathlessLayoutAccountsRoute
   '/analytics': typeof _pathlessLayoutAnalyticsRoute
+  '/budget-allocation': typeof _pathlessLayoutBudgetAllocationRoute
   '/members': typeof _pathlessLayoutMembersRoute
   '/my-finances': typeof _pathlessLayoutMyFinancesRoute
   '/plan': typeof _pathlessLayoutPlanRoute
@@ -203,6 +212,7 @@ export interface FileRoutesById {
   '/__pathlessLayout/account-settings': typeof _pathlessLayoutAccountSettingsRoute
   '/__pathlessLayout/accounts': typeof _pathlessLayoutAccountsRoute
   '/__pathlessLayout/analytics': typeof _pathlessLayoutAnalyticsRoute
+  '/__pathlessLayout/budget-allocation': typeof _pathlessLayoutBudgetAllocationRoute
   '/__pathlessLayout/members': typeof _pathlessLayoutMembersRoute
   '/__pathlessLayout/my-finances': typeof _pathlessLayoutMyFinancesRoute
   '/__pathlessLayout/plan': typeof _pathlessLayoutPlanRoute
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/account-settings'
     | '/accounts'
     | '/analytics'
+    | '/budget-allocation'
     | '/members'
     | '/my-finances'
     | '/plan'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/account-settings'
     | '/accounts'
     | '/analytics'
+    | '/budget-allocation'
     | '/members'
     | '/my-finances'
     | '/plan'
@@ -272,6 +284,7 @@ export interface FileRouteTypes {
     | '/__pathlessLayout/account-settings'
     | '/__pathlessLayout/accounts'
     | '/__pathlessLayout/analytics'
+    | '/__pathlessLayout/budget-allocation'
     | '/__pathlessLayout/members'
     | '/__pathlessLayout/my-finances'
     | '/__pathlessLayout/plan'
@@ -401,6 +414,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof _pathlessLayoutMembersRouteImport
       parentRoute: typeof _pathlessLayoutRouteRoute
     }
+    '/__pathlessLayout/budget-allocation': {
+      id: '/__pathlessLayout/budget-allocation'
+      path: '/budget-allocation'
+      fullPath: '/budget-allocation'
+      preLoaderRoute: typeof _pathlessLayoutBudgetAllocationRouteImport
+      parentRoute: typeof _pathlessLayoutRouteRoute
+    }
     '/__pathlessLayout/analytics': {
       id: '/__pathlessLayout/analytics'
       path: '/analytics'
@@ -467,6 +487,7 @@ interface _pathlessLayoutRouteRouteChildren {
   _pathlessLayoutAccountSettingsRoute: typeof _pathlessLayoutAccountSettingsRoute
   _pathlessLayoutAccountsRoute: typeof _pathlessLayoutAccountsRoute
   _pathlessLayoutAnalyticsRoute: typeof _pathlessLayoutAnalyticsRoute
+  _pathlessLayoutBudgetAllocationRoute: typeof _pathlessLayoutBudgetAllocationRoute
   _pathlessLayoutMembersRoute: typeof _pathlessLayoutMembersRoute
   _pathlessLayoutMyFinancesRoute: typeof _pathlessLayoutMyFinancesRoute
   _pathlessLayoutPlanRoute: typeof _pathlessLayoutPlanRoute
@@ -481,6 +502,7 @@ const _pathlessLayoutRouteRouteChildren: _pathlessLayoutRouteRouteChildren = {
   _pathlessLayoutAccountSettingsRoute: _pathlessLayoutAccountSettingsRoute,
   _pathlessLayoutAccountsRoute: _pathlessLayoutAccountsRoute,
   _pathlessLayoutAnalyticsRoute: _pathlessLayoutAnalyticsRoute,
+  _pathlessLayoutBudgetAllocationRoute: _pathlessLayoutBudgetAllocationRoute,
   _pathlessLayoutMembersRoute: _pathlessLayoutMembersRoute,
   _pathlessLayoutMyFinancesRoute: _pathlessLayoutMyFinancesRoute,
   _pathlessLayoutPlanRoute: _pathlessLayoutPlanRoute,
