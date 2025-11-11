@@ -1,4 +1,8 @@
-import {BudgetAllocationWithCalculationsContract, CreateBudgetAllocationDTO} from '@nest-wise/contracts';
+import {
+  BudgetAllocationWithCalculationsContract,
+  CreateBudgetAllocationDTO,
+  BudgetAllocationCategoryInput,
+} from '@nest-wise/contracts';
 import {useEffect, useState} from 'react';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
@@ -6,6 +10,7 @@ import {Label} from '@/components/ui/label';
 import {useCreateBudgetAllocation, useUpdateBudgetAllocation} from '../hooks/use-budget-allocation';
 import {toast} from 'sonner';
 import {Slider} from '@/components/ui/slider';
+import {Plus, Trash2} from 'lucide-react';
 
 interface BudgetAllocationFormProps {
   householdId: string;
@@ -13,6 +18,12 @@ interface BudgetAllocationFormProps {
   allocation?: BudgetAllocationWithCalculationsContract;
   isLoading: boolean;
 }
+
+const DEFAULT_CATEGORIES: BudgetAllocationCategoryInput[] = [
+  {name: 'Potrošnja', percentage: 25, displayOrder: 0},
+  {name: 'Investicije', percentage: 65, displayOrder: 1},
+  {name: 'Davanje', percentage: 10, displayOrder: 2},
+];
 
 export const BudgetAllocationForm: React.FC<BudgetAllocationFormProps> = ({
   householdId,
@@ -25,34 +36,33 @@ export const BudgetAllocationForm: React.FC<BudgetAllocationFormProps> = ({
 
   const [salaryAmount, setSalaryAmount] = useState('0');
   const [fixedBillsAmount, setFixedBillsAmount] = useState('0');
-  const [spendingPercentage, setSpendingPercentage] = useState(25);
-  const [investingPercentage, setInvestingPercentage] = useState(65);
-  const [givingPercentage, setGivingPercentage] = useState(10);
+  const [categories, setCategories] = useState<BudgetAllocationCategoryInput[]>(DEFAULT_CATEGORIES);
 
   // Update form when allocation changes
   useEffect(() => {
     if (allocation) {
       setSalaryAmount(String(allocation.salaryAmount));
       setFixedBillsAmount(String(allocation.fixedBillsAmount));
-      setSpendingPercentage(allocation.spendingPercentage);
-      setInvestingPercentage(allocation.investingPercentage);
-      setGivingPercentage(allocation.givingPercentage);
+      setCategories(
+        allocation.categories
+          .sort((a, b) => a.displayOrder - b.displayOrder)
+          .map((cat) => ({
+            name: cat.name,
+            percentage: cat.percentage,
+            displayOrder: cat.displayOrder,
+          })),
+      );
     } else {
       // Reset to defaults for new month
       setSalaryAmount('0');
       setFixedBillsAmount('0');
-      setSpendingPercentage(25);
-      setInvestingPercentage(65);
-      setGivingPercentage(10);
+      setCategories(DEFAULT_CATEGORIES);
     }
   }, [allocation, selectedMonth]);
 
   const remainder = Number(salaryAmount) - Number(fixedBillsAmount);
-  const spendingAmount = (remainder * spendingPercentage) / 100;
-  const investingAmount = (remainder * investingPercentage) / 100;
-  const givingAmount = (remainder * givingPercentage) / 100;
 
-  const percentagesSum = spendingPercentage + investingPercentage + givingPercentage;
+  const percentagesSum = categories.reduce((sum, cat) => sum + cat.percentage, 0);
   const isValidPercentages = percentagesSum === 100;
 
   const formatCurrency = (amount: number) => {
@@ -63,6 +73,46 @@ export const BudgetAllocationForm: React.FC<BudgetAllocationFormProps> = ({
     }).format(amount);
   };
 
+  const handleCategoryPercentageChange = (index: number, newPercentage: number) => {
+    const newCategories = [...categories];
+    const category = newCategories[index];
+    if (category) {
+      category.percentage = newPercentage;
+      setCategories(newCategories);
+    }
+  };
+
+  const handleCategoryNameChange = (index: number, newName: string) => {
+    const newCategories = [...categories];
+    const category = newCategories[index];
+    if (category) {
+      category.name = newName;
+      setCategories(newCategories);
+    }
+  };
+
+  const addCategory = () => {
+    const newCategory: BudgetAllocationCategoryInput = {
+      name: '',
+      percentage: 0,
+      displayOrder: categories.length,
+    };
+    setCategories([...categories, newCategory]);
+  };
+
+  const removeCategory = (index: number) => {
+    if (categories.length <= 1) {
+      toast.error('Mora postojati najmanje jedna kategorija');
+      return;
+    }
+    const newCategories = categories.filter((_, i) => i !== index);
+    // Update display orders
+    newCategories.forEach((cat, i) => {
+      cat.displayOrder = i;
+    });
+    setCategories(newCategories);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -71,13 +121,21 @@ export const BudgetAllocationForm: React.FC<BudgetAllocationFormProps> = ({
       return;
     }
 
+    // Check for empty category names
+    if (categories.some((cat) => !cat.name.trim())) {
+      toast.error('Sve kategorije moraju imati ime');
+      return;
+    }
+
     const dto: CreateBudgetAllocationDTO = {
       month: selectedMonth,
       salaryAmount: Number(salaryAmount),
       fixedBillsAmount: Number(fixedBillsAmount),
-      spendingPercentage,
-      investingPercentage,
-      givingPercentage,
+      categories: categories.map((cat, index) => ({
+        name: cat.name.trim(),
+        percentage: cat.percentage,
+        displayOrder: index,
+      })),
     };
 
     try {
@@ -97,15 +155,19 @@ export const BudgetAllocationForm: React.FC<BudgetAllocationFormProps> = ({
     if (allocation) {
       setSalaryAmount(String(allocation.salaryAmount));
       setFixedBillsAmount(String(allocation.fixedBillsAmount));
-      setSpendingPercentage(allocation.spendingPercentage);
-      setInvestingPercentage(allocation.investingPercentage);
-      setGivingPercentage(allocation.givingPercentage);
+      setCategories(
+        allocation.categories
+          .sort((a, b) => a.displayOrder - b.displayOrder)
+          .map((cat) => ({
+            name: cat.name,
+            percentage: cat.percentage,
+            displayOrder: cat.displayOrder,
+          })),
+      );
     } else {
       setSalaryAmount('0');
       setFixedBillsAmount('0');
-      setSpendingPercentage(25);
-      setInvestingPercentage(65);
-      setGivingPercentage(10);
+      setCategories(DEFAULT_CATEGORIES);
     }
   };
 
@@ -147,50 +209,60 @@ export const BudgetAllocationForm: React.FC<BudgetAllocationFormProps> = ({
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Pravila Raspodele (Golden Rules)</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Kategorije Raspodele</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addCategory} disabled={isLoading}>
+            <Plus className="size-4 mr-2" />
+            Dodaj kategoriju
+          </Button>
+        </div>
 
         <div className="space-y-4">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label>Potrošnja: {spendingPercentage}%</Label>
-              <span className="text-sm text-muted-foreground">{formatCurrency(spendingAmount)} RSD</span>
-            </div>
-            <Slider
-              value={[spendingPercentage]}
-              onValueChange={(value: number[]) => setSpendingPercentage(value[0] ?? 0)}
-              max={100}
-              step={1}
-              disabled={isLoading}
-            />
-          </div>
+          {categories.map((category, index) => (
+            <div key={index} className="space-y-3 p-4 border rounded-lg">
+              <div className="flex items-center gap-2">
+                <div className="flex-1">
+                  <Label htmlFor={`category-name-${index}`}>Ime kategorije</Label>
+                  <Input
+                    id={`category-name-${index}`}
+                    type="text"
+                    value={category.name}
+                    onChange={(e) => handleCategoryNameChange(index, e.target.value)}
+                    disabled={isLoading}
+                    placeholder="Unesite ime kategorije"
+                  />
+                </div>
+                {categories.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeCategory(index)}
+                    disabled={isLoading}
+                    className="mt-6"
+                  >
+                    <Trash2 className="size-4 text-destructive" />
+                  </Button>
+                )}
+              </div>
 
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label>Investicije: {investingPercentage}%</Label>
-              <span className="text-sm text-muted-foreground">{formatCurrency(investingAmount)} RSD</span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>{category.percentage}%</Label>
+                  <span className="text-sm text-muted-foreground">
+                    {formatCurrency((remainder * category.percentage) / 100)} RSD
+                  </span>
+                </div>
+                <Slider
+                  value={[category.percentage]}
+                  onValueChange={(value: number[]) => handleCategoryPercentageChange(index, value[0] ?? 0)}
+                  max={100}
+                  step={1}
+                  disabled={isLoading}
+                />
+              </div>
             </div>
-            <Slider
-              value={[investingPercentage]}
-              onValueChange={(value: number[]) => setInvestingPercentage(value[0] ?? 0)}
-              max={100}
-              step={1}
-              disabled={isLoading}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label>Davanje: {givingPercentage}%</Label>
-              <span className="text-sm text-muted-foreground">{formatCurrency(givingAmount)} RSD</span>
-            </div>
-            <Slider
-              value={[givingPercentage]}
-              onValueChange={(value: number[]) => setGivingPercentage(value[0] ?? 0)}
-              max={100}
-              step={1}
-              disabled={isLoading}
-            />
-          </div>
+          ))}
 
           <div className="pt-2">
             <div className={`text-sm font-medium ${isValidPercentages ? 'text-green-600' : 'text-destructive'}`}>

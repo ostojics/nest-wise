@@ -29,8 +29,8 @@ export class BudgetAllocationService {
   }
 
   async create(householdId: string, dto: CreateBudgetAllocationDTO): Promise<BudgetAllocationWithCalculationsContract> {
-    // Validate percentages sum to 100
-    this.validatePercentages(dto.spendingPercentage, dto.investingPercentage, dto.givingPercentage);
+    // Validate percentages sum to 100 (schema already does this but double-check)
+    this.validateCategories(dto.categories);
 
     // Check if allocation already exists for this month
     const existing = await this.budgetAllocationRepository.findByHouseholdAndMonth(householdId, dto.month);
@@ -48,16 +48,9 @@ export class BudgetAllocationService {
       throw new NotFoundException('Alokacija budžeta nije pronađena');
     }
 
-    // If any percentage field is updated, validate all percentages sum to 100
-    if (
-      dto.spendingPercentage !== undefined ||
-      dto.investingPercentage !== undefined ||
-      dto.givingPercentage !== undefined
-    ) {
-      const spending = dto.spendingPercentage ?? existing.spendingPercentage;
-      const investing = dto.investingPercentage ?? existing.investingPercentage;
-      const giving = dto.givingPercentage ?? existing.givingPercentage;
-      this.validatePercentages(spending, investing, giving);
+    // If categories are updated, validate they sum to 100
+    if (dto.categories) {
+      this.validateCategories(dto.categories);
     }
 
     const updated = await this.budgetAllocationRepository.updateBudgetAllocation(id, dto);
@@ -88,21 +81,27 @@ export class BudgetAllocationService {
 
   private calculateDerivedValues(allocation: BudgetAllocation): BudgetAllocationWithCalculationsContract {
     const remainder = allocation.salaryAmount - allocation.fixedBillsAmount;
-    const spendingAmount = this.roundToTwoDecimals((remainder * allocation.spendingPercentage) / 100);
-    const investingAmount = this.roundToTwoDecimals((remainder * allocation.investingPercentage) / 100);
-    const givingAmount = this.roundToTwoDecimals((remainder * allocation.givingPercentage) / 100);
+
+    const categoryAllocations = allocation.categories
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .map((category) => ({
+        id: category.id,
+        name: category.name,
+        percentage: category.percentage,
+        amount: this.roundToTwoDecimals((remainder * category.percentage) / 100),
+        displayOrder: category.displayOrder,
+      }));
 
     return {
       ...allocation,
       remainder: this.roundToTwoDecimals(remainder),
-      spendingAmount,
-      investingAmount,
-      givingAmount,
+      categoryAllocations,
     };
   }
 
-  private validatePercentages(spending: number, investing: number, giving: number): void {
-    if (spending + investing + giving !== 100) {
+  private validateCategories(categories: {name: string; percentage: number}[]): void {
+    const totalPercentage = categories.reduce((sum, cat) => sum + cat.percentage, 0);
+    if (totalPercentage !== 100) {
       throw new BadRequestException('Procenti moraju biti tačno 100%');
     }
   }

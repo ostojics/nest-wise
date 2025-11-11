@@ -28,15 +28,11 @@ export const AllocationVisualTree: React.FC<AllocationVisualTreeProps> = ({alloc
           {calculatePercentage(allocation.fixedBillsAmount, allocation.salaryAmount)}%]
         </div>
         <div className="mt-4 font-semibold">OSTATAK: {formatCurrency(allocation.remainder)} RSD</div>
-        <div className="pl-4">
-          ├─ Potrošnja: {formatCurrency(allocation.spendingAmount)} RSD [{allocation.spendingPercentage}%]
-        </div>
-        <div className="pl-4">
-          ├─ Investicije: {formatCurrency(allocation.investingAmount)} RSD [{allocation.investingPercentage}%]
-        </div>
-        <div className="pl-4">
-          └─ Davanje: {formatCurrency(allocation.givingAmount)} RSD [{allocation.givingPercentage}%]
-        </div>
+        {allocation.categoryAllocations.map((cat, index, array) => (
+          <div key={cat.id} className="pl-4">
+            {index === array.length - 1 ? '└─' : '├─'} {cat.name}: {formatCurrency(cat.amount)} RSD [{cat.percentage}%]
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -7,8 +7,10 @@ import {
   Index,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import {Household} from 'src/households/household.entity';
+import {BudgetAllocationCategory} from './budget-allocation-category.entity';
 
 @Entity('budget_allocations')
 @Index(['householdId', 'month'], {unique: true})
@@ -58,30 +60,6 @@ export class BudgetAllocation {
   })
   fixedBillsAmount: number;
 
-  @Column({
-    type: 'smallint',
-    nullable: false,
-    default: 25,
-    name: 'spending_percentage',
-  })
-  spendingPercentage: number;
-
-  @Column({
-    type: 'smallint',
-    nullable: false,
-    default: 65,
-    name: 'investing_percentage',
-  })
-  investingPercentage: number;
-
-  @Column({
-    type: 'smallint',
-    nullable: false,
-    default: 10,
-    name: 'giving_percentage',
-  })
-  givingPercentage: number;
-
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at',
@@ -99,4 +77,10 @@ export class BudgetAllocation {
   })
   @JoinColumn({name: 'household_id'})
   household: Household;
+
+  @OneToMany(() => BudgetAllocationCategory, (category) => category.budgetAllocation, {
+    cascade: true,
+    eager: true,
+  })
+  categories: BudgetAllocationCategory[];
 }
