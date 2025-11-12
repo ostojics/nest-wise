@@ -1,11 +1,10 @@
 import {AcceptInviteQueryParams} from '@nest-wise/contracts';
 import {InjectQueue} from '@nestjs/bullmq';
-import {Injectable} from '@nestjs/common';
+import {Injectable, Inject} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {JwtService} from '@nestjs/jwt';
 import {Queue} from 'bullmq';
 import {Logger} from 'pino-nestjs';
-import {Resend} from 'resend';
 import {EmailJobs} from 'src/common/enums/jobs.enum';
 import {Queues} from 'src/common/enums/queues.enum';
 import {
@@ -15,23 +14,23 @@ import {
   SendHelpEmailPayload,
 } from 'src/common/interfaces/emails.interface';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
+import {IEmailProvider, EMAIL_PROVIDER} from 'src/domain/contracts/providers/email-provider.interface';
 
 @Injectable()
 export class EmailsService {
-  private readonly resendClient: Resend;
-  private readonly fromEmail: string;
   private readonly webAppUrl: string;
+  private readonly supportEmail: string;
 
   constructor(
     @InjectQueue(Queues.EMAILS) private emailsQueue: Queue,
     private readonly configService: ConfigService,
     private readonly logger: Logger,
     private readonly jwtService: JwtService,
+    @Inject(EMAIL_PROVIDER) private readonly emailProvider: IEmailProvider,
   ) {
     const config = this.configService.getOrThrow<AppConfig>(AppConfigName);
-    this.resendClient = new Resend(config.resendApiKey);
-    this.fromEmail = 'info@no-reply.nestwise.finance';
     this.webAppUrl = config.webAppUrl;
+    this.supportEmail = config.supportEmail;
   }
 
   async sendInviteEmail(payload: SendInviteEmailPayload) {
@@ -70,27 +69,13 @@ export class EmailsService {
     };
 
     const token = await this.jwtService.signAsync(jwtPayload);
-    const params: AcceptInviteQueryParams = {
-      token,
-      householdName: payload.householdName,
-      email: payload.email,
-    };
-    const queryParams = new URLSearchParams(params).toString();
 
-    const {error} = await this.resendClient.emails.send({
+    await this.emailProvider.sendInviteEmail({
       to: payload.email,
-      from: this.fromEmail,
-      subject: `[NestWise] Poziv za pridruživanje domaćinstvu`,
-      html: `
-      <p>Pozvani ste da se pridružite domaćinstvu <b>${payload.householdName}</b> na NestWise platformi. Kliknite na link ispod da prihvatite poziv:</p>
-      <a href="${this.webAppUrl}/invites?${queryParams}">Prihvati poziv</a>
-      `,
+      householdName: payload.householdName,
+      inviteToken: token,
+      webAppUrl: this.webAppUrl,
     });
-
-    if (error) {
-      this.logger.error('Error sending invite email', error);
-      throw new Error(error.message);
-    }
   }
 
   async processPasswordResetEmailJob(payload: SendPasswordResetEmailPayload) {
@@ -106,72 +91,27 @@ export class EmailsService {
       expiresIn: '15m',
     });
 
-    const params = new URLSearchParams({token});
-    const queryParams = params.toString();
-
-    const {error} = await this.resendClient.emails.send({
+    await this.emailProvider.sendPasswordResetEmail({
       to: payload.email,
-      from: this.fromEmail,
-      subject: `[NestWise] Resetovanje lozinke`,
-      html: `
-      <p>Zatražili ste resetovanje lozinke za svoj NestWise nalog.</p>
-      <p>Molimo kliknite na link ispod da resetujete lozinku. Ovaj link ističe za 15 minuta:</p>
-      <a href="${this.webAppUrl}/reset-password?${queryParams}">Resetuj lozinku</a>
-      <p>Ukoliko niste tražili resetovanje lozinke, slobodno ignorišite ovaj email.</p>
-      `,
+      resetToken: token,
+      webAppUrl: this.webAppUrl,
     });
-
-    if (error) {
-      this.logger.error('Error sending password reset email', error);
-      throw new Error(error.message);
-    }
   }
 
   async processEmailChangeConfirmationJob(payload: SendEmailChangeConfirmationPayload) {
-    const params = new URLSearchParams({token: payload.token});
-    const queryParams = params.toString();
-
-    const {error} = await this.resendClient.emails.send({
+    await this.emailProvider.sendEmailChangeConfirmation({
       to: payload.newEmail,
-      from: this.fromEmail,
-      subject: `[NestWise] Potvrda promene e‑pošte`,
-      html: `
-      <p>Zatražili ste promenu e‑pošte za svoj NestWise nalog.</p>
-      <p>Molimo kliknite na link ispod da potvrdite novu e‑poštu. Ovaj link ističe za 15 minuta:</p>
-      <a href="${this.webAppUrl}/email-change?${queryParams}">Potvrdi promenu e‑pošte</a>
-      <p>Ukoliko niste tražili promenu e‑pošte, slobodno ignorišite ovaj email.</p>
-      `,
+      confirmationToken: payload.token,
+      webAppUrl: this.webAppUrl,
     });
-
-    if (error) {
-      this.logger.error('Error sending email change confirmation', error);
-      throw new Error(error.message);
-    }
   }
+
   async processHelpEmailJob(payload: SendHelpEmailPayload) {
-    const escapedMessage = payload.message
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/\n/g, '<br>');
-
-    const {error} = await this.resendClient.emails.send({
-      to: 'slobodan@ostojic.dev',
-      from: this.fromEmail,
-      subject: `[NestWise] Pomoć – korisnička poruka`,
-      html: `
-      <h3>Nova korisnička poruka</h3>
-      <p><strong>Od:</strong> ${payload.email}</p>
-      ${payload.userId ? `<p><strong>ID korisnika:</strong> ${payload.userId}</p>` : ''}
-      <hr>
-      <p><strong>Poruka:</strong></p>
-      <p>${escapedMessage}</p>
-      `,
+    await this.emailProvider.sendHelpEmail({
+      userEmail: payload.email,
+      userId: payload.userId,
+      message: payload.message,
+      supportEmail: this.supportEmail,
     });
-
-    if (error) {
-      this.logger.error(`Error sending help email: ${error.message}`, error);
-      throw new Error(error.message);
-    }
   }
 }
