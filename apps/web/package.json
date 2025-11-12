@@ -84,7 +84,7 @@
     "msw": "^2.11.3",
     "tw-animate-css": "^1.3.5",
     "typescript": "catalog:",
-    "vite": "^6.3.5",
+    "vite": "^6.4.1",
     "vite-bundle-analyzer": "^0.22.0",
     "vite-plugin-pwa": "^1.0.3"
   },
