@@ -12,6 +12,7 @@ import {LicensesModule} from 'src/licenses/licenses.module';
 import {Queues} from 'src/common/enums/queues.enum';
 import {TransactionsConsumer} from './transactions.consumer';
 import {TRANSACTION_REPOSITORY} from '../domain/contracts/repositories/transaction.repository.interface';
+import {AiProviderModule} from '../infrastructure/providers/ai/ai-provider.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import {TRANSACTION_REPOSITORY} from '../domain/contracts/repositories/transacti
     HouseholdsModule,
     CategoriesModule,
     LicensesModule,
+    AiProviderModule,
   ],
   controllers: [TransactionsController],
   providers: [

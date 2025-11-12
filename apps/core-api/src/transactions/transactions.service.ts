@@ -24,7 +24,6 @@ import {Queue} from 'bullmq';
 import {CategoriesService} from 'src/categories/categories.service';
 import {HouseholdsService} from 'src/households/households.service';
 import {categoryPromptFactory} from 'src/tools/ai/prompts/category.prompt';
-import {transactionCategoryOutputSchema} from 'src/tools/ai/schemas';
 import {DataSource} from 'typeorm';
 import {AccountsService} from '../accounts/accounts.service';
 import {TransactionType} from '../common/enums/transaction.type.enum';
@@ -33,17 +32,15 @@ import {Logger} from 'pino-nestjs';
 import {Queues} from 'src/common/enums/queues.enum';
 import {AiTransactionJobs} from 'src/common/enums/jobs.enum';
 import {ProcessAiTransactionPayload} from 'src/common/interfaces/ai-transactions.interface';
-import OpenAI from 'openai';
-import {zodTextFormat} from 'openai/helpers/zod';
 import {
   ITransactionRepository,
   TRANSACTION_REPOSITORY,
 } from '../domain/contracts/repositories/transaction.repository.interface';
+import {IAiProvider, AI_PROVIDER} from '../domain/contracts/providers/ai-provider.interface';
 
 @Injectable()
 export class TransactionsService {
   private readonly CHUNK_SIZE = 100;
-  private readonly openAiClient: OpenAI;
 
   constructor(
     @Inject(TRANSACTION_REPOSITORY)
@@ -54,9 +51,8 @@ export class TransactionsService {
     private readonly dataSource: DataSource,
     private readonly logger: Logger,
     @InjectQueue(Queues.AI_TRANSACTIONS) private readonly aiTransactionsQueue: Queue,
-  ) {
-    this.openAiClient = new OpenAI();
-  }
+    @Inject(AI_PROVIDER) private readonly aiProvider: IAiProvider,
+  ) {}
 
   async createTransaction(transactionData: CreateTransactionDTO): Promise<Transaction> {
     return await this.dataSource.transaction(async () => {
@@ -170,23 +166,11 @@ export class TransactionsService {
     this.logger.debug('AI Category System Prompt', {systemPrompt});
     this.logger.debug('AI Category User Input', {userInput: transactionData.description});
 
-    const response = await this.openAiClient.responses.parse({
-      model: 'gpt-4o-mini',
-      input: [
-        {role: 'system', content: systemPrompt},
-        {role: 'user', content: transactionData.description},
-      ],
-      max_output_tokens: 256,
-      text: {
-        format: zodTextFormat(transactionCategoryOutputSchema, 'object'),
-      },
+    // Use AI provider abstraction instead of direct OpenAI SDK
+    const object = await this.aiProvider.categorizeTransaction({
+      systemPrompt,
+      userInput: transactionData.description,
     });
-
-    const object = response.output_parsed;
-    if (!object) {
-      this.logger.error('AI response parsing failed', {response});
-      throw new BadGatewayException('Nije moguće odrediti kategoriju transakcije putem AI');
-    }
 
     if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
       this.logger.error('Insufficient funds for expense', {
