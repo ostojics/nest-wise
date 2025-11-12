@@ -28,7 +28,6 @@ import {ScheduledTransactionExecution} from 'src/scheduled-transactions/schedule
 import {BudgetAllocation} from 'src/budget-allocation/budget-allocation.entity';
 import {BudgetAllocationCategory} from 'src/budget-allocation/budget-allocation-category.entity';
 import {AddBudgetAllocations1762000000000} from 'src/migrations/1762000000000-AddBudgetAllocations';
-import {RefactorBudgetAllocationsToSupportDynamicCategories1762000000001} from 'src/migrations/1762000000001-RefactorBudgetAllocationsToSupportDynamicCategories';
 
 export const DatabaseConfigName = 'database';
 
@@ -77,7 +76,6 @@ export function getConfig(): DatabaseConfig {
       AddScheduledTransactionExecutions1760300000001,
       AddAccountIsActive1761949055000,
       AddBudgetAllocations1762000000000,
-      RefactorBudgetAllocationsToSupportDynamicCategories1762000000001,
     ],
     migrationsRun: true,
     extra: {
