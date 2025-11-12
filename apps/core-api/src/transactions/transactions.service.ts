@@ -18,7 +18,7 @@ import {
   AiTransactionJobStatusContract,
   AiTransactionJobStatus,
 } from '@nest-wise/contracts';
-import {BadGatewayException, BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadGatewayException, BadRequestException, Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Queue} from 'bullmq';
 import {CategoriesService} from 'src/categories/categories.service';
@@ -29,13 +29,16 @@ import {DataSource} from 'typeorm';
 import {AccountsService} from '../accounts/accounts.service';
 import {TransactionType} from '../common/enums/transaction.type.enum';
 import {Transaction} from './transaction.entity';
-import {TransactionsRepository} from './transactions.repository';
 import {Logger} from 'pino-nestjs';
 import {Queues} from 'src/common/enums/queues.enum';
 import {AiTransactionJobs} from 'src/common/enums/jobs.enum';
 import {ProcessAiTransactionPayload} from 'src/common/interfaces/ai-transactions.interface';
 import OpenAI from 'openai';
 import {zodTextFormat} from 'openai/helpers/zod';
+import {
+  ITransactionRepository,
+  TRANSACTION_REPOSITORY,
+} from '../domain/contracts/repositories/transaction.repository.interface';
 
 @Injectable()
 export class TransactionsService {
@@ -43,7 +46,8 @@ export class TransactionsService {
   private readonly openAiClient: OpenAI;
 
   constructor(
-    private readonly transactionsRepository: TransactionsRepository,
+    @Inject(TRANSACTION_REPOSITORY)
+    private readonly transactionsRepository: ITransactionRepository,
     private readonly accountsService: AccountsService,
     private readonly householdsService: HouseholdsService,
     private readonly categoriesService: CategoriesService,

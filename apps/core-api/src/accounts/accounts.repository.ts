@@ -2,9 +2,10 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Account} from './account.entity';
+import {IAccountRepository} from '../domain/contracts/repositories/account.repository.interface';
 
 @Injectable()
-export class AccountsRepository {
+export class AccountsRepository implements IAccountRepository {
   constructor(
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,

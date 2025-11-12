@@ -1,13 +1,14 @@
 import {EditAccountDTO, CreateAccountHouseholdScopedDTO, TransferFundsDTO} from '@nest-wise/contracts';
-import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ConflictException, Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {Account} from './account.entity';
-import {AccountsRepository} from './accounts.repository';
 import {DataSource} from 'typeorm';
+import {IAccountRepository, ACCOUNT_REPOSITORY} from '../domain/contracts/repositories/account.repository.interface';
 
 @Injectable()
 export class AccountsService {
   constructor(
-    private readonly accountsRepository: AccountsRepository,
+    @Inject(ACCOUNT_REPOSITORY)
+    private readonly accountsRepository: IAccountRepository,
     private readonly dataSource: DataSource,
   ) {}
 

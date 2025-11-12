@@ -11,6 +11,7 @@ import {CategoriesModule} from 'src/categories/categories.module';
 import {LicensesModule} from 'src/licenses/licenses.module';
 import {Queues} from 'src/common/enums/queues.enum';
 import {TransactionsConsumer} from './transactions.consumer';
+import {TRANSACTION_REPOSITORY} from '../domain/contracts/repositories/transaction.repository.interface';
 
 @Module({
   imports: [
@@ -22,7 +23,15 @@ import {TransactionsConsumer} from './transactions.consumer';
     LicensesModule,
   ],
   controllers: [TransactionsController],
-  providers: [TransactionsService, TransactionsRepository, TransactionsConsumer],
+  providers: [
+    TransactionsService,
+    TransactionsRepository,
+    TransactionsConsumer,
+    {
+      provide: TRANSACTION_REPOSITORY,
+      useExisting: TransactionsRepository,
+    },
+  ],
   exports: [TransactionsService],
 })
 export class TransactionsModule {}
