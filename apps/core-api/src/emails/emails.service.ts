@@ -1,4 +1,3 @@
-import {AcceptInviteQueryParams} from '@nest-wise/contracts';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Injectable, Inject} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';

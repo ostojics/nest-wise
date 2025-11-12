@@ -26,9 +26,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const errorResponse = exception instanceof HttpException ? exception.getResponse() : null;
 
     // Extract user ID from request for PostHog tracking (if available)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/prefer-nullish-coalescing
     const distinctId = (request as any).user?.sub || 'backend-core';
 
     // Log the error with structured context
+
     this.logger.error('Unhandled exception', {
       error: exception,
       path: request.url,
@@ -61,6 +63,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     // Send error response to client
     response.status(status).json(
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       errorResponse || {
         statusCode: status,
         timestamp: new Date().toISOString(),

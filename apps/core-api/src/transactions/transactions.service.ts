@@ -10,7 +10,6 @@ import {
   GetAccountsSpendingQueryHouseholdDTO,
   GetTransactionsResponseContract,
   NetWorthTrendPointContract,
-  TransactionContract,
   SpendingTotalContract,
   CategorySpendingPointContract,
   GetSpendingSummaryQueryHouseholdDTO,
@@ -18,7 +17,7 @@ import {
   AiTransactionJobStatusContract,
   AiTransactionJobStatus,
 } from '@nest-wise/contracts';
-import {BadGatewayException, BadRequestException, Injectable, NotFoundException, Inject} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Queue} from 'bullmq';
 import {CategoriesService} from 'src/categories/categories.service';
