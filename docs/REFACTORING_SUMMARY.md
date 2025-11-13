@@ -12,7 +12,7 @@ This PR addresses critical technical debt items focused on architectural boundar
 
 **What:** Introduced port/adapter pattern for repositories
 
-- Created `IAccountRepository` and `ITransactionRepository` interfaces in `domain/contracts/repositories/`
+- Created `IAccountRepository` and `ITransactionRepository` interfaces in `contracts/repositories/`
 - Updated `AccountsRepository` and `TransactionsRepository` to implement interfaces
 - Modified services to depend on interfaces via dependency injection tokens
 - Services no longer directly import ORM types
@@ -25,8 +25,8 @@ This PR addresses critical technical debt items focused on architectural boundar
 
 **Files:**
 
-- `apps/core-api/src/domain/contracts/repositories/account.repository.interface.ts`
-- `apps/core-api/src/domain/contracts/repositories/transaction.repository.interface.ts`
+- `apps/core-api/src/contracts/repositories/account.repository.interface.ts`
+- `apps/core-api/src/contracts/repositories/transaction.repository.interface.ts`
 - `apps/core-api/src/accounts/accounts.repository.ts`
 - `apps/core-api/src/accounts/accounts.service.ts`
 - `apps/core-api/src/accounts/accounts.module.ts`
@@ -249,7 +249,7 @@ The following tasks were intentionally skipped to maintain minimal scope:
 
 ### For Developers
 
-1. **Repository Usage:** When adding new repository methods, update the interface first in `domain/contracts/repositories/`
+1. **Repository Usage:** When adding new repository methods, update the interface first in `contracts/repositories/`
 2. **Provider Implementation:** To swap AI/email providers, implement the interface and update the DI binding in the module
 3. **Error Reporting:** Use `reportError()` from `@/lib/error-reporting` in new frontend code
 4. **Logging:** Follow guidelines in `docs/LOGGING_GUIDELINES.md` - never log secrets!
@@ -278,6 +278,289 @@ None - all changes are internal refactoring with no API contract changes.
 - Test coverage of domain methods
 - Number of direct vendor SDK imports (should decrease)
 - Config validation failures in CI/CD
+
+## Remaining Work
+
+This section tracks what remains to complete the full refactoring vision from the original issue #216.
+
+### Backend - Remaining Tasks
+
+#### 1. Repository Pattern - Expand to All Entities
+
+**Status:** Partially complete (2/7 entities)
+
+**Completed:**
+
+- ✅ AccountsRepository → IAccountRepository
+- ✅ TransactionsRepository → ITransactionRepository
+
+**Remaining:**
+
+- [ ] CategoriesRepository → ICategoryRepository
+- [ ] HouseholdsRepository → IHouseholdRepository
+- [ ] UsersRepository → IUserRepository
+- [ ] CategoryBudgetsRepository → ICategoryBudgetRepository
+- [ ] PrivateTransactionsRepository → IPrivateTransactionRepository
+
+**Estimated Effort:** 2-3 hours per repository
+**Priority:** Medium - Completes architectural consistency
+
+**Steps per repository:**
+
+1. Create interface in `apps/core-api/src/contracts/repositories/`
+2. Update repository to implement interface
+3. Update service to inject via DI token
+4. Update module to provide via DI token
+
+#### 2. Domain Methods - Expand to Other Entities
+
+**Status:** Partially complete (1/7 entities)
+
+**Completed:**
+
+- ✅ Account entity - withdraw(), deposit(), hasSufficientFunds()
+
+**Remaining:**
+
+- [ ] Transaction entity - validate(), canBeUpdated(), canBeDeleted()
+- [ ] Category entity - canBeDeleted(), hasTransactions()
+- [ ] Household entity - canAddMember(), hasReachedMemberLimit()
+- [ ] CategoryBudget entity - isWithinBudget(), getRemainingBudget()
+- [ ] User entity - canJoinHousehold(), hasPermission()
+
+**Estimated Effort:** 1-2 hours per entity
+**Priority:** High - Prevents anemic domain model
+
+**Acceptance Criteria:**
+
+- Business rules moved from services to entities
+- Entities enforce their own invariants
+- Services orchestrate, not implement rules
+
+#### 3. Use Case Extraction (Task 3.1)
+
+**Status:** Not started
+
+**Target Services:**
+
+- [ ] TransactionsService - Extract CreateTransactionUseCase, UpdateTransactionUseCase, DeleteTransactionUseCase
+- [ ] AccountsService - Extract TransferFundsUseCase, CreateAccountUseCase
+- [ ] CategoryBudgetsService - Extract CreateBudgetUseCase, CheckBudgetUseCase
+
+**Estimated Effort:** 4-6 hours total
+**Priority:** Medium - Improves service layer organization
+
+**Structure:**
+
+```
+apps/core-api/src/application/
+  use-cases/
+    transactions/
+      create-transaction.use-case.ts
+      transfer-funds.use-case.ts
+    accounts/
+      create-account.use-case.ts
+```
+
+#### 4. Event-Driven Decoupling (Task 3.2)
+
+**Status:** Not started
+
+**Target Flows:**
+
+- [ ] Transaction created → Update account balance (currently direct call)
+- [ ] Account deactivated → Notify dependent services
+- [ ] Budget exceeded → Send notification
+
+**Estimated Effort:** 6-8 hours
+**Priority:** Medium - Reduces tight coupling
+
+**Implementation:**
+
+1. Create simple EventBus in `apps/core-api/src/common/events/`
+2. Define domain events (TransactionCreated, AccountBalanceChanged, etc.)
+3. Replace direct service calls with event publish/subscribe
+4. Add event handlers
+
+#### 5. Logging Interceptor with Correlation ID (Task 4.5 - Partial)
+
+**Status:** Documentation complete, implementation pending
+
+**Remaining:**
+
+- [ ] Create RequestIdInterceptor
+- [ ] Add correlation ID to all log entries
+- [ ] Pass correlation ID through service calls
+- [ ] Include in error responses
+
+**Estimated Effort:** 3-4 hours
+**Priority:** Low - Nice to have for production debugging
+
+**Files to create:**
+
+- `apps/core-api/src/common/interceptors/request-id.interceptor.ts`
+
+### Frontend - Remaining Tasks
+
+#### 6. Centralized Error Reporting - Expand Coverage
+
+**Status:** Partially complete (2/20+ hooks)
+
+**Completed:**
+
+- ✅ use-create-account-mutation
+- ✅ use-transfer-funds-mutation
+
+**Remaining Hooks to Update:**
+
+- [ ] use-edit-account-mutation
+- [ ] use-deactivate-account-mutation
+- [ ] use-activate-account-mutation
+- [ ] use-create-transaction
+- [ ] use-update-transaction
+- [ ] use-create-transaction-ai
+- [ ] use-create-category-mutation
+- [ ] use-update-category-mutation
+- [ ] use-delete-category-mutation
+- [ ] use-create-category-budget-mutation
+- [ ] use-update-category-budget-mutation
+- [ ] use-delete-category-budget-mutation
+- [ ] use-create-household-mutation
+- [ ] use-update-household-mutation
+- [ ] use-invite-user-mutation
+- [ ] And more...
+
+**Estimated Effort:** 10-15 minutes per hook
+**Priority:** High - Security and observability improvement
+
+**Pattern to follow:**
+
+```typescript
+// Before
+import posthog from 'posthog-js';
+posthog.captureException(error, {...});
+
+// After
+import {reportError} from '@/lib/error-reporting';
+await reportError(error, {feature: 'feature_name'});
+```
+
+#### 7. Business Logic Extraction from Hooks (Task 1.2)
+
+**Status:** Not started
+
+**Target Hooks:**
+
+- [ ] use-validate-transfer-funds - Extract validation logic
+- [ ] use-validate-create-account - Extract validation logic
+- [ ] use-validate-create-transaction - Extract validation logic
+- [ ] use-transactions-table - Extract filtering/sorting logic
+- [ ] use-category-budgets-table - Extract table logic
+
+**Estimated Effort:** 2-3 hours per hook
+**Priority:** Medium - Improves testability
+
+**Structure:**
+
+```
+apps/web/src/lib/domain/
+  accounts/
+    validate-transfer-funds.ts
+    validate-create-account.ts
+  transactions/
+    validate-transaction.ts
+```
+
+#### 8. HTTP Client Abstraction (Task 1.3)
+
+**Status:** Not started
+
+**Scope:**
+
+- [ ] Create `IApiClient` interface in `apps/web/src/contracts/`
+- [ ] Create `KyApiClient` adapter in `apps/web/src/infrastructure/`
+- [ ] Migrate accounts-api.ts
+- [ ] Migrate transactions-api.ts
+- [ ] Migrate categories-api.ts
+- [ ] Migrate households-api.ts
+- [ ] Migrate users-api.ts
+- [ ] And remaining API modules...
+
+**Estimated Effort:** 6-8 hours total
+**Priority:** Low - Nice to have for consistency
+
+**Benefits:**
+
+- Easier to swap HTTP libraries
+- Centralized request/response interceptors
+- Better testability with mock clients
+
+### Complete Roadmap
+
+#### Phase 1: Complete Current Patterns (Estimated: 15-20 hours)
+
+1. Expand repository pattern to all entities
+2. Add domain methods to remaining entities
+3. Update all frontend hooks to use centralized error reporting
+
+#### Phase 2: Advanced Architecture (Estimated: 15-20 hours)
+
+4. Extract use cases from fat services
+5. Implement event-driven decoupling
+6. Add logging interceptor with correlation ID
+
+#### Phase 3: Frontend Consistency (Estimated: 10-15 hours)
+
+7. Extract business logic from hooks
+8. Implement HTTP client abstraction
+
+### Progress Tracking
+
+**Overall Completion:**
+
+- Backend: 30% complete (7/23 tasks)
+- Frontend: 10% complete (2/20+ hooks updated)
+
+**Architectural Patterns:**
+
+- Repository Pattern: 29% (2/7 entities)
+- Domain Methods: 14% (1/7 entities)
+- Provider Abstractions: 100% (2/2 providers)
+- Error Handling: Backend 100%, Frontend 10%
+- Use Cases: 0% (0/6 planned)
+- Event-Driven: 0%
+
+### Next Recommended Steps
+
+**High Priority:**
+
+1. Update remaining frontend hooks with centralized error reporting (2-3 hours)
+2. Add domain methods to Transaction and Category entities (2-4 hours)
+3. Create repository interfaces for Categories and Households (2-3 hours)
+
+**Medium Priority:** 4. Extract CreateTransaction and TransferFunds use cases (3-4 hours) 5. Add repository interfaces for remaining entities (4-6 hours) 6. Extract business logic from key frontend hooks (6-8 hours)
+
+**Low Priority:** 7. Implement event-driven architecture for transaction flows (6-8 hours) 8. Add logging interceptor with correlation ID (3-4 hours) 9. Implement HTTP client abstraction (6-8 hours)
+
+### Success Metrics
+
+**Code Quality:**
+
+- All entities have domain methods (currently 14%)
+- All repositories use interfaces (currently 29%)
+- All hooks use centralized error reporting (currently 10%)
+
+**Architecture:**
+
+- Zero direct vendor SDK imports in services (AI/Email achieved, maintain)
+- All business rules in domain entities, not services
+- Service layer uses use cases for complex operations
+
+**Observability:**
+
+- All errors tracked through centralized reporting
+- All requests have correlation IDs for tracing
+- Structured logging with consistent fields
 
 ## Conclusion
 
