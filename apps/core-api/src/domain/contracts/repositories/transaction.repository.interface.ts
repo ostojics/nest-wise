@@ -4,7 +4,6 @@ import {
   GetTransactionsQueryHouseholdDTO,
   UpdateTransactionDTO,
   GetTransactionsResponseContract,
-  TransactionContract,
   AccountSpendingPointContract,
   GetAccountsSpendingQueryDTO,
   GetAccountsSpendingQueryHouseholdDTO,

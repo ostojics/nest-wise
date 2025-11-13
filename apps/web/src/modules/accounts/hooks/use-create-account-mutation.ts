@@ -23,7 +23,6 @@ export const useCreateAccountMutation = ({householdId}: UseCreateAccountMutation
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      // Use centralized error reporting
       await reportError(error, {
         feature: 'account_create',
       });

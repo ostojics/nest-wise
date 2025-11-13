@@ -24,7 +24,6 @@ export const useTransferFundsMutation = ({householdId}: UseTransferFundsMutation
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      // Use centralized error reporting
       await reportError(error, {
         feature: 'account_transfer_funds',
       });

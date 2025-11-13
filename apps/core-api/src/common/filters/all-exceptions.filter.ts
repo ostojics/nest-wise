@@ -20,16 +20,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
-
     const message = exception instanceof HttpException ? exception.message : 'Internal server error';
-
     const errorResponse = exception instanceof HttpException ? exception.getResponse() : null;
-
-    // Extract user ID from request for PostHog tracking (if available)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/prefer-nullish-coalescing
-    const distinctId = (request as any).user?.sub || 'backend-core';
-
-    // Log the error with structured context
+    const distinctId = 'backend-core';
 
     this.logger.error('Unhandled exception', {
       error: exception,
@@ -40,8 +33,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       distinctId,
     });
 
-    // Capture exception in PostHog for monitoring
-    // This is the single point of PostHog exception capture
     if (exception instanceof Error) {
       this.posthogService.captureException(exception, distinctId, {
         path: request.url,
@@ -49,7 +40,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
         status,
       });
     } else {
-      // Handle non-Error exceptions
       this.posthogService.captureException(
         new Error(typeof exception === 'string' ? exception : 'Unknown exception'),
         distinctId,
@@ -61,10 +51,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
       );
     }
 
-    // Send error response to client
     response.status(status).json(
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      errorResponse || {
+      errorResponse ?? {
         statusCode: status,
         timestamp: new Date().toISOString(),
         path: request.url,

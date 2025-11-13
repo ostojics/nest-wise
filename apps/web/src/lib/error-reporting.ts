@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Error Reporting Service
  *
@@ -45,9 +46,9 @@ export async function reportError(
     const properties = {
       ...context,
       ...metadata,
-      timestamp: metadata?.timestamp || new Date().toISOString(),
-      userAgent: metadata?.userAgent || navigator.userAgent,
-      url: metadata?.url || window.location.href,
+      timestamp: metadata?.timestamp ?? new Date().toISOString(),
+      userAgent: metadata?.userAgent ?? navigator.userAgent,
+      url: metadata?.url ?? window.location.href,
     };
 
     // Report to PostHog
@@ -58,9 +59,8 @@ export async function reportError(
       },
       ...properties,
     });
-  } catch (reportingError) {
+  } catch {
     // Fail silently to avoid breaking the app if error reporting fails
-    console.error('Failed to report error:', reportingError);
   }
 }
 
@@ -79,11 +79,11 @@ export async function reportWarning(message: string, context?: ErrorContext, met
       message,
       ...context,
       ...metadata,
-      timestamp: metadata?.timestamp || new Date().toISOString(),
-      url: metadata?.url || window.location.href,
+      timestamp: metadata?.timestamp ?? new Date().toISOString(),
+      url: metadata?.url ?? window.location.href,
     });
-  } catch (reportingError) {
-    console.error('Failed to report warning:', reportingError);
+  } catch {
+    // Fail silently to avoid breaking the app if error reporting fails
   }
 }
 
@@ -100,7 +100,7 @@ export async function reportEvent(eventName: string, properties?: Record<string,
       ...properties,
       timestamp: new Date().toISOString(),
     });
-  } catch (reportingError) {
-    console.error('Failed to report event:', reportingError);
+  } catch {
+    // Fail silently to avoid breaking the app if error reporting fails
   }
 }

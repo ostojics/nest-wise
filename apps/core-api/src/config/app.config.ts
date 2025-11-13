@@ -32,7 +32,7 @@ export function getConfig(): AppConfig {
     port,
     jwtSecret: process.env.JWT_SECRET || 'secret',
     environment,
-    openaiApiKey, // Never log this value
+    openaiApiKey,
     resendApiKey: process.env.RESEND_API_KEY || '',
     webAppUrl: process.env.WEB_APP_URL || '',
     cookieDomain: process.env.COOKIE_DOMAIN || null,

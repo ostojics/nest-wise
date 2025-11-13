@@ -52,6 +52,7 @@ export class EmailsService {
       attempts: 1,
     });
   }
+
   async sendHelpEmail(payload: SendHelpEmailPayload) {
     this.logger.log('Sending help email event', payload);
     await this.emailsQueue.add(EmailJobs.SEND_HELP_EMAIL, payload, {
