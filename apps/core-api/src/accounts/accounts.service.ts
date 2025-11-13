@@ -2,7 +2,7 @@ import {EditAccountDTO, CreateAccountHouseholdScopedDTO, TransferFundsDTO} from 
 import {BadRequestException, ConflictException, Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {Account} from './account.entity';
 import {DataSource} from 'typeorm';
-import {IAccountRepository, ACCOUNT_REPOSITORY} from '../domain/contracts/repositories/account.repository.interface';
+import {IAccountRepository, ACCOUNT_REPOSITORY} from '../contracts/repositories/account.repository.interface';
 
 @Injectable()
 export class AccountsService {

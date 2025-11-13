@@ -1,4 +1,4 @@
-import {Account} from '../../../accounts/account.entity';
+import {Account} from '../../accounts/account.entity';
 
 /**
  * Dependency injection token for IAccountRepository

@@ -10,6 +10,7 @@ import {
   GetAccountsSpendingQueryHouseholdDTO,
   GetTransactionsResponseContract,
   NetWorthTrendPointContract,
+  TransactionContract,
   SpendingTotalContract,
   CategorySpendingPointContract,
   GetSpendingSummaryQueryHouseholdDTO,
@@ -34,8 +35,8 @@ import {ProcessAiTransactionPayload} from 'src/common/interfaces/ai-transactions
 import {
   ITransactionRepository,
   TRANSACTION_REPOSITORY,
-} from '../domain/contracts/repositories/transaction.repository.interface';
-import {IAiProvider, AI_PROVIDER} from '../domain/contracts/providers/ai-provider.interface';
+} from '../contracts/repositories/transaction.repository.interface';
+import {IAiProvider, AI_PROVIDER} from '../contracts/providers/ai-provider.interface';
 
 @Injectable()
 export class TransactionsService {

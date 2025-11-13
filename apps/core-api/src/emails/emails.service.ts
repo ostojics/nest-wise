@@ -13,7 +13,7 @@ import {
   SendHelpEmailPayload,
 } from 'src/common/interfaces/emails.interface';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
-import {IEmailProvider, EMAIL_PROVIDER} from 'src/domain/contracts/providers/email-provider.interface';
+import {IEmailProvider, EMAIL_PROVIDER} from 'src/contracts/providers/email-provider.interface';
 
 @Injectable()
 export class EmailsService {

@@ -1,4 +1,4 @@
-import {TransactionCategoryResult} from '../../../tools/ai/schemas';
+import {TransactionCategoryResult} from '../../tools/ai/schemas';
 
 /**
  * Message for AI categorization

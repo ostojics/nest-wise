@@ -12,7 +12,7 @@ import {
   CategorySpendingPointContract,
   GetSpendingSummaryQueryHouseholdDTO,
 } from '@nest-wise/contracts';
-import {Transaction} from '../../../transactions/transaction.entity';
+import {Transaction} from '../../transactions/transaction.entity';
 
 /**
  * Dependency injection token for ITransactionRepository

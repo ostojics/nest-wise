@@ -6,7 +6,7 @@ import {AccountsRepository} from './accounts.repository';
 import {Account} from './account.entity';
 import {LicensesModule} from 'src/licenses/licenses.module';
 import {HouseholdsModule} from 'src/households/households.module';
-import {ACCOUNT_REPOSITORY} from '../domain/contracts/repositories/account.repository.interface';
+import {ACCOUNT_REPOSITORY} from '../contracts/repositories/account.repository.interface';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Account]), LicensesModule, forwardRef(() => HouseholdsModule)],
