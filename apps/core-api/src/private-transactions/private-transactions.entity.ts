@@ -99,4 +99,73 @@ export class PrivateTransaction {
   })
   @JoinColumn({name: 'user_id'})
   user: User;
+
+  /**
+   * Domain method: Validate private transaction invariants
+   * @throws Error if validation fails
+   */
+  validate(): void {
+    const amount = Number(this.amount);
+
+    if (amount <= 0) {
+      throw new Error('Iznos transakcije mora biti veći od nule');
+    }
+
+    if (!this.type || (this.type !== TransactionType.INCOME && this.type !== TransactionType.EXPENSE)) {
+      throw new Error('Tip transakcije mora biti income ili expense');
+    }
+
+    if (this.transactionDate > new Date()) {
+      throw new Error('Datum transakcije ne može biti u budućnosti');
+    }
+
+    if (!this.userId) {
+      throw new Error('Vlasnik transakcije mora biti postavljen');
+    }
+
+    if (!this.accountId) {
+      throw new Error('Račun mora biti postavljen');
+    }
+
+    if (!this.householdId) {
+      throw new Error('Domaćinstvo mora biti postavljeno');
+    }
+  }
+
+  /**
+   * Domain method: Check if transaction can be updated by a user
+   * Only the owner can update their private transaction
+   */
+  canBeUpdated(userId: string): boolean {
+    return this.belongsToUser(userId);
+  }
+
+  /**
+   * Domain method: Check if transaction can be deleted by a user
+   * Only the owner can delete their private transaction
+   */
+  canBeDeleted(userId: string): boolean {
+    return this.belongsToUser(userId);
+  }
+
+  /**
+   * Domain method: Check if transaction belongs to a specific user
+   */
+  belongsToUser(userId: string): boolean {
+    return this.userId === userId;
+  }
+
+  /**
+   * Domain method: Check if this is an income transaction
+   */
+  isIncome(): boolean {
+    return this.type === TransactionType.INCOME;
+  }
+
+  /**
+   * Domain method: Check if this is an expense transaction
+   */
+  isExpense(): boolean {
+    return this.type === TransactionType.EXPENSE;
+  }
 }

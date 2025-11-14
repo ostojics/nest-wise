@@ -79,4 +79,78 @@ export class User {
 
   @OneToMany(() => Account, (account) => account.owner)
   accounts: Account[];
+
+  /**
+   * Domain method: Validate user invariants
+   * @throws Error if validation fails
+   */
+  validate(): void {
+    if (!this.email || this.email.trim().length === 0) {
+      throw new Error('Email ne može biti prazan');
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email)) {
+      throw new Error('Email mora biti u validnom formatu');
+    }
+
+    if (!this.username || this.username.trim().length === 0) {
+      throw new Error('Korisničko ime ne može biti prazno');
+    }
+
+    if (this.username.length > 50) {
+      throw new Error('Korisničko ime ne može biti duže od 50 znakova');
+    }
+
+    if (!this.householdId) {
+      throw new Error('Domaćinstvo mora biti postavljeno');
+    }
+  }
+
+  /**
+   * Domain method: Check if user can join a household
+   * User cannot join if already in a household or if household is full
+   * @param household The household to check
+   */
+  canJoinHousehold(household: Household): boolean {
+    // User already has a household - cannot join another
+    // (In the current implementation, users are always part of a household)
+    // This method is here for future multi-household support
+
+    // Check if household can accept new members
+    if (!household.canAddMember()) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Domain method: Check if user has a specific permission
+   * Placeholder for future role-based permissions
+   * Currently all users have equal permissions within their household
+   */
+  hasPermission(permission: string): boolean {
+    // For now, all users have all permissions within their household
+    // In the future, implement role-based permissions:
+    // - Admin, Member, Viewer roles
+    // - Specific permissions like: manage_users, manage_accounts, view_reports, etc.
+    return true;
+  }
+
+  /**
+   * Domain method: Check if user has completed setup
+   * User is considered set up if they have a household
+   */
+  isSetupComplete(): boolean {
+    return !!this.householdId;
+  }
+
+  /**
+   * Domain method: Check if user is household author
+   */
+  isAuthor(): boolean {
+    return this.isHouseholdAuthor;
+  }
 }

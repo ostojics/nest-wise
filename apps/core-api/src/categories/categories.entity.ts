@@ -59,4 +59,45 @@ export class Category {
 
   @OneToMany(() => Transaction, (transaction) => transaction.category)
   transactions: Transaction[];
+
+  /**
+   * Domain method: Validate category invariants
+   * @throws Error if validation fails
+   */
+  validate(): void {
+    if (!this.name || this.name.trim().length === 0) {
+      throw new Error('Naziv kategorije ne može biti prazan');
+    }
+
+    if (this.name.length > 100) {
+      throw new Error('Naziv kategorije ne može biti duži od 100 znakova');
+    }
+
+    if (!this.householdId) {
+      throw new Error('Domaćinstvo mora biti postavljeno');
+    }
+  }
+
+  /**
+   * Domain method: Check if category can be deleted
+   * Category cannot be deleted if it has transactions or budgets
+   * Note: This method assumes transactions are loaded. For checking budgets,
+   * we'd need to query the repository which should be done in the service layer.
+   */
+  canBeDeleted(): boolean {
+    // Check if has transactions (if loaded)
+    if (this.transactions && this.transactions.length > 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Domain method: Check if category has transactions
+   * Requires transactions to be loaded via relations
+   */
+  hasTransactions(): boolean {
+    return !!this.transactions && this.transactions.length > 0;
+  }
 }

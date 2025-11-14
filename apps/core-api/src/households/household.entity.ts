@@ -80,4 +80,58 @@ export class Household {
   @OneToOne(() => License, (license) => license.household)
   @JoinColumn({name: 'license_id'})
   license: License;
+
+  /**
+   * Domain method: Validate household invariants
+   * @throws Error if validation fails
+   */
+  validate(): void {
+    if (!this.name || this.name.trim().length === 0) {
+      throw new Error('Naziv domaćinstva ne može biti prazan');
+    }
+
+    if (this.name.length > 255) {
+      throw new Error('Naziv domaćinstva ne može biti duži od 255 znakova');
+    }
+
+    if (!this.currencyCode || this.currencyCode.length !== 3) {
+      throw new Error('Šifra valute mora biti 3 znaka (ISO 4217)');
+    }
+
+    // Basic currency code validation - should be uppercase letters
+    if (!/^[A-Z]{3}$/.test(this.currencyCode)) {
+      throw new Error('Šifra valute mora biti u formatu ISO 4217 (npr. USD, EUR, RSD)');
+    }
+  }
+
+  /**
+   * Domain method: Check if household can add a new member
+   * @param maxMembers Maximum allowed members (default 10, configurable for license tiers)
+   */
+  canAddMember(maxMembers: number = 10): boolean {
+    if (!this.users) {
+      // If users not loaded, we can't determine
+      return true;
+    }
+    return this.users.length < maxMembers;
+  }
+
+  /**
+   * Domain method: Check if household has reached member limit
+   * @param maxMembers Maximum allowed members (default 10)
+   */
+  hasReachedMemberLimit(maxMembers: number = 10): boolean {
+    return !this.canAddMember(maxMembers);
+  }
+
+  /**
+   * Domain method: Get count of members in household
+   * Requires users relation to be loaded
+   */
+  getMemberCount(): number {
+    if (!this.users) {
+      throw new Error('Korisnici nisu učitani - učitajte relaciju korisnika');
+    }
+    return this.users.length;
+  }
 }

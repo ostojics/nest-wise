@@ -109,4 +109,82 @@ export class Transaction {
   })
   @JoinColumn({name: 'category_id'})
   category: Category | null;
+
+  /**
+   * Domain method: Validate transaction invariants
+   * @throws Error if validation fails
+   */
+  validate(): void {
+    const amount = Number(this.amount);
+
+    if (amount <= 0) {
+      throw new Error('Iznos transakcije mora biti veći od nule');
+    }
+
+    if (!this.type || (this.type !== TransactionType.INCOME && this.type !== TransactionType.EXPENSE)) {
+      throw new Error('Tip transakcije mora biti income ili expense');
+    }
+
+    if (this.transactionDate > new Date()) {
+      throw new Error('Datum transakcije ne može biti u budućnosti');
+    }
+
+    if (!this.accountId) {
+      throw new Error('Račun mora biti postavljen');
+    }
+
+    if (!this.householdId) {
+      throw new Error('Domaćinstvo mora biti postavljeno');
+    }
+
+    // Income transactions should not have a category
+    if (this.type === TransactionType.INCOME && this.categoryId) {
+      throw new Error('Prihod ne može imati kategoriju');
+    }
+  }
+
+  /**
+   * Domain method: Check if transaction can be updated
+   * Currently all transactions can be updated by household members
+   * Future: Add rules for scheduled transactions or reconciled transactions
+   */
+  canBeUpdated(): boolean {
+    // For now, all transactions can be updated
+    // In the future, add rules like:
+    // - Cannot update if from scheduled rule
+    // - Cannot update if reconciled (unless specific permission)
+    return true;
+  }
+
+  /**
+   * Domain method: Check if transaction can be deleted
+   * Same rules as update for now
+   */
+  canBeDeleted(): boolean {
+    return this.canBeUpdated();
+  }
+
+  /**
+   * Domain method: Apply transaction effect to account balance
+   * Delegates to account's domain method
+   */
+  applyToAccount(account: Account): void {
+    const amount = Number(this.amount);
+    const isIncome = this.type === TransactionType.INCOME;
+    account.applyTransactionEffect(amount, isIncome);
+  }
+
+  /**
+   * Domain method: Check if this is an income transaction
+   */
+  isIncome(): boolean {
+    return this.type === TransactionType.INCOME;
+  }
+
+  /**
+   * Domain method: Check if this is an expense transaction
+   */
+  isExpense(): boolean {
+    return this.type === TransactionType.EXPENSE;
+  }
 }
