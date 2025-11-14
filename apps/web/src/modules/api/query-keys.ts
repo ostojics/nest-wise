@@ -1,6 +1,7 @@
 import {
   GetAccountsSpendingQueryDTO,
   GetAccountsSpendingQueryHouseholdDTO,
+  GetBudgetAllocationQueryParams,
   GetCategoryBudgetsQueryParams,
   GetPrivateTransactionsQueryDTO,
   GetTransactionsQueryDTO,
@@ -47,5 +48,13 @@ export const queryKeys = {
     key: () => ['scheduled-transactions'],
     all: (search: GetScheduledTransactionsQueryHouseholdDTO) => ['scheduled-transactions', search],
     single: (id: string) => ['scheduled-transactions', id],
+  },
+  budgetAllocation: {
+    key: () => ['budget-allocation'],
+    single: (householdId: string, search?: GetBudgetAllocationQueryParams) => [
+      'budget-allocation',
+      householdId,
+      search,
+    ],
   },
 };

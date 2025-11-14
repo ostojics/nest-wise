@@ -1,11 +1,16 @@
 import {IconCalendar, IconCalendarEvent, IconChartBar, IconReceipt, IconUsers, IconWallet} from '@tabler/icons-react';
-import {Landmark} from 'lucide-react';
+import {Calculator, Landmark} from 'lucide-react';
 
 export const mainLinks = [
   {
     title: 'Plan',
     url: '/plan',
     icon: <IconCalendar />,
+  },
+  {
+    title: 'Budžet',
+    url: '/budget-allocation',
+    icon: <Calculator />,
   },
   {
     title: 'Računi',
