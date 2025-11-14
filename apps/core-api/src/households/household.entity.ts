@@ -108,11 +108,7 @@ export class Household {
    * Domain method: Check if household can add a new member
    * @param maxMembers Maximum allowed members (default 10, configurable for license tiers)
    */
-  canAddMember(maxMembers: number = 10): boolean {
-    if (!this.users) {
-      // If users not loaded, we can't determine
-      return true;
-    }
+  canAddMember(maxMembers = 10): boolean {
     return this.users.length < maxMembers;
   }
 
@@ -120,7 +116,7 @@ export class Household {
    * Domain method: Check if household has reached member limit
    * @param maxMembers Maximum allowed members (default 10)
    */
-  hasReachedMemberLimit(maxMembers: number = 10): boolean {
+  hasReachedMemberLimit(maxMembers = 10): boolean {
     return !this.canAddMember(maxMembers);
   }
 
@@ -129,9 +125,6 @@ export class Household {
    * Requires users relation to be loaded
    */
   getMemberCount(): number {
-    if (!this.users) {
-      throw new Error('Korisnici nisu učitani - učitajte relaciju korisnika');
-    }
     return this.users.length;
   }
 }

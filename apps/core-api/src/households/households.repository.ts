@@ -53,6 +53,9 @@ export class HouseholdsRepository implements IHouseholdRepository {
 
   async getMemberCount(householdId: string): Promise<number> {
     const household = await this.findByIdWithUsers(householdId);
-    return household?.users?.length ?? 0;
+    if (!household) {
+      return 0;
+    }
+    return household.users.length;
   }
 }

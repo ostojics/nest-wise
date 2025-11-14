@@ -131,7 +131,7 @@ export class User {
    * Placeholder for future role-based permissions
    * Currently all users have equal permissions within their household
    */
-  hasPermission(permission: string): boolean {
+  hasPermission(_permission: string): boolean {
     // For now, all users have all permissions within their household
     // In the future, implement role-based permissions:
     // - Admin, Member, Viewer roles

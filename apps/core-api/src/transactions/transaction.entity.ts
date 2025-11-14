@@ -121,10 +121,6 @@ export class Transaction {
       throw new Error('Iznos transakcije mora biti veći od nule');
     }
 
-    if (!this.type || (this.type !== TransactionType.INCOME && this.type !== TransactionType.EXPENSE)) {
-      throw new Error('Tip transakcije mora biti income ili expense');
-    }
-
     if (this.transactionDate > new Date()) {
       throw new Error('Datum transakcije ne može biti u budućnosti');
     }

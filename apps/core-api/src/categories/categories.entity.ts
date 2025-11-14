@@ -86,11 +86,7 @@ export class Category {
    */
   canBeDeleted(): boolean {
     // Check if has transactions (if loaded)
-    if (this.transactions && this.transactions.length > 0) {
-      return false;
-    }
-
-    return true;
+    return this.transactions.length === 0;
   }
 
   /**
@@ -98,6 +94,6 @@ export class Category {
    * Requires transactions to be loaded via relations
    */
   hasTransactions(): boolean {
-    return !!this.transactions && this.transactions.length > 0;
+    return this.transactions.length > 0;
   }
 }
