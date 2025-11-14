@@ -1,6 +1,5 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {Repository, DataSource} from 'typeorm';
+import {BadRequestException, Injectable, NotFoundException, Inject} from '@nestjs/common';
+import {DataSource} from 'typeorm';
 import {PrivateTransaction} from './private-transactions.entity';
 import {
   CreatePrivateTransactionDTO,
@@ -11,18 +10,20 @@ import {AccountsService} from 'src/accounts/accounts.service';
 import {PoliciesService} from 'src/policies/policies.service';
 import {UsersService} from 'src/users/users.service';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
-import {PrivateTransactionsRepository} from './private-transactions.repository';
+import {
+  IPrivateTransactionRepository,
+  PRIVATE_TRANSACTION_REPOSITORY,
+} from '../repositories/private-transaction.repository.interface';
 
 @Injectable()
 export class PrivateTransactionsService {
   constructor(
-    @InjectRepository(PrivateTransaction)
-    private readonly repo: Repository<PrivateTransaction>,
     private readonly dataSource: DataSource,
     private readonly accountsService: AccountsService,
     private readonly policiesService: PoliciesService,
     private readonly usersService: UsersService,
-    private readonly privateTransactionsRepository: PrivateTransactionsRepository,
+    @Inject(PRIVATE_TRANSACTION_REPOSITORY)
+    private readonly privateTransactionsRepository: IPrivateTransactionRepository,
   ) {}
 
   async create(userId: string, dto: CreatePrivateTransactionDTO): Promise<PrivateTransaction> {
