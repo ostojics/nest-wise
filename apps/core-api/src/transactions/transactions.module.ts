@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {Module, forwardRef} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {BullModule} from '@nestjs/bullmq';
 import {TransactionsService} from './transactions.service';
@@ -19,7 +19,7 @@ import {AiProviderModule} from '../infrastructure/providers/ai/ai-provider.modul
     TypeOrmModule.forFeature([Transaction]),
     BullModule.registerQueue({name: Queues.AI_TRANSACTIONS}),
     AccountsModule,
-    HouseholdsModule,
+    forwardRef(() => HouseholdsModule),
     CategoriesModule,
     LicensesModule,
     AiProviderModule,
