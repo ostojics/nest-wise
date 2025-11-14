@@ -19,7 +19,7 @@ import {
   GetSpendingSummaryQueryHouseholdDTO,
 } from '@nest-wise/contracts';
 import {TransactionType} from '../common/enums/transaction.type.enum';
-import {ITransactionRepository} from '../contracts/repositories/transaction.repository.interface';
+import {ITransactionRepository} from '../repositories/transaction.repository.interface';
 
 @Injectable()
 export class TransactionsRepository implements ITransactionRepository {

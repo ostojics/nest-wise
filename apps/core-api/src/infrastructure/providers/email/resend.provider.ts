@@ -8,7 +8,7 @@ import {
   SendPasswordResetEmailRequest,
   SendEmailChangeConfirmationRequest,
   SendHelpEmailRequest,
-} from '../../../contracts/providers/email-provider.interface';
+} from '../../../providers/email-provider.interface';
 import {AppConfig, AppConfigName} from '../../../config/app.config';
 
 /**

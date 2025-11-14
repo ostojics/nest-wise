@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
 import {ConfigModule} from '@nestjs/config';
 import {OpenAiProvider} from './openai.provider';
-import {AI_PROVIDER} from '../../../contracts/providers/ai-provider.interface';
+import {AI_PROVIDER} from '../../../providers/ai-provider.interface';
 
 /**
  * AI Provider Module

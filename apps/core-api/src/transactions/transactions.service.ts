@@ -32,11 +32,8 @@ import {Logger} from 'pino-nestjs';
 import {Queues} from 'src/common/enums/queues.enum';
 import {AiTransactionJobs} from 'src/common/enums/jobs.enum';
 import {ProcessAiTransactionPayload} from 'src/common/interfaces/ai-transactions.interface';
-import {
-  ITransactionRepository,
-  TRANSACTION_REPOSITORY,
-} from '../contracts/repositories/transaction.repository.interface';
-import {IAiProvider, AI_PROVIDER} from '../contracts/providers/ai-provider.interface';
+import {ITransactionRepository, TRANSACTION_REPOSITORY} from '../repositories/transaction.repository.interface';
+import {IAiProvider, AI_PROVIDER} from '../providers/ai-provider.interface';
 
 @Injectable()
 export class TransactionsService {

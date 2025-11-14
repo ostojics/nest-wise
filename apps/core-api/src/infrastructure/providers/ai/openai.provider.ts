@@ -3,7 +3,7 @@ import {ConfigService} from '@nestjs/config';
 import {Logger} from 'pino-nestjs';
 import OpenAI from 'openai';
 import {zodTextFormat} from 'openai/helpers/zod';
-import {IAiProvider, CategorizeTransactionRequest} from '../../../contracts/providers/ai-provider.interface';
+import {IAiProvider, CategorizeTransactionRequest} from '../../../providers/ai-provider.interface';
 import {TransactionCategoryResult, transactionCategoryOutputSchema} from '../../../tools/ai/schemas';
 import {AppConfig, AppConfigName} from '../../../config/app.config';
 

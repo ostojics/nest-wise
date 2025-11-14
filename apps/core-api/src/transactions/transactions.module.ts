@@ -11,7 +11,7 @@ import {CategoriesModule} from 'src/categories/categories.module';
 import {LicensesModule} from 'src/licenses/licenses.module';
 import {Queues} from 'src/common/enums/queues.enum';
 import {TransactionsConsumer} from './transactions.consumer';
-import {TRANSACTION_REPOSITORY} from '../contracts/repositories/transaction.repository.interface';
+import {TRANSACTION_REPOSITORY} from '../repositories/transaction.repository.interface';
 import {AiProviderModule} from '../infrastructure/providers/ai/ai-provider.module';
 
 @Module({

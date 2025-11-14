@@ -12,7 +12,7 @@ This PR addresses critical technical debt items focused on architectural boundar
 
 **What:** Introduced port/adapter pattern for repositories
 
-- Created `IAccountRepository` and `ITransactionRepository` interfaces in `contracts/repositories/`
+- Created `IAccountRepository` and `ITransactionRepository` interfaces in `repositories/`
 - Updated `AccountsRepository` and `TransactionsRepository` to implement interfaces
 - Modified services to depend on interfaces via dependency injection tokens
 - Services no longer directly import ORM types
@@ -25,8 +25,8 @@ This PR addresses critical technical debt items focused on architectural boundar
 
 **Files:**
 
-- `apps/core-api/src/contracts/repositories/account.repository.interface.ts`
-- `apps/core-api/src/contracts/repositories/transaction.repository.interface.ts`
+- `apps/core-api/src/repositories/account.repository.interface.ts`
+- `apps/core-api/src/repositories/transaction.repository.interface.ts`
 - `apps/core-api/src/accounts/accounts.repository.ts`
 - `apps/core-api/src/accounts/accounts.service.ts`
 - `apps/core-api/src/accounts/accounts.module.ts`
@@ -97,7 +97,7 @@ This PR addresses critical technical debt items focused on architectural boundar
 
 **What:** Created abstraction for AI services
 
-- Defined `IAiProvider` interface in `domain/contracts/providers/`
+- Defined `IAiProvider` interface in `domain/providers/`
 - Implemented `OpenAiProvider` adapter
 - Created `AiProviderModule` for DI wiring
 - Updated `TransactionsService` to use interface instead of direct OpenAI SDK
@@ -110,7 +110,7 @@ This PR addresses critical technical debt items focused on architectural boundar
 
 **Files:**
 
-- `apps/core-api/src/domain/contracts/providers/ai-provider.interface.ts`
+- `apps/core-api/src/domain/providers/ai-provider.interface.ts`
 - `apps/core-api/src/infrastructure/providers/ai/openai.provider.ts`
 - `apps/core-api/src/infrastructure/providers/ai/ai-provider.module.ts`
 - `apps/core-api/src/transactions/transactions.service.ts`
@@ -134,7 +134,7 @@ This PR addresses critical technical debt items focused on architectural boundar
 
 **Files:**
 
-- `apps/core-api/src/domain/contracts/providers/email-provider.interface.ts`
+- `apps/core-api/src/domain/providers/email-provider.interface.ts`
 - `apps/core-api/src/infrastructure/providers/email/resend.provider.ts`
 - `apps/core-api/src/infrastructure/providers/email/email-provider.module.ts`
 - `apps/core-api/src/config/app.config.ts`
@@ -249,7 +249,7 @@ The following tasks were intentionally skipped to maintain minimal scope:
 
 ### For Developers
 
-1. **Repository Usage:** When adding new repository methods, update the interface first in `contracts/repositories/`
+1. **Repository Usage:** When adding new repository methods, update the interface first in `repositories/`
 2. **Provider Implementation:** To swap AI/email providers, implement the interface and update the DI binding in the module
 3. **Error Reporting:** Use `reportError()` from `@/lib/error-reporting` in new frontend code
 4. **Logging:** Follow guidelines in `docs/LOGGING_GUIDELINES.md` - never log secrets!
@@ -307,7 +307,7 @@ This section tracks what remains to complete the full refactoring vision from th
 
 **Steps per repository:**
 
-1. Create interface in `apps/core-api/src/contracts/repositories/`
+1. Create interface in `apps/core-api/src/repositories/`
 2. Update repository to implement interface
 3. Update service to inject via DI token
 4. Update module to provide via DI token
