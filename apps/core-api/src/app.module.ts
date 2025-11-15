@@ -3,6 +3,7 @@ import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {LoggerModule} from 'pino-nestjs';
 import {ConfigModule, ConfigService} from '@nestjs/config';
+import {EventEmitterModule} from '@nestjs/event-emitter';
 
 import {ThrottlerModule} from '@nestjs/throttler';
 import {throttlerConfig, throttlerFactory} from './config/throttler.config';
@@ -35,6 +36,22 @@ import {ShutdownModule} from './lib/shutdown/shutdown.module';
     ConfigModule.forRoot({
       cache: true,
       load: [appConfig, throttlerConfig, databaseConfig, queuesConfig, posthogConfig],
+    }),
+    EventEmitterModule.forRoot({
+      // Use wildcards to enable event namespacing
+      wildcard: true,
+      // Set the delimiter used to segment namespaces
+      delimiter: '.',
+      // Set this to `true` to use wildcards
+      newListener: false,
+      // Set this to `true` to remove listeners when the max has been reached
+      removeListener: false,
+      // Maximum number of listeners per event
+      maxListeners: 10,
+      // Show event name in memory leak message
+      verboseMemoryLeak: true,
+      // Disable throwing uncaughtException if an error event is emitted and it has no listeners
+      ignoreErrors: false,
     }),
     LoggerModule.forRootAsync({
       imports: [ConfigModule],

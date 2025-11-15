@@ -4,25 +4,22 @@ import {
   EditCategoryBudgetDTO,
 } from '@nest-wise/contracts';
 import {BadRequestException, Injectable, NotFoundException, Inject} from '@nestjs/common';
-import {CategoriesService} from 'src/categories/categories.service';
 import {UsersService} from 'src/users/users.service';
-import {endOfMonth, format, isBefore, startOfMonth} from 'date-fns';
-import {TransactionsService} from 'src/transactions/transactions.service';
-import {TransactionType} from 'src/common/enums/transaction.type.enum';
+import {isBefore, startOfMonth} from 'date-fns';
 import {UTCDate} from '@date-fns/utc';
 import {
   ICategoryBudgetRepository,
   CATEGORY_BUDGET_REPOSITORY,
 } from '../repositories/category-budget.repository.interface';
+import {GetCategoryBudgetsForHouseholdUseCase} from '../application/use-cases/category-budgets';
 
 @Injectable()
 export class CategoryBudgetsService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly categoriesService: CategoriesService,
     @Inject(CATEGORY_BUDGET_REPOSITORY)
     private readonly categoryBudgetsRepository: ICategoryBudgetRepository,
-    private readonly transactionsService: TransactionsService,
+    private readonly getCategoryBudgetsForHouseholdUseCase: GetCategoryBudgetsForHouseholdUseCase,
   ) {}
 
   async getCategoryBudgetsForMonth(userId: string, month: string): Promise<CategoryBudgetWithCurrentAmountContract[]> {
@@ -34,53 +31,7 @@ export class CategoryBudgetsService {
     householdId: string,
     month: string,
   ): Promise<CategoryBudgetWithCurrentAmountContract[]> {
-    const [categories, budgets] = await Promise.all([
-      this.categoriesService.findCategoriesByHouseholdId(householdId),
-      this.categoryBudgetsRepository.findByHouseholdAndMonth(householdId, month),
-    ]);
-
-    const existingCategoryIds = new Set(budgets.map((b) => b.categoryId));
-    const missing = categories.filter((c) => !existingCategoryIds.has(c.id));
-
-    if (missing.length > 0) {
-      await this.categoryBudgetsRepository.createMany(
-        missing.map((c) => ({
-          householdId,
-          categoryId: c.id,
-          month,
-          plannedAmount: 0,
-        })),
-      );
-    }
-
-    const all = await this.categoryBudgetsRepository.findByHouseholdAndMonth(householdId, month);
-
-    const {start: dateFrom, end: dateTo} = this.getCurrentMonthRange(month);
-    const transactions = await this.transactionsService.findAllTransactions({
-      householdId,
-      transactionDate_from: dateFrom,
-      transactionDate_to: dateTo,
-      type: TransactionType.EXPENSE,
-    });
-
-    const spentByCategory = new Map<string, number>();
-    for (const tx of transactions) {
-      if (!tx.categoryId) continue;
-
-      const prev = spentByCategory.get(tx.categoryId) ?? 0;
-      spentByCategory.set(tx.categoryId, prev + Number(tx.amount));
-    }
-
-    const mapped: CategoryBudgetWithCurrentAmountContract[] = all.map((b) => ({
-      ...b,
-      category: {
-        name: b.category.name,
-        description: b.category.description ?? null,
-      },
-      currentAmount: spentByCategory.get(b.categoryId) ?? 0,
-    }));
-
-    return mapped;
+    return await this.getCategoryBudgetsForHouseholdUseCase.execute({householdId, month});
   }
 
   async findCategoryBudgetById(id: string): Promise<CategoryBudgetContract> {
@@ -109,15 +60,5 @@ export class CategoryBudgetsService {
     }
 
     return updated as CategoryBudgetContract;
-  }
-
-  private getCurrentMonthRange(currentMonth: string): {start: string; end: string} {
-    const date = new Date(currentMonth);
-    const dateFormat = 'yyyy-MM-dd';
-
-    return {
-      start: format(startOfMonth(date), dateFormat),
-      end: format(endOfMonth(date), dateFormat),
-    };
   }
 }

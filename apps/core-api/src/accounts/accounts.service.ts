@@ -1,15 +1,15 @@
 import {EditAccountDTO, CreateAccountHouseholdScopedDTO, TransferFundsDTO} from '@nest-wise/contracts';
-import {BadRequestException, ConflictException, Injectable, NotFoundException, Inject} from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {Account} from './account.entity';
-import {DataSource} from 'typeorm';
 import {IAccountRepository, ACCOUNT_REPOSITORY} from '../repositories/account.repository.interface';
+import {TransferFundsForHouseholdUseCase} from '../application/use-cases/accounts';
 
 @Injectable()
 export class AccountsService {
   constructor(
     @Inject(ACCOUNT_REPOSITORY)
     private readonly accountsRepository: IAccountRepository,
-    private readonly dataSource: DataSource,
+    private readonly transferFundsForHouseholdUseCase: TransferFundsForHouseholdUseCase,
   ) {}
 
   // Household-scoped version where householdId comes from path parameter
@@ -109,52 +109,6 @@ export class AccountsService {
     householdId: string,
     dto: TransferFundsDTO,
   ): Promise<{fromAccount: Account; toAccount: Account}> {
-    if (dto.fromAccountId === dto.toAccountId) {
-      throw new BadRequestException('Polazni i odredišni račun moraju biti različiti');
-    }
-
-    const fromAccount = await this.findAccountById(dto.fromAccountId);
-    const toAccount = await this.findAccountById(dto.toAccountId);
-
-    // Validate both accounts belong to the specified household
-    if (fromAccount.householdId !== householdId) {
-      throw new BadRequestException('Polazni račun ne pripada navedenom domaćinstvu');
-    }
-    if (toAccount.householdId !== householdId) {
-      throw new BadRequestException('Odredišni račun ne pripada navedenom domaćinstvu');
-    }
-
-    if (fromAccount.householdId !== toAccount.householdId) {
-      throw new BadRequestException('Računi moraju pripadati istom domaćinstvu');
-    }
-
-    const amount = Number(dto.amount);
-
-    // Use domain method to check for sufficient funds
-    if (!fromAccount.hasSufficientFunds(amount)) {
-      throw new BadRequestException('Nedovoljno sredstava za ovaj transfer');
-    }
-
-    return await this.dataSource.transaction(async () => {
-      // Use domain methods to update balances
-      fromAccount.withdraw(amount);
-      toAccount.deposit(amount);
-
-      const updatedFrom = await this.accountsRepository.update(dto.fromAccountId, {
-        currentBalance: fromAccount.currentBalance,
-      });
-      if (!updatedFrom) {
-        throw new NotFoundException('Polazni račun nije pronađen');
-      }
-
-      const updatedTo = await this.accountsRepository.update(dto.toAccountId, {
-        currentBalance: toAccount.currentBalance,
-      });
-      if (!updatedTo) {
-        throw new NotFoundException('Odredišni račun nije pronađen');
-      }
-
-      return {fromAccount: updatedFrom, toAccount: updatedTo};
-    });
+    return await this.transferFundsForHouseholdUseCase.execute({householdId, dto});
   }
 }

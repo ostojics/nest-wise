@@ -7,6 +7,7 @@ import {Account} from './account.entity';
 import {LicensesModule} from 'src/licenses/licenses.module';
 import {HouseholdsModule} from 'src/households/households.module';
 import {ACCOUNT_REPOSITORY} from '../repositories/account.repository.interface';
+import {TransferFundsForHouseholdUseCase} from '../application/use-cases/accounts';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Account]), LicensesModule, forwardRef(() => HouseholdsModule)],
@@ -18,6 +19,7 @@ import {ACCOUNT_REPOSITORY} from '../repositories/account.repository.interface';
       provide: ACCOUNT_REPOSITORY,
       useExisting: AccountsRepository,
     },
+    TransferFundsForHouseholdUseCase,
   ],
   exports: [AccountsService],
 })

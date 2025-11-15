@@ -21,19 +21,20 @@ import {
 import {BadRequestException, Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Queue} from 'bullmq';
-import {CategoriesService} from 'src/categories/categories.service';
-import {HouseholdsService} from 'src/households/households.service';
-import {categoryPromptFactory} from 'src/tools/ai/prompts/category.prompt';
-import {DataSource} from 'typeorm';
 import {AccountsService} from '../accounts/accounts.service';
-import {TransactionType} from '../common/enums/transaction.type.enum';
 import {Transaction} from './transaction.entity';
 import {Logger} from 'pino-nestjs';
 import {Queues} from 'src/common/enums/queues.enum';
 import {AiTransactionJobs} from 'src/common/enums/jobs.enum';
 import {ProcessAiTransactionPayload} from 'src/common/interfaces/ai-transactions.interface';
 import {ITransactionRepository, TRANSACTION_REPOSITORY} from '../repositories/transaction.repository.interface';
-import {IAiProvider, AI_PROVIDER} from '../providers/ai-provider.interface';
+import {
+  CreateTransactionUseCase,
+  CreateTransactionForHouseholdUseCase,
+  UpdateTransactionUseCase,
+  DeleteTransactionUseCase,
+  CreateAiTransactionForHouseholdUseCase,
+} from '../application/use-cases/transactions';
 
 @Injectable()
 export class TransactionsService {
@@ -43,71 +44,24 @@ export class TransactionsService {
     @Inject(TRANSACTION_REPOSITORY)
     private readonly transactionsRepository: ITransactionRepository,
     private readonly accountsService: AccountsService,
-    private readonly householdsService: HouseholdsService,
-    private readonly categoriesService: CategoriesService,
-    private readonly dataSource: DataSource,
     private readonly logger: Logger,
     @InjectQueue(Queues.AI_TRANSACTIONS) private readonly aiTransactionsQueue: Queue,
-    @Inject(AI_PROVIDER) private readonly aiProvider: IAiProvider,
+    private readonly createTransactionUseCase: CreateTransactionUseCase,
+    private readonly createTransactionForHouseholdUseCase: CreateTransactionForHouseholdUseCase,
+    private readonly updateTransactionUseCase: UpdateTransactionUseCase,
+    private readonly deleteTransactionUseCase: DeleteTransactionUseCase,
+    private readonly createAiTransactionForHouseholdUseCase: CreateAiTransactionForHouseholdUseCase,
   ) {}
 
   async createTransaction(transactionData: CreateTransactionDTO): Promise<Transaction> {
-    return await this.dataSource.transaction(async () => {
-      const account = await this.accountsService.findAccountById(transactionData.accountId);
-
-      if (transactionData.type === 'expense' && Number(account.currentBalance) < transactionData.amount) {
-        throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
-      }
-
-      if (transactionData.type === 'income') {
-        transactionData.categoryId = null;
-      }
-
-      const transaction = await this.transactionsRepository.create(transactionData);
-
-      await this.updateBalance(
-        transactionData.accountId,
-        transactionData.amount,
-        transactionData.type as TransactionType,
-      );
-
-      return transaction;
-    });
+    return await this.createTransactionUseCase.execute({transactionData});
   }
 
   async createTransactionForHousehold(
     householdId: string,
     transactionData: CreateTransactionHouseholdDTO,
   ): Promise<Transaction> {
-    return await this.dataSource.transaction(async () => {
-      const account = await this.accountsService.findAccountById(transactionData.accountId);
-
-      // Verify account belongs to the household
-      if (account.householdId !== householdId) {
-        throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
-      }
-
-      if (transactionData.type === 'expense' && Number(account.currentBalance) < transactionData.amount) {
-        throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
-      }
-
-      if (transactionData.type === 'income') {
-        transactionData.categoryId = null;
-      }
-
-      const transaction = await this.transactionsRepository.create({
-        ...transactionData,
-        householdId,
-      });
-
-      await this.updateBalance(
-        transactionData.accountId,
-        transactionData.amount,
-        transactionData.type as TransactionType,
-      );
-
-      return transaction;
-    });
+    return await this.createTransactionForHouseholdUseCase.execute({householdId, transactionData});
   }
 
   async getNetWorthTrend(householdId: string): Promise<NetWorthTrendPointContract[]> {
@@ -146,66 +100,7 @@ export class TransactionsService {
     householdId: string,
     transactionData: CreateTransactionAiHouseholdDTO,
   ): Promise<Transaction> {
-    const account = await this.accountsService.findAccountById(transactionData.accountId);
-
-    // Verify account belongs to the household
-    if (account.householdId !== householdId) {
-      throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
-    }
-
-    const household = await this.householdsService.findHouseholdById(householdId);
-    const categories = await this.categoriesService.findCategoriesByHouseholdId(household.id);
-    const systemPrompt = categoryPromptFactory({
-      categories,
-      currentDate: transactionData.currentDate,
-    });
-
-    this.logger.debug('AI Category System Prompt', {systemPrompt});
-    this.logger.debug('AI Category User Input', {userInput: transactionData.description});
-
-    // Use AI provider abstraction instead of direct OpenAI SDK
-    const object = await this.aiProvider.categorizeTransaction({
-      systemPrompt,
-      userInput: transactionData.description,
-    });
-
-    if (object.transactionType === 'expense' && Number(account.currentBalance) < object.transactionAmount) {
-      this.logger.error('Insufficient funds for expense', {
-        accountId: account.id,
-        transactionAmount: object.transactionAmount,
-      });
-      throw new BadRequestException('Nedovoljno sredstava za ovaj rashod');
-    }
-
-    return await this.dataSource.transaction(async () => {
-      const isNewCategorySuggested = object.newCategorySuggested;
-      let categoryId: string | null = null;
-
-      if (isNewCategorySuggested) {
-        const newCategory = await this.categoriesService.createCategoryForHousehold(householdId, {
-          name: object.suggestedCategory.newCategoryName,
-        });
-
-        categoryId = newCategory.id;
-      } else {
-        categoryId = object.suggestedCategory.existingCategoryId;
-      }
-
-      const transaction = await this.transactionsRepository.create({
-        description: object.transactionDescription,
-        amount: object.transactionAmount,
-        type: object.transactionType as TransactionType,
-        categoryId: object.transactionType === 'income' ? null : categoryId,
-        householdId: household.id,
-        accountId: account.id,
-        transactionDate: object.transactionDate,
-        isReconciled: true,
-      });
-
-      await this.updateBalance(transaction.accountId, transaction.amount, transaction.type);
-
-      return transaction;
-    });
+    return await this.createAiTransactionForHouseholdUseCase.execute({householdId, transactionData});
   }
 
   async findTransactionById(id: string): Promise<Transaction> {
@@ -262,161 +157,11 @@ export class TransactionsService {
   }
 
   async updateTransaction(id: string, transactionData: UpdateTransactionDTO): Promise<Transaction> {
-    return await this.dataSource.transaction(async () => {
-      const existingTransaction = await this.transactionsRepository.findById(id);
-      if (!existingTransaction) {
-        throw new NotFoundException('Transakcija nije pronađena');
-      }
-
-      // Handle category changes based on type
-      if (transactionData.type === 'income') {
-        transactionData.categoryId = null;
-      }
-
-      const oldAmount = Number(existingTransaction.amount);
-      const oldType = existingTransaction.type;
-      const oldAccountId = existingTransaction.accountId;
-
-      const newAmount = transactionData.amount !== undefined ? Number(transactionData.amount) : oldAmount;
-      const newType = transactionData.type ? (transactionData.type as TransactionType) : oldType;
-      const newAccountId = transactionData.accountId ?? oldAccountId;
-
-      // Handle account change
-      if (newAccountId !== oldAccountId) {
-        const oldAccount = await this.accountsService.findAccountById(oldAccountId);
-        const newAccount = await this.accountsService.findAccountById(newAccountId);
-
-        // Verify new account belongs to the same household
-        if (newAccount.householdId !== existingTransaction.householdId) {
-          throw new BadRequestException('Račun ne pripada navedenom domaćinstvu');
-        }
-
-        // Reverse old effect on old account
-        let oldAccountNewBalance = Number(oldAccount.currentBalance);
-        if (oldType === TransactionType.INCOME) {
-          oldAccountNewBalance -= oldAmount;
-        } else {
-          oldAccountNewBalance += oldAmount;
-        }
-
-        // Apply new effect on new account
-        let newAccountNewBalance = Number(newAccount.currentBalance);
-        if (newType === TransactionType.INCOME) {
-          newAccountNewBalance += newAmount;
-        } else {
-          newAccountNewBalance -= newAmount;
-        }
-
-        // Check for sufficient funds in the new account for expenses
-        if (newType === TransactionType.EXPENSE && newAccountNewBalance < 0) {
-          throw new BadRequestException('Nedovoljno sredstava na novom računu za ovaj rashod');
-        }
-
-        // Update both accounts
-        await this.accountsService.updateAccount(oldAccountId, {
-          currentBalance: oldAccountNewBalance,
-        });
-        await this.accountsService.updateAccount(newAccountId, {
-          currentBalance: newAccountNewBalance,
-        });
-      } else if (transactionData.amount !== undefined || transactionData.type !== undefined) {
-        // Same account but amount or type changed
-        const account = await this.accountsService.findAccountById(oldAccountId);
-
-        let balanceAfterOldRemoval = Number(account.currentBalance);
-        if (oldType === TransactionType.INCOME) {
-          balanceAfterOldRemoval -= oldAmount;
-        } else {
-          balanceAfterOldRemoval += oldAmount;
-        }
-
-        if (newType === TransactionType.EXPENSE && balanceAfterOldRemoval < newAmount) {
-          throw new BadRequestException('Nedovoljno sredstava za ažurirani iznos rashoda');
-        }
-
-        const netChange = this.calculateNetBalanceChange(oldAmount, oldType, newAmount, newType);
-        if (netChange !== 0) {
-          const newBalance = Number(account.currentBalance) + netChange;
-          await this.accountsService.updateAccount(oldAccountId, {
-            currentBalance: newBalance,
-          });
-        }
-      }
-
-      const updatedTransaction = await this.transactionsRepository.update(id, transactionData);
-      if (!updatedTransaction) {
-        throw new NotFoundException('Transakcija nije pronađena');
-      }
-
-      return updatedTransaction;
-    });
+    return await this.updateTransactionUseCase.execute({id, transactionData});
   }
 
   async deleteTransaction(id: string): Promise<void> {
-    return await this.dataSource.transaction(async () => {
-      const existingTransaction = await this.transactionsRepository.findById(id);
-      if (!existingTransaction) {
-        throw new NotFoundException('Transakcija nije pronađena');
-      }
-
-      const account = await this.accountsService.findAccountById(existingTransaction.accountId);
-      let newBalance = Number(account.currentBalance);
-      const transactionAmount = Number(existingTransaction.amount);
-
-      if (existingTransaction.type === TransactionType.INCOME) {
-        newBalance -= transactionAmount;
-      } else {
-        newBalance += transactionAmount;
-      }
-
-      await this.accountsService.updateAccount(existingTransaction.accountId, {
-        currentBalance: newBalance,
-      });
-
-      const deleted = await this.transactionsRepository.delete(id);
-      if (!deleted) {
-        throw new NotFoundException('Transakcija nije pronađena');
-      }
-    });
-  }
-
-  private async updateBalance(accountId: string, amount: number, type: TransactionType): Promise<void> {
-    const account = await this.accountsService.findAccountById(accountId);
-
-    const currentBalance = Number(account.currentBalance);
-    let newBalance = currentBalance;
-
-    if (type === TransactionType.INCOME) {
-      newBalance += amount;
-    } else {
-      newBalance -= amount;
-    }
-
-    await this.accountsService.updateAccount(accountId, {
-      currentBalance: newBalance,
-    });
-  }
-
-  private calculateNetBalanceChange(
-    oldAmount: number,
-    oldType: TransactionType,
-    newAmount: number,
-    newType: TransactionType,
-  ): number {
-    let netChange = 0;
-    if (oldType === TransactionType.INCOME) {
-      netChange -= oldAmount;
-    } else {
-      netChange += oldAmount;
-    }
-
-    if (newType === TransactionType.INCOME) {
-      netChange += newAmount;
-    } else {
-      netChange -= newAmount;
-    }
-
-    return netChange;
+    return await this.deleteTransactionUseCase.execute({id});
   }
 
   async enqueueAiTransaction(
