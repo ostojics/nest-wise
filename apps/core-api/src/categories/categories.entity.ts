@@ -59,4 +59,23 @@ export class Category {
 
   @OneToMany(() => Transaction, (transaction) => transaction.category)
   transactions: Transaction[];
+
+  /**
+   * Domain method: Check if category can be deleted
+   * Category cannot be deleted if it has transactions or budgets
+   * Note: This method assumes transactions are loaded. For checking budgets,
+   * we'd need to query the repository which should be done in the service layer.
+   */
+  canBeDeleted(): boolean {
+    // Check if has transactions (if loaded)
+    return this.transactions.length === 0;
+  }
+
+  /**
+   * Domain method: Check if category has transactions
+   * Requires transactions to be loaded via relations
+   */
+  hasTransactions(): boolean {
+    return this.transactions.length > 0;
+  }
 }

@@ -80,4 +80,28 @@ export class Household {
   @OneToOne(() => License, (license) => license.household)
   @JoinColumn({name: 'license_id'})
   license: License;
+
+  /**
+   * Domain method: Check if household can add a new member
+   * @param maxMembers Maximum allowed members (default 8, configurable for license tiers)
+   */
+  canAddMember(maxMembers = 8): boolean {
+    return this.users.length < maxMembers;
+  }
+
+  /**
+   * Domain method: Check if household has reached member limit
+   * @param maxMembers Maximum allowed members (default 8)
+   */
+  hasReachedMemberLimit(maxMembers = 8): boolean {
+    return !this.canAddMember(maxMembers);
+  }
+
+  /**
+   * Domain method: Get count of members in household
+   * Requires users relation to be loaded
+   */
+  getMemberCount(): number {
+    return this.users.length;
+  }
 }

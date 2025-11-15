@@ -7,11 +7,19 @@ import {UsersRepository} from './users.repository';
 import {UsersService} from './users.service';
 import {UsersController} from './users.controller';
 import {ConfigModule} from '@nestjs/config';
+import {USER_REPOSITORY} from '../repositories/user.repository.interface';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), forwardRef(() => HouseholdsModule), EmailsModule, ConfigModule],
   controllers: [UsersController],
-  providers: [UsersService, UsersRepository],
+  providers: [
+    UsersService,
+    UsersRepository,
+    {
+      provide: USER_REPOSITORY,
+      useExisting: UsersRepository,
+    },
+  ],
   exports: [UsersService],
 })
 export class UsersModule {}

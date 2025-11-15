@@ -3,30 +3,45 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {Repository, SelectQueryBuilder} from 'typeorm';
 import {PrivateTransaction} from './private-transactions.entity';
 import {GetPrivateTransactionsQueryDTO, GetPrivateTransactionsResponseContract, SortOrder} from '@nest-wise/contracts';
-import {TransactionType} from 'src/common/enums/transaction.type.enum';
+import {IPrivateTransactionRepository} from '../repositories/private-transaction.repository.interface';
 
 @Injectable()
-export class PrivateTransactionsRepository {
+export class PrivateTransactionsRepository implements IPrivateTransactionRepository {
   constructor(
     @InjectRepository(PrivateTransaction)
     private readonly repo: Repository<PrivateTransaction>,
   ) {}
 
-  async create(data: {
-    householdId: string;
-    accountId: string;
-    userId: string;
-    amount: number;
-    type: TransactionType;
-    description: string | null;
-    transactionDate: Date;
-  }): Promise<PrivateTransaction> {
+  async create(data: Partial<PrivateTransaction>): Promise<PrivateTransaction> {
     const entity = this.repo.create(data);
     return await this.repo.save(entity);
   }
 
   async findById(id: string): Promise<PrivateTransaction | null> {
     return await this.repo.findOne({where: {id}, relations: ['account']});
+  }
+
+  async findByIdAndUser(id: string, userId: string, householdId: string): Promise<PrivateTransaction | null> {
+    return await this.repo.findOne({
+      where: {id, userId, householdId},
+      relations: ['account'],
+    });
+  }
+
+  async findByUser(userId: string, householdId: string): Promise<PrivateTransaction[]> {
+    return await this.repo.find({
+      where: {userId, householdId},
+      relations: ['account'],
+      order: {transactionDate: 'DESC'},
+    });
+  }
+
+  async update(id: string, data: Partial<PrivateTransaction>): Promise<PrivateTransaction | null> {
+    const updateResult = await this.repo.update(id, data);
+    if (updateResult.affected === 0) {
+      return null;
+    }
+    return await this.findById(id);
   }
 
   async delete(id: string): Promise<boolean> {

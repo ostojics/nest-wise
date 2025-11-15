@@ -8,11 +8,19 @@ import {UsersModule} from 'src/users/users.module';
 import {CategoryBudgetsRepository} from './category-budgets.repository';
 import {CategoriesModule} from 'src/categories/categories.module';
 import {TransactionsModule} from 'src/transactions/transactions.module';
+import {CATEGORY_BUDGET_REPOSITORY} from '../repositories/category-budget.repository.interface';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CategoryBudget]), UsersModule, CategoriesModule, TransactionsModule],
   controllers: [CategoryBudgetsController, HouseholdCategoryBudgetsController],
-  providers: [CategoryBudgetsService, CategoryBudgetsRepository],
+  providers: [
+    CategoryBudgetsService,
+    CategoryBudgetsRepository,
+    {
+      provide: CATEGORY_BUDGET_REPOSITORY,
+      useExisting: CategoryBudgetsRepository,
+    },
+  ],
   exports: [CategoryBudgetsService],
 })
 export class CategoryBudgetsModule {}

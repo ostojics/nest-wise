@@ -77,4 +77,52 @@ export class CategoryBudget {
   })
   @JoinColumn({name: 'category_id'})
   category: Category;
+
+  /**
+   * Domain method: Check if spending is within budget
+   * @param spentAmount The amount already spent in this category for this period
+   */
+  isWithinBudget(spentAmount: number): boolean {
+    const planned = Number(this.plannedAmount);
+    const spent = Number(spentAmount);
+    return spent <= planned;
+  }
+
+  /**
+   * Domain method: Calculate remaining budget
+   * @param spentAmount The amount already spent in this category for this period
+   * @returns Remaining budget (0 if negative)
+   */
+  getRemainingBudget(spentAmount: number): number {
+    const planned = Number(this.plannedAmount);
+    const spent = Number(spentAmount);
+    const remaining = planned - spent;
+    return remaining < 0 ? 0 : remaining;
+  }
+
+  /**
+   * Domain method: Calculate percentage of budget used
+   * @param spentAmount The amount already spent in this category for this period
+   * @returns Percentage used (0-100+)
+   */
+  getPercentageUsed(spentAmount: number): number {
+    const planned = Number(this.plannedAmount);
+    const spent = Number(spentAmount);
+
+    if (planned === 0) {
+      return 0;
+    }
+
+    return (spent / planned) * 100;
+  }
+
+  /**
+   * Domain method: Check if budget is exceeded
+   * @param spentAmount The amount already spent in this category for this period
+   */
+  isOverBudget(spentAmount: number): boolean {
+    const planned = Number(this.plannedAmount);
+    const spent = Number(spentAmount);
+    return spent > planned;
+  }
 }

@@ -10,6 +10,7 @@ import {CategoriesModule} from 'src/categories/categories.module';
 import {LicensesModule} from 'src/licenses/licenses.module';
 import {TransactionsModule} from 'src/transactions/transactions.module';
 import {UsersModule} from 'src/users/users.module';
+import {HOUSEHOLD_REPOSITORY} from '../repositories/household.repository.interface';
 
 @Module({
   imports: [
@@ -21,7 +22,14 @@ import {UsersModule} from 'src/users/users.module';
     forwardRef(() => TransactionsModule),
   ],
   controllers: [HouseholdsController, HouseholdTransactionsController],
-  providers: [HouseholdsService, HouseholdsRepository],
+  providers: [
+    HouseholdsService,
+    HouseholdsRepository,
+    {
+      provide: HOUSEHOLD_REPOSITORY,
+      useExisting: HouseholdsRepository,
+    },
+  ],
   exports: [HouseholdsService, HouseholdsRepository],
 })
 export class HouseholdsModule {}
