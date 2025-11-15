@@ -1,10 +1,12 @@
 import {Injectable, Inject, BadRequestException, NotFoundException} from '@nestjs/common';
 import {TransferFundsDTO} from '@nest-wise/contracts';
 import {DataSource} from 'typeorm';
+import {EventEmitter2} from '@nestjs/event-emitter';
 import {IUseCase} from '../base-use-case';
 import {Account} from '../../../accounts/account.entity';
 import {AccountsService} from '../../../accounts/accounts.service';
 import {IAccountRepository, ACCOUNT_REPOSITORY} from '../../../repositories/account.repository.interface';
+import {FundsTransferredEvent, AccountBalanceChangedEvent} from '../../../domain/events';
 
 export interface TransferFundsForHouseholdInput {
   householdId: string;
@@ -25,6 +27,7 @@ export class TransferFundsForHouseholdUseCase
     private readonly accountsRepository: IAccountRepository,
     private readonly accountsService: AccountsService,
     private readonly dataSource: DataSource,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async execute(input: TransferFundsForHouseholdInput): Promise<TransferFundsForHouseholdOutput> {
@@ -56,6 +59,9 @@ export class TransferFundsForHouseholdUseCase
       throw new BadRequestException('Nedovoljno sredstava za ovaj transfer');
     }
 
+    const fromOldBalance = Number(fromAccount.currentBalance);
+    const toOldBalance = Number(toAccount.currentBalance);
+
     return await this.dataSource.transaction(async () => {
       // Use domain methods to update balances
       fromAccount.withdraw(amount);
@@ -74,6 +80,36 @@ export class TransferFundsForHouseholdUseCase
       if (!updatedTo) {
         throw new NotFoundException('Odredišni račun nije pronađen');
       }
+
+      // Emit events
+      this.eventEmitter.emit(
+        'account.funds.transferred',
+        new FundsTransferredEvent(dto.fromAccountId, dto.toAccountId, householdId, amount),
+      );
+
+      this.eventEmitter.emit(
+        'account.balance.changed',
+        new AccountBalanceChangedEvent(
+          dto.fromAccountId,
+          householdId,
+          fromOldBalance,
+          Number(fromAccount.currentBalance),
+          'transfer',
+          {toAccountId: dto.toAccountId, amount},
+        ),
+      );
+
+      this.eventEmitter.emit(
+        'account.balance.changed',
+        new AccountBalanceChangedEvent(
+          dto.toAccountId,
+          householdId,
+          toOldBalance,
+          Number(toAccount.currentBalance),
+          'transfer',
+          {fromAccountId: dto.fromAccountId, amount},
+        ),
+      );
 
       return {fromAccount: updatedFrom, toAccount: updatedTo};
     });

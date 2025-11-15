@@ -2,6 +2,7 @@ import {Injectable, Inject, BadRequestException} from '@nestjs/common';
 import {CreateTransactionAiHouseholdDTO} from '@nest-wise/contracts';
 import {DataSource} from 'typeorm';
 import {Logger} from 'pino-nestjs';
+import {EventEmitter2} from '@nestjs/event-emitter';
 import {IUseCase} from '../base-use-case';
 import {Transaction} from '../../../transactions/transaction.entity';
 import {AccountsService} from '../../../accounts/accounts.service';
@@ -11,6 +12,7 @@ import {TransactionType} from '../../../common/enums/transaction.type.enum';
 import {categoryPromptFactory} from '../../../tools/ai/prompts/category.prompt';
 import {ITransactionRepository, TRANSACTION_REPOSITORY} from '../../../repositories/transaction.repository.interface';
 import {IAiProvider, AI_PROVIDER} from '../../../providers/ai-provider.interface';
+import {TransactionCreatedEvent, AccountBalanceChangedEvent} from '../../../domain/events';
 
 export interface CreateAiTransactionForHouseholdInput {
   householdId: string;
@@ -30,6 +32,7 @@ export class CreateAiTransactionForHouseholdUseCase
     private readonly dataSource: DataSource,
     private readonly logger: Logger,
     @Inject(AI_PROVIDER) private readonly aiProvider: IAiProvider,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async execute(input: CreateAiTransactionForHouseholdInput): Promise<Transaction> {
@@ -91,7 +94,32 @@ export class CreateAiTransactionForHouseholdUseCase
         isReconciled: true,
       });
 
+      const oldBalance = Number(account.currentBalance);
       await this.updateBalance(transaction.accountId, transaction.amount, transaction.type);
+
+      // Emit events
+      this.eventEmitter.emit(
+        'transaction.created',
+        new TransactionCreatedEvent(
+          transaction.id,
+          transaction.accountId,
+          transaction.householdId,
+          transaction.amount,
+          transaction.type,
+          transaction.categoryId,
+        ),
+      );
+
+      const newBalance =
+        transaction.type === TransactionType.INCOME ? oldBalance + transaction.amount : oldBalance - transaction.amount;
+
+      this.eventEmitter.emit(
+        'account.balance.changed',
+        new AccountBalanceChangedEvent(account.id, householdId, oldBalance, newBalance, 'transaction', {
+          transactionId: transaction.id,
+          aiGenerated: true,
+        }),
+      );
 
       return transaction;
     });

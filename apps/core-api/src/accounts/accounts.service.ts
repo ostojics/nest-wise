@@ -1,5 +1,5 @@
 import {EditAccountDTO, CreateAccountHouseholdScopedDTO, TransferFundsDTO} from '@nest-wise/contracts';
-import {BadRequestException, ConflictException, Injectable, NotFoundException, Inject} from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {Account} from './account.entity';
 import {IAccountRepository, ACCOUNT_REPOSITORY} from '../repositories/account.repository.interface';
 import {TransferFundsForHouseholdUseCase} from '../application/use-cases/accounts';

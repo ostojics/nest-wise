@@ -1,9 +1,11 @@
 import {Injectable, Inject, NotFoundException} from '@nestjs/common';
 import {DataSource} from 'typeorm';
+import {EventEmitter2} from '@nestjs/event-emitter';
 import {IUseCase} from '../base-use-case';
 import {AccountsService} from '../../../accounts/accounts.service';
 import {TransactionType} from '../../../common/enums/transaction.type.enum';
 import {ITransactionRepository, TRANSACTION_REPOSITORY} from '../../../repositories/transaction.repository.interface';
+import {TransactionDeletedEvent, AccountBalanceChangedEvent} from '../../../domain/events';
 
 export interface DeleteTransactionInput {
   id: string;
@@ -16,6 +18,7 @@ export class DeleteTransactionUseCase implements IUseCase<DeleteTransactionInput
     private readonly transactionsRepository: ITransactionRepository,
     private readonly accountsService: AccountsService,
     private readonly dataSource: DataSource,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async execute(input: DeleteTransactionInput): Promise<void> {
@@ -28,7 +31,8 @@ export class DeleteTransactionUseCase implements IUseCase<DeleteTransactionInput
       }
 
       const account = await this.accountsService.findAccountById(existingTransaction.accountId);
-      let newBalance = Number(account.currentBalance);
+      const oldBalance = Number(account.currentBalance);
+      let newBalance = oldBalance;
       const transactionAmount = Number(existingTransaction.amount);
 
       if (existingTransaction.type === TransactionType.INCOME) {
@@ -45,6 +49,31 @@ export class DeleteTransactionUseCase implements IUseCase<DeleteTransactionInput
       if (!deleted) {
         throw new NotFoundException('Transakcija nije pronađena');
       }
+
+      // Emit events
+      this.eventEmitter.emit(
+        'transaction.deleted',
+        new TransactionDeletedEvent(
+          existingTransaction.id,
+          existingTransaction.accountId,
+          existingTransaction.householdId,
+          existingTransaction.amount,
+          existingTransaction.type,
+          existingTransaction.categoryId,
+        ),
+      );
+
+      this.eventEmitter.emit(
+        'account.balance.changed',
+        new AccountBalanceChangedEvent(
+          existingTransaction.accountId,
+          existingTransaction.householdId,
+          oldBalance,
+          newBalance,
+          'transaction',
+          {transactionId: existingTransaction.id, deleted: true},
+        ),
+      );
     });
   }
 }

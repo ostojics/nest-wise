@@ -5,7 +5,7 @@ import {
 } from '@nest-wise/contracts';
 import {BadRequestException, Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {UsersService} from 'src/users/users.service';
-import {endOfMonth, format, isBefore, startOfMonth} from 'date-fns';
+import {isBefore, startOfMonth} from 'date-fns';
 import {UTCDate} from '@date-fns/utc';
 import {
   ICategoryBudgetRepository,
