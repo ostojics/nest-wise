@@ -2,9 +2,10 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {User} from './user.entity';
+import {IUserRepository} from '../repositories/user.repository.interface';
 
 @Injectable()
-export class UsersRepository {
+export class UsersRepository implements IUserRepository {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -33,6 +34,13 @@ export class UsersRepository {
 
   async findAll(): Promise<User[]> {
     return await this.userRepository.find();
+  }
+
+  async findByHouseholdId(householdId: string): Promise<User[]> {
+    return await this.userRepository.find({
+      where: {householdId},
+      select: ['id', 'email', 'username', 'createdAt', 'updatedAt', 'householdId'],
+    });
   }
 
   async findByHouseholdIdWithHousehold(householdId: string): Promise<User[]> {

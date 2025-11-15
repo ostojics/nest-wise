@@ -9,13 +9,18 @@ import {AppConfig, AppConfigName} from './config/app.config';
 import helmet from 'helmet';
 import setupSwagger from './tools/swagger/swagger.setup';
 import cookieParser from 'cookie-parser';
+import {AllExceptionsFilter} from './common/filters/all-exceptions.filter';
+import {PosthogService} from './lib/posthog/posthog.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {bufferLogs: true});
   const configService = app.get(ConfigService<GlobalConfig>);
   const {webAppUrl} = configService.getOrThrow<AppConfig>(AppConfigName);
 
-  app.useLogger(app.get(Logger));
+  const logger = app.get(Logger);
+  const posthogService = app.get(PosthogService);
+
+  app.useLogger(logger);
   app.enableShutdownHooks();
   app.enableVersioning({
     type: VersioningType.URI,
@@ -24,6 +29,10 @@ async function bootstrap() {
   app.useBodyParser('json', {limit: '10mb'});
   app.use(helmet());
   app.use(cookieParser());
+
+  // Register global exception filter for centralized error handling and PostHog capture
+  app.useGlobalFilters(new AllExceptionsFilter(logger, posthogService));
+
   setupSwagger(app);
   app.enableCors({
     origin: webAppUrl,

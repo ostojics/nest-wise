@@ -3,21 +3,25 @@ import {
   CategoryBudgetWithCurrentAmountContract,
   EditCategoryBudgetDTO,
 } from '@nest-wise/contracts';
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {CategoriesService} from 'src/categories/categories.service';
 import {UsersService} from 'src/users/users.service';
-import {CategoryBudgetsRepository} from './category-budgets.repository';
 import {endOfMonth, format, isBefore, startOfMonth} from 'date-fns';
 import {TransactionsService} from 'src/transactions/transactions.service';
 import {TransactionType} from 'src/common/enums/transaction.type.enum';
 import {UTCDate} from '@date-fns/utc';
+import {
+  ICategoryBudgetRepository,
+  CATEGORY_BUDGET_REPOSITORY,
+} from '../repositories/category-budget.repository.interface';
 
 @Injectable()
 export class CategoryBudgetsService {
   constructor(
     private readonly usersService: UsersService,
     private readonly categoriesService: CategoriesService,
-    private readonly categoryBudgetsRepository: CategoryBudgetsRepository,
+    @Inject(CATEGORY_BUDGET_REPOSITORY)
+    private readonly categoryBudgetsRepository: ICategoryBudgetRepository,
     private readonly transactionsService: TransactionsService,
   ) {}
 

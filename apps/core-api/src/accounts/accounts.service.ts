@@ -1,13 +1,14 @@
 import {EditAccountDTO, CreateAccountHouseholdScopedDTO, TransferFundsDTO} from '@nest-wise/contracts';
-import {BadRequestException, ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ConflictException, Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {Account} from './account.entity';
-import {AccountsRepository} from './accounts.repository';
 import {DataSource} from 'typeorm';
+import {IAccountRepository, ACCOUNT_REPOSITORY} from '../repositories/account.repository.interface';
 
 @Injectable()
 export class AccountsService {
   constructor(
-    private readonly accountsRepository: AccountsRepository,
+    @Inject(ACCOUNT_REPOSITORY)
+    private readonly accountsRepository: IAccountRepository,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -127,24 +128,27 @@ export class AccountsService {
       throw new BadRequestException('Računi moraju pripadati istom domaćinstvu');
     }
 
-    const fromBalance = Number(fromAccount.currentBalance);
-    const toBalance = Number(toAccount.currentBalance);
     const amount = Number(dto.amount);
 
-    if (fromBalance < amount) {
+    // Use domain method to check for sufficient funds
+    if (!fromAccount.hasSufficientFunds(amount)) {
       throw new BadRequestException('Nedovoljno sredstava za ovaj transfer');
     }
 
     return await this.dataSource.transaction(async () => {
+      // Use domain methods to update balances
+      fromAccount.withdraw(amount);
+      toAccount.deposit(amount);
+
       const updatedFrom = await this.accountsRepository.update(dto.fromAccountId, {
-        currentBalance: fromBalance - amount,
+        currentBalance: fromAccount.currentBalance,
       });
       if (!updatedFrom) {
         throw new NotFoundException('Polazni račun nije pronađen');
       }
 
       const updatedTo = await this.accountsRepository.update(dto.toAccountId, {
-        currentBalance: toBalance + amount,
+        currentBalance: toAccount.currentBalance,
       });
       if (!updatedTo) {
         throw new NotFoundException('Odredišni račun nije pronađen');

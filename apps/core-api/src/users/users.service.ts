@@ -1,10 +1,9 @@
 import {CreateUserDTO} from '@nest-wise/contracts';
-import {ConflictException, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException, UnauthorizedException, Inject} from '@nestjs/common';
 import {EmailsService} from 'src/emails/emails.service';
 import {HouseholdsService} from 'src/households/households.service';
 import {hashPassword} from 'src/lib/hashing/hashing';
 import {User} from './user.entity';
-import {UsersRepository} from './users.repository';
 import {AcceptInviteDTO} from '@nest-wise/contracts';
 import {JwtPayload} from 'src/common/interfaces/jwt.payload.interface';
 import {JwtService} from '@nestjs/jwt';
@@ -12,11 +11,13 @@ import {Logger} from 'pino-nestjs';
 import {ConfigService} from '@nestjs/config';
 import {AppConfig, AppConfigName} from 'src/config/app.config';
 import {PosthogService} from 'src/lib/posthog/posthog.service';
+import {IUserRepository, USER_REPOSITORY} from '../repositories/user.repository.interface';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly usersRepository: UsersRepository,
+    @Inject(USER_REPOSITORY)
+    private readonly usersRepository: IUserRepository,
     private readonly householdsService: HouseholdsService,
     private readonly emailsService: EmailsService,
     private readonly jwtService: JwtService,

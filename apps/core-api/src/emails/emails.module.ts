@@ -5,9 +5,10 @@ import {ConfigModule} from '@nestjs/config';
 import {BullModule} from '@nestjs/bullmq';
 import {Queues} from 'src/common/enums/queues.enum';
 import {EmailsConsumer} from './emails.consumer';
+import {EmailProviderModule} from '../infrastructure/providers/email/email-provider.module';
 
 @Module({
-  imports: [ConfigModule, BullModule.registerQueue({name: Queues.EMAILS})],
+  imports: [ConfigModule, BullModule.registerQueue({name: Queues.EMAILS}), EmailProviderModule],
   controllers: [EmailsController],
   providers: [EmailsService, EmailsConsumer],
   exports: [EmailsService],

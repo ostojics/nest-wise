@@ -1,16 +1,17 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {HouseholdsRepository} from './households.repository';
+import {Injectable, NotFoundException, Inject} from '@nestjs/common';
 import {Household} from './household.entity';
 import {AccountsService} from 'src/accounts/accounts.service';
 import {Account} from 'src/accounts/account.entity';
 import type {CreateHouseholdDTO, UpdateHouseholdDTO} from '@nest-wise/contracts';
 import {CategoriesService} from 'src/categories/categories.service';
 import {Category} from 'src/categories/categories.entity';
+import {IHouseholdRepository, HOUSEHOLD_REPOSITORY} from '../repositories/household.repository.interface';
 
 @Injectable()
 export class HouseholdsService {
   constructor(
-    private readonly householdsRepository: HouseholdsRepository,
+    @Inject(HOUSEHOLD_REPOSITORY)
+    private readonly householdsRepository: IHouseholdRepository,
     private readonly accountsService: AccountsService,
     private readonly categoriesService: CategoriesService,
   ) {}

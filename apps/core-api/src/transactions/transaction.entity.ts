@@ -109,4 +109,49 @@ export class Transaction {
   })
   @JoinColumn({name: 'category_id'})
   category: Category | null;
+
+  /**
+   * Domain method: Check if transaction can be updated
+   * Currently all transactions can be updated by household members
+   * Future: Add rules for scheduled transactions or reconciled transactions
+   */
+  canBeUpdated(): boolean {
+    // For now, all transactions can be updated
+    // In the future, add rules like:
+    // - Cannot update if from scheduled rule
+    // - Cannot update if reconciled (unless specific permission)
+    return true;
+  }
+
+  /**
+   * Domain method: Check if transaction can be deleted
+   * Same rules as update for now
+   */
+  canBeDeleted(): boolean {
+    return this.canBeUpdated();
+  }
+
+  /**
+   * Domain method: Apply transaction effect to account balance
+   * Delegates to account's domain method
+   */
+  applyToAccount(account: Account): void {
+    const amount = Number(this.amount);
+    const isIncome = this.type === TransactionType.INCOME;
+    account.applyTransactionEffect(amount, isIncome);
+  }
+
+  /**
+   * Domain method: Check if this is an income transaction
+   */
+  isIncome(): boolean {
+    return this.type === TransactionType.INCOME;
+  }
+
+  /**
+   * Domain method: Check if this is an expense transaction
+   */
+  isExpense(): boolean {
+    return this.type === TransactionType.EXPENSE;
+  }
 }

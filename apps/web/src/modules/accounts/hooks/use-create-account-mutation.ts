@@ -4,6 +4,7 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {toast} from 'sonner';
 import {CreateAccountHouseholdScopedDTO, ErrorResponse} from '@nest-wise/contracts';
 import {HTTPError} from 'ky';
+import {reportError} from '@/lib/error-reporting';
 
 interface UseCreateAccountMutationProps {
   householdId: string;
@@ -22,12 +23,8 @@ export const useCreateAccountMutation = ({householdId}: UseCreateAccountMutation
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'account_create',
-        },
+      await reportError(error, {
+        feature: 'account_create',
       });
 
       if (err.message) {

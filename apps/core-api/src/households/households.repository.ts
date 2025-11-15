@@ -2,16 +2,16 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Household} from './household.entity';
-import {CreateHouseholdDTO, UpdateHouseholdDTO} from '@nest-wise/contracts';
+import {IHouseholdRepository} from '../repositories/household.repository.interface';
 
 @Injectable()
-export class HouseholdsRepository {
+export class HouseholdsRepository implements IHouseholdRepository {
   constructor(
     @InjectRepository(Household)
     private readonly householdRepository: Repository<Household>,
   ) {}
 
-  async create(householdData: CreateHouseholdDTO & {licenseId?: string}): Promise<Household> {
+  async create(householdData: Partial<Household>): Promise<Household> {
     const household = this.householdRepository.create(householdData);
     return await this.householdRepository.save(household);
   }
@@ -31,7 +31,7 @@ export class HouseholdsRepository {
     return await this.householdRepository.find();
   }
 
-  async update(id: string, householdData: UpdateHouseholdDTO): Promise<Household | null> {
+  async update(id: string, householdData: Partial<Household>): Promise<Household | null> {
     const updateResult = await this.householdRepository.update(id, householdData);
 
     if (updateResult.affected === 0) {
@@ -49,5 +49,13 @@ export class HouseholdsRepository {
   async exists(id: string): Promise<boolean> {
     const count = await this.householdRepository.count({where: {id}});
     return count > 0;
+  }
+
+  async getMemberCount(householdId: string): Promise<number> {
+    const household = await this.findByIdWithUsers(householdId);
+    if (!household) {
+      return 0;
+    }
+    return household.users.length;
   }
 }

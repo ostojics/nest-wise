@@ -99,4 +99,41 @@ export class PrivateTransaction {
   })
   @JoinColumn({name: 'user_id'})
   user: User;
+
+  /**
+   * Domain method: Check if transaction can be updated by a user
+   * Only the owner can update their private transaction
+   */
+  canBeUpdated(userId: string): boolean {
+    return this.belongsToUser(userId);
+  }
+
+  /**
+   * Domain method: Check if transaction can be deleted by a user
+   * Only the owner can delete their private transaction
+   */
+  canBeDeleted(userId: string): boolean {
+    return this.belongsToUser(userId);
+  }
+
+  /**
+   * Domain method: Check if transaction belongs to a specific user
+   */
+  belongsToUser(userId: string): boolean {
+    return this.userId === userId;
+  }
+
+  /**
+   * Domain method: Check if this is an income transaction
+   */
+  isIncome(): boolean {
+    return this.type === TransactionType.INCOME;
+  }
+
+  /**
+   * Domain method: Check if this is an expense transaction
+   */
+  isExpense(): boolean {
+    return this.type === TransactionType.EXPENSE;
+  }
 }
