@@ -111,35 +111,6 @@ export class Transaction {
   category: Category | null;
 
   /**
-   * Domain method: Validate transaction invariants
-   * @throws Error if validation fails
-   */
-  validate(): void {
-    const amount = Number(this.amount);
-
-    if (amount <= 0) {
-      throw new Error('Iznos transakcije mora biti veći od nule');
-    }
-
-    if (this.transactionDate > new Date()) {
-      throw new Error('Datum transakcije ne može biti u budućnosti');
-    }
-
-    if (!this.accountId) {
-      throw new Error('Račun mora biti postavljen');
-    }
-
-    if (!this.householdId) {
-      throw new Error('Domaćinstvo mora biti postavljeno');
-    }
-
-    // Income transactions should not have a category
-    if (this.type === TransactionType.INCOME && this.categoryId) {
-      throw new Error('Prihod ne može imati kategoriju');
-    }
-  }
-
-  /**
    * Domain method: Check if transaction can be updated
    * Currently all transactions can be updated by household members
    * Future: Add rules for scheduled transactions or reconciled transactions

@@ -81,34 +81,6 @@ export class User {
   accounts: Account[];
 
   /**
-   * Domain method: Validate user invariants
-   * @throws Error if validation fails
-   */
-  validate(): void {
-    if (!this.email || this.email.trim().length === 0) {
-      throw new Error('Email ne može biti prazan');
-    }
-
-    // Basic email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(this.email)) {
-      throw new Error('Email mora biti u validnom formatu');
-    }
-
-    if (!this.username || this.username.trim().length === 0) {
-      throw new Error('Korisničko ime ne može biti prazno');
-    }
-
-    if (this.username.length > 50) {
-      throw new Error('Korisničko ime ne može biti duže od 50 znakova');
-    }
-
-    if (!this.householdId) {
-      throw new Error('Domaćinstvo mora biti postavljeno');
-    }
-  }
-
-  /**
    * Domain method: Check if user can join a household
    * User cannot join if already in a household or if household is full
    * @param household The household to check

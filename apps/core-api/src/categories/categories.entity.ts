@@ -61,24 +61,6 @@ export class Category {
   transactions: Transaction[];
 
   /**
-   * Domain method: Validate category invariants
-   * @throws Error if validation fails
-   */
-  validate(): void {
-    if (!this.name || this.name.trim().length === 0) {
-      throw new Error('Naziv kategorije ne može biti prazan');
-    }
-
-    if (this.name.length > 100) {
-      throw new Error('Naziv kategorije ne može biti duži od 100 znakova');
-    }
-
-    if (!this.householdId) {
-      throw new Error('Domaćinstvo mora biti postavljeno');
-    }
-  }
-
-  /**
    * Domain method: Check if category can be deleted
    * Category cannot be deleted if it has transactions or budgets
    * Note: This method assumes transactions are loaded. For checking budgets,

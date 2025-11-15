@@ -101,34 +101,6 @@ export class PrivateTransaction {
   user: User;
 
   /**
-   * Domain method: Validate private transaction invariants
-   * @throws Error if validation fails
-   */
-  validate(): void {
-    const amount = Number(this.amount);
-
-    if (amount <= 0) {
-      throw new Error('Iznos transakcije mora biti veći od nule');
-    }
-
-    if (this.transactionDate > new Date()) {
-      throw new Error('Datum transakcije ne može biti u budućnosti');
-    }
-
-    if (!this.userId) {
-      throw new Error('Vlasnik transakcije mora biti postavljen');
-    }
-
-    if (!this.accountId) {
-      throw new Error('Račun mora biti postavljen');
-    }
-
-    if (!this.householdId) {
-      throw new Error('Domaćinstvo mora biti postavljeno');
-    }
-  }
-
-  /**
    * Domain method: Check if transaction can be updated by a user
    * Only the owner can update their private transaction
    */

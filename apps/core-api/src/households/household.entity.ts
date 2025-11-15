@@ -82,41 +82,18 @@ export class Household {
   license: License;
 
   /**
-   * Domain method: Validate household invariants
-   * @throws Error if validation fails
-   */
-  validate(): void {
-    if (!this.name || this.name.trim().length === 0) {
-      throw new Error('Naziv domaćinstva ne može biti prazan');
-    }
-
-    if (this.name.length > 255) {
-      throw new Error('Naziv domaćinstva ne može biti duži od 255 znakova');
-    }
-
-    if (!this.currencyCode || this.currencyCode.length !== 3) {
-      throw new Error('Šifra valute mora biti 3 znaka (ISO 4217)');
-    }
-
-    // Basic currency code validation - should be uppercase letters
-    if (!/^[A-Z]{3}$/.test(this.currencyCode)) {
-      throw new Error('Šifra valute mora biti u formatu ISO 4217 (npr. USD, EUR, RSD)');
-    }
-  }
-
-  /**
    * Domain method: Check if household can add a new member
-   * @param maxMembers Maximum allowed members (default 10, configurable for license tiers)
+   * @param maxMembers Maximum allowed members (default 8, configurable for license tiers)
    */
-  canAddMember(maxMembers = 10): boolean {
+  canAddMember(maxMembers = 8): boolean {
     return this.users.length < maxMembers;
   }
 
   /**
    * Domain method: Check if household has reached member limit
-   * @param maxMembers Maximum allowed members (default 10)
+   * @param maxMembers Maximum allowed members (default 8)
    */
-  hasReachedMemberLimit(maxMembers = 10): boolean {
+  hasReachedMemberLimit(maxMembers = 8): boolean {
     return !this.canAddMember(maxMembers);
   }
 
