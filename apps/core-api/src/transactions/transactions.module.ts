@@ -13,6 +13,13 @@ import {Queues} from 'src/common/enums/queues.enum';
 import {TransactionsConsumer} from './transactions.consumer';
 import {TRANSACTION_REPOSITORY} from '../repositories/transaction.repository.interface';
 import {AiProviderModule} from '../infrastructure/providers/ai/ai-provider.module';
+import {
+  CreateTransactionUseCase,
+  CreateTransactionForHouseholdUseCase,
+  UpdateTransactionUseCase,
+  DeleteTransactionUseCase,
+  CreateAiTransactionForHouseholdUseCase,
+} from '../application/use-cases/transactions';
 
 @Module({
   imports: [
@@ -33,6 +40,11 @@ import {AiProviderModule} from '../infrastructure/providers/ai/ai-provider.modul
       provide: TRANSACTION_REPOSITORY,
       useExisting: TransactionsRepository,
     },
+    CreateTransactionUseCase,
+    CreateTransactionForHouseholdUseCase,
+    UpdateTransactionUseCase,
+    DeleteTransactionUseCase,
+    CreateAiTransactionForHouseholdUseCase,
   ],
   exports: [TransactionsService],
 })
