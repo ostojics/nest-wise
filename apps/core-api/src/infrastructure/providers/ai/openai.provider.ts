@@ -58,7 +58,7 @@ export class OpenAiProvider implements IAiProvider {
 
       return result;
     } catch (error) {
-      this.logger.error('AI categorization failed', {error});
+      this.logger.error('AI categorization failed', error);
       throw new BadGatewayException('Nije moguće odrediti kategoriju transakcije putem AI');
     }
   }
