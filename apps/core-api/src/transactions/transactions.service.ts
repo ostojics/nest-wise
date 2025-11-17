@@ -199,6 +199,7 @@ export class TransactionsService {
       if (isNewCategorySuggested) {
         const newCategory = await this.categoriesService.createCategoryForHousehold(householdId, {
           name: object.suggestedCategory.newCategoryName,
+          default: false,
         });
 
         categoryId = newCategory.id;

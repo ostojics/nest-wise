@@ -8,6 +8,7 @@ interface CreateCategoryData {
   name: string;
   description?: string;
   householdId: string;
+  default?: boolean;
 }
 
 @Injectable()
@@ -60,5 +61,15 @@ export class CategoriesRepository {
   async nameExistsForHousehold(name: string, householdId: string): Promise<boolean> {
     const count = await this.categoryRepository.count({where: {name, householdId}});
     return count > 0;
+  }
+
+  async findDefaultByHouseholdId(householdId: string): Promise<Category | null> {
+    return await this.categoryRepository.findOne({
+      where: {householdId, default: true},
+    });
+  }
+
+  async clearDefaultForHousehold(householdId: string): Promise<void> {
+    await this.categoryRepository.update({householdId, default: true}, {default: false});
   }
 }

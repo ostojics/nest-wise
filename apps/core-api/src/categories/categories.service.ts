@@ -13,10 +13,16 @@ export class CategoriesService {
       throw new ConflictException('Naziv kategorije već postoji u ovom domaćinstvu');
     }
 
+    // If setting this category as default, clear any existing default
+    if (categoryData.default === true) {
+      await this.categoriesRepository.clearDefaultForHousehold(householdId);
+    }
+
     return await this.categoriesRepository.create({
       name: categoryData.name,
       description: categoryData.description,
       householdId,
+      default: categoryData.default,
     });
   }
 
@@ -51,6 +57,11 @@ export class CategoriesService {
       if (nameExists) {
         throw new ConflictException('Naziv kategorije već postoji u ovom domaćinstvu');
       }
+    }
+
+    // If setting this category as default, clear any existing default
+    if (categoryData.default === true) {
+      await this.categoriesRepository.clearDefaultForHousehold(existingCategory.householdId);
     }
 
     const updatedCategory = await this.categoriesRepository.update(id, categoryData);
