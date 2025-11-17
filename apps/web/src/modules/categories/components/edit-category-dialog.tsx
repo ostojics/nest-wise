@@ -1,4 +1,5 @@
 import {Button} from '@/components/ui/button';
+import {Checkbox} from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogClose,
@@ -16,6 +17,7 @@ import FormError from '@/components/form-error';
 import {UpdateCategoryDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
 import {useState} from 'react';
+import {Controller} from 'react-hook-form';
 import {useEditCategoryName} from '../hooks/use-edit-category-name';
 import {useValidateEditCategory} from '../hooks/use-validate-edit-category';
 
@@ -23,17 +25,21 @@ interface EditCategoryDialogProps {
   categoryId: string;
   currentName: string;
   currentDescription?: string | null;
+  currentDefault?: boolean;
 }
 
-const EditCategoryDialog = ({categoryId, currentName, currentDescription}: EditCategoryDialogProps) => {
+const EditCategoryDialog = ({categoryId, currentName, currentDescription, currentDefault}: EditCategoryDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
     register,
     handleSubmit,
     watch,
+    control,
     formState: {errors},
     reset,
-  } = useValidateEditCategory({defaultValues: {name: currentName, description: currentDescription ?? ''}});
+  } = useValidateEditCategory({
+    defaultValues: {name: currentName, description: currentDescription ?? '', default: currentDefault ?? false},
+  });
   const mutation = useEditCategoryName();
   const watchedCategoryDescription = watch('description');
 
@@ -91,6 +97,18 @@ const EditCategoryDialog = ({categoryId, currentName, currentDescription}: EditC
                   {...register('description')}
                 />
                 {errors.description?.message && <FormError error={errors.description.message} />}
+              </div>
+              <div className="flex items-center gap-2">
+                <Controller
+                  name="default"
+                  control={control}
+                  render={({field}) => (
+                    <Checkbox id="edit-category-default" checked={field.value} onCheckedChange={field.onChange} />
+                  )}
+                />
+                <Label htmlFor="edit-category-default" className="cursor-pointer">
+                  Postavi kao podrazumevanu kategoriju
+                </Label>
               </div>
             </div>
             <DialogFooter className="mt-10">

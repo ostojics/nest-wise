@@ -1,5 +1,6 @@
 import FormError from '@/components/form-error';
 import {Button} from '@/components/ui/button';
+import {Checkbox} from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogClose,
@@ -21,6 +22,7 @@ import {CreateCategoryDTO} from '@nest-wise/contracts';
 import {useQueryClient} from '@tanstack/react-query';
 import {useSearch} from '@tanstack/react-router';
 import {useState} from 'react';
+import {Controller} from 'react-hook-form';
 
 const NewCategoryDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,6 +32,7 @@ const NewCategoryDialog = () => {
     handleSubmit,
     reset,
     watch,
+    control,
     formState: {errors},
   } = useValidateCreateCategory({householdId: me?.householdId ?? ''});
   const mutation = useCreateCategory(me?.householdId);
@@ -98,6 +101,23 @@ const NewCategoryDialog = () => {
                   {...register('description')}
                 />
                 {errors.description?.message && <FormError error={errors.description.message} />}
+              </div>
+              <div className="flex items-center gap-2">
+                <Controller
+                  name="default"
+                  control={control}
+                  render={({field}) => (
+                    <Checkbox
+                      id="new-category-default"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      data-testid="category-default-checkbox"
+                    />
+                  )}
+                />
+                <Label htmlFor="new-category-default" className="cursor-pointer">
+                  Postavi kao podrazumevanu kategoriju
+                </Label>
               </div>
             </div>
             <DialogFooter className="mt-10">

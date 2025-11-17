@@ -119,6 +119,7 @@ export default function CategoryBudgetsAccordionList({data, isEditable}: Categor
                     categoryId={item.categoryId}
                     currentName={item.category.name}
                     currentDescription={item.category.description}
+                    currentDefault={item.category.default}
                   />
                   <DeleteCategoryDialog categoryId={item.categoryId} categoryName={item.category.name} />
                 </div>

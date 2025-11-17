@@ -96,6 +96,7 @@ export const useCategoryBudgetsTable = (
               categoryId={row.original.categoryId}
               currentName={row.original.category.name}
               currentDescription={row.original.category.description}
+              currentDefault={row.original.category.default}
             />
             <DeleteCategoryDialog categoryId={row.original.categoryId} categoryName={row.original.category.name} />
           </div>

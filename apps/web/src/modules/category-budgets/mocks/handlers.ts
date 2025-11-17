@@ -53,7 +53,7 @@ export const categoryBudgetHandlers = [
           plannedAmount: 0,
           currentAmount: 0,
           month,
-          category: {name: category.name, description: category.description},
+          category: {name: category.name, description: category.description, default: category.default},
           createdAt: new Date(),
           updatedAt: new Date(),
         });

@@ -25,7 +25,7 @@ export const createCategorySchema = z
       })
       .max(300, 'Opis kategorije može imati najviše 300 karaktera')
       .optional(),
-    default: z.boolean().optional().default(false),
+    default: z.boolean().optional(),
   })
   .strict();
 

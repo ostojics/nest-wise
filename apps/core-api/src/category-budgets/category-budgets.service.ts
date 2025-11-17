@@ -72,6 +72,7 @@ export class CategoryBudgetsService {
       category: {
         name: b.category.name,
         description: b.category.description ?? null,
+        default: b.category.default,
       },
       currentAmount: spentByCategory.get(b.categoryId) ?? 0,
     }));
