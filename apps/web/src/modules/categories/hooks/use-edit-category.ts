@@ -5,13 +5,13 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
 
-export const useEditCategoryName = () => {
+export const useEditCategory = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({id, dto}: {id: string; dto: UpdateCategoryDTO}) => updateCategory(id, dto),
     onSuccess: () => {
-      toast.success('Naziv kategorije je uspešno promenjen');
+      toast.success('Kategorija je uspešno ažurirana');
       void queryClient.invalidateQueries({queryKey: queryKeys.categories.all()});
       void queryClient.invalidateQueries({queryKey: queryKeys.categoryBudgets.key()});
       void queryClient.invalidateQueries({queryKey: queryKeys.transactions.key()});

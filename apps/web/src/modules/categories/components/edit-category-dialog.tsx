@@ -18,7 +18,7 @@ import {UpdateCategoryDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
 import {useState} from 'react';
 import {Controller} from 'react-hook-form';
-import {useEditCategoryName} from '../hooks/use-edit-category-name';
+import {useEditCategory} from '../hooks/use-edit-category';
 import {useValidateEditCategory} from '../hooks/use-validate-edit-category';
 
 interface EditCategoryDialogProps {
@@ -45,7 +45,7 @@ const EditCategoryDialog = ({
   } = useValidateEditCategory({
     defaultValues: {name: currentName, description: currentDescription ?? '', isDefault: currentIsDefault ?? false},
   });
-  const mutation = useEditCategoryName();
+  const mutation = useEditCategory();
   const watchedCategoryDescription = watch('description');
 
   const handleEditCategory = async (data: UpdateCategoryDTO) => {
