@@ -75,6 +75,10 @@ const NewCategoryDialog = () => {
             Dodajte kategoriju za planiranje i praćenje svojih troškova. <br /> Opis kategorije će znatno poboljšati
             preciznost AI asistenta.
           </DialogDescription>
+          <DialogDescription>
+            Podrazumevane kategorije su kategorije koje će AI asistent koristiti umesto predlaganja novih kategorija
+            prilikom unosa transakcija.
+          </DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
           <form onSubmit={handleSubmit(handleCreateCategory)}>
@@ -116,7 +120,7 @@ const NewCategoryDialog = () => {
                   )}
                 />
                 <Label htmlFor="new-category-default" className="cursor-pointer">
-                  Postavi kao podrazumevanu kategoriju
+                  Podrazumevana kategorija
                 </Label>
               </div>
             </div>

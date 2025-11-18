@@ -76,6 +76,10 @@ const EditCategoryDialog = ({categoryId, currentName, currentDescription, curren
             Promenite naziv ili opis ove kategorije. Ova izmena se primenjuje na sve povezane podatke. <br /> Opis
             kategorije će znatno poboljšati preciznost AI asistenta.
           </DialogDescription>
+          <DialogDescription>
+            Podrazumevane kategorije su kategorije koje će AI asistent koristiti umesto predlaganja novih kategorija
+            prilikom unosa transakcija.
+          </DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
           <form onSubmit={handleSubmit(handleEditCategory)}>
@@ -107,7 +111,7 @@ const EditCategoryDialog = ({categoryId, currentName, currentDescription, curren
                   )}
                 />
                 <Label htmlFor="edit-category-default" className="cursor-pointer">
-                  Postavi kao podrazumevanu kategoriju
+                  Podrazumevana kategorija
                 </Label>
               </div>
             </div>
