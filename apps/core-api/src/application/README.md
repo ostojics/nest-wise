@@ -15,22 +15,26 @@ The application layer sits between the presentation layer (controllers) and the 
 
 ```
 src/application/
-└── use-cases/
-    ├── base-use-case.ts           # Base interface for all use cases
-    ├── index.ts                   # Barrel export
-    ├── transactions/              # Transaction-related use cases
-    │   ├── create-transaction.use-case.ts
-    │   ├── create-transaction-for-household.use-case.ts
-    │   ├── update-transaction.use-case.ts
-    │   ├── delete-transaction.use-case.ts
-    │   ├── create-ai-transaction-for-household.use-case.ts
-    │   └── index.ts
-    ├── accounts/                  # Account-related use cases
-    │   ├── transfer-funds-for-household.use-case.ts
-    │   └── index.ts
-    └── category-budgets/          # Category budget use cases
-        ├── get-category-budgets-for-household.use-case.ts
-        └── index.ts
+├── use-cases/
+│   ├── base-use-case.ts           # Base interface for all use cases
+│   ├── index.ts                   # Barrel export
+│   ├── transactions/              # Transaction-related use cases
+│   │   ├── create-transaction.use-case.ts
+│   │   ├── create-transaction-for-household.use-case.ts
+│   │   ├── update-transaction.use-case.ts
+│   │   ├── delete-transaction.use-case.ts
+│   │   ├── create-ai-transaction-for-household.use-case.ts
+│   │   └── index.ts
+│   ├── accounts/                  # Account-related use cases
+│   │   ├── transfer-funds-for-household.use-case.ts
+│   │   └── index.ts
+│   └── category-budgets/          # Category budget use cases
+│       ├── get-category-budgets-for-household.use-case.ts
+│       └── index.ts
+└── event-handlers/                # Domain event handlers
+    ├── audit-log.event-handler.ts # Example: Logs all domain events
+    ├── event-handlers.module.ts   # Module registration
+    └── index.ts
 ```
 
 ## Use Cases
@@ -165,6 +169,23 @@ this.eventEmitter.emit(
 );
 ```
 
+**Event Handlers** listen to and process these events:
+
+```typescript
+@Injectable()
+export class AuditLogEventHandler {
+  @OnEvent('transaction.created')
+  handleTransactionCreated(event: TransactionCreatedEvent) {
+    this.logger.debug({
+      event: 'transaction.created',
+      transactionId: event.transactionId,
+      // ... log event details
+    });
+    // Store in audit log, send to analytics, etc.
+  }
+}
+```
+
 ### 3. Clear Input/Output Types
 
 Each use case defines explicit input and output types:
@@ -237,6 +258,64 @@ describe('CreateTransactionUseCase', () => {
   });
 });
 ```
+
+## Event Handlers
+
+Event handlers respond to domain events emitted by use cases, enabling cross-cutting concerns without modifying business logic.
+
+### Example: Audit Log Handler
+
+The `AuditLogEventHandler` demonstrates the pattern:
+
+```typescript
+@Injectable()
+export class AuditLogEventHandler {
+  constructor(private readonly logger: Logger) {}
+
+  @OnEvent('transaction.created')
+  handleTransactionCreated(event: TransactionCreatedEvent) {
+    this.logger.debug({
+      event: 'transaction.created',
+      transactionId: event.transactionId,
+      accountId: event.accountId,
+      amount: event.amount,
+      // ... other event details
+    });
+    // Future: Store in audit log table, send to external service, etc.
+  }
+
+  @OnEvent('account.balance.changed')
+  handleBalanceChanged(event: AccountBalanceChangedEvent) {
+    // Check for low balance alerts
+    // Update real-time dashboards
+    // Recalculate net worth
+  }
+}
+```
+
+### Adding Event Handlers
+
+To add a new event handler:
+
+1. Create a class decorated with `@Injectable()`
+2. Add methods decorated with `@OnEvent('event.name')`
+3. Inject required dependencies (logger, services, repositories)
+4. Register in `EventHandlersModule`
+
+Example use cases for event handlers:
+
+- **Analytics**: Update spending trends, category distributions
+- **Notifications**: Alert on budget thresholds, unusual transactions
+- **Audit Trail**: Log all changes for compliance
+- **Webhooks**: Send events to external systems
+- **Email**: Send transaction confirmations, weekly summaries
+
+### Benefits
+
+- **Loose Coupling**: Use cases don't know about handlers
+- **Extensibility**: Add features without modifying use cases
+- **Testability**: Test handlers independently
+- **Async Processing**: Handlers execute asynchronously
 
 ## Documentation
 
