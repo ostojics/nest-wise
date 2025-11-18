@@ -21,6 +21,7 @@ export class CategoryBudgetsRepository {
         category: {
           name: true,
           description: true,
+          isDefault: true,
         },
       },
     });

@@ -12,6 +12,7 @@ export const useValidateCreateCategory = ({householdId: _householdId}: UseValida
     defaultValues: {
       name: '',
       description: '',
+      isDefault: false,
     },
   });
 };

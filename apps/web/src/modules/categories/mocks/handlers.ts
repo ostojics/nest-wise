@@ -7,6 +7,7 @@ const mockCategory1: CategoryContract = {
   householdId: '550e8400-e29b-41d4-a716-446655440002',
   name: 'Groceries',
   description: null,
+  isDefault: false,
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
 };
@@ -16,6 +17,7 @@ const mockCategory2: CategoryContract = {
   householdId: '550e8400-e29b-41d4-a716-446655440002',
   name: 'Utilities',
   description: null,
+  isDefault: false,
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-01T00:00:00.000Z'),
 };
@@ -41,6 +43,7 @@ export const categoryHandlers = [
       householdId: params.id as string,
       name: dto.name,
       description: dto.description ?? null,
+      isDefault: dto.isDefault ?? false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

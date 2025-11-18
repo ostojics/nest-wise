@@ -39,6 +39,14 @@ export class Category {
   })
   description?: string | null;
 
+  @Column({
+    type: 'boolean',
+    default: false,
+    nullable: false,
+    name: 'is_default',
+  })
+  isDefault: boolean;
+
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'created_at',

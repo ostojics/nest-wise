@@ -16,6 +16,13 @@ export class CreateCategorySwaggerDTO {
     required: false,
   })
   description?: string;
+
+  @ApiProperty({
+    description: 'Mark this category as the default fallback for AI transactions (optional, defaults to false)',
+    example: false,
+    required: false,
+  })
+  isDefault?: boolean;
 }
 
 export class UpdateCategorySwaggerDTO {
@@ -35,6 +42,13 @@ export class UpdateCategorySwaggerDTO {
     required: false,
   })
   description?: string;
+
+  @ApiProperty({
+    description: 'Set or unset this category as the default fallback (optional)',
+    example: false,
+    required: false,
+  })
+  isDefault?: boolean;
 }
 
 export class CategoryResponseSwaggerDTO {
@@ -78,4 +92,10 @@ export class CategoryResponseSwaggerDTO {
     format: 'date-time',
   })
   updatedAt: Date;
+
+  @ApiProperty({
+    description: 'Indicates if this category is the default fallback for AI transactions',
+    example: false,
+  })
+  isDefault: boolean;
 }

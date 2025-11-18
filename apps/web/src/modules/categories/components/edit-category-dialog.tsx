@@ -1,4 +1,5 @@
 import {Button} from '@/components/ui/button';
+import {Checkbox} from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogClose,
@@ -16,6 +17,7 @@ import FormError from '@/components/form-error';
 import {UpdateCategoryDTO} from '@nest-wise/contracts';
 import {Loader2} from 'lucide-react';
 import {useState} from 'react';
+import {Controller} from 'react-hook-form';
 import {useEditCategoryName} from '../hooks/use-edit-category-name';
 import {useValidateEditCategory} from '../hooks/use-validate-edit-category';
 
@@ -23,17 +25,26 @@ interface EditCategoryDialogProps {
   categoryId: string;
   currentName: string;
   currentDescription?: string | null;
+  currentIsDefault?: boolean;
 }
 
-const EditCategoryDialog = ({categoryId, currentName, currentDescription}: EditCategoryDialogProps) => {
+const EditCategoryDialog = ({
+  categoryId,
+  currentName,
+  currentDescription,
+  currentIsDefault,
+}: EditCategoryDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
     register,
     handleSubmit,
     watch,
+    control,
     formState: {errors},
     reset,
-  } = useValidateEditCategory({defaultValues: {name: currentName, description: currentDescription ?? ''}});
+  } = useValidateEditCategory({
+    defaultValues: {name: currentName, description: currentDescription ?? '', isDefault: currentIsDefault ?? false},
+  });
   const mutation = useEditCategoryName();
   const watchedCategoryDescription = watch('description');
 
@@ -70,6 +81,10 @@ const EditCategoryDialog = ({categoryId, currentName, currentDescription}: EditC
             Promenite naziv ili opis ove kategorije. Ova izmena se primenjuje na sve povezane podatke. <br /> Opis
             kategorije će znatno poboljšati preciznost AI asistenta.
           </DialogDescription>
+          <DialogDescription>
+            Podrazumevane kategorije su kategorije koje će AI asistent koristiti umesto predlaganja novih kategorija
+            prilikom unosa transakcija.
+          </DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
           <form onSubmit={handleSubmit(handleEditCategory)}>
@@ -91,6 +106,18 @@ const EditCategoryDialog = ({categoryId, currentName, currentDescription}: EditC
                   {...register('description')}
                 />
                 {errors.description?.message && <FormError error={errors.description.message} />}
+              </div>
+              <div className="flex items-center gap-2">
+                <Controller
+                  name="isDefault"
+                  control={control}
+                  render={({field}) => (
+                    <Checkbox id="edit-category-default" checked={field.value} onCheckedChange={field.onChange} />
+                  )}
+                />
+                <Label htmlFor="edit-category-default" className="cursor-pointer">
+                  Podrazumevana kategorija
+                </Label>
               </div>
             </div>
             <DialogFooter className="mt-10">
