@@ -22,7 +22,7 @@ export class CreateCategorySwaggerDTO {
     example: false,
     required: false,
   })
-  default?: boolean;
+  isDefault?: boolean;
 }
 
 export class UpdateCategorySwaggerDTO {
@@ -48,7 +48,7 @@ export class UpdateCategorySwaggerDTO {
     example: false,
     required: false,
   })
-  default?: boolean;
+  isDefault?: boolean;
 }
 
 export class CategoryResponseSwaggerDTO {
@@ -97,5 +97,5 @@ export class CategoryResponseSwaggerDTO {
     description: 'Indicates if this category is the default fallback for AI transactions',
     example: false,
   })
-  default: boolean;
+  isDefault: boolean;
 }

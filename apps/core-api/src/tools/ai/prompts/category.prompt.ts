@@ -1,5 +1,5 @@
 interface CategoryPromptArgs {
-  categories: {id: string; name: string; description?: string | null; default?: boolean}[];
+  categories: {id: string; name: string; description?: string | null; isDefault?: boolean}[];
   currentDate: string;
 }
 
@@ -7,7 +7,7 @@ export const categoryPromptFactory = ({categories, currentDate}: CategoryPromptA
   const categoriesList = categories
     .map((cat) => {
       const description = cat.description ? ` — ${cat.description}` : '';
-      const defaultMarker = cat.default ? ' **[PODRAZUMEVANO]**' : '';
+      const defaultMarker = cat.isDefault ? ' **[PODRAZUMEVANO]**' : '';
       return `- **${cat.id}**: ${cat.name}${description}${defaultMarker}`;
     })
     .join('\n');

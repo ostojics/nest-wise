@@ -7,7 +7,7 @@ export interface CategoryContract {
   householdId: string;
   createdAt: Date;
   updatedAt: Date;
-  default: boolean;
+  isDefault: boolean;
 }
 
 export const createCategorySchema = z
@@ -25,7 +25,7 @@ export const createCategorySchema = z
       })
       .max(300, 'Opis kategorije može imati najviše 300 karaktera')
       .optional(),
-    default: z.boolean().optional(),
+    isDefault: z.boolean().optional(),
   })
   .strict();
 
@@ -44,7 +44,7 @@ export const updateCategorySchema = z
       })
       .max(300, 'Opis kategorije može imati najviše 300 karaktera')
       .optional(),
-    default: z.boolean().optional(),
+    isDefault: z.boolean().optional(),
   })
   .strict();
 
@@ -56,7 +56,7 @@ export const categoryResponseSchema = z
     householdId: z.string().uuid(),
     createdAt: z.date(),
     updatedAt: z.date(),
-    default: z.boolean(),
+    isDefault: z.boolean(),
   })
   .strict();
 

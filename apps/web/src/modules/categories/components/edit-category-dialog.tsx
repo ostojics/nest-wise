@@ -25,10 +25,15 @@ interface EditCategoryDialogProps {
   categoryId: string;
   currentName: string;
   currentDescription?: string | null;
-  currentDefault?: boolean;
+  currentIsDefault?: boolean;
 }
 
-const EditCategoryDialog = ({categoryId, currentName, currentDescription, currentDefault}: EditCategoryDialogProps) => {
+const EditCategoryDialog = ({
+  categoryId,
+  currentName,
+  currentDescription,
+  currentIsDefault,
+}: EditCategoryDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
     register,
@@ -38,7 +43,7 @@ const EditCategoryDialog = ({categoryId, currentName, currentDescription, curren
     formState: {errors},
     reset,
   } = useValidateEditCategory({
-    defaultValues: {name: currentName, description: currentDescription ?? '', default: currentDefault ?? false},
+    defaultValues: {name: currentName, description: currentDescription ?? '', isDefault: currentIsDefault ?? false},
   });
   const mutation = useEditCategoryName();
   const watchedCategoryDescription = watch('description');
@@ -104,7 +109,7 @@ const EditCategoryDialog = ({categoryId, currentName, currentDescription, curren
               </div>
               <div className="flex items-center gap-2">
                 <Controller
-                  name="default"
+                  name="isDefault"
                   control={control}
                   render={({field}) => (
                     <Checkbox id="edit-category-default" checked={field.value} onCheckedChange={field.onChange} />

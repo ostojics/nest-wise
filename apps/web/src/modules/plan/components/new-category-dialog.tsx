@@ -108,7 +108,7 @@ const NewCategoryDialog = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Controller
-                  name="default"
+                  name="isDefault"
                   control={control}
                   render={({field}) => (
                     <Checkbox

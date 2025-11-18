@@ -14,7 +14,7 @@ export class CategoriesService {
     }
 
     // If setting this category as default, clear any existing default
-    if (categoryData.default === true) {
+    if (categoryData.isDefault === true) {
       await this.categoriesRepository.clearDefaultForHousehold(householdId);
     }
 
@@ -22,7 +22,7 @@ export class CategoriesService {
       name: categoryData.name,
       description: categoryData.description,
       householdId,
-      default: categoryData.default,
+      isDefault: categoryData.isDefault,
     });
   }
 
@@ -60,7 +60,7 @@ export class CategoriesService {
     }
 
     // If setting this category as default, clear any existing default
-    if (categoryData.default === true) {
+    if (categoryData.isDefault === true) {
       await this.categoriesRepository.clearDefaultForHousehold(existingCategory.householdId);
     }
 
