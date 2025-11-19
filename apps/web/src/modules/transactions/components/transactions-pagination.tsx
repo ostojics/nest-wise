@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/pagination';
 import {useNavigate, useSearch} from '@tanstack/react-router';
 import {useGetTransactions} from '../hooks/use-get-transactions';
+import {cn} from '@/lib/utils';
 
 const TransactionsPagination = () => {
   const search = useSearch({from: '/__pathlessLayout/transactions'});
@@ -27,31 +28,29 @@ const TransactionsPagination = () => {
     <section className="mt-4">
       <Pagination>
         <PaginationContent>
-          {canGoPrev && (
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={(e) => {
-                  e.preventDefault();
-                  goToPage(currentPage - 1);
-                }}
-              />
-            </PaginationItem>
-          )}
+          <PaginationItem>
+            <PaginationPrevious
+              className={cn(!canGoPrev && 'pointer-events-none opacity-50')}
+              onClick={(e) => {
+                e.preventDefault();
+                goToPage(currentPage - 1);
+              }}
+            />
+          </PaginationItem>
 
           <PaginationItem>
             <PaginationLink isActive>{currentPage}</PaginationLink>
           </PaginationItem>
 
-          {canGoNext && (
-            <PaginationItem>
-              <PaginationNext
-                onClick={(e) => {
-                  e.preventDefault();
-                  goToPage(currentPage + 1);
-                }}
-              />
-            </PaginationItem>
-          )}
+          <PaginationItem>
+            <PaginationNext
+              className={cn(!canGoNext && 'pointer-events-none opacity-50')}
+              onClick={(e) => {
+                e.preventDefault();
+                goToPage(currentPage + 1);
+              }}
+            />
+          </PaginationItem>
         </PaginationContent>
       </Pagination>
     </section>
