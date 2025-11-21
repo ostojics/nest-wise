@@ -15,27 +15,25 @@ The application layer sits between the presentation layer (controllers) and the 
 
 ```
 src/application/
-├── use-cases/
-│   ├── base-use-case.ts           # Base interface for all use cases
-│   ├── index.ts                   # Barrel export
-│   ├── transactions/              # Transaction-related use cases
-│   │   ├── create-transaction.use-case.ts
-│   │   ├── create-transaction-for-household.use-case.ts
-│   │   ├── update-transaction.use-case.ts
-│   │   ├── delete-transaction.use-case.ts
-│   │   ├── create-ai-transaction-for-household.use-case.ts
-│   │   └── index.ts
-│   ├── accounts/                  # Account-related use cases
-│   │   ├── transfer-funds-for-household.use-case.ts
-│   │   └── index.ts
-│   └── category-budgets/          # Category budget use cases
-│       ├── get-category-budgets-for-household.use-case.ts
-│       └── index.ts
-└── event-handlers/                # Domain event handlers
-    ├── audit-log.event-handler.ts # Example: Logs all domain events
-    ├── event-handlers.module.ts   # Module registration
-    └── index.ts
+└── use-cases/
+    ├── base-use-case.ts           # Base interface for all use cases
+    ├── index.ts                   # Barrel export
+    ├── transactions/              # Transaction-related use cases
+    │   ├── create-transaction.use-case.ts
+    │   ├── create-transaction-for-household.use-case.ts
+    │   ├── update-transaction.use-case.ts
+    │   ├── delete-transaction.use-case.ts
+    │   ├── create-ai-transaction-for-household.use-case.ts
+    │   └── index.ts
+    ├── accounts/                  # Account-related use cases
+    │   ├── transfer-funds-for-household.use-case.ts
+    │   └── index.ts
+    └── category-budgets/          # Category budget use cases
+        ├── get-category-budgets-for-household.use-case.ts
+        └── index.ts
 ```
+
+**Note:** Event handlers are not included in the application layer by default. See the [Event Catalog](../../docs/EVENT_CATALOG.md#example-event-handler-implementation) for examples of how to implement event handlers when needed for specific business requirements.
 
 ## Use Cases
 
@@ -263,52 +261,30 @@ describe('CreateTransactionUseCase', () => {
 
 Event handlers respond to domain events emitted by use cases, enabling cross-cutting concerns without modifying business logic.
 
-### Example: Audit Log Handler
+**Note:** Event handlers are not included in the codebase by default. They should be implemented only when specific business requirements arise (e.g., audit logging, notifications, analytics).
 
-The `AuditLogEventHandler` demonstrates the pattern:
+For complete examples and implementation patterns, see the [Event Catalog](../../docs/EVENT_CATALOG.md#example-event-handler-implementation).
 
-```typescript
-@Injectable()
-export class AuditLogEventHandler {
-  constructor(private readonly logger: Logger) {}
+### When to Add Event Handlers
 
-  @OnEvent('transaction.created')
-  handleTransactionCreated(event: TransactionCreatedEvent) {
-    this.logger.debug({
-      event: 'transaction.created',
-      transactionId: event.transactionId,
-      accountId: event.accountId,
-      amount: event.amount,
-      // ... other event details
-    });
-    // Future: Store in audit log table, send to external service, etc.
-  }
-
-  @OnEvent('account.balance.changed')
-  handleBalanceChanged(event: AccountBalanceChangedEvent) {
-    // Check for low balance alerts
-    // Update real-time dashboards
-    // Recalculate net worth
-  }
-}
-```
-
-### Adding Event Handlers
-
-To add a new event handler:
-
-1. Create a class decorated with `@Injectable()`
-2. Add methods decorated with `@OnEvent('event.name')`
-3. Inject required dependencies (logger, services, repositories)
-4. Register in `EventHandlersModule`
-
-Example use cases for event handlers:
+Implement event handlers when you need:
 
 - **Analytics**: Update spending trends, category distributions
 - **Notifications**: Alert on budget thresholds, unusual transactions
 - **Audit Trail**: Log all changes for compliance
 - **Webhooks**: Send events to external systems
 - **Email**: Send transaction confirmations, weekly summaries
+
+### Implementation Steps
+
+1. Create a dedicated event handlers directory (e.g., `src/application/event-handlers/`)
+2. Create handler class decorated with `@Injectable()`
+3. Add methods decorated with `@OnEvent('event.name')`
+4. Inject required dependencies (logger, services, repositories)
+5. Create and register an EventHandlersModule
+6. Import the module in AppModule
+
+See the [Event Catalog](../../docs/EVENT_CATALOG.md#example-event-handler-implementation) for complete code examples.
 
 ### Benefits
 

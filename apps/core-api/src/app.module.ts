@@ -30,7 +30,6 @@ import {LicensesModule} from './licenses/licenses.module';
 import {ScheduledTransactionsModule} from './scheduled-transactions/scheduled-transactions.module';
 import {PosthogModule} from './lib/posthog/posthog.module';
 import {ShutdownModule} from './lib/shutdown/shutdown.module';
-import {EventHandlersModule} from './application/event-handlers/event-handlers.module';
 
 @Module({
   imports: [
@@ -106,7 +105,6 @@ import {EventHandlersModule} from './application/event-handlers/event-handlers.m
     ScheduleModule.forRoot(),
     PosthogModule,
     ShutdownModule,
-    EventHandlersModule,
     AuthModule,
     UsersModule,
     HouseholdsModule,
