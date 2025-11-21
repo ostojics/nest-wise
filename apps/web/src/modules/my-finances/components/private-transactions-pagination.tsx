@@ -32,6 +32,8 @@ const PrivateTransactionsPagination = () => {
             <PaginationPrevious
               className={cn(!canGoPrev && 'pointer-events-none opacity-50')}
               onClick={(e) => {
+                if (!canGoPrev) return;
+
                 e.preventDefault();
                 goToPage(currentPage - 1);
               }}
@@ -46,6 +48,8 @@ const PrivateTransactionsPagination = () => {
             <PaginationNext
               className={cn(!canGoNext && 'pointer-events-none opacity-50')}
               onClick={(e) => {
+                if (!canGoNext) return;
+
                 e.preventDefault();
                 goToPage(currentPage + 1);
               }}
