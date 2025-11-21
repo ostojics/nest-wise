@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/pagination';
 import {useNavigate, useSearch} from '@tanstack/react-router';
 import {useGetPrivateTransactions} from '../hooks/use-get-private-transactions';
+import {cn} from '@/lib/utils';
 
 const PrivateTransactionsPagination = () => {
   const search = useSearch({from: '/__pathlessLayout/my-finances'});
@@ -27,31 +28,33 @@ const PrivateTransactionsPagination = () => {
     <section>
       <Pagination>
         <PaginationContent>
-          {canGoPrev && (
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={(e) => {
-                  e.preventDefault();
-                  goToPage(currentPage - 1);
-                }}
-              />
-            </PaginationItem>
-          )}
+          <PaginationItem>
+            <PaginationPrevious
+              className={cn(!canGoPrev && 'pointer-events-none opacity-50')}
+              onClick={(e) => {
+                if (!canGoPrev) return;
+
+                e.preventDefault();
+                goToPage(currentPage - 1);
+              }}
+            />
+          </PaginationItem>
 
           <PaginationItem>
             <PaginationLink isActive>{currentPage}</PaginationLink>
           </PaginationItem>
 
-          {canGoNext && (
-            <PaginationItem>
-              <PaginationNext
-                onClick={(e) => {
-                  e.preventDefault();
-                  goToPage(currentPage + 1);
-                }}
-              />
-            </PaginationItem>
-          )}
+          <PaginationItem>
+            <PaginationNext
+              className={cn(!canGoNext && 'pointer-events-none opacity-50')}
+              onClick={(e) => {
+                if (!canGoNext) return;
+
+                e.preventDefault();
+                goToPage(currentPage + 1);
+              }}
+            />
+          </PaginationItem>
         </PaginationContent>
       </Pagination>
     </section>
