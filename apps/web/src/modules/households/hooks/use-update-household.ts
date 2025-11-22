@@ -3,6 +3,7 @@ import {updateHousehold} from '@/modules/api/households-api';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {toast} from 'sonner';
 import {UpdateHouseholdDTO} from '@nest-wise/contracts';
+import {reportError} from '@/lib/error-reporting';
 
 interface UpdateHouseholdParams {
   id: string;
@@ -19,12 +20,8 @@ export const useUpdateHousehold = () => {
       toast.success('Domaćinstvo je uspešno ažurirano');
     },
     onError: async (error) => {
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'household_update',
-        },
+      await reportError(error, {
+        feature: 'household_update',
       });
 
       toast.error('Ažuriranje domaćinstva nije uspelo');

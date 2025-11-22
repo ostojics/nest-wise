@@ -4,6 +4,7 @@ import {toast} from 'sonner';
 import {queryKeys} from '@/modules/api/query-keys';
 import {HTTPError} from 'ky';
 import {ErrorResponse} from '@nest-wise/contracts';
+import {reportError} from '@/lib/error-reporting';
 
 export const useActivateAccountMutation = (accountId: string) => {
   const queryClient = useQueryClient();
@@ -18,11 +19,8 @@ export const useActivateAccountMutation = (accountId: string) => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-      posthog.captureException(error, {
-        context: {
-          feature: 'account_activate',
-        },
+      await reportError(error, {
+        feature: 'account_activate',
       });
 
       if (err.message) {

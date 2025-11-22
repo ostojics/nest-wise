@@ -3,6 +3,7 @@ import {queryKeys} from '@/modules/api/query-keys';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {useNavigate} from '@tanstack/react-router';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useLoginMutation = () => {
   const navigate = useNavigate();
@@ -15,12 +16,8 @@ export const useLoginMutation = () => {
       await navigate({to: '/plan', reloadDocument: true});
     },
     onError: async (error) => {
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'auth_login',
-        },
+      await reportError(error, {
+        feature: 'auth_login',
       });
 
       toast.error('Kredencijali nisu ispravni');
