@@ -9,6 +9,7 @@ import {CategoryBudgetsRepository} from './category-budgets.repository';
 import {CategoriesModule} from 'src/categories/categories.module';
 import {TransactionsModule} from 'src/transactions/transactions.module';
 import {CATEGORY_BUDGET_REPOSITORY} from '../repositories/category-budget.repository.interface';
+import {GetCategoryBudgetsForHouseholdUseCase} from '../application/use-cases/category-budgets';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CategoryBudget]), UsersModule, CategoriesModule, TransactionsModule],
@@ -20,6 +21,7 @@ import {CATEGORY_BUDGET_REPOSITORY} from '../repositories/category-budget.reposi
       provide: CATEGORY_BUDGET_REPOSITORY,
       useExisting: CategoryBudgetsRepository,
     },
+    GetCategoryBudgetsForHouseholdUseCase,
   ],
   exports: [CategoryBudgetsService],
 })
