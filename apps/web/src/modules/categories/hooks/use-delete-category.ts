@@ -3,6 +3,7 @@ import {ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useDeleteCategory = () => {
   const client = useQueryClient();
@@ -17,12 +18,8 @@ export const useDeleteCategory = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'category_delete',
-        },
+      await reportError(error, {
+        feature: 'category_delete',
       });
 
       if (err.message) {

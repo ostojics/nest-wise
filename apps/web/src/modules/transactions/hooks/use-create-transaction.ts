@@ -4,6 +4,7 @@ import {CreateTransactionHouseholdDTO, ErrorResponse} from '@nest-wise/contracts
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useCreateTransaction = () => {
   const client = useQueryClient();
@@ -23,16 +24,10 @@ export const useCreateTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'transaction_create',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
-        },
+      await reportError(error, {
+        feature: 'transaction_create',
+        householdId: me?.householdId,
+        userId: me?.id,
       });
 
       if (err.message) {

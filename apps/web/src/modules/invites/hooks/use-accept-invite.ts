@@ -5,6 +5,7 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {useNavigate} from '@tanstack/react-router';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useAcceptInvite = () => {
   const navigate = useNavigate();
@@ -21,12 +22,8 @@ export const useAcceptInvite = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'invite_accept',
-        },
+      await reportError(error, {
+        feature: 'invite_accept',
       });
 
       if (err.message) {

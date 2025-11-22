@@ -2,6 +2,7 @@ import {resetPassword} from '@/modules/api/auth-api';
 import {useMutation} from '@tanstack/react-query';
 import {useNavigate} from '@tanstack/react-router';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useResetPassword = () => {
   const navigate = useNavigate();
@@ -13,12 +14,8 @@ export const useResetPassword = () => {
       await navigate({to: '/login'});
     },
     onError: async (error) => {
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'auth_reset_password',
-        },
+      await reportError(error, {
+        feature: 'auth_reset_password',
       });
 
       toast.error('Nevažeći ili istekao token. Pokušajte ponovo.');

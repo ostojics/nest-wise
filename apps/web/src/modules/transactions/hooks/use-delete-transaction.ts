@@ -1,6 +1,7 @@
 import {deleteTransaction} from '@/modules/api/transactions-api';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useDeleteTransaction = () => {
   const client = useQueryClient();
@@ -12,12 +13,8 @@ export const useDeleteTransaction = () => {
       toast.success('Transakcija je obrisana');
     },
     onError: async (error) => {
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'transaction_delete',
-        },
+      await reportError(error, {
+        feature: 'transaction_delete',
       });
 
       toast.error('Brisanje transakcije nije uspelo');

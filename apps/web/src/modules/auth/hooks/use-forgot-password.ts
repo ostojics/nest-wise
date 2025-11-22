@@ -2,6 +2,7 @@ import {forgotPassword} from '@/modules/api/auth-api';
 import {useMutation} from '@tanstack/react-query';
 import {useNavigate} from '@tanstack/react-router';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useForgotPassword = () => {
   const navigate = useNavigate();
@@ -13,12 +14,8 @@ export const useForgotPassword = () => {
       await navigate({to: '/login'});
     },
     onError: async (error) => {
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'auth_forgot_password',
-        },
+      await reportError(error, {
+        feature: 'auth_forgot_password',
       });
 
       toast.error('Došlo je do greške prilikom obrade zahteva. Pokušajte ponovo.');

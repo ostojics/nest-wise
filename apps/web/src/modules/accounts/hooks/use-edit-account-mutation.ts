@@ -3,6 +3,7 @@ import {EditAccountDTO, ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useEditAccountMutation = () => {
   const queryClient = useQueryClient();
@@ -17,12 +18,8 @@ export const useEditAccountMutation = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'account_edit',
-        },
+      await reportError(error, {
+        feature: 'account_edit',
       });
 
       if (err.message) {

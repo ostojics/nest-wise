@@ -3,6 +3,7 @@ import {sendHelp} from '@/modules/api/emails-api';
 import {toast} from 'sonner';
 import {ErrorResponse, HelpRequestDTO} from '@nest-wise/contracts';
 import {HTTPError} from 'ky';
+import {reportError} from '@/lib/error-reporting';
 
 export const useSendHelp = () => {
   return useMutation({
@@ -14,12 +15,8 @@ export const useSendHelp = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'email_send_help',
-        },
+      await reportError(error, {
+        feature: 'email_send_help',
       });
 
       if (err.message) {

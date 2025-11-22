@@ -18,6 +18,7 @@ import {
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useGetScheduledTransactions = (query: GetScheduledTransactionsQueryHouseholdDTO) => {
   const {data: me} = useGetMe();
@@ -62,16 +63,10 @@ export const useCreateScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'scheduled_transaction_create',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
-        },
+      await reportError(error, {
+        feature: 'scheduled_transaction_create',
+        householdId: me?.householdId,
+        userId: me?.id,
       });
 
       if (err.message) {
@@ -101,16 +96,10 @@ export const useUpdateScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'scheduled_transaction_update',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
-        },
+      await reportError(error, {
+        feature: 'scheduled_transaction_update',
+        householdId: me?.householdId,
+        userId: me?.id,
       });
 
       if (err.message) {
@@ -140,16 +129,10 @@ export const usePauseScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'scheduled_transaction_pause',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
-        },
+      await reportError(error, {
+        feature: 'scheduled_transaction_pause',
+        householdId: me?.householdId,
+        userId: me?.id,
       });
 
       if (err.message) {
@@ -179,16 +162,10 @@ export const useResumeScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'scheduled_transaction_resume',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
-        },
+      await reportError(error, {
+        feature: 'scheduled_transaction_resume',
+        householdId: me?.householdId,
+        userId: me?.id,
       });
 
       if (err.message) {
@@ -218,16 +195,10 @@ export const useDeleteScheduledTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'scheduled_transaction_delete',
-        },
-        meta: {
-          householdId: me?.householdId,
-          userId: me?.id,
-        },
+      await reportError(error, {
+        feature: 'scheduled_transaction_delete',
+        householdId: me?.householdId,
+        userId: me?.id,
       });
 
       if (err.message) {
