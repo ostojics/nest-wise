@@ -2,6 +2,7 @@ import {updateTransaction} from '@/modules/api/transactions-api';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {toast} from 'sonner';
 import {UpdateTransactionDTO} from '@nest-wise/contracts';
+import {reportError} from '@/lib/error-reporting';
 
 export const useUpdateTransaction = () => {
   const client = useQueryClient();
@@ -13,12 +14,8 @@ export const useUpdateTransaction = () => {
       toast.success('Transakcija je izmenjena');
     },
     onError: async (error) => {
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'transaction_update',
-        },
+      await reportError(error, {
+        feature: 'transaction_update',
       });
 
       toast.error('Izmena transakcije nije uspela');

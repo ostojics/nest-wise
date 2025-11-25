@@ -4,6 +4,7 @@ import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {useNavigate} from '@tanstack/react-router';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useLogOut = () => {
   const client = useQueryClient();
@@ -19,12 +20,8 @@ export const useLogOut = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'auth_logout',
-        },
+      await reportError(error, {
+        feature: 'auth_logout',
       });
 
       if (err.message) {

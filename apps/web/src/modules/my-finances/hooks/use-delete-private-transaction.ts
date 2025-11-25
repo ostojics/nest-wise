@@ -3,6 +3,7 @@ import {ErrorResponse} from '@nest-wise/contracts';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {HTTPError} from 'ky';
 import {toast} from 'sonner';
+import {reportError} from '@/lib/error-reporting';
 
 export const useDeletePrivateTransaction = () => {
   const client = useQueryClient();
@@ -19,12 +20,8 @@ export const useDeletePrivateTransaction = () => {
       const typedError = error as HTTPError<ErrorResponse>;
       const err = await typedError.response.json();
 
-      const {default: posthog} = await import('posthog-js');
-
-      posthog.captureException(error, {
-        context: {
-          feature: 'private_transaction_delete',
-        },
+      await reportError(error, {
+        feature: 'private_transaction_delete',
       });
 
       if (err.message) {
