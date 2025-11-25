@@ -2,7 +2,7 @@ import {CategoryBudgetWithCurrentAmountContract} from '@nest-wise/contracts';
 import {useSearch} from '@tanstack/react-router';
 import {format, isAfter, parse} from 'date-fns';
 
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {useFormatBalance} from '@/modules/formatting/hooks/use-format-balance';
 import {useGetCategoryBudgets} from '../hooks/use-get-category-budgets';
 import {lazy, Suspense, useMemo} from 'react';
@@ -43,10 +43,10 @@ const CategoryBudgetsList = () => {
     <div className="space-y-6" data-testid="category-budgets-section">
       <Card className="border-none shadow-sm bg-card/50 overflow-hidden">
         <CardHeader className="pb-2">
-          <CardDescription className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <CardDescription className="text-sm text-muted-foreground">
             Ukupno planirano za {format(new Date(search.month), 'LLLL yyyy')}
           </CardDescription>
-          <CardTitle className="text-3xl font-medium tabular-nums tracking-tight mt-1" data-testid="total-planned">
+          <CardTitle className="text-2xl font-bold tabular-nums mt-1" data-testid="total-planned">
             {formatBalance(totals.planned)}
           </CardTitle>
         </CardHeader>

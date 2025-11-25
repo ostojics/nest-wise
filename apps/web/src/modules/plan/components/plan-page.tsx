@@ -26,10 +26,10 @@ const PlanPage = () => {
     <section className="p-4 space-y-6 @container/plan">
       <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div className="space-y-1">
-          <h3 className="text-2xl font-bold tracking-tight" data-testid="plan-page-title">
+          <h3 className="text-2xl font-bold" data-testid="plan-page-title">
             Planirajte troškove
           </h3>
-          <p className="text-muted-foreground text-base" data-testid="plan-page-description">
+          <p className="text-muted-foreground" data-testid="plan-page-description">
             Pratite potrošnju i postavite ciljeve za svaku kategoriju.
           </p>
         </div>

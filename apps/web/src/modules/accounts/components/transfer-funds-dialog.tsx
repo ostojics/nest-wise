@@ -60,8 +60,8 @@ const TransferFundsDialog = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button>
-          <ArrowLeftRight className="w-4 h-4" />
+        <Button variant="outline" className="shadow-sm">
+          <ArrowLeftRight className="w-4 h-4 mr-2" />
           Prebaci sredstva
         </Button>
       </DialogTrigger>

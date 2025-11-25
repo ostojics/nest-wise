@@ -93,7 +93,7 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
             disabled={isLoading}
             variant="ghost"
             title="Izaberite mesec"
-            className="h-8 min-w-40 justify-center font-medium text-sm capitalize hover:bg-background/80"
+            className="h-8 min-w-40 justify-center font-normal text-sm hover:bg-background/80"
           >
             {format(current, 'LLLL yyyy')}
           </Button>

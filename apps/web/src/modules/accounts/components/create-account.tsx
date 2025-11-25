@@ -65,8 +65,8 @@ const CreateAccount = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button data-testid="create-account-button">
-          <PlusIcon className="w-4 h-4" />
+        <Button className="shadow-sm" data-testid="create-account-button">
+          <PlusIcon className="w-4 h-4 mr-2" />
           Dodaj račun
         </Button>
       </DialogTrigger>

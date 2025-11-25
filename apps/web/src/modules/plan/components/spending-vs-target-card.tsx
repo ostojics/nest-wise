@@ -75,7 +75,7 @@ const SpendingVsTargetCard = () => {
     >
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardDescription className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <CardDescription className="flex items-center gap-2 text-sm text-muted-foreground">
             <div className="p-1.5 bg-primary/10 rounded-full text-primary">
               <IconTarget className="h-4 w-4" />
             </div>
@@ -93,12 +93,12 @@ const SpendingVsTargetCard = () => {
         </div>
         <div className="flex items-baseline gap-2 mt-2">
           <CardTitle
-            className={cn('text-4xl font-medium tabular-nums tracking-tight transition-colors', getStatusColor())}
+            className={cn('text-2xl font-bold tabular-nums transition-colors', getStatusColor())}
             data-testid="spending-amount"
           >
             {formatBalance(currentSpending)}
           </CardTitle>
-          <span className="text-sm text-muted-foreground font-medium">/ {formatBalance(budget)}</span>
+          <span className="text-sm text-muted-foreground">/ {formatBalance(budget)}</span>
         </div>
       </CardHeader>
 
