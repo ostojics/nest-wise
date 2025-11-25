@@ -24,27 +24,27 @@ const PlanPage = () => {
 
   return (
     <section className="p-4 space-y-6 @container/plan">
-      <section className="flex flex-col gap-3">
-        <div className="flex flex-col @4xl/plan:flex-row gap-3">
-          <AvailableBalanceCard />
-          <SpendingVsTargetCard />
-        </div>
-      </section>
-      <section className="mt-10">
-        <MonthSwitcher />
-      </section>
-      <div className="flex flex-col items-start justify-between gap-4">
-        <div className="space-y-1.5">
-          <h3 className="text-xl font-semibold" data-testid="plan-page-title">
-            Planirajte troškove domaćinstva po kategorijama
+      <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div className="space-y-1">
+          <h3 className="text-2xl font-bold" data-testid="plan-page-title">
+            Planirajte troškove
           </h3>
-          <p className="text-muted-foreground text-sm" data-testid="plan-page-description">
-            Postavite planirani iznos za svaku kategoriju. Kako unosite transakcije, vaša potrošnja se automatski prati
-            za izabrani mesec.
+          <p className="text-muted-foreground" data-testid="plan-page-description">
+            Pratite potrošnju i postavite ciljeve za svaku kategoriju.
           </p>
         </div>
         <NewCategoryDialog />
       </div>
+
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <AvailableBalanceCard />
+        <SpendingVsTargetCard />
+      </section>
+
+      <section className="flex items-center justify-between py-2">
+        <MonthSwitcher />
+      </section>
+
       <CategoryBudgetsList />
       <Suspense fallback={<WeeklySpendingLoading />}>
         <div ref={ref}>{isVisible && <WeeklySpendingOverview />}</div>

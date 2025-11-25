@@ -29,37 +29,39 @@ export default function WeeklySpendingContent({days}: WeeklySpendingContentProps
 
   return (
     <>
-      <CardHeader>
-        <CardTitle>Potrošnja po sedmicama</CardTitle>
+      <CardHeader className="pb-4">
+        <CardTitle className="text-lg font-semibold">Potrošnja po sedmicama</CardTitle>
         <CardDescription>Pregled dnevne potrošnje i transakcija</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <WeekNavigation />
-        <Separator />
-        {isMobileOrTablet ? (
-          <div className="space-y-2">
-            <WeekDaySelect days={days} />
-            <div className="text-sm">
-              <span className="text-muted-foreground">Ukupna potrošnja: </span>
-              <span className="font-medium">{formatBalance(selectedDayData.total)}</span>
-            </div>
-          </div>
-        ) : (
-          <WeekDayStrip days={days} />
-        )}
 
-        <Separator />
-
-        <div className="max-h-[31.25rem] overflow-y-auto">
-          {transactions.length === 0 ? (
-            <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">
-              <p>Nema transakcija za ovaj dan</p>
+        <div className="space-y-4">
+          {isMobileOrTablet ? (
+            <div className="space-y-3 bg-muted/30 p-4 rounded-lg">
+              <WeekDaySelect days={days} />
+              <div className="flex justify-between items-center text-sm pt-2 border-t border-border/50">
+                <span className="text-muted-foreground">Ukupna potrošnja</span>
+                <span className="font-semibold text-base">{formatBalance(selectedDayData.total)}</span>
+              </div>
             </div>
           ) : (
-            <div className="rounded-md border bg-card">
-              <Accordion type="single" collapsible className="w-full">
+            <WeekDayStrip days={days} />
+          )}
+        </div>
+
+        <div className="max-h-[31.25rem] overflow-y-auto pr-1">
+          {transactions.length === 0 ? (
+            <div className="rounded-lg border-none bg-muted/30 p-8 text-center text-muted-foreground flex flex-col items-center gap-2">
+              <p className="text-sm">Nema transakcija za ovaj dan</p>
+            </div>
+          ) : (
+            <div className="rounded-lg border-none bg-transparent space-y-2">
+              <Accordion type="single" collapsible className="w-full space-y-2">
                 {transactions.map((tx) => (
-                  <TransactionAccordionItem key={tx.id} transaction={tx} />
+                  <div key={tx.id} className="bg-card border border-border/40 rounded-lg shadow-sm overflow-hidden">
+                    <TransactionAccordionItem transaction={tx} />
+                  </div>
                 ))}
               </Accordion>
             </div>

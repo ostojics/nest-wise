@@ -10,7 +10,7 @@ function WeeklySpendingOverviewInner() {
   const {data, isLoading, isError} = useWeeklyTransactions({weekStart, weekEnd});
 
   return (
-    <Card>
+    <Card className="border-none shadow-sm bg-card/50">
       {isLoading && <WeeklySpendingLoading />}
       {isError && <WeeklySpendingError />}
       {data && <WeeklySpendingContent days={data.days} />}

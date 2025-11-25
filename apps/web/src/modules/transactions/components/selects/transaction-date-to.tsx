@@ -41,9 +41,13 @@ const TransactionDateToPicker: React.FC<TransactionDateToPickerProps> = ({classN
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" id="transaction-date-to" className="h-9 min-w-50 justify-between font-normal">
-            {selectedDate ? format(selectedDate, 'PPP') : 'Izaberi datum do'}
-            <ChevronsUpDown className="ml-2 size-4 opacity-50" />
+          <Button
+            variant="outline"
+            id="transaction-date-to"
+            className="h-9 justify-between font-normal bg-background/50 border-border/50 hover:bg-background hover:text-foreground text-muted-foreground"
+          >
+            <span className="truncate">{selectedDate ? format(selectedDate, 'PPP') : 'Izaberi datum do'}</span>
+            <ChevronsUpDown className="ml-2 size-4 opacity-50 shrink-0" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto overflow-hidden p-0" align="end" sideOffset={10}>

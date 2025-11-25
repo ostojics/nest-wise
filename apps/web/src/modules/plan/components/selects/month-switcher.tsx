@@ -73,12 +73,14 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
   };
 
   return (
-    <div className={cn('flex items-center gap-2', className)}>
+    <div
+      className={cn('flex items-center gap-1 bg-card/50 p-1 rounded-lg border border-border/40 shadow-sm', className)}
+    >
       <Button
-        variant="outline"
+        variant="ghost"
         size="icon"
         disabled={isLoading}
-        className="h-9 w-9"
+        className="h-8 w-8 text-muted-foreground hover:text-foreground"
         onClick={handlePrev}
         aria-label="Prethodni mesec"
       >
@@ -89,26 +91,26 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
         <PopoverTrigger asChild>
           <Button
             disabled={isLoading}
-            variant="outline"
+            variant="ghost"
             title="Izaberite mesec"
-            className="h-9 min-w-50 justify-between font-normal"
+            className="h-8 min-w-40 justify-center font-normal text-sm hover:bg-background/80"
           >
             {format(current, 'LLLL yyyy')}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-3" align="start" sideOffset={10}>
+        <PopoverContent className="w-auto p-3" align="center" sideOffset={10}>
           <div className="flex items-center gap-3">
             <div className="flex flex-col gap-1">
               <Label htmlFor="month-select" className="px-1 sr-only">
                 Mesec
               </Label>
               <Select value={format(current, 'MM')} onValueChange={handleMonthChange}>
-                <SelectTrigger id="month-select" className="h-9 min-w-40">
+                <SelectTrigger id="month-select" className="h-9 min-w-40 capitalize">
                   <SelectValue placeholder="Mesec" />
                 </SelectTrigger>
                 <SelectContent>
                   {months.map((m) => (
-                    <SelectItem key={m.value} value={m.value}>
+                    <SelectItem key={m.value} value={m.value} className="capitalize">
                       {m.label}
                     </SelectItem>
                   ))}
@@ -137,9 +139,9 @@ const MonthSwitcher: React.FC<MonthSwitcherProps> = ({className}) => {
       </Popover>
       <Button
         disabled={isLoading}
-        variant="outline"
+        variant="ghost"
         size="icon"
-        className="h-9 w-9"
+        className="h-8 w-8 text-muted-foreground hover:text-foreground"
         onClick={handleNext}
         aria-label="Sledeći mesec"
       >

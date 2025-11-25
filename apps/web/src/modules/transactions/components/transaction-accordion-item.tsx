@@ -18,41 +18,43 @@ export default function TransactionAccordionItem({transaction: tx, actions}: Tra
   const dateLabel = format(new Date(tx.transactionDate), 'PP');
 
   return (
-    <AccordionItem key={tx.id} value={String(tx.id)}>
-      <AccordionTrigger className="px-4 hover:no-underline cursor-pointer">
+    <AccordionItem key={tx.id} value={String(tx.id)} className="border-b border-border/50 last:border-0">
+      <AccordionTrigger className="px-4 hover:no-underline cursor-pointer hover:bg-muted/30 transition-colors">
         <div className="w-full flex items-center justify-between gap-5 py-1.5 @container/tx">
           <div className="min-w-0 flex-1 text-left">
-            <div className="truncate font-medium text-foreground/90">{tx.description}</div>
-            <div className="text-xs text-muted-foreground truncate">{tx.category?.name ?? '-'}</div>
+            <div className="truncate font-semibold text-foreground">{tx.description}</div>
+            <div className="text-sm text-muted-foreground truncate">{tx.category?.name ?? '-'}</div>
           </div>
           <div className="flex flex-col items-end shrink-0">
-            <span className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>{amount}</span>
-            <span className="text-xs text-muted-foreground">{dateLabel}</span>
+            <span className={cn('font-bold tabular-nums', isIncome ? 'text-emerald-600' : 'text-red-600')}>
+              {amount}
+            </span>
+            <span className="text-sm text-muted-foreground tabular-nums">{dateLabel}</span>
           </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent className="px-4 pb-4">
-        <div className="grid grid-cols-1 gap-3 text-sm @sm:grid-cols-2">
+      <AccordionContent className="px-4 pb-4 bg-muted/10">
+        <div className="grid grid-cols-1 gap-3 text-sm @sm:grid-cols-2 pt-2">
           <div>
-            <span className="text-muted-foreground">Opis</span>
+            <span className="text-muted-foreground text-xs">Opis</span>
             <div>
-              <span className="text-foreground/90">{tx.description}</span>
+              <span className="text-base font-medium text-foreground">{tx.description}</span>
             </div>
           </div>
           <div>
-            <span className="text-muted-foreground">Račun</span>
+            <span className="text-muted-foreground text-xs">Račun</span>
             <div>
-              <span className="text-foreground/80">{tx.account?.name ?? '-'}</span>
+              <span className="text-foreground">{tx.account?.name ?? '-'}</span>
             </div>
           </div>
           <div>
-            <span className="text-muted-foreground">Kategorija</span>
+            <span className="text-muted-foreground text-xs">Kategorija</span>
             <div>
-              <span className="text-foreground/80">{tx.category?.name ?? '-'}</span>
+              <span className="text-foreground">{tx.category?.name ?? '-'}</span>
             </div>
           </div>
           <div>
-            <span className="text-muted-foreground">Tip</span>
+            <span className="text-muted-foreground text-xs">Tip</span>
             <div className="mt-1">
               <Badge
                 className={cn(isIncome && 'bg-emerald-100 text-emerald-700')}
@@ -63,19 +65,21 @@ export default function TransactionAccordionItem({transaction: tx, actions}: Tra
             </div>
           </div>
           <div>
-            <span className="text-muted-foreground">Datum</span>
+            <span className="text-muted-foreground text-xs">Datum</span>
             <div>
-              <span className="text-foreground/80">{dateLabel}</span>
+              <span className="text-foreground tabular-nums">{dateLabel}</span>
             </div>
           </div>
           <div>
-            <span className="text-muted-foreground">Iznos</span>
+            <span className="text-muted-foreground text-xs">Iznos</span>
             <div>
-              <span className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>{amount}</span>
+              <span className={cn('text-lg font-bold tabular-nums', isIncome ? 'text-emerald-600' : 'text-red-600')}>
+                {amount}
+              </span>
             </div>
           </div>
         </div>
-        {actions && <div className="pt-3 flex justify-end">{actions}</div>}
+        {actions && <div className="pt-4 flex justify-end">{actions}</div>}
       </AccordionContent>
     </AccordionItem>
   );

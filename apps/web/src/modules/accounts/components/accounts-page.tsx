@@ -2,23 +2,22 @@
 import AccountsList from './accounts-list';
 import CreateAccount from './create-account';
 import TransferFundsDialog from './transfer-funds-dialog';
-import TextBanner from '@/components/text-banner';
 
 const AccountsPage = () => {
   return (
     <section className="p-4">
-      <TextBanner
-        className="mb-6"
-        aria-label="Pregled računa"
-        text="Računi su mesta gde se nalazi vaš novac. Dodajte one koje koristite i održavajte stanje ažurnim beleženjem transakcija."
-      />
-      <div className="flex items-center gap-2">
-        <CreateAccount />
-        <TransferFundsDialog />
+      <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div className="space-y-1">
+          <h3 className="text-2xl font-bold">Računi</h3>
+          <p className="text-muted-foreground">Upravljajte svojim finansijskim računima i pratite stanje.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <CreateAccount />
+          <TransferFundsDialog />
+        </div>
       </div>
-      <div className="@container/list">
-        <AccountsList />
-      </div>
+
+      <AccountsList />
     </section>
   );
 };

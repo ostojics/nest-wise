@@ -38,10 +38,13 @@ const AccountCombobox: React.FC<AccountComboboxProps> = ({accounts, className}) 
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn('h-9 min-w-50 justify-between', className)}
+          className={cn(
+            'h-9 justify-between bg-background/50 border-border/50 hover:bg-background hover:text-foreground font-normal text-muted-foreground',
+            className,
+          )}
         >
-          {selectedLabel ?? 'Izaberi račun'}
-          <ChevronsUpDown className="ml-2 size-4 opacity-50" />
+          <span className="truncate">{selectedLabel ?? 'Izaberi račun'}</span>
+          <ChevronsUpDown className="ml-2 size-4 opacity-50 shrink-0" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-0" align="end" sideOffset={10}>

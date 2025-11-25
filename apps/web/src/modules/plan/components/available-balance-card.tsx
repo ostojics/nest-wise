@@ -28,19 +28,24 @@ const AvailableBalanceCard = () => {
   }
 
   return (
-    <Card className="flex-1 hover:shadow-md transition-all duration-200">
-      <CardHeader>
-        <CardDescription className="flex items-center gap-2">
-          <IconWallet className="h-4 w-4" />
+    <Card className="flex-1 h-full border-none shadow-sm bg-card/50 hover:bg-card hover:shadow-md transition-all duration-300">
+      <CardHeader className="pb-2">
+        <CardDescription className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="p-1.5 bg-primary/10 rounded-full text-primary">
+            <IconWallet className="h-4 w-4" />
+          </div>
           Raspoloživo stanje
         </CardDescription>
-        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl transition-colors text-green-600 dark:text-green-400">
+        <CardTitle className="text-2xl font-bold tabular-nums text-foreground mt-2">
           {formatBalance(netWorth)}
         </CardTitle>
       </CardHeader>
-      <CardFooter className="flex-col items-start gap-1.5 text-sm">
-        <div className="line-clamp-1 flex gap-2 font-medium items-center">Ukupno raspoloživo stanje</div>
-        <AccountTypeTotals accounts={accounts ?? []} maxInlineItems={3} />
+      <CardFooter className="flex-col items-start gap-3 pt-4">
+        <div className="w-full h-px bg-border/50" />
+        <div className="w-full text-sm text-muted-foreground">
+          <div className="mb-2 text-sm font-medium">Po tipu računa</div>
+          <AccountTypeTotals accounts={accounts ?? []} maxInlineItems={3} />
+        </div>
       </CardFooter>
     </Card>
   );

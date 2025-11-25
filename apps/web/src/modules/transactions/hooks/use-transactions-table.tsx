@@ -22,18 +22,18 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
       {
         accessorKey: 'description',
         header: 'Opis',
-        cell: ({row}) => <span className="text-foreground/90">{row.original.description}</span>,
+        cell: ({row}) => <span className="font-medium text-foreground">{row.original.description}</span>,
         enableSorting: false,
       },
       {
         id: 'accountName',
         header: 'Račun',
-        cell: ({row}) => <span className="text-muted-foreground">{row.original.account?.name ?? '-'}</span>,
+        cell: ({row}) => <span className="text-sm text-muted-foreground">{row.original.account?.name ?? '-'}</span>,
       },
       {
         id: 'categoryName',
         header: 'Kategorija',
-        cell: ({row}) => <span className="text-muted-foreground">{row.original.category?.name ?? '-'}</span>,
+        cell: ({row}) => <span className="text-sm text-muted-foreground">{row.original.category?.name ?? '-'}</span>,
       },
       {
         accessorKey: 'amount',
@@ -42,7 +42,11 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
           const isIncome = row.original.type === TransactionType.INCOME;
           const formatted = formatBalance(row.original.amount);
 
-          return <span className={cn('font-medium', isIncome ? 'text-emerald-600' : 'text-red-600')}>{formatted}</span>;
+          return (
+            <span className={cn('font-bold tabular-nums', isIncome ? 'text-emerald-600' : 'text-red-600')}>
+              {formatted}
+            </span>
+          );
         },
       },
       {
@@ -61,7 +65,9 @@ export const useTransactionsTable = (data: TransactionContract[]) => {
         accessorKey: 'transactionDate',
         header: 'Datum',
         cell: ({row}) => (
-          <span className="text-foreground/80">{format(new Date(row.original.transactionDate), 'dd.MM.yyyy.')}</span>
+          <span className="text-sm text-muted-foreground tabular-nums">
+            {format(new Date(row.original.transactionDate), 'dd.MM.yyyy.')}
+          </span>
         ),
       },
       {

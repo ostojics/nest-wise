@@ -40,21 +40,21 @@ const Account: React.FC<AccountProps> = ({account}) => {
   return (
     <Card
       className={cn(
-        '@container/account-card hover:shadow-md transition-shadow duration-200',
-        !account.isActive && 'opacity-60',
+        'border-none shadow-sm bg-card/50 hover:bg-card hover:shadow-md transition-all duration-300',
+        !account.isActive && 'opacity-60 grayscale-[0.5]',
       )}
       data-testid={`account-card-${account.name}`}
     >
-      <CardHeader>
-        <div className="flex flex-col items-start gap-3 md:gap-0 md:flex-row md:items-center justify-between">
-          <div className="flex items-center gap-3">
+      <CardHeader className="pb-2">
+        <div className="flex flex-col items-start gap-3 md:gap-0 md:flex-row md:items-start justify-between">
+          <div className="flex items-start gap-3">
             {IconComponent && (
-              <div className="flex h-10 min-w-10 items-center justify-center rounded-lg bg-accent/50">
-                <IconComponent className="h-5 w-5 text-accent-foreground" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <IconComponent className="h-5 w-5" />
               </div>
             )}
-            <div>
-              <CardTitle className="text-md font-semibold" data-testid="account-name">
+            <div className="space-y-1">
+              <CardTitle className="text-lg font-semibold" data-testid="account-name">
                 {account.name}
               </CardTitle>
               <CardDescription className="text-sm text-muted-foreground">
@@ -62,42 +62,53 @@ const Account: React.FC<AccountProps> = ({account}) => {
               </CardDescription>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-end md:self-start">
             {!account.isActive && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-xs font-normal">
                 Neaktivan
               </Badge>
             )}
-            <Badge variant="outline" className="text-xs">
-              {formatDate(account.createdAt)}
-            </Badge>
             <EditAccountDialog account={account} />
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex flex-col items-start @lg/account-card:flex-row  @lg/account-card:items-center justify-between">
+      <CardContent className="space-y-4 pt-2">
+        <div className="flex flex-col gap-1">
           <div className="text-sm text-muted-foreground">Trenutno stanje</div>
           <div
             className={cn(
-              'text-right font-semibold tabular-nums',
-              account.currentBalance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
+              'text-2xl font-bold tabular-nums',
+              account.currentBalance >= 0 ? 'text-foreground' : 'text-red-600 dark:text-red-400',
             )}
             data-testid="account-balance"
           >
             {formatBalance(account.currentBalance)}
           </div>
         </div>
-        <div className="flex items-center justify-between pt-2 border-t">
-          <Label htmlFor={`account-active-${account.id}`} className="text-sm font-normal cursor-pointer">
-            Aktivan račun
-          </Label>
-          <Switch
-            id={`account-active-${account.id}`}
-            checked={account.isActive}
-            onCheckedChange={handleToggleActive}
-            disabled={activateMutation.isPending || deactivateMutation.isPending}
-          />
+
+        <div className="w-full h-px bg-border/50" />
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-[10px] font-normal text-muted-foreground border-border/50">
+              Kreiran {formatDate(account.createdAt)}
+            </Badge>
+          </div>
+          <div className="flex items-center gap-2">
+            <Label
+              htmlFor={`account-active-${account.id}`}
+              className="text-xs text-muted-foreground font-normal cursor-pointer"
+            >
+              {account.isActive ? 'Aktivan' : 'Neaktivan'}
+            </Label>
+            <Switch
+              id={`account-active-${account.id}`}
+              checked={account.isActive}
+              onCheckedChange={handleToggleActive}
+              disabled={activateMutation.isPending || deactivateMutation.isPending}
+              className="scale-75 origin-right"
+            />
+          </div>
         </div>
       </CardContent>
     </Card>

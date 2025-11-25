@@ -13,21 +13,21 @@ export function TransactionsTable({data}: TransactionsTableProps) {
   const table = useTransactionsTable(data);
 
   return (
-    <div className="rounded-md border bg-card">
+    <div className="rounded-xl border-none shadow-sm bg-card/50 overflow-hidden">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className="hover:bg-transparent border-b border-border/50">
               {headerGroup.headers.map((header) => {
                 const canSort = header.column.getCanSort();
                 const sorted = header.column.getIsSorted();
 
                 return (
-                  <TableHead key={header.id} className={cn('text-xs text-muted-foreground')}>
+                  <TableHead key={header.id} className={cn('text-sm font-medium text-muted-foreground')}>
                     {header.isPlaceholder ? null : canSort ? (
                       <button
                         className={cn(
-                          'inline-flex hover:text-white cursor-pointer items-center gap-1 rounded-sm px-1 py-0.5 transition-colors',
+                          'inline-flex hover:text-foreground cursor-pointer items-center gap-1 rounded-sm px-1 py-0.5 transition-colors',
                         )}
                         onClick={header.column.getToggleSortingHandler()}
                       >
@@ -47,7 +47,11 @@ export function TransactionsTable({data}: TransactionsTableProps) {
         <TableBody>
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() ? 'selected' : undefined}>
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() ? 'selected' : undefined}
+                className="border-b border-border/50 hover:bg-muted/30"
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                 ))}
