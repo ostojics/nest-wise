@@ -40,17 +40,16 @@ const CategoryBudgetsList = () => {
   if (isError && !isMobile) return <CategoryBudgetsListError onRetry={refetch} />;
 
   return (
-    <div className="space-y-4" data-testid="category-budgets-section">
-      <Card className="@container/card overflow-hidden">
-        <CardHeader className="border-b">
-          <CardTitle className="text-base">Ukupno planirano</CardTitle>
-          <CardDescription>{format(new Date(search.month), 'LLLL yyyy')}</CardDescription>
-        </CardHeader>
-        <CardContent className="py-1">
-          <div className="text-xl font-semibold tabular-nums" data-testid="total-planned">
+    <div className="space-y-6" data-testid="category-budgets-section">
+      <Card className="border-none shadow-sm bg-card/50 overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardDescription className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            Ukupno planirano za {format(new Date(search.month), 'LLLL yyyy')}
+          </CardDescription>
+          <CardTitle className="text-3xl font-medium tabular-nums tracking-tight mt-1" data-testid="total-planned">
             {formatBalance(totals.planned)}
-          </div>
-        </CardContent>
+          </CardTitle>
+        </CardHeader>
       </Card>
 
       {isMobile ? (
@@ -59,7 +58,9 @@ const CategoryBudgetsList = () => {
         </Suspense>
       ) : (
         <Suspense fallback={<CategoryBudgetsTableSkeleton />}>
-          <CategoryBudgetsTable data={items} isEditable={isEditable} />
+          <div className="rounded-xl border-none shadow-sm bg-card/50 overflow-hidden">
+            <CategoryBudgetsTable data={items} isEditable={isEditable} />
+          </div>
         </Suspense>
       )}
     </div>

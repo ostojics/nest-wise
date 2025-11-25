@@ -1,6 +1,7 @@
 import FormError from '@/components/form-error';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
+import {Plus} from 'lucide-react';
 import {
   Dialog,
   DialogClose,
@@ -64,7 +65,8 @@ const NewCategoryDialog = () => {
       }}
     >
       <DialogTrigger asChild>
-        <Button size="sm" data-testid="new-category-button">
+        <Button size="sm" className="shadow-sm" data-testid="new-category-button">
+          <Plus className="mr-2 h-4 w-4" />
           Nova kategorija
         </Button>
       </DialogTrigger>
