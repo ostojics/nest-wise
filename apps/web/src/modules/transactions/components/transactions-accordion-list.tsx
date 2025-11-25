@@ -10,12 +10,14 @@ interface TransactionsAccordionListProps {
 export default function TransactionsAccordionList({data}: TransactionsAccordionListProps) {
   if (!data.length) {
     return (
-      <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">Nema pronađenih transakcija</div>
+      <div className="rounded-xl border-none shadow-sm bg-card/50 p-8 text-center text-muted-foreground">
+        Nema pronađenih transakcija
+      </div>
     );
   }
 
   return (
-    <div className="rounded-md border bg-card">
+    <div className="rounded-xl border-none shadow-sm bg-card/50 overflow-hidden">
       <Accordion type="single" collapsible className="w-full">
         {data.map((tx) => (
           <TransactionAccordionItem key={tx.id} transaction={tx} actions={<TransactionRowActions transaction={tx} />} />

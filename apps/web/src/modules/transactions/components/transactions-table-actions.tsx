@@ -14,7 +14,7 @@ const TransactionsTableActions = () => {
   const {data: categories} = useGetHouseholdCategories();
 
   return (
-    <section className="mb-5 @container/transactions-table-actions">
+    <section className="mb-6 p-4 rounded-xl border-none shadow-sm bg-card/50 @container/transactions-table-actions">
       <div className="flex flex-col justify-between gap-3">
         <TransactionsTableSearch />
         <div className="grid grid-cols-1 gap-2 @lg/transactions-table-actions:grid-cols-2 @4xl/transactions-table-actions:grid-cols-4 @7xl/transactions-table-actions:flex @7xl/transactions-table-actions:flex-row @7xl/transactions-table-actions:items-center">
@@ -22,7 +22,13 @@ const TransactionsTableActions = () => {
           <CategoryCombobox categories={categories ?? []} />
           <TransactionDateFromPicker />
           <TransactionDateToPicker />
-          <Button onClick={() => navigate({to: '/transactions'})}>Poništi filtere</Button>
+          <Button
+            variant="ghost"
+            onClick={() => navigate({to: '/transactions'})}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Poništi filtere
+          </Button>
         </div>
       </div>
     </section>

@@ -12,7 +12,7 @@ const TransactionsTableSearch = () => {
   return (
     <Input
       key={search.q ?? 'no-value'}
-      className="w-full @xl/transactions-table-actions:max-w-sm"
+      className="w-full @xl/transactions-table-actions:max-w-sm bg-background/50 border-border/50 focus:bg-background transition-colors"
       defaultValue={search.q ?? ''}
       onChange={(e) => debounced(e.target.value)}
       placeholder="Pretraži transakcije"
