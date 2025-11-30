@@ -7,22 +7,55 @@ import FormError from '@/components/form-error';
 import {useValidateStep1} from '../hooks/use-validate-step1';
 import {useSetupContext} from '../hooks/use-setup';
 import {Loader2} from 'lucide-react';
+import {checkEmailAvailability} from '@/modules/api/auth-api';
+import {useState} from 'react';
 
 const Step1 = () => {
   const {setUserData, nextStep, userData} = useSetupContext();
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const {
     register,
     handleSubmit,
+    setError,
     formState: {errors, isSubmitting},
   } = useValidateStep1({
     initialUsername: userData?.username,
     initialEmail: userData?.email,
   });
 
-  const handleUserSetup = (data: UserRegistrationDTO) => {
-    setUserData(data);
-    nextStep();
+  const handleUserSetup = async (data: UserRegistrationDTO) => {
+    setIsCheckingEmail(true);
+    try {
+      const result = await checkEmailAvailability(data.email);
+
+      if (!result.available) {
+        // Show generic error - do not reveal that email exists
+        setError('email', {
+          type: 'manual',
+          message: 'Nije moguće kreirati nalog',
+        });
+        return;
+      }
+
+      // Email is available, proceed to step 2
+      setUserData(data);
+      nextStep();
+    } catch (error) {
+      // Handle network errors
+      const {default: posthog} = await import('posthog-js');
+      posthog.captureException(error, {
+        context: {feature: 'setup_email_check'},
+      });
+
+      // Allow proceeding on network error (backend will catch duplicates)
+      setUserData(data);
+      nextStep();
+    } finally {
+      setIsCheckingEmail(false);
+    }
   };
+
+  const isLoading = isSubmitting || isCheckingEmail;
 
   return (
     <div className="flex flex-col w-full max-w-lg mx-auto p-4">
@@ -88,8 +121,8 @@ const Step1 = () => {
               </div>
 
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full" disabled={isSubmitting} data-testid="setup-step1-submit">
-                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Nastavi'}
+                <Button type="submit" className="w-full" disabled={isLoading} data-testid="setup-step1-submit">
+                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Nastavi'}
                 </Button>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import {LoginDTO, SetupDTO, ForgotPasswordDTO, ResetPasswordDTO} from '@nest-wise/contracts';
+import {LoginDTO, SetupDTO, ForgotPasswordDTO, ResetPasswordDTO, CheckEmailResponseDTO} from '@nest-wise/contracts';
 import httpClient from './http-client';
 import {UserContract} from '@nest-wise/contracts';
 
@@ -28,4 +28,8 @@ export const forgotPassword = (dto: ForgotPasswordDTO) => {
 
 export const resetPassword = (dto: ResetPasswordDTO) => {
   return httpClient.post('v1/auth/reset-password', {json: dto}).json();
+};
+
+export const checkEmailAvailability = (email: string): Promise<CheckEmailResponseDTO> => {
+  return httpClient.post('v1/auth/check-email', {json: {email}}).json();
 };

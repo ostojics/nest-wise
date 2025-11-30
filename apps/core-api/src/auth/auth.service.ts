@@ -147,4 +147,9 @@ export class AuthService {
       throw new UnauthorizedException('Neispravan ili istekao token');
     }
   }
+
+  async checkEmailAvailability(email: string): Promise<{available: boolean}> {
+    const user = await this.usersService.findUserByEmail(email);
+    return {available: !user};
+  }
 }
