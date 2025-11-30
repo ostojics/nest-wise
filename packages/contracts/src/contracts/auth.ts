@@ -87,7 +87,7 @@ export type ResetPasswordQueryParams = z.infer<typeof resetPasswordQueryParamsSc
 
 // Check Email schemas
 export const checkEmailSchema = z.object({
-  email: z.string().email('Unesite ispravnu email adresu'),
+  email: z.string().email('Neispravan format e‑pošte'),
 });
 
 export type CheckEmailDTO = z.infer<typeof checkEmailSchema>;
