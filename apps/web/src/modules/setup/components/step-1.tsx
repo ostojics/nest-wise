@@ -7,12 +7,11 @@ import FormError from '@/components/form-error';
 import {useValidateStep1} from '../hooks/use-validate-step1';
 import {useSetupContext} from '../hooks/use-setup';
 import {Loader2} from 'lucide-react';
-import {checkEmailAvailability} from '@/modules/api/auth-api';
-import {useState} from 'react';
+import {useCheckEmailMutation} from '../hooks/use-check-email-mutation';
 
 const Step1 = () => {
   const {setUserData, nextStep, userData} = useSetupContext();
-  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const checkEmailMutation = useCheckEmailMutation();
   const {
     register,
     handleSubmit,
@@ -23,39 +22,31 @@ const Step1 = () => {
     initialEmail: userData?.email,
   });
 
-  const handleUserSetup = async (data: UserRegistrationDTO) => {
-    setIsCheckingEmail(true);
-    try {
-      const result = await checkEmailAvailability(data.email);
+  const handleUserSetup = (data: UserRegistrationDTO) => {
+    checkEmailMutation.mutate(data.email, {
+      onSuccess: (result) => {
+        if (!result.available) {
+          // Show generic error - do not reveal that email exists
+          setError('email', {
+            type: 'manual',
+            message: 'Nije moguće kreirati nalog',
+          });
+          return;
+        }
 
-      if (!result.available) {
-        // Show generic error - do not reveal that email exists
-        setError('email', {
-          type: 'manual',
-          message: 'Nije moguće kreirati nalog',
-        });
-        return;
-      }
-
-      // Email is available, proceed to step 2
-      setUserData(data);
-      nextStep();
-    } catch (error) {
-      // Handle network errors
-      const {default: posthog} = await import('posthog-js');
-      posthog.captureException(error, {
-        context: {feature: 'setup_email_check'},
-      });
-
-      // Allow proceeding on network error (backend will catch duplicates)
-      setUserData(data);
-      nextStep();
-    } finally {
-      setIsCheckingEmail(false);
-    }
+        // Email is available, proceed to step 2
+        setUserData(data);
+        nextStep();
+      },
+      onError: () => {
+        // Allow proceeding on network error (backend will catch duplicates)
+        setUserData(data);
+        nextStep();
+      },
+    });
   };
 
-  const isLoading = isSubmitting || isCheckingEmail;
+  const isLoading = isSubmitting || checkEmailMutation.isPending;
 
   return (
     <div className="flex flex-col w-full max-w-lg mx-auto p-4">
