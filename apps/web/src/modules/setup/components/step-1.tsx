@@ -8,6 +8,7 @@ import {useValidateStep1} from '../hooks/use-validate-step1';
 import {useSetupContext} from '../hooks/use-setup';
 import {Loader2} from 'lucide-react';
 import {useCheckEmailMutation} from '../hooks/use-check-email-mutation';
+import {toast} from 'sonner';
 
 const Step1 = () => {
   const {setUserData, nextStep, userData} = useSetupContext();
@@ -15,7 +16,6 @@ const Step1 = () => {
   const {
     register,
     handleSubmit,
-    setError,
     formState: {errors, isSubmitting},
   } = useValidateStep1({
     initialUsername: userData?.username,
@@ -26,22 +26,15 @@ const Step1 = () => {
     checkEmailMutation.mutate(data.email, {
       onSuccess: (result) => {
         if (!result.available) {
-          // Show generic error - do not reveal that email exists
-          setError('email', {
-            type: 'manual',
-            message: 'Nije moguće kreirati nalog',
-          });
+          toast.error('Nije moguće kreirati nalog');
           return;
         }
 
-        // Email is available, proceed to step 2
         setUserData(data);
         nextStep();
       },
       onError: () => {
-        // Allow proceeding on network error (backend will catch duplicates)
-        setUserData(data);
-        nextStep();
+        toast.error('Nije moguće kreirati nalog');
       },
     });
   };
