@@ -85,7 +85,6 @@ export const resetPasswordQueryParamsSchema = z.object({
 
 export type ResetPasswordQueryParams = z.infer<typeof resetPasswordQueryParamsSchema>;
 
-// Check Email schemas
 export const checkEmailSchema = z.object({
   email: z.string().email('Neispravan format e‑pošte'),
 });
