@@ -14,6 +14,7 @@ import {Transaction} from 'src/transactions/transaction.entity';
 import {UsersModule} from 'src/users/users.module';
 import {BullModule} from '@nestjs/bullmq';
 import {Queues} from 'src/common/enums/queues.enum';
+import {NetWorthSnapshotsModule} from 'src/net-worth-snapshots/net-worth-snapshots.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import {Queues} from 'src/common/enums/queues.enum';
     LicensesModule,
     forwardRef(() => UsersModule),
     BullModule.registerQueue({name: Queues.AI_TRANSACTIONS}),
+    forwardRef(() => NetWorthSnapshotsModule),
   ],
   controllers: [HouseholdsController, HouseholdTransactionsController],
   providers: [HouseholdsService, HouseholdsRepository, TransactionsService, TransactionsRepository],

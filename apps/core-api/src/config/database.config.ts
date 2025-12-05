@@ -8,6 +8,7 @@ import {Transaction} from 'src/transactions/transaction.entity';
 import {CategoryBudget} from 'src/category-budgets/category-budgets.entity';
 import {PrivateTransaction} from 'src/private-transactions/private-transactions.entity';
 import {License} from 'src/licenses/license.entity';
+import {NetWorthSnapshot} from 'src/net-worth-snapshots/net-worth-snapshot.entity';
 import {InitExtensionAndTypes1758655322744} from 'src/migrations/1758655322744-InitExtensionAndTypes';
 import {InitLicensesAndHouseholds1758655441347} from 'src/migrations/1758655441347-InitLicensesAndHouseholds';
 import {InitUsers1758655573420} from 'src/migrations/1758655573420-InitUsers';
@@ -25,6 +26,7 @@ import {AddCategoryDescription1760998944930} from 'src/migrations/1760998944930-
 import {DropSavings1761000000000} from 'src/migrations/1761000000000-DropSavings';
 import {AddAccountIsActive1761949055000} from 'src/migrations/1761949055000-AddAccountIsActive';
 import {AddCategoryDefaultFlag1762000000000} from 'src/migrations/1762000000000-AddCategoryDefaultFlag';
+import {CreateNetWorthSnapshots1764972350000} from 'src/migrations/1764972350000-CreateNetWorthSnapshots';
 import {ScheduledTransactionExecution} from 'src/scheduled-transactions/scheduled-transaction-execution.entity';
 
 export const DatabaseConfigName = 'database';
@@ -53,6 +55,7 @@ export function getConfig(): DatabaseConfig {
       License,
       ScheduledTransactionRule,
       ScheduledTransactionExecution,
+      NetWorthSnapshot,
     ],
     useUTC: true,
     migrations: [
@@ -72,6 +75,7 @@ export function getConfig(): DatabaseConfig {
       AddScheduledTransactionExecutions1760300000001,
       AddAccountIsActive1761949055000,
       AddCategoryDefaultFlag1762000000000,
+      CreateNetWorthSnapshots1764972350000,
     ],
     migrationsRun: true,
     extra: {
