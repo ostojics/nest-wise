@@ -13,3 +13,7 @@ export enum ScheduledTransactionJobs {
   ORCHESTRATOR = 'orchestrator',
   CREATE_TRANSACTION = 'create-transaction',
 }
+
+export enum NetWorthSnapshotJobs {
+  ORCHESTRATOR = 'orchestrator',
+}

@@ -27,6 +27,7 @@ import {PrivateTransactionsModule} from './private-transactions/private-transact
 import {InvitesModule} from './invites/invites.module';
 import {LicensesModule} from './licenses/licenses.module';
 import {ScheduledTransactionsModule} from './scheduled-transactions/scheduled-transactions.module';
+import {NetWorthSnapshotsModule} from './net-worth-snapshots/net-worth-snapshots.module';
 import {PosthogModule} from './lib/posthog/posthog.module';
 import {ShutdownModule} from './lib/shutdown/shutdown.module';
 
@@ -101,6 +102,7 @@ import {ShutdownModule} from './lib/shutdown/shutdown.module';
     InvitesModule,
     LicensesModule,
     ScheduledTransactionsModule,
+    NetWorthSnapshotsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

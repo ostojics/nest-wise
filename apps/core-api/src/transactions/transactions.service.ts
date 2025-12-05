@@ -18,7 +18,14 @@ import {
   AiTransactionJobStatusContract,
   AiTransactionJobStatus,
 } from '@nest-wise/contracts';
-import {BadGatewayException, BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import {InjectQueue} from '@nestjs/bullmq';
 import {Queue} from 'bullmq';
 import {CategoriesService} from 'src/categories/categories.service';
@@ -36,6 +43,7 @@ import {AiTransactionJobs} from 'src/common/enums/jobs.enum';
 import {ProcessAiTransactionPayload} from 'src/common/interfaces/ai-transactions.interface';
 import OpenAI from 'openai';
 import {zodTextFormat} from 'openai/helpers/zod';
+import {NetWorthSnapshotsService} from '../net-worth-snapshots/net-worth-snapshots.service';
 
 @Injectable()
 export class TransactionsService {
@@ -50,6 +58,8 @@ export class TransactionsService {
     private readonly dataSource: DataSource,
     private readonly logger: Logger,
     @InjectQueue(Queues.AI_TRANSACTIONS) private readonly aiTransactionsQueue: Queue,
+    @Inject(forwardRef(() => NetWorthSnapshotsService))
+    private readonly netWorthSnapshotsService: NetWorthSnapshotsService,
   ) {
     this.openAiClient = new OpenAI();
   }
@@ -114,7 +124,7 @@ export class TransactionsService {
   }
 
   async getNetWorthTrend(householdId: string): Promise<NetWorthTrendPointContract[]> {
-    return await this.transactionsRepository.getNetWorthTrendForHousehold(householdId);
+    return await this.netWorthSnapshotsService.getNetWorthTrend(householdId);
   }
 
   async getAccountsSpending(
