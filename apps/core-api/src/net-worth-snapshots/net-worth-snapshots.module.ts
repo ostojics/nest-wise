@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {Module, forwardRef} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {BullModule} from '@nestjs/bullmq';
 import {NetWorthSnapshot} from './net-worth-snapshot.entity';
@@ -12,7 +12,7 @@ import {HouseholdsModule} from '../households/households.module';
   imports: [
     TypeOrmModule.forFeature([NetWorthSnapshot]),
     BullModule.registerQueue({name: Queues.NET_WORTH_SNAPSHOTS}),
-    HouseholdsModule,
+    forwardRef(() => HouseholdsModule),
   ],
   providers: [NetWorthSnapshotsRepository, NetWorthSnapshotsService, NetWorthSnapshotsOrchestrator],
   exports: [NetWorthSnapshotsService, NetWorthSnapshotsRepository],
