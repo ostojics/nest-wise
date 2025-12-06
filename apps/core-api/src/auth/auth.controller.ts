@@ -21,6 +21,9 @@ import {
   ForgotPasswordDTO,
   resetPasswordSchema,
   ResetPasswordDTO,
+  checkEmailSchema,
+  CheckEmailDTO,
+  CheckEmailResponseDTO,
 } from '@nest-wise/contracts';
 import {ZodValidationPipe} from 'src/lib/pipes/zod.vallidation.pipe';
 import {ZodSchema} from 'zod';
@@ -37,6 +40,8 @@ import {
   UserResponseSwaggerDTO,
   ForgotPasswordSwaggerDTO,
   ResetPasswordSwaggerDTO,
+  CheckEmailSwaggerDTO,
+  CheckEmailResponseSwaggerDTO,
 } from 'src/tools/swagger/auth.swagger.dto';
 import {setAuthCookie} from 'src/lib/cookies/setAuthCookie';
 import {clearAuthCookie} from 'src/lib/cookies/clearAuthCookie';
@@ -282,5 +287,27 @@ export class AuthController {
       });
       throw error;
     }
+  }
+
+  @ApiOperation({
+    summary: 'Check email availability',
+    description: 'Checks if an email address is available for registration',
+  })
+  @ApiBody({
+    type: CheckEmailSwaggerDTO,
+    description: 'Email to check',
+  })
+  @ApiOkResponse({
+    type: CheckEmailResponseSwaggerDTO,
+    description: 'Email availability status',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid input data',
+  })
+  @Post('check-email')
+  @UsePipes(new ZodValidationPipe(checkEmailSchema as ZodSchema))
+  @HttpCode(HttpStatus.OK)
+  async checkEmail(@Body() dto: CheckEmailDTO): Promise<CheckEmailResponseDTO> {
+    return await this.authService.checkEmailAvailability(dto.email);
   }
 }

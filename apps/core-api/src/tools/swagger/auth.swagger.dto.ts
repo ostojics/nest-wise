@@ -155,3 +155,19 @@ export class ResetPasswordSwaggerDTO {
   })
   confirm_password: string;
 }
+
+export class CheckEmailSwaggerDTO {
+  @ApiProperty({
+    description: 'Email address to check',
+    example: 'user@example.com',
+  })
+  email: string;
+}
+
+export class CheckEmailResponseSwaggerDTO {
+  @ApiProperty({
+    description: 'Whether the email is available for registration',
+    example: true,
+  })
+  available: boolean;
+}
